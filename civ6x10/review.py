@@ -185,6 +185,12 @@ def _write_module_report(path: Path, name: str, rows: list[dict]) -> None:
     q_lines = "\n".join(
         f"| `{r['object_id']}` | `{r['modifier_id']}` | `{r['argument_name']}` | {r['official_value']} | {r['semantic_family']} | {r['status']} |"
         for r in q) or "_none_"
+    # Preserve hand-curated sections appended after the marker.
+    curated = ""
+    if path.is_file():
+        old = path.read_text(encoding="utf-8")
+        if "<!-- CURATED-BELOW" in old:
+            curated = "<!-- CURATED-BELOW" + old.split("<!-- CURATED-BELOW", 1)[1]
     path.write_text(f"""# {name.capitalize()} Decisions
 
 Manifest: `manifests/{name}.yml` ({len(rows)} rows: """
@@ -198,4 +204,5 @@ f"""{c.get('undecided', 0)} undecided).
 Full manifest is machine-readable; this report shows only rows needing humans.
 Refused rows are never emitted as SQL (boolean unlocks, structural slots).
 Undecided rows are the short human queue — no silent enhancements.
-""", encoding="utf-8")
+
+{curated}""", encoding="utf-8")
