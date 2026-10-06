@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="X10-Traits-cleanroom" version="1">
+  <Properties>
+    <Name>X10 Traits (clean-room, pending semantic decisions)</Name>
+    <Description>Trait transformations. Gameplay SQL not yet emitted: 366 manifest rows remain undecided.</Description>
+  </Properties>
+  <Components />
+</Mod>

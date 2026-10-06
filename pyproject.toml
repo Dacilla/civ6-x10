@@ -1,0 +1,8 @@
+[project]
+name = "civ6x10"
+version = "0.1.0"
+description = "Clean-room X10 generator for Civilization VI (release 1: traits, policies, governments)"
+requires-python = ">=3.11"
+
+[project.scripts]
+civ6x10 = "civ6x10.cli:main"

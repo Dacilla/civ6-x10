@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.coverage
+htmlcov/
+
+# Local Civ VI source/audit data (private Firaxis-derived inputs + generated)
+data/local/
+*.sqlite
+*.sqlite3
+captures/
+
+# Generated manifests (derived from private data; regenerate locally)
+manifests/*.yml
+
+# Generated derived datasets at data root (regenerate via review CLI)
+data/release1_*.csv
+data/release1_*.json
+data/inventory.json
+
+# External research clones
+research/
+.research/
+
+# Generated products
+build/
+generated/
+dist/
+
+# Native experimental builds
+native-build/
+*.dll
+*.pdb
+*.obj
+*.lib
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

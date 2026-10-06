@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="x10-ce-spike-probe" version="1">
+  <Properties>
+    <Name>X10 CE Spike Probe (DISPOSABLE)</Name>
+    <Description>Read-only probe: reads GameConfiguration multipliers, computes X10 transforms in Lua, reads official values via GameEffects getters, logs results. Writes nothing. Delete after the spike.</Description>
+  </Properties>
+  <InGameActions>
+    <AddGameplayScripts id="Probe">
+      <File>probe.lua</File>
+    </AddGameplayScripts>
+  </InGameActions>
+  <Files>
+    <File>probe.lua</File>
+  </Files>
+</Mod>

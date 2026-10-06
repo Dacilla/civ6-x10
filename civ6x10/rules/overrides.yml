@@ -1,0 +1,4 @@
+# Object overrides: specific-mechanic exceptions with confirmed evidence.
+# Empty by design at release-1 start. Entries require a reason citing
+# engine/UI evidence — never balance, never a copy of old-mod behaviour.
+overrides: []

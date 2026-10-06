@@ -1,0 +1,3 @@
+policy,policy_name,description,prereq_civic,prereq_tech,government_slot_type,modifier_id,modifier_type,argument_name,argument_value,db_value,value_provenance,official_value,classification
+POLICY_FX_A,Name,Desc,,,,M_FX_P1,MODIFIER_FX_COMBAT,Amount,5,,OFFICIAL,5,AUTO
+POLICY_FX_A,Name,Desc,,,,M_FX_P2,MODIFIER_FX_ODD,Favored,1,,OFFICIAL,1,UNKNOWN

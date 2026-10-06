@@ -1,0 +1,2 @@
+government,government_name,tier,prereq_civic,inherent_bonus_desc,modifier_id,modifier_type,argument_name,argument_value,db_value,value_provenance,official_value,classification,semantic_family
+GOV_FX_A,Name,1,,,M_FX_G1,MODIFIER_FX_FLAT,Amount,4,,OFFICIAL,4,AUTO,

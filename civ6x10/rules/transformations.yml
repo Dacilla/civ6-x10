@@ -1,0 +1,32 @@
+# Transformation profile: canonical X10, technical clamps only with evidence.
+transforms:
+  canonical_x10_multiply:
+    kind: CANONICAL_X10
+    formula: value * 10
+    idempotent: true
+  canonical_combat_bonus:
+    kind: CANONICAL_X10
+    formula: 25 * ln(10 * exp(v/25) - 9)
+    idempotent: true
+    note: never applied to base Combat/RangedCombat, PercentDefeatedStrength, outer defence, or damage reduction
+  repeated_probability:
+    kind: CANONICAL_X10
+    formula: 1 - (1-p)^10
+    idempotent: true
+  compound_discount:
+    kind: CANONICAL_X10
+    formula: d10 = 1 - (1-d)^10 (repeated-effect equivalence)
+    idempotent: true
+  unchanged:
+    kind: CANONICAL_X10
+    formula: leave unchanged (selectors)
+    idempotent: true
+  refused_no_multiplier:
+    kind: NO_MEANINGFUL_MULTIPLIER
+    formula: none — generator refuses
+    idempotent: true
+  decision_required:
+    kind: DECISION_REQUIRED
+    formula: none until a human decides
+    idempotent: true
+# No TECHNICAL_CLAMP entries yet: clamps require engine/UI evidence, never balance.
