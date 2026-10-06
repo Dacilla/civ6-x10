@@ -11,3 +11,6 @@ dependencies = ["pyyaml"]
 
 [project.scripts]
 civ6x10 = "civ6x10.cli:main"
+
+[tool.setuptools]
+packages = ["civ6x10", "civ6x10.modules"]
