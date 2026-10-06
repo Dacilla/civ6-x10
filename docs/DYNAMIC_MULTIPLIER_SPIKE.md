@@ -16,14 +16,35 @@ save/reload identity) tested.
 
 ## Correction (2026-10-06 review): what the probe does NOT prove
 
-The probe mod (`spike/probe-mod/`) does NOT prove
+The original probe mod (`spike/probe-mod/`) does NOT prove
 `Advanced Setup parameter → GameConfiguration.GetValue`: `X10_PROBE_K` was
 never declared in mod configuration, so `probe.lua` silently falls back to
 7.3. It validates only vanilla `GameEffects` reads + Lua transform
-arithmetic — useful but not load-bearing. The following are all PENDING:
-definition mutation, first-attach timing, effect argument caching,
-active-effect recalculation, AI symmetry, save/load reconstruction, double
-application. Do not cite the read-only probe as a dynamic-multiplier test.
+arithmetic — useful but not load-bearing. A new probe
+(`spike/native-probe/`) declares a real `X10_PROBE_K` text parameter
+(default `7.3`) and fails loudly if it is missing.
+
+## Native fork status (2026-10-07)
+
+- Sibling clone: `../CivilizationVI_CommunityExtension-x10-spike`, branch
+  `x10-lifecycle-log` (committed locally, never pushed upstream).
+- Unmodified baseline builds: yes, MSVC 14.51 + SDK 26100, Release x64.
+  Baseline DLL 2,667,008 B, SHA-256
+  `7decd10c…5382ce`. (Upstream repo was missing `asmjit/x86/` at HEAD and
+  expects prebuilt MinHook/Capstone libs; restored locally from asmjit
+  1.13.0-era sources + fresh MinHook/Capstone builds. Workshop CE 1.3 DLL
+  hash `36ba8715…` is untouched.)
+- Logging fork builds: yes, same toolchain. DLL 2,669,568 B, SHA-256
+  `09e51b13…7173a71e`. Hooks PopulateModifierDefinitions, definition ctor,
+  AddModifierDefinition, both DynamicModifier ctors (all void-returning;
+  Attach* skipped — struct returns need exact layout); Lua-init marker in
+  gameplay `RegisterScriptData`; `X10Lifecycle.Ping()` for script liveness.
+  Log: `%TEMP%\X10Lifecycle.log` with monotonic counters.
+- PENDING live observation: exact lifecycle ordering, Lua-start vs first
+  attach, RVA validity on this GameCore build, save/load, symmetry. The
+  write path (constructor-interception vs init-phase API) follows the
+  observed ordering. No write has been tested; do not cite arithmetic tests
+  as live verification.
 
 ## Save/load design
 

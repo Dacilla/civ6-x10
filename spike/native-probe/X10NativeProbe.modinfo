@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="x10-native-probe" version="1">
+  <Properties>
+    <Name>X10 Native Probe (DISPOSABLE)</Name>
+    <Description>Declares X10_PROBE_K and logs transform expectations. Read-only. Delete after the spike.</Description>
+  </Properties>
+  <FrontEndActions>
+    <UpdateDatabase id="X10ProbeConfig">
+      <File>Config/ProbeConfig.sql</File>
+    </UpdateDatabase>
+  </FrontEndActions>
+  <InGameActions>
+    <AddGameplayScripts id="X10Probe">
+      <File>probe.lua</File>
+    </AddGameplayScripts>
+  </InGameActions>
+  <Files>
+    <File>Config/ProbeConfig.sql</File>
+    <File>probe.lua</File>
+  </Files>
+</Mod>
