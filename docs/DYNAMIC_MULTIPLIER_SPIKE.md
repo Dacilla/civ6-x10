@@ -113,17 +113,34 @@ arbitrary numeric input per module once the CE path validates. Fractional k
 on REPEAT_GRANT/CHARGES/integer counts is DECISION_REQUIRED (no silent
 flooring); slots and booleans never scale.
 
-## Manual test checklist (superseded for ordering; write test pending)
+## Write implementation status (2026-10-07, NOT live-tested)
 
-The ordering run is DONE (see LIVE RESULT). The old read-only checklist is
-retained for reference only:
+Implemented in the fork (`X10Write.h/.cpp`, committed locally, no upstream
+contact): native `TryGetGameConfigurationValue` (GetInstance → game/root
+variant maps → FindVariant → typed extract with the engine's own int-mask
+check + strict string validation; fail-closed, no Lua), and SSO-inline
+argument rewrites at `AddModifierDefinition` (post-construction, pre-attach;
+every shape re-validated per element; official-mismatch skips). Transforms
+computed natively (ADDITIVE %.6g, COMBAT %.2f). DLL 2,676,736 B
+`9e62f22f…`. Static verification: builds clean (one pre-existing CRT
+warning). Live proof (readback/save-load/symmetry) PENDING — that is the
+next user run, not a repeat of the ordering run.
 
-1. Enable CE + X10Probe (disposable profile, no production mods).
-2. New Gathering Storm game, Small map, 2 AI (fast loads).
-3. Console/log: `[X10Probe] k=7.3`, three lines with official 3/50/5 and
-   scaled 21.90/365.00/24.03.
-4. Save, exit to menu, reload, confirm identical lines (no duplicates).
-5. Report `Lua.log` excerpt + result. Total: ~10 minutes.
+## Manual test checklist (write build — next user run)
+
+1. Run `spike\install-live-test.ps1` (assembles + hash-verifies + installs).
+2. Additional Content: DISABLE Workshop Community Extension; ENABLE X10 CE
+   Lifecycle Test (disposable profile, no production mods).
+3. New Gathering Storm game, Small map, 2 AI. Reach map, end 1 turn.
+4. Check `%TEMP%\X10Lifecycle.log`: CONFIG found=true numeric=7.3, three
+   `[X10WRITE]` lines (21.9 / 365 / 24.03), no validation failures.
+5. Check `%TEMP%\X10Probe.log`: `GameEffects` readback shows 21.9 / 365 /
+   ~24.03.
+6. Save, exit to menu, reload once: identical write logs, values unchanged
+   (no double multiplication).
+7. Send both logs. Rollback any time by disabling the mod.
+
+The old read-only ordering checklist is superseded (see LIVE RESULT).
 
 Next live step is the write build (definition-population overrides +
 `GameEffects` readback + save/load), not a repeat of the ordering run.
@@ -136,7 +153,14 @@ on future GameCore patches (CE pins one build); Dev CE 251-function surface
 untested as a whole (shortlist only). No upstream PR, no Dev CE dependency,
 no raw-memory in production.
 
-## Proposed generic CE addition (design only, no fork in this pass)
+## Proposed generic CE addition (implemented in local fork, not upstreamed)
+
+The fork now implements the generic pieces (`TryGetGameConfigurationValue`,
+SSO-inline `OnAddModifierDefinition` rewrites, `X10Lifecycle.LogMsg`) with
+no X10 semantics in the mechanism itself beyond the test-only override
+table. Upstream proposal (`docs/CE_UPSTREAM_PROPOSAL.md`) will be prepared
+only after live proof. No PR, no Dev CE dependency, no `RegisterProcessor`,
+no `Mem`/`ObjMem` in production paths.
 
 ```lua
 -- init-phase only (refused after first attach pass)

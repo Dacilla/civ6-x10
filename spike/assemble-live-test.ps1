@@ -4,7 +4,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $pkg = Join-Path $here 'live-test-package\X10_CEFork_Test'
 $out = Join-Path $here 'live-test-output\X10_CEFork_Test'
 $dll = 'C:\Users\alex\Desktop\Code\ce-native-build\GameCore_XP2_CE_FinalRelease.dll'
-$expectedHash = '4c2c16684fe7192fedb603f5a85dbbd3f42d903eb8d3bce8e94c519486ad2258'
+$expectedHash = '9e62f22f5f7d3eff8d0f26590039eebe6b614577ab294588406b6125d50ceaff'
 
 if (-not (Test-Path $dll)) { throw "fork DLL not built: $dll" }
 $actual = (Get-FileHash $dll -Algorithm SHA256).Hash.ToLower()

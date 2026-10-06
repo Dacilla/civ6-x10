@@ -71,10 +71,8 @@ Lua** (vanilla or Dev CE). Relevant primitives for this pass:
 - Definitions are structurally mutable (reference-held args), but no
   supported setter exists: not clean in current CE without raw-memory pokes.
 - Write prototype: native override during definition construction /
-  population in the local CE fork (constructor-interception preferred;
-  `const_cast(GetArguments())` avoided). Effects `Initialize` from the
-  definition at attach time (per-effect arg caching validated via readback:
-  if `GameEffects` shows the replacement, no caching stands in the way).
+  population in the local CE fork (implemented 2026-10-07: config reader via
+  GetInstance + FindVariant, SSO-inline rewrites at Add; live proof pending).
 - Proposed generic API (`ModifierDefinitions.Get/SetArgument`, `Refresh`,
   init-phase restriction, no `RegisterProcessor`): see
   `docs/DYNAMIC_MULTIPLIER_SPIKE.md` §14.
