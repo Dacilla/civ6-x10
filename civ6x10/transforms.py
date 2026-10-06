@@ -68,15 +68,6 @@ def scale_flat(value: float, k: float) -> float:
     return value * k
 
 
-def scale_count(value: float, k: float) -> int:
-    """Integer-only counts (charges, repeat grants): floor(v*k), minimum 1
-    for positive inputs. Fractional multipliers never produce fractions."""
-    _require_positive_multiplier(k)
-    if value <= 0:
-        return int(value)
-    return max(1, int(math.floor(value * k)))
-
-
 def _require_positive_multiplier(k: float) -> None:
     if not math.isfinite(k) or k < 0:
         raise ValueError(f"multiplier must be >= 0 and finite: {k}")

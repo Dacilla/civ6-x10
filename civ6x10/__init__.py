@@ -8,7 +8,6 @@ from .transforms import (
     compound_discount_percent,
     compound_discount_for_multiplier,
     scale_flat,
-    scale_count,
 )
 
 __all__ = [
@@ -20,5 +19,4 @@ __all__ = [
     "compound_discount_percent",
     "compound_discount_for_multiplier",
     "scale_flat",
-    "scale_count",
 ]

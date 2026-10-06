@@ -64,8 +64,8 @@ exceptions to be validated per family.
 
 Presets now (Off/×2/×3/×5/×10/×20/×50/×100 generated SQL — shippable today);
 arbitrary numeric input per module once the CE path validates. Fractional k
-on REPEAT_GRANT/CHARGES/integer counts floors with min-1 (tested); slots and
-booleans never scale.
+on REPEAT_GRANT/CHARGES/integer counts is DECISION_REQUIRED (no silent
+flooring); slots and booleans never scale.
 
 ## Manual test checklist (needs user game run)
 

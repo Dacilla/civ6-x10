@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Mod id="X10-Core-cleanroom" version="1">
-  <Properties>
-    <Name>X10 Core (clean-room)</Name>
-    <Description>Shared X10 load order and documentation anchor. No gameplay SQL.</Description>
-  </Properties>
-  <Components />
-</Mod>

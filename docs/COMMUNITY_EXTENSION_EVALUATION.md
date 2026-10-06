@@ -78,7 +78,8 @@ Lua** (vanilla or Dev CE). Relevant primitives for this pass:
 ## 7. Difficult classes
 
 DB_ONLY_BEST: policy slots (no UI evidence), boolean unlocks, structural slots,
-charges/counts (integer floors stay in SQL). CE_HIGH_LEVEL_API: governor
+charges/counts stay in SQL at integer multipliers; fractional-k counts are
+DECISION_REQUIRED, never silently floored). CE_HIGH_LEVEL_API: governor
 establish delays, influence points/tokens (already exposed).
 SMALL_CE_EXTENSION: flat/percent/combat/probability/discount argument
 overrides at init. DEV_CE_ONLY: effect-outcome replay workarounds (desync

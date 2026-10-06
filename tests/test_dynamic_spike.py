@@ -39,10 +39,17 @@ class TestArbitraryTransforms(unittest.TestCase):
         self.assertLess(T.combat_bonus_for_multiplier(5, 7.3),
                         T.canonical_combat_bonus(5))
 
-    def test_counts_floor(self):
-        self.assertEqual(T.scale_count(3, 2.5), 7)
-        self.assertEqual(T.scale_count(1, 0.5), 1)  # never zeroed by fraction
-        self.assertEqual(T.scale_count(0, 7.3), 0)
+    def test_counts_have_no_canonical_floor(self):
+        # Fractional scaling of indivisible counts is DECISION_REQUIRED:
+        # there is deliberately no public helper that floors 3 x 2.5.
+        self.assertFalse(hasattr(T, "scale_count"))
+        from civ6x10.modules import build_manifest
+        rows = build_manifest([{
+            "trait_type": "T", "modifier_id": "M",
+            "modifier_type": "MODIFIER_X", "effect_type": "EFFECT_X",
+            "argument_name": "Charges", "official_value": "3",
+        }], "trait_type", k=2.5)
+        self.assertEqual(rows[0]["status"], "undecided")
 
     def test_invalid_k_rejected(self):
         for bad in (-1, float("nan"), float("inf")):

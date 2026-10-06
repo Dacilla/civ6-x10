@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Mod id="X10-Governments-cleanroom" version="1">
-  <Properties>
-    <Name>X10 Governments (clean-room, pending slot decision)</Name>
-    <Description>Government numeric transformations. Policy-slot handling is DECISION_REQUIRED pending UI evidence.</Description>
-  </Properties>
-  <Components />
-</Mod>

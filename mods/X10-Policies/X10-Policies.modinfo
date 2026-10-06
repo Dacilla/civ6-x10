@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Mod id="X10-Policies-cleanroom" version="1">
-  <Properties>
-    <Name>X10 Policies (clean-room, pending semantic decisions)</Name>
-    <Description>Policy transformations. Gameplay SQL not yet emitted: 48 manifest rows remain undecided plus 1 zero-row investigation.</Description>
-  </Properties>
-  <Components />
-</Mod>
