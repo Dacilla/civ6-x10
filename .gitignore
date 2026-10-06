@@ -29,6 +29,7 @@ research/
 build/
 generated/
 dist/
+spike/live-test-output/
 
 # Native experimental builds
 native-build/

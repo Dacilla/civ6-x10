@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="308d6fa9-0fb8-4153-8376-5a5a5a1b5d2d" version="1">
+  <Properties>
+    <Name>X10 CE Lifecycle Test (DISPOSABLE)</Name>
+    <Description>Logging-only lifecycle test for the X10 native prototype. Read-only: declares X10_PROBE_K, logs modifier-pipeline ordering. Disable Workshop Community Extension while enabled. Delete after the test.</Description>
+    <AffectsSavedGames>0</AffectsSavedGames>
+  </Properties>
+  <Dependencies>
+    <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />
+  </Dependencies>
+  <FrontEndActions>
+    <UpdateDatabase id="X10ProbeConfig">
+      <File>Config/ProbeConfig.sql</File>
+    </UpdateDatabase>
+    <UpdateDatabase id="X10ForkRedirect">
+      <File>Config/ForkRedirect.sql</File>
+    </UpdateDatabase>
+  </FrontEndActions>
+  <InGameActions>
+    <ImportFiles id="X10ProbeFiles">
+      <File>probe.lua</File>
+    </ImportFiles>
+    <AddGameplayScripts id="X10Probe">
+      <File>probe.lua</File>
+    </AddGameplayScripts>
+    <UpdateDatabase id="X10ProbeDummy">
+      <File>Config/Dummy.sql</File>
+    </UpdateDatabase>
+  </InGameActions>
+  <Files>
+    <File>Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll</File>
+    <File>Config/ProbeConfig.sql</File>
+    <File>Config/ForkRedirect.sql</File>
+    <File>Config/Dummy.sql</File>
+    <File>probe.lua</File>
+  </Files>
+</Mod>
+<!-- GUID 308d6fa9-... is unique to this disposable test and differs from the
+     installed Workshop Community Extension's GUID. GameCores redirect mirrors
+     the known-working installed CE .modinfo: PackageId + DllPrefix rows. -->
