@@ -123,5 +123,18 @@ class TestDoubleApplication(unittest.TestCase):
             self.assertNotIn("*", s.split("SET")[1].split("WHERE")[0].replace("'", ""))
 
 
+class TestWriteProofTargets(unittest.TestCase):
+    # Locks the three native-proof expectations (official baseline @ k=7.3).
+    # UNIT TESTED only: arithmetic + official DB values, not a live write.
+    def test_flat_target(self):
+        self.assertAlmostEqual(T.scale_flat(3, 7.3), 21.9)
+
+    def test_percent_target(self):
+        self.assertAlmostEqual(T.scale_flat(50, 7.3), 365.0)
+
+    def test_combat_target(self):
+        self.assertAlmostEqual(T.combat_bonus_for_multiplier(5, 7.3), 24.03, delta=0.05)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -14,13 +14,14 @@ official runtime DB (local, private)
   → validation (8 checks incl. idempotent reapply)
 ```
 
-Two multiplier paths are being evaluated:
+Two multiplier paths were evaluated:
 
 - **A. Generated preset SQL** (Off/×2/×3/×5/×10/×20/×50/×100): deterministic,
-  audited, works today. Shippable fallback.
-- **B. CE dynamic overrides** (arbitrary k, e.g. 7.3×): needs a small generic
-  CE extension (`ModifierDefinitions.Get/SetArgument`, init-phase only).
-  Probe + design in `docs/DYNAMIC_MULTIPLIER_SPIKE.md`.
+  audited, works today. Shippable fallback, retained regardless.
+- **B. CE dynamic overrides** (arbitrary k, e.g. 7.3×): LIVE lifecycle test
+  (2026-10-07) proved gameplay Lua initializes AFTER first attachment, so
+  the init-phase Lua setter is abandoned. Native definition-population
+  write prototype in progress in the local CE fork.
 
 Current recommendation: **HYBRID** pending the native write test —
 numeric DB modifiers stay generated; CE path for arbitrary multipliers and

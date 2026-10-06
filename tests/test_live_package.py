@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PKG = ROOT / "spike" / "live-test-package" / "X10_CEFork_Test"
 OUT = ROOT / "spike" / "live-test-output" / "X10_CEFork_Test"
 WORKSHOP_CE_GUID = "3351473b-0746-417a-a618-2b66a04d8f3d"
-EXPECTED_DLL_HASH = "f82c73346fc44ecaa111dc54d1e7819e985744568e2b738518b94724e2706cdc"
+EXPECTED_DLL_HASH = "4c2c16684fe7192fedb603f5a85dbbd3f42d903eb8d3bce8e94c519486ad2258"
 
 
 class TestLivePackage(unittest.TestCase):

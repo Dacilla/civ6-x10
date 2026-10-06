@@ -34,15 +34,22 @@ else
   print("[X10Probe] WARNING: X10Lifecycle native table absent (fork DLL not active?)")
 end
 
+local function plog(s)
+  if X10Lifecycle ~= nil and X10Lifecycle.LogMsg ~= nil then
+    X10Lifecycle.LogMsg(s)
+  end
+  print(s)
+end
+
 for _, p in ipairs(PROBES) do
   local official = GameEffects.GetModifierArgumentString(p.id, p.arg)
   local v = tonumber(official)
   if v == nil then
-    print(string.format("[X10Probe] %s/%s official=%s (non-numeric, skip)",
+    plog(string.format("[X10Probe] %s/%s official=%s (non-numeric, skip)",
       p.id, p.arg, tostring(official)))
   else
-    print(string.format("[X10Probe] %s/%s official=%s scaled=%.2f kind=%s",
+    plog(string.format("[X10Probe] %s/%s official=%s scaled=%.2f kind=%s",
       p.id, p.arg, tostring(official), x10(p.kind, v, k), p.kind))
   end
 end
-print("[X10Probe] done (read-only; no writes attempted)")
+plog("[X10Probe] done (read-only; no writes attempted)")

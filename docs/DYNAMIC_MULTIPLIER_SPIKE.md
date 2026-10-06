@@ -34,17 +34,63 @@ arithmetic — useful but not load-bearing. A new probe
   expects prebuilt MinHook/Capstone libs; restored locally from asmjit
   1.13.0-era sources + fresh MinHook/Capstone builds. Workshop CE 1.3 DLL
   hash `36ba8715…` is untouched.)
-- Logging fork builds: yes, same toolchain. DLL 2,669,568 B, SHA-256
-  `09e51b13…7173a71e`. Hooks PopulateModifierDefinitions, definition ctor,
-  AddModifierDefinition, both DynamicModifier ctors (all void-returning;
-  Attach* skipped — struct returns need exact layout); Lua-init marker in
-  gameplay `RegisterScriptData`; `X10Lifecycle.Ping()` for script liveness.
+- Logging fork builds: yes, same toolchain. Current DLL 2,671,616 B, SHA-256
+  `4c2c1668…ad2258` (adds `X10Lifecycle.LogMsg` file-log helper). Hooks
+  PopulateModifierDefinitions, AddModifierDefinition, both DynamicModifier
+  ctors (all void-returning, fail-closed validation; Attach* skipped —
+  struct returns need exact layout); Lua-init marker in gameplay
+  `RegisterScriptData`; `X10Lifecycle.Ping()` for script liveness.
   Log: `%TEMP%\X10Lifecycle.log` with monotonic counters.
-- PENDING live observation: exact lifecycle ordering, Lua-start vs first
-  attach, RVA validity on this GameCore build, save/load, symmetry. The
-  write path (constructor-interception vs init-phase API) follows the
-  observed ordering. No write has been tested; do not cite arithmetic tests
-  as live verification.
+- LIVE observation received (see next section): ordering is populate → add →
+  EXIT → first instantiation → Lua init; all 4 signatures PASS on the user
+  build. Remaining pending: write implementation, save/load, symmetry. No
+  write has been tested; do not cite arithmetic tests as live verification.
+
+## LIVE RESULT (2026-10-07): gameplay Lua initializes TOO LATE
+
+Live log from the logging-only fork (user GameCore `0xc60000`/`0x667c6f5b`,
+all 4 signatures PASS, 4 hooks installed):
+
+```text
+PopulateModifierDefinitions ENTER
+AddModifierDefinition...
+PopulateModifierDefinitions EXIT
+FIRST DynamicModifier instance (x3)
+X10 gameplay Lua initialized
+X10 probe gameplay script alive
+```
+
+Ordering: populate → add → EXIT → first instantiation → Lua init.
+Therefore normal gameplay Lua CANNOT serve as the pre-attachment mutation
+phase. The init-phase Lua setter is abandoned as the primary architecture;
+the write prototype moves to native definition-construction/population
+(see native fork branch `x10-lifecycle-log`). This is LIVE_GAME_VERIFIED,
+not hypothetical.
+
+## Native setup configuration: traced, no generic getter found
+
+`GameConfiguration.GetValue` is `Lua::IGameConfiguration::lGetValue`
+(0x6d8550). Disassembly shows it reads the Lua key, hashes it, and resolves
+through Lua-bound helpers (import thunks at 0x9afd9a/0x9afdbe, string hash at
+0x606270) — there is NO generic native `Configuration::Game::Instance`
+value getter in the indexed symbols (only typed getters: era, speed,
+handicap, seeds…). Conclusion: no named/supported native config reader was
+identified. Follow-up routes: (a) disassemble deeper from `lGetValue` into
+the variant store; (b) session-scoped generic in-fork registry fed from
+frontend Lua; (c) save-persisted config on load. Per policy, no hardcoded
+7.3 and no file-based production plumbing unless no engine route exists.
+
+## Definition construction (static disassembly, 2026-10-07)
+
+`SimpleModifierDefinition` ctor (0x92e6a0, 370 B) is fully readable: the
+incoming rvalue is an INTERFACE (vtable + ~10 virtual getters, not raw
+values); string members are built at this+0x18/0x58/0x78 via a string-copy
+helper (0x76c40) with an SSO/empty pattern; ints at +0x38, uint16 stacking
+limits at +0x98/+0x9a; the argument list member is built by 0x9294b0 from
+the +0x48 getter. Next RE step (static, no game needed): disassemble
+0x9294b0 + the string layout to pin the exact (name, value) element edit
+point. Only then implement the write. Effect-arg caching is validated by
+readback, not assumed.
 
 ## Save/load design
 
@@ -67,7 +113,10 @@ arbitrary numeric input per module once the CE path validates. Fractional k
 on REPEAT_GRANT/CHARGES/integer counts is DECISION_REQUIRED (no silent
 flooring); slots and booleans never scale.
 
-## Manual test checklist (needs user game run)
+## Manual test checklist (superseded for ordering; write test pending)
+
+The ordering run is DONE (see LIVE RESULT). The old read-only checklist is
+retained for reference only:
 
 1. Enable CE + X10Probe (disposable profile, no production mods).
 2. New Gathering Storm game, Small map, 2 AI (fast loads).
@@ -75,6 +124,9 @@ flooring); slots and booleans never scale.
    scaled 21.90/365.00/24.03.
 4. Save, exit to menu, reload, confirm identical lines (no duplicates).
 5. Report `Lua.log` excerpt + result. Total: ~10 minutes.
+
+Next live step is the write build (definition-population overrides +
+`GameEffects` readback + save/load), not a repeat of the ordering run.
 
 ## Risks
 

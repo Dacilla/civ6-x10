@@ -63,14 +63,18 @@ Lua** (vanilla or Dev CE). Relevant primitives for this pass:
 `ModifierSystem::GetModifierDefinition`, `ModifierSystem::AttachModifier`,
 `ModifierSystem::AttachModifierWithState`.
 
-## 6. Verdict: YES_WITH_SMALL_CE_EXTENSION
+## 6. Verdict: NATIVE DEFINITION-POPULATION WRITE (Lua path abandoned)
 
+- LIVE_GAME_VERIFIED (2026-10-07): populate → add → EXIT → first
+  instantiation → Lua init. Gameplay Lua can never mutate pre-attachment
+  definitions. The init-phase Lua setter is abandoned as primary architecture.
 - Definitions are structurally mutable (reference-held args), but no
   supported setter exists: not clean in current CE without raw-memory pokes.
-- A small generic bridge (init-phase only) is feasible: `AddModifierDefinition`
-  replacement or argument-list edit before attach; effects `Initialize` from
-  the definition at attach time (per-effect arg caching unverified for a few
-  classes — validate per family during review).
+- Write prototype: native override during definition construction /
+  population in the local CE fork (constructor-interception preferred;
+  `const_cast(GetArguments())` avoided). Effects `Initialize` from the
+  definition at attach time (per-effect arg caching validated via readback:
+  if `GameEffects` shows the replacement, no caching stands in the way).
 - Proposed generic API (`ModifierDefinitions.Get/SetArgument`, `Refresh`,
   init-phase restriction, no `RegisterProcessor`): see
   `docs/DYNAMIC_MULTIPLIER_SPIKE.md` §14.
