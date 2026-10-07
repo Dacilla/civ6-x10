@@ -47,6 +47,29 @@ def cmd_generate(args) -> int:
     return 0
 
 
+def cmd_generate_registry(args) -> int:
+    import json
+    import yaml
+    from .production import build_production_registry, emit_cxx
+    rows: list[dict] = []
+    for module in ("traits", "policies", "governments"):
+        man = yaml.safe_load(
+            open(ROOT / "manifests" / f"{module}.yml", encoding="utf-8"))
+        for r in man[module]:
+            r = dict(r)
+            r["module"] = module
+            rows.append(r)
+    entries, report = build_production_registry(rows)
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(emit_cxx(entries), encoding="utf-8")
+    rep = Path(str(out) + ".coverage.json")
+    rep.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(f"wrote {out} ({len(entries)} entries)")
+    print(json.dumps(report, indent=1))
+    return 0
+
+
 def cmd_verify(args) -> int:
     import yaml
     from .validation import validate
@@ -77,6 +100,9 @@ def main(argv=None) -> int:
     p.add_argument("--module", required=True, choices=["traits", "policies", "governments"])
     p.add_argument("--out", required=True)
     p.set_defaults(fn=cmd_generate)
+    p = sub.add_parser("generate-registry")
+    p.add_argument("--out", default=str(ROOT / "build" / "X10ProductionRegistry.inc"))
+    p.set_defaults(fn=cmd_generate_registry)
     p = sub.add_parser("verify")
     p.add_argument("--module", required=True, choices=["traits", "policies", "governments"])
     p.add_argument("--db", required=True)

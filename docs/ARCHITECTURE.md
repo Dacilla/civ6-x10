@@ -2,6 +2,14 @@
 
 One configurable Workshop item, independently tested components.
 
+ARBITRARY NATIVE MULTIPLIER PATH: LIVE_GAME_VERIFIED (7.3 test — native
+FLOAT32 config read, four definition writes with stored_after_add MATCH,
+Rome runtime PASS, identical save/reload recomputation).
+
+Proven: numeric definition transforms (ADDITIVE/COMBAT/DISCOUNT/PROBABILITY
+families). Unsupported structurally: slots/UI, booleans, bespoke
+repeat/grant mechanics (stay SQL/generator or pending).
+
 ## Pipeline
 
 ```text

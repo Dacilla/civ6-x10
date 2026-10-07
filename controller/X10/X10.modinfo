@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="c1v6-x10-controller" version="1">
+  <Properties>
+    <Name>X10 (configurable semantic multiplier)</Name>
+    <Description>One configurable Workshop item: arbitrary multiplier (default x10) with per-module toggles. Requires the X10 CE fork (GameCore replacement) from the matching release.</Description>
+    <AffectsSavedGames>1</AffectsSavedGames>
+  </Properties>
+  <Dependencies>
+    <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />
+  </Dependencies>
+  <FrontEndActions>
+    <UpdateDatabase id="X10Config">
+      <File>Config/X10Config.sql</File>
+    </UpdateDatabase>
+  </FrontEndActions>
+  <InGameActions>
+    <UpdateDatabase id="X10Dummy">
+      <File>Config/Dummy.sql</File>
+    </UpdateDatabase>
+  </InGameActions>
+  <Files>
+    <File>Config/X10Config.sql</File>
+    <File>Config/Dummy.sql</File>
+  </Files>
+</Mod>
+<!-- Mod id is provisional for local testing; the Workshop item gets its id on publish. -->
