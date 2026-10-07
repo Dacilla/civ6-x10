@@ -8,7 +8,7 @@ transform → CE/GameCore override → effect, with no per-multiplier SQL.
 
 Generalized transforms implemented and tested (`civ6x10/transforms.py`,
 `tests/test_dynamic_spike.py` 12 tests): `scale_flat`, `combat_bonus_for_multiplier`
-(`b_k = 25·ln(k·(exp(b/25)−1)+1)`; +5 @7.3× = 24.03), probability
+(`b_k = 25·ln(k·(exp(b/25)−1)+1)`; +5 @7.3× = 24.04), probability
 `1−(1−p)^k`, discount compounding. k=10
 reproduces canonical values exactly. Config parsing (`civ6x10/config.py`,
 range 0..100, 0=Off, unknown-module rejection, `reconstruction_key` for
@@ -133,9 +133,9 @@ next user run, not a repeat of the ordering run.
    Lifecycle Test (disposable profile, no production mods).
 3. New Gathering Storm game, Small map, 2 AI. Reach map, end 1 turn.
 4. Check `%TEMP%\X10Lifecycle.log`: CONFIG found=true numeric=7.3, three
-   `[X10WRITE]` lines (21.9 / 365 / 24.03), no validation failures.
+   `[X10WRITE]` lines (21.9 / 365 / 24.04), no validation failures.
 5. Check `%TEMP%\X10Probe.log`: `GameEffects` readback shows 21.9 / 365 /
-   ~24.03.
+   ~24.04.
 6. Save, exit to menu, reload once: identical write logs, values unchanged
    (no double multiplication).
 7. Send both logs. Rollback any time by disabling the mod.

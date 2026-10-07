@@ -62,8 +62,11 @@ class TestArbitraryTransforms(unittest.TestCase):
 class TestConfigParsing(unittest.TestCase):
     def test_parse_ok(self):
         self.assertEqual(C.parse_multiplier("7.3"), 7.3)
+        self.assertEqual(C.parse_multiplier(7), 7.0)
         self.assertEqual(C.parse_multiplier(0), 0.0)
         self.assertEqual(C.parse_multiplier(100), 100.0)
+        # float32-displayed UI value parses to the same double neighborhood
+        self.assertAlmostEqual(C.parse_multiplier("7.3000001907349"), 7.3, places=6)
 
     def test_parse_rejects(self):
         for bad in ("abc", None, -0.5, 101, float("nan"), float("inf")):
@@ -133,7 +136,8 @@ class TestWriteProofTargets(unittest.TestCase):
         self.assertAlmostEqual(T.scale_flat(50, 7.3), 365.0)
 
     def test_combat_target(self):
-        self.assertAlmostEqual(T.combat_bonus_for_multiplier(5, 7.3), 24.03, delta=0.05)
+        # Exact native proof string: "%.2f" of 25*ln(7.3*(exp(5/25)-1)+1).
+        self.assertEqual(f"{T.combat_bonus_for_multiplier(5, 7.3):.2f}", "24.04")
 
 
 if __name__ == "__main__":

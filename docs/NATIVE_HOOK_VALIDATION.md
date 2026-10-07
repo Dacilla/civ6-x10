@@ -2,7 +2,8 @@
 
 Fork: `../CivilizationVI_CommunityExtension-x10-spike`, branch
 `x10-lifecycle-log`. Logging + definition-write prototype. Built DLL (local,
-gitignored): 2,678,272 B, SHA-256 `977136d9…51fcf8` (MSVC 14.51, SDK 26100,
+gitignored): 2,678,272 B, current write build SHA-256 `6545ff98…373b8b`
+(MSVC 14.51, SDK 26100,
 Release x64).
 
 Assumed GameCore: file `GameCore_XP2_FinalRelease.dll`, PE timestamp

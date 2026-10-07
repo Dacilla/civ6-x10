@@ -9,7 +9,7 @@
 local TARGETS = {
   { id = "TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",  arg = "Amount", official = "3",  expected = "21.9",  kind = "flat" },
   { id = "AGOGE_ANCIENT_MELEE_PRODUCTION",         arg = "Amount", official = "50", expected = "365",   kind = "percent" },
-  { id = "ALL_PARK_COMBAT_BONUS",                  arg = "Amount", official = "5",  expected = "24.03", kind = "combat" },
+  { id = "ALL_PARK_COMBAT_BONUS",                  arg = "Amount", official = "5",  expected = "24.04", kind = "combat" },
   { id = "TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS", arg = "Amount", official = "1",  expected = "7.3",  kind = "flat" },
 }
 

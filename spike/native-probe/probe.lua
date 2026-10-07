@@ -2,7 +2,7 @@
 -- Expected at k=7.3 (official baseline):
 --   TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY/Amount 3 -> 21.9
 --   AGOGE_ANCIENT_MELEE_PRODUCTION/Amount 50       -> 365
---   ALL_PARK_COMBAT_BONUS/Amount 5                 -> 24.03
+--   ALL_PARK_COMBAT_BONUS/Amount 5                 -> 24.04
 
 local PROBES = {
   { id = "TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY", arg = "Amount", kind = "flat" },

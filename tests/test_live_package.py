@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PKG = ROOT / "spike" / "live-test-package" / "X10_CEFork_Test"
 OUT = ROOT / "spike" / "live-test-output" / "X10_CEFork_Test"
 WORKSHOP_CE_GUID = "3351473b-0746-417a-a618-2b66a04d8f3d"
-EXPECTED_DLL_HASH = "977136d9679814d786f55648b0d4b91f6b02b29f364ae3026c1e52686051fcf8"
+EXPECTED_DLL_HASH = "6545ff98f8d16c0bbd137c33e1a76ea81acdd116575fd41544ccc9d0db373b8b"
 
 
 class TestLivePackage(unittest.TestCase):
@@ -81,11 +81,29 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIn("BoundedStringRead", t)
         self.assertIn("capa < 0x10", t)  # SSO branch present alongside heap path
 
+    def test_native_variant_switch_shape(self):
+        # The native reader must keep the explicit typed pattern: INT32 mask
+        # branch, layout-gated STRING branch, fail-closed default that logs
+        # the exact type id. Float32/64 type ids are NOT established (no
+        # float-domain setup parameter exists), so no float branch may appear
+        # silently.
+        t = self._fork("X10Write.cpp")
+        self.assertIn("0x30002e", t)
+        self.assertIn("unreadable-variant-type", t)
+        self.assertIn("variant type=%u", t)
+
     def test_disarm_before_lookup(self):
         t = self._fork("X10Lifecycle.cpp")
         i_dis = t.index("X10Write::Disarm()")
         i_cfg = t.index("TryGetProbeK")
         self.assertLess(i_dis, i_cfg)
+
+    def test_disarm_at_population_exit(self):
+        t = self._fork("X10Lifecycle.cpp")
+        i_exit = t.index("PopulateModifierDefinitions EXIT")
+        tail = t[i_exit:]
+        self.assertIn("X10Write::Disarm();", tail)
+        self.assertIn("WritesThisPopulate", t)
 
     def test_modinfo_is_write_enabled(self):
         mi = (PKG / "X10_CEFork_Test.modinfo").read_text(encoding="utf-8")

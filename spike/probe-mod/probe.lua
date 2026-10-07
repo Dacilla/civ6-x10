@@ -5,7 +5,7 @@
 -- Expected values at k=7.3 (from audit official DB):
 --   A flat:    TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY/Amount 3    -> 21.9
 --   B percent: AGOGE_ANCIENT_MELEE_PRODUCTION/Amount 50          -> 365
---   C combat:  ALL_PARK_COMBAT_BONUS/Amount 5                    -> 24.03
+--   C combat:  ALL_PARK_COMBAT_BONUS/Amount 5                    -> 24.04
 
 local PROBES = {
   { id = "TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY", arg = "Amount", kind = "flat" },
