@@ -43,3 +43,8 @@ native-build/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Assembled install packages (rebuild via spike/assemble-*.ps1)
+spike/prod-test-output/
+spike/live-test-output/
+
