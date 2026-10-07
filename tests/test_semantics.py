@@ -119,14 +119,6 @@ class TestFullRegistrySemantics(unittest.TestCase):
             self.skipTest("manifests/floor unavailable (local-only)")
         return build_production_registry(rows, sem_floor=floor)
 
-    def _sem_of(self, entries_rows):
-        floor = load_floor()
-        got = {}
-        for e, r in entries_rows:
-            got[(e["modifier_id"], e["argument"])] = floor.get(
-                (r["modifier_type"], r["effect_type"], r["argument_name"]))
-        return got
-
     def test_zero_unresolved_semantic_conflicts(self):
         entries, report = self._entries()
         self.assertEqual(report["unresolved_conflicts"], [])

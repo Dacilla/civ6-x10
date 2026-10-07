@@ -308,8 +308,11 @@ class TestProductionTransforms(unittest.TestCase):
         # k=0 parses (setup-level) but the native layer must treat it as Off.
         from civ6x10 import config as C
         self.assertEqual(C.parse_multiplier(0), 0.0)
-        t = (ROOT.parent / "CivilizationVI_CommunityExtension-x10-spike"
-             / "X10Lifecycle.cpp").read_text(encoding="utf-8")
+        fork = (ROOT.parent / "CivilizationVI_CommunityExtension-x10-spike"
+                / "X10Lifecycle.cpp")
+        if not fork.is_file():
+            self.skipTest("fork checkout unavailable (local-only)")
+        t = fork.read_text(encoding="utf-8")
         self.assertIn("controller OFF", t)
 
 
