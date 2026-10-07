@@ -62,6 +62,46 @@ combat_effects:
   - effect: EFFECT_ADJUST_UNIT_DIPLO_VISIBILITY_COMBAT_MODIFIER
     rationale: "visibility-derived combat-strength modifier (+3); combat-strength points"
 
+# Discount-effect audit (one-time effect-level review). Percent-suffixed
+# effects and engine-described percent args are strong candidates, but every
+# entry records its own rationale — the generic word DISCOUNT is never proof.
+# Generation FAILS if a release-slice discount row's effect lacks an entry.
+# semantics: PERCENT_DISCOUNT -> compound discount; FLAT_COST_REDUCTION ->
+# flat additive (gold); EXCLUDE -> decision-required.
+discount_effects:
+  - effect: EFFECT_ADJUST_ALL_UNITS_PURCHASE_COST
+    semantics: PERCENT_DISCOUNT
+    rationale: "sibling +20 percent discounts (Carthage/Ngazargamu/Suguba CHEAPER/BONUS); boundary -100 is the percent fixed point (free stays free under compound; additive -730 would invent behavior)"
+  - effect: EFFECT_ADJUST_GREAT_PERSON_PATRONAGE_DISCOUNT_PERCENT
+    semantics: PERCENT_DISCOUNT
+    rationale: "PERCENT in the EffectType itself (Sundiata 20)"
+  - effect: EFFECT_ADJUST_PLAYER_LEVIED_UNIT_UPGRADE_DISCOUNT_PERCENT
+    semantics: PERCENT_DISCOUNT
+    rationale: "PERCENT in the ModifierType (levy upgrade 75)"
+  - effect: EFFECT_ADJUST_PLAYER_LEVY_DISCOUNT_PERCENT
+    semantics: PERCENT_DISCOUNT
+    rationale: "Percent argument by name (levy 50/75)"
+  - effect: EFFECT_ADJUST_PLAYER_UNIT_UPGRADE_DISCOUNT_PERCENT
+    semantics: PERCENT_DISCOUNT
+    rationale: "PERCENT in the ModifierType (professional army 50)"
+  - effect: EFFECT_ADJUST_PLAYER_UNIT_UPGRADE_RESOURCE_COST_DISCOUNT
+    semantics: PERCENT_DISCOUNT
+    rationale: "engine GameEffectArguments description: 'The integer percent value of discount on strategic resources required for unit upgrades' (50)"
+  - effect: EFFECT_ADJUST_PLAYER_WMD_MAINTENANCE_MODIFIER
+    semantics: PERCENT_DISCOUNT
+    rationale: "percent-scale value 50 on a maintenance modifier (flat gold would be 1-2 scale like unit maintenance); thinner single-sample evidence, recorded here explicitly"
+  - effect: EFFECT_ADJUST_PLOT_PURCHASE_COST
+    semantics: PERCENT_DISCOUNT
+    rationale: "tile costs scale with era (-20 flat would be incoherent late-game); percent-scale -20; sem floor agrees"
+  - effect: EFFECT_ADJUST_PLOT_PURCHASE_COST_TERRAIN
+    semantics: PERCENT_DISCOUNT
+    rationale: "same as plot purchase (-50 terrain); percent-scale; sem floor agrees"
+  - effect: EFFECT_ADJUST_UNIT_MAINTENANCE_DISCOUNT
+    semantics: FLAT_COST_REDUCTION
+    rationale: "flat gold-per-unit maintenance: officials +-1/+-2 break the percent-depth convention (1-2% would be pointless); engine subtracts Amount from gold cost; fractional gold is float-supported"
+  - effect: EFFECT_ADJUST_UNIT_PURCHASE_COST
+    semantics: PERCENT_DISCOUNT
+    rationale: "sibling +20/+30 percent faith discounts (Holy Order, commemoration, Nobel CHEAPER); boundary +100 is the free fixed point under compound"
 # Effects excluded by curation (sem floor: MAGNITUDE_UNCLASSIFIED, but the value
 # is a grant / boolean / threshold / sentinel / non-strength modifier).
 # Each: never ADDITIVE, never certified.

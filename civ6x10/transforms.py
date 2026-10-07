@@ -68,6 +68,41 @@ def scale_flat(value: float, k: float) -> float:
     return value * k
 
 
+def stored_float32(k: float) -> float:
+    """Widen the stored FLOAT32 encoding of k, exactly as the native
+    config reader delivers it (e.g. setup 7.3 -> 7.300000190734863)."""
+    import struct
+    return struct.unpack("<f", struct.pack("<f", k))[0]
+
+
+def float_quantization_error(k_float: float) -> float:
+    """Half-ULP source error of a stored float multiplier (0 for integrals
+    exactly representable paths is NOT assumed: callers pass INT32 k with
+    error 0 explicitly). Stepped in FLOAT32 precision to mirror nextafterf.
+    """
+    import struct
+    bits = struct.unpack("<I", struct.pack("<f", k_float))[0]
+    up = struct.unpack("<f", struct.pack("<I", bits + 1))[0]
+    down = struct.unpack("<f", struct.pack("<I", bits - 1))[0]
+    return max(up - k_float, k_float - down) / 2.0
+
+
+def count_like_applies(official: float, k_float: float,
+                       k_err: float | None = None) -> bool:
+    """FLOAT32-quantization-aware integrality (mirrors X10Transforms::Apply).
+
+    Exact-integer results accept (rounding absorbs only propagated source
+    error); genuine fractions refuse. Never a coarse epsilon.
+    """
+    import math
+    if k_err is None:
+        k_err = float_quantization_error(k_float)
+    v = official * k_float
+    r = round(v)
+    tol = abs(official) * k_err + 1e-9 * max(1.0, abs(v))
+    return tol < 0.5 and abs(v - r) <= tol
+
+
 def _require_positive_multiplier(k: float) -> None:
     if not math.isfinite(k) or k < 0:
         raise ValueError(f"multiplier must be >= 0 and finite: {k}")

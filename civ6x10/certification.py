@@ -5,12 +5,22 @@ never production-eligible on their own. A manifest row enters the native
 registry only when certify_row() returns certified=True, sourced from:
 
   sem-floor:<FAMILY>   agreement with data/local/effect_semantics.csv, or
-  override:<name>       a curated entry in rules/certified_overrides.yml, or
-  category:<FAMILY>     an allowlisted plain-magnitude family under a
+  curated ...         a curated entry in rules/certified_overrides.yml, or
+  curated-category    an allowlisted plain-magnitude family under a
                         MAGNITUDE_UNCLASSIFIED floor row.
 
-Anything else resolves to excluded:<reason> (a valid, reported resolution) or
-conflict:<reason> (unresolved: generation MUST fail).
+Trust policy: FORMULA_DERIVED (or explicitly human-certified) floor rows may
+directly certify a special transform. AUTO_PATTERN / NEEDS_REVIEW floor rows
+may inform the audit but can NEVER certify COMBAT / DISCOUNT / PROBABILITY
+without a curated override entry carrying rationale. Strong exclusions stay
+conservative even when heuristic (false exclusion is safe); special
+transforms require positive proof.
+
+Source vocabulary (tight reporting):
+  formula-derived:<FAMILY>  FORMULA_DERIVED floor row (positive proof)
+  curated-effect:<what>     curated override entry (discount/combat/mixed/excluded)
+  curated-category:<FAMILY> allowlisted plain-magnitude category
+No heuristic-floor-only row ever receives COMBAT / DISCOUNT / PROBABILITY.
 """
 from __future__ import annotations
 
@@ -83,27 +93,58 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
     excluded_effects = {e["effect"] for e in rules.get("excluded_effects") or []}
     if et in excluded_effects:
         return {**base, "resolution": "excluded:curated-effect",
-                "source": "override:excluded-effect:" + et}
+                "source": "curated-effect:excluded-effect:" + et}
 
     if sem_row is None:
         return {**base, "resolution": "conflict:no-sem-floor-row",
                 "source": "none"}
 
     sf = sem_row["semantic_family"]
+    floor_conf = (sem_row.get("confidence") or "").strip()
+    proven = floor_conf in ("FORMULA_DERIVED", "HUMAN_CERTIFIED", "CERTIFIED")
     count_like = _count_like(et, arg, proposed, rules)
 
     if sf == "DISCOUNT":
-        return {**base, "certified": True, "kind": "DISCOUNT",
-                "count_like": False, "source": "sem-floor:DISCOUNT",
-                "resolution": "certified"}
+        # AUTO_PATTERN / NEEDS_REVIEW floor rows cannot certify a special
+        # transform: every release-slice discount effect needs a curated
+        # classification (percent vs flat vs excluded).
+        table = {e["effect"]: e for e in rules.get("discount_effects") or []}
+        entry = table.get(et)
+        if entry is None:
+            return {**base, "resolution": "conflict:unclassified-discount-effect",
+                    "source": "none"}
+        if entry.get("semantics") == "PERCENT_DISCOUNT":
+            return {**base, "certified": True, "kind": "DISCOUNT",
+                    "count_like": False,
+                    "source": "curated-effect:discount:" + et,
+                    "resolution": "certified"}
+        if entry.get("semantics") == "FLAT_COST_REDUCTION":
+            return {**base, "certified": True, "kind": "ADDITIVE",
+                    "count_like": False,
+                    "source": "curated-effect:flat-cost:" + et,
+                    "resolution": "certified"}
+        return {**base, "resolution": "excluded:curated-discount-effect",
+                "source": "curated-effect:discount-excluded:" + et}
     if sf == "COMBAT_STRENGTH_BONUS":
-        return {**base, "certified": True, "kind": "COMBAT",
-                "count_like": False, "source": "sem-floor:COMBAT_STRENGTH_BONUS",
-                "resolution": "certified"}
+        if proven:
+            return {**base, "certified": True, "kind": "COMBAT",
+                    "count_like": False,
+                    "source": "formula-derived:COMBAT_STRENGTH_BONUS",
+                    "resolution": "certified"}
+        combat = {e["effect"]: e.get("rationale", "")
+                  for e in rules.get("combat_effects") or []}
+        if et in combat and arg == "Amount":
+            return {**base, "certified": True, "kind": "COMBAT",
+                    "count_like": False,
+                    "source": "curated-effect:combat-points:" + et,
+                    "resolution": "certified"}
+        return {**base, "resolution": "conflict:uncertified-combat-claim",
+                "source": "none"}
     if sf == "PROBABILITY":
-        if proposed == "PROBABILITY":
+        if proven and proposed == "PROBABILITY":
             return {**base, "certified": True, "kind": "PROBABILITY",
-                    "count_like": False, "source": "sem-floor:PROBABILITY",
+                    "count_like": False,
+                    "source": "formula-derived:PROBABILITY",
                     "resolution": "certified"}
         return {**base, "resolution": "conflict:probability-claim-mismatch",
                 "source": "none"}
@@ -121,7 +162,15 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
         if et in combat and arg == "Amount":
             return {**base, "certified": True, "kind": "COMBAT",
                     "count_like": False,
-                    "source": "override:combat-points:" + et,
+                    "source": "curated-effect:combat-points:" + et,
+                    "resolution": "certified"}
+        # Curated flat-cost effects (floor says discount; audit says flat).
+        flat = {e["effect"] for e in rules.get("discount_effects") or []
+                if e.get("semantics") == "FLAT_COST_REDUCTION"}
+        if et in flat:
+            return {**base, "certified": True, "kind": "ADDITIVE",
+                    "count_like": False,
+                    "source": "curated-effect:flat-cost:" + et,
                     "resolution": "certified"}
         # Allowlisted plain-magnitude families.
         category = (rules.get("certified_category_families") or {})
@@ -129,7 +178,7 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
             return {**base, "certified": True,
                     "kind": category[proposed]["kind"],
                     "count_like": count_like,
-                    "source": "category:" + proposed,
+                    "source": "curated-category:" + proposed,
                     "resolution": "certified"}
         return {**base, "resolution": f"conflict:uncertified-family:{proposed}",
                 "source": "none"}
@@ -139,7 +188,7 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
             if entry["effect"] == et and entry.get("argument", arg) == arg:
                 return {**base, "certified": True, "kind": entry["kind"],
                         "count_like": count_like and entry["kind"] == "ADDITIVE",
-                        "source": "override:mixed:" + et,
+                        "source": "curated-effect:mixed:" + et,
                         "resolution": "certified"}
         return {**base, "resolution": STRONG_EXCLUDE[sf],
                 "source": "sem-floor:" + sf}

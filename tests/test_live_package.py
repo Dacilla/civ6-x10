@@ -162,6 +162,21 @@ class TestWriteProbeRegressions(unittest.TestCase):
         for lit in ("0x164c20", "0x606270"):
             self.assertNotIn(lit, w)
 
+    def test_float32_quantization_provenance(self):
+        # Count-like exactness consumes the multiplier's source quantization
+        # (FLOAT32 half-ULP, 0 for INT32): no strict double equality, no
+        # coarse epsilon.
+        tr = self._code(self._fork("X10Transforms.h"))
+        self.assertIn("kErr", tr)
+        self.assertNotIn("if (v != r) return false", tr)
+        w = self._code(self._fork("X10Write.cpp"))
+        self.assertIn("TryGetMultiplier", w)
+        self.assertIn("nextafterf", w)
+        self.assertIn("g_kErr", w)
+        lc = self._code(self._fork("X10Lifecycle.cpp"))
+        self.assertIn("TryGetMultiplier", lc)
+        self.assertIn("Arm(k, mods, kErr)", lc)
+
     def test_x10_only_rollback(self):
         t = self._code(self._fork("X10Lifecycle.cpp"))
         self.assertNotIn("MH_ALL_HOOKS", t)

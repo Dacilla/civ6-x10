@@ -79,7 +79,8 @@ class TestProductionRegistry(unittest.TestCase):
         entries, report = build_production_registry(rows, sem_floor=floor)
         self.assertEqual([(e["modifier_id"], e["kind"]) for e in entries],
                          [("M_A", "ADDITIVE")])
-        self.assertEqual(entries[0]["cert_source"], "category:FLAT_AMOUNT")
+        self.assertEqual(entries[0]["cert_source"],
+                         "curated-category:FLAT_AMOUNT")
         # Manifest claims of DISCOUNT/COMBAT/PROBABILITY need floor
         # agreement: a bare heuristic claim fails closed.
         with self.assertRaises(SemanticConflict):
@@ -177,10 +178,27 @@ class TestProductionTransforms(unittest.TestCase):
                     T.compound_discount_for_multiplier(v, 7.3),
                     (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1))
         discs = [e for e in entries if e["kind"] == "DISCOUNT"]
-        self.assertEqual(len(discs), 19)
+        self.assertEqual(len(discs), 15)
+        # Flat gold-per-unit maintenance is ADDITIVE, not a percent discount:
+        # 1 -> 7.3, 2 -> 14.6, -2 -> -14.6 at k=7.3.
+        by_id = {}
+        for e in entries:
+            by_id.setdefault(e["modifier_id"], []).append(e)
+        for mid, official, want in (
+                ("CONSCRIPTION_UNITMAINTENANCEDISCOUNT", "1", 7.3),
+                ("LEVEEENMASSE_UNITMAINTENANCEDISCOUNT", "2", 14.6),
+                ("HARALD_MAINTENANCE_DISCOUNT", "2", 14.6),
+                ("ELITEFORCES_EXTRA_MAINTENANCE", "-2", -14.6)):
+            self.assertIn(mid, by_id, mid)
+            got = [(e["official"], e["kind"], e["count_like"])
+                   for e in by_id[mid]]
+            self.assertEqual(got, [(official, "ADDITIVE", False)], mid)
+            self.assertAlmostEqual(
+                T.scale_flat(float(official), 7.3), want, msg=mid)
 
     def test_full_registry_transforms_at_k73(self):
-        # Honest static expectation at k=7.3 (runtime mismatch checks happen
+        # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
+        # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
         # live against loaded definitions):
         #   601 unconditional entries: every one transforms;
         #   85 conditional (count-like) entries: 11 exact-integral apply,
@@ -193,6 +211,8 @@ class TestProductionTransforms(unittest.TestCase):
             self.skipTest("manifests unavailable (run review locally)")
         from civ6x10.production import build_production_registry
         entries, report = build_production_registry(rows)
+        kf = T.stored_float32(7.3)
+        self.assertEqual(kf, 7.300000190734863)  # live representation
         self.assertEqual(len(entries), 686)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
@@ -202,20 +222,19 @@ class TestProductionTransforms(unittest.TestCase):
         for e in un:
             v = float(e["official"])
             if e["kind"] == "ADDITIVE":
-                r = v * 7.3
+                r = v * kf
             elif e["kind"] == "COMBAT":
-                r = 25.0 * math.log(7.3 * (math.exp(v / 25.0) - 1) + 1)
+                r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
                 d = abs(v) / 100.0
-                r = (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1)
+                r = (1.0 - (1.0 - d) ** kf) * 100.0 * (-1 if v < 0 else 1)
             else:
                 continue
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
         self.assertEqual(ok, 601)
         exact = [e for e in co
-                 if abs(float(e["official"]) * 7.3
-                        - round(float(e["official"]) * 7.3)) < 1e-9]
+                 if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
         self.assertEqual(len(exact), 11)
         self.assertEqual(len(refused), 74)
@@ -277,22 +296,27 @@ class TestProductionTransforms(unittest.TestCase):
                 self.assertEqual(float(e["official"]) * 7.3, 73.0)
 
     def test_count_like_exact_applies_fractional_refused(self):
-        # Mirrors the native countLike rule (X10Transforms::Apply): exact
-        # integer results apply, fractional outcomes are refused, never
-        # floored — and refusal of one argument never blocks another.
-        def native_count_like(official, k):
-            v = official * k
-            if v != round(v):
-                return None  # refused
-            return float(round(v))
-        self.assertEqual(native_count_like(10, 7.3), 73.0)
-        self.assertIsNone(native_count_like(3, 7.3))   # 21.9 refused
-        self.assertIsNone(native_count_like(2, 7.3))   # 14.6 refused
-        self.assertEqual(native_count_like(10, 10.0), 100.0)
+        # Mirrors the native countLike rule (X10Transforms::Apply) driven by
+        # the ACTUAL stored-FLOAT32 runtime multiplier (raw 9a99e940), not
+        # decimal 7.3: exact results apply, fractional refuse, never floored —
+        # and refusal of one argument never blocks another.
+        import struct
+        raw = struct.pack("<f", 7.3)
+        self.assertEqual(raw.hex(), "9a99e940")
+        kf = T.stored_float32(7.3)
+        self.assertEqual(kf, 7.300000190734863)
+        self.assertTrue(T.count_like_applies(10, kf))    # 73.0000019 accepts
+        self.assertTrue(T.count_like_applies(100, kf))   # 730.0000191 accepts
+        self.assertFalse(T.count_like_applies(3, kf))    # 21.9... refuses
+        self.assertFalse(T.count_like_applies(2, kf))    # 14.6... refuses
+        self.assertFalse(T.count_like_applies(-1, kf))   # -7.3... refuses
+        # INT32 multiplier: zero quantization, strict exactness.
+        self.assertTrue(T.count_like_applies(10, 10.0, 0.0))
+        self.assertFalse(T.count_like_applies(3, 7.3, 0.0))
         # Independence: simulate one definition with an eligible Amount and
         # a refused count-like arg — Amount still transforms.
         amount_ok = T.scale_flat(5, 7.3) == 36.5
-        refused = native_count_like(3, 7.3) is None
+        refused = not T.count_like_applies(3, kf)
         self.assertTrue(amount_ok and refused)
 
     def test_k_variants(self):

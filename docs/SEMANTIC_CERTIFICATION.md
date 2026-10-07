@@ -25,7 +25,7 @@ and fail generation.
 |---|---|---|
 | 12 | `GRANT_OBJECT` floor rows emitted as `ADDITIVE` (free units, spies, envoys, trade-route grants, free buildings) | Excluded: grants are `DECISION_REQUIRED` at fractional k |
 | 12 | `SPATIAL_BUDGET` floor rows admitted (movement, range, ranged strike, joint-war range) | Excluded: budgets are not magnitudes |
-| 13 | `DISCOUNT` floor rows emitted as `ADDITIVE` (positive-official discounts the sign heuristic missed) | Corrected to `DISCOUNT`/compound semantics |
+| 13 rows (11 keys) | `DISCOUNT` floor rows emitted as `ADDITIVE` (positive-official discounts the sign heuristic missed) | 7 keys corrected to `DISCOUNT`/compound; 4 unit-maintenance keys reclassified flat gold (see audit) |
 | 3 | `DEFEATED_STRENGTH_SCALING` rows multiplied | Excluded: `DECISION_REQUIRED` preserved |
 | 64 | `MIXED_VALUE_DOMAIN` rows (scalar officials, vector siblings) admitted silently | Certified via 2 explicit per-effect overrides with rationale |
 | 5 | Curated combat-point effects emitted as `ADDITIVE` (barbarian ×2, diplomatic, corps/army ×2, diplo-visibility) | Corrected to `COMBAT`/combat formula |
@@ -42,12 +42,13 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
 - **686 entries / 682 unique definitions / 25 shared** (traits-only 359,
   policies-only 284, governments-only 18, shared 25).
 - **601 unconditional** (every one transforms at k=7.3), **85 conditional
-  count-like** (11 exact-integral apply at k=7.3, 74 fractional refuse
-  safely). Static successful transforms at k=7.3: **612 of 686** — lower
-  than the registry size by design (§10 honesty).
-- Kinds: 660 ADDITIVE, 19 DISCOUNT, 7 COMBAT, 0 PROBABILITY (no probability
+  count-like** (11 exact-integral apply at live FLOAT32 k=7.3, 74 fractional
+  refuse safely). Static successful transforms at k=7.3: **612 of 686** —
+  lower than the registry size by design (§10 honesty), and derived from the
+  actual stored-float multiplier, not decimal 7.3 (see FLOAT32 exactness).
+- Kinds: 664 ADDITIVE, 15 DISCOUNT, 7 COMBAT, 0 PROBABILITY (no probability
   rows in scope).
-- 43 negative entries (sentinel -1 excluded with its row).
+- 43 negative entries.
 - 4 two-argument definitions keep both args (Amount + TurnsActive=10→73).
 
 ## Grant-object handling
@@ -59,17 +60,18 @@ damage-reduction ×1) are excluded. No grant enters production as a magnitude.
 
 ## Discount corrections
 
-19 DISCOUNT entries (8 previously correct + 11 corrected from `ADDITIVE`).
-Rule: discount detection is effect-driven via the sem floor, never sign-only
-(positive-percentage discounts were the miss). Regression test pins all 11
-named discount definitions to `DISCOUNT`.
+15 DISCOUNT entries, every one curated per effect (see Discount audit below).
+Detection is effect-driven via the sem floor plus the curated table, never
+sign-only (positive-percentage discounts were the original miss). The four
+unit-maintenance rows are flat gold, not percent discounts (see audit).
 
 ## Combat corrections
 
-7 COMBAT entries (1 sem-certified Toqui + 6 curated: barbarian ×2,
-diplomatic, corps/army ×2, diplo-visibility). Rule: curated per effect with
-strength-point rationale, never by keyword. Damage-reduction and loyalty
-effects explicitly inspected and not treated as strength.
+7 COMBAT entries (1 formula-derived Toqui via the sem floor + 6 curated:
+barbarian ×2, diplomatic, corps/army ×2, diplo-visibility). Rule: curated
+per effect with strength-point rationale, never by keyword.
+Damage-reduction and loyalty effects explicitly inspected and not treated
+as strength.
 
 ## Spatial/threshold handling
 
@@ -88,10 +90,52 @@ refuse at runtime via the existing native `countLike` check.
 
 ## Certification sources (entries)
 
-category:FLAT_AMOUNT 370, category:FLAT_YIELD 215, override:mixed plot-yield
-41, override:mixed city-yield 22, sem-floor:DISCOUNT 19, combat overrides 6,
-category:PERCENT_BONUS 5, category:DURATION 4, category:AMENITY 2,
-category:TOURISM 1, sem-floor:COMBAT 1.
+curated-category:FLAT_AMOUNT 370, curated-category:FLAT_YIELD 215,
+curated-effect:mixed plot-yield 41, curated-effect:mixed city-yield 22,
+curated-effect:discount ×10 effects (15 entries), curated-effect:flat-cost
+maintenance (4 entries), combat overrides 6, curated-category:PERCENT_BONUS 5,
+curated-category:DURATION 4, curated-category:AMENITY 2,
+curated-category:TOURISM 1, formula-derived:COMBAT_STRENGTH_BONUS 1.
+
+Trust policy: FORMULA_DERIVED floor rows may directly certify a special
+transform; AUTO_PATTERN / NEEDS_REVIEW rows inform but never certify COMBAT /
+DISCOUNT / PROBABILITY without a curated override (all 22 sem DISCOUNT rows
+are AUTO_PATTERN, so every discount certification is curated). Strong
+exclusions stay conservative when heuristic (false exclusion is safe).
+Regression test: every COMBAT/DISCOUNT/PROBABILITY entry sources from
+`formula-derived:*` or `curated-effect:*` — never heuristic-floor-only.
+
+## FLOAT32 count exactness
+
+Live configuration arrives as stored FLOAT32 (7.3 → `9a99e940` →
+7.300000190734863), so strict double equality rejects genuinely exact counts
+(10×k = 73.0000019). The native rule propagates the source half-ULP:
+`tol = |official|·kErr + 1e-9·max(1,|v|)`, accepting integer n only when
+`|v−n| ≤ tol` (and `tol < 0.5` always). kErr comes from the config reader's
+variant provenance (FLOAT32 half-ULP via nextafterf; 0 for INT32). At live k:
+10→73 and 100→730 accept; 3→21.9, 2→14.6 refuse — proven by the compiled
+parity harness against the raw bytes, mirrored in `civ6x10/transforms.py`.
+No coarse epsilon: genuine fractions sit ≥0.2 from integers while tolerances
+stay <1e-3 across the registry.
+
+## Discount audit (11 effect types, one-time review)
+
+| Effect | Verdict | Rationale |
+|---|---|---|
+| ALL_UNITS_PURCHASE_COST | PERCENT | sibling +20 percent discounts; boundary −100 is the percent fixed point (free/doubled stays stable under compound; additive −730 would invent behavior) |
+| GREAT_PERSON_PATRONAGE_DISCOUNT_PERCENT | PERCENT | PERCENT in the EffectType (Sundiata 20) |
+| LEVIED_UNIT_UPGRADE_DISCOUNT_PERCENT | PERCENT | PERCENT in the ModifierType (75) |
+| LEVY_DISCOUNT_PERCENT | PERCENT | Percent argument by name (50/75) |
+| UNIT_UPGRADE_DISCOUNT_PERCENT | PERCENT | PERCENT in the ModifierType (50) |
+| UNIT_UPGRADE_RESOURCE_COST_DISCOUNT | PERCENT | engine arg description: "integer percent value of discount" (50) |
+| WMD_MAINTENANCE_MODIFIER | PERCENT | percent-scale 50 (flat gold would be 1–2 scale); thinner single-sample evidence, recorded explicitly |
+| PLOT_PURCHASE_COST | PERCENT | tile costs scale with era (flat −20 incoherent late-game); −20 percent-scale |
+| PLOT_PURCHASE_COST_TERRAIN | PERCENT | same (−50 terrain) |
+| UNIT_MAINTENANCE_DISCOUNT | FLAT | flat gold-per-unit (±1/±2 breaks the percent-depth convention; Conscription −1, Levée −2, Harald −2, Elite +2 gold); fractional gold float-supported |
+| UNIT_PURCHASE_COST | PERCENT | sibling +20/+30 percent faith discounts; boundary +100 is the free fixed point |
+
+Generation fails if a release-slice discount row's effect lacks a table
+entry (`conflict:unclassified-discount-effect`).
 
 Machine-readable conflict ledger: `build/X10ProductionRegistry.inc.conflicts.csv`
 (columns: modifier/effect/argument, sem family, proposed family, proposed

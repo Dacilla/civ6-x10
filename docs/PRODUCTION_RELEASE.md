@@ -7,8 +7,9 @@ Status vocabulary (do not conflate):
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
 - **686-entry certified production slice: STATICALLY VERIFIED, awaiting
   production-candidate live test.** 601 unconditional entries transform at
-  any k; 85 count-like entries apply only on integral results (at k=7.3:
-  612 static successes of 686 — honest fractional refusal, never flooring).
+  any k; 85 count-like entries apply only on integral results under the
+  FLOAT32-aware exactness rule (at live stored-float k=7.3: 612 static
+  successes of 686 — honest fractional refusal, never flooring).
   Full gate in `docs/SEMANTIC_CERTIFICATION.md`.
 - **Workshop release: NOT READY.** No publish until the production-candidate
   live test passes and logs are reviewed.
@@ -64,7 +65,8 @@ ownership counts + shared-definition count.
 ## Native architecture notes
 
 - Signed transforms: `FiniteSane` bound (`|v| <= 1e6`); negativity is valid
-  (43 negative entries incl. 19 discounts). Family validity stays
+  (43 negative entries incl. 15 discounts + 4 flat-cost maintenance rows).
+  Family validity stays
   per-transform (probability/discount ranges, combat log domain, count
   integrality — fractional counts refused, never floored).
 - Multi-argument writer: `WriteDefinition` applies ALL matching entries per
@@ -119,6 +121,7 @@ Prerequisites: production DLL built, hash matches
    `spike/uninstall-prod-test.ps1`).
 
 Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
-found=true`, up to 612-eligible write sequence at k=7.3 (601 unconditional
-+ 11 exact-integral conditional) with `stored_after_add MATCH` and no
+found=true`, up to 612-eligible write sequence at live stored-float k=7.3
+(601 unconditional + 11 exact-integral conditional under the
+FLOAT32-quantization-aware rule) with `stored_after_add MATCH` and no
 unexpected MISMATCH, probe PASS lines, identical values across save/reload.

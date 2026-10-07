@@ -83,7 +83,7 @@ class TestNoCertifiedHeuristics(unittest.TestCase):
                       "MAGNITUDE_UNCLASSIFIED"), rules)
         self.assertTrue(c["certified"])
         self.assertEqual(c["resolution"], "certified")
-        self.assertEqual(c["source"], "category:FLAT_AMOUNT")
+        self.assertEqual(c["source"], "curated-category:FLAT_AMOUNT")
         c = certify_row(
             manifest_row("M1", "EFFECT_ADJUST_UNIT_PRODUCTION",
                          "Amount", family="COMBAT_STRENGTH_BONUS",
@@ -99,7 +99,7 @@ class TestNoCertifiedHeuristics(unittest.TestCase):
                       "MAGNITUDE_UNCLASSIFIED"), rules)
         self.assertTrue(c["certified"])
         self.assertEqual(c["kind"], "COMBAT")
-        self.assertTrue(c["source"].startswith("override:combat-points:"))
+        self.assertTrue(c["source"].startswith("curated-effect:combat-points:"))
         # Grant rows never certify as additive.
         c = certify_row(
             manifest_row("MODIFIER_PLAYER_GRANT_SPY", "EFFECT_GRANT_SPY",
@@ -180,26 +180,120 @@ class TestFullRegistrySemantics(unittest.TestCase):
                 # MIXED rows enter only via an explicit curated override.
                 self.assertEqual(s["semantic_family"], "MIXED_VALUE_DOMAIN", e)
                 self.assertTrue(
-                    e["cert_source"].startswith("override:mixed:"), e)
+                    e["cert_source"].startswith("curated-effect:mixed:"), e)
 
     def test_known_discount_effects_emit_discount(self):
         entries, _ = self._entries()
         by_id = {}
         for e in entries:
             by_id.setdefault(e["modifier_id"], []).append(e)
+        # Percent discounts (curated per effect): compound semantics.
         for mid in ("TRAIT_LEVY_DISCOUNT", "HARALD_LEVY_DISCOUNT",
                     "LEVY_UNITUPGRADEDISCOUNT",
                     "PROFESSIONAL_ARMY_UNITUPGRADEDISCOUNT",
                     "PROFESSIONAL_ARMY_UPGRADE_RESOURCE_DISCOUNT",
-                    "HARALD_MAINTENANCE_DISCOUNT",
-                    "CONSCRIPTION_UNITMAINTENANCEDISCOUNT",
-                    "LEVEEENMASSE_UNITMAINTENANCEDISCOUNT",
                     "FLOWER_POWER_ROCKBAND_DISCOUNT",
                     "SUNDIATA_KEITA_PURCHASE_GREAT_PEOPLE",
                     "SECONDSTRIKE_MAINTENANCEWMDS"):
             self.assertIn(mid, by_id, mid)
             for e in by_id[mid]:
                 self.assertEqual(e["kind"], "DISCOUNT", (mid, e))
+                self.assertTrue(
+                    e["cert_source"].startswith("curated-effect:discount:"),
+                    (mid, e))
+        # Flat gold-per-unit maintenance: ADDITIVE, never percent discount.
+        for mid, official in (
+                ("CONSCRIPTION_UNITMAINTENANCEDISCOUNT", "1"),
+                ("LEVEEENMASSE_UNITMAINTENANCEDISCOUNT", "2"),
+                ("HARALD_MAINTENANCE_DISCOUNT", "2"),
+                ("ELITEFORCES_EXTRA_MAINTENANCE", "-2")):
+            self.assertIn(mid, by_id, mid)
+            got = [(e["official"], e["kind"]) for e in by_id[mid]]
+            self.assertEqual(got, [(official, "ADDITIVE")], mid)
+            self.assertTrue(
+                by_id[mid][0]["cert_source"].startswith(
+                    "curated-effect:flat-cost:"), (mid, got))
+
+    def test_discount_effect_table_is_complete(self):
+        # Every release-slice discount-floor effect has a curated
+        # classification; generation fails otherwise.
+        rules = load_rules()
+        table = {e["effect"]: e.get("semantics")
+                 for e in rules["discount_effects"]}
+        for e in table.values():
+            self.assertIn(e, ("PERCENT_DISCOUNT", "FLAT_COST_REDUCTION",
+                              "EXCLUDE"))
+        try:
+            rows = load_manifests()
+            floor = load_floor()
+        except FileNotFoundError:
+            self.skipTest("manifests/floor unavailable (local-only)")
+        from civ6x10.production import SemanticConflict
+        from civ6x10.production import build_production_registry
+        for r in rows:
+            s = floor.get((r["modifier_type"], r["effect_type"],
+                           r["argument_name"]))
+            if (s and s["semantic_family"] == "DISCOUNT"
+                    and r["status"] == "ok"):
+                try:
+                    float(r["official_value"])
+                except (TypeError, ValueError):
+                    continue
+                self.assertIn(r["effect_type"], table, r["effect_type"])
+        # An unclassified discount effect fails generation.
+        bad = dict(rows[0])
+        bad.update({"modifier_id": "M_UNCLASS", "modifier_type": "MT_U",
+                    "effect_type": "EFFECT_U_DISCOUNT_X",
+                    "argument_name": "Amount", "official_value": "5",
+                    "semantic_family": "FLAT_AMOUNT",
+                    "transformation": "canonical_x10_multiply",
+                    "status": "ok"})
+        with self.assertRaises(SemanticConflict):
+            build_production_registry(
+                [bad],
+                sem_floor={("MT_U", "EFFECT_U_DISCOUNT_X", "Amount"): {
+                    "modifier_type": "MT_U", "effect_type": "EFFECT_U_DISCOUNT_X",
+                    "argument_name": "Amount", "semantic_family": "DISCOUNT",
+                    "transformation_family": "CANONICAL_COMPOUND",
+                    "confidence": "AUTO_PATTERN"}})
+
+    def test_auto_pattern_floor_cannot_certify_special_kinds(self):
+        # AUTO_PATTERN / NEEDS_REVIEW floor rows inform but never certify
+        # COMBAT / DISCOUNT / PROBABILITY without a curated override.
+        rules = load_rules()
+        c = certify_row(
+            manifest_row("M1", "EFFECT_ADJUST_UNIT_PURCHASE_COST",
+                         "Amount", family="FLAT_AMOUNT"),
+            floor_row("M1", "EFFECT_ADJUST_UNIT_PURCHASE_COST", "Amount",
+                      "DISCOUNT"), rules)
+        # This effect IS curated as percent discount: certified via curation.
+        self.assertTrue(c["certified"])
+        self.assertEqual(c["kind"], "DISCOUNT")
+        self.assertTrue(c["source"].startswith("curated-effect:discount:"))
+        # Without the curated entry the same floor row cannot certify.
+        rules2 = dict(rules)
+        rules2["discount_effects"] = [
+            e for e in rules["discount_effects"]
+            if e["effect"] != "EFFECT_ADJUST_UNIT_PURCHASE_COST"]
+        c = certify_row(
+            manifest_row("M1", "EFFECT_ADJUST_UNIT_PURCHASE_COST",
+                         "Amount", family="FLAT_AMOUNT"),
+            floor_row("M1", "EFFECT_ADJUST_UNIT_PURCHASE_COST", "Amount",
+                      "DISCOUNT"), rules2)
+        self.assertFalse(c["certified"])
+        self.assertEqual(c["resolution"],
+                         "conflict:unclassified-discount-effect")
+
+    def test_special_kinds_have_positive_proof_sources(self):
+        # No heuristic-floor-only row may carry COMBAT / DISCOUNT /
+        # PROBABILITY production semantics.
+        entries, _ = self._entries()
+        for e in entries:
+            if e["kind"] in ("COMBAT", "DISCOUNT", "PROBABILITY"):
+                self.assertTrue(
+                    e["cert_source"].startswith(
+                        ("formula-derived:", "curated-effect:")), e)
+                self.assertNotIn("heuristic", e["cert_source"], e)
 
     def test_known_strength_effects_emit_combat_where_certified(self):
         entries, _ = self._entries()
