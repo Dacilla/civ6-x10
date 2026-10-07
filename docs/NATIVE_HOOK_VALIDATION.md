@@ -1,13 +1,35 @@
 # Native Hook Validation (X10 lifecycle test fork)
 
 Fork: `../CivilizationVI_CommunityExtension-x10-spike`, branch
-`x10-lifecycle-log`. Logging only. Built DLL (local, gitignored):
-2,671,104 B, SHA-256 `f82c7334…2706cdc` (MSVC 14.51, SDK 26100, Release x64).
+`x10-lifecycle-log`. Logging + definition-write prototype. Built DLL (local,
+gitignored): 2,678,272 B, SHA-256 `977136d9…51fcf8` (MSVC 14.51, SDK 26100,
+Release x64).
 
 Assumed GameCore: file `GameCore_XP2_FinalRelease.dll`, PE timestamp
 `0x667c6f5b`, `SizeOfImage` `0xc60000`, SHA-256 `324c51e9…` (user install).
 Reference RVAs are the `cur` column (installed build 15038592) of
 `civ6-gamecore-reference/reference/data/function_index.json`.
+
+## ModifierDefinitionReference ABI (resolved, 2026-10-07)
+
+Full disassembly of `AddModifierDefinition` (0x943110) shows the reference
+arriving as a **single 8-byte pointer in RDX** to a 16-byte shared_ptr-like
+`{_Ptr, _Rep}` object: the callee dereferences `[RDX+0]` then virtual `+0x10`,
+and ref-counts with `lock xadd` on the second qword (uses@+8/weaks@+0xc —
+classic `shared_ptr` control block). Raw definition = `*(void**)d0`, with
+null + vtable-pointer validation (`ResolveDefinitionReference`, fail-closed).
+Mutation happens BEFORE `orig_Add`: the definition is fully constructed by
+the caller and not yet system-visible, so no shared-reference aliasing is
+relied upon. Post-`orig_Add`, the touched element is re-read for
+`stored_after_add`.
+
+## String reader (SSO + heap reads, SSO-only writes)
+
+Proof IDs (37/30/21 chars) exceed MSVC SSO capacity, so reads use a bounded
+reader: size@+0x10, capacity@+0x18; inline bytes iff capacity < 0x10, else
+heap pointer (capacity ≥ size required). Fail-closed unless size ≤ 256,
+printable ASCII, NUL-terminated. Heap WRITES remain refused; proof values
+(≤5 chars) stay SSO-inline.
 
 ## Retained hooks (4)
 
