@@ -122,9 +122,12 @@ check + strict string validation; fail-closed, no Lua), and SSO-inline
 argument rewrites at `AddModifierDefinition` (post-construction, pre-attach;
 every shape re-validated per element; official-mismatch skips). Transforms
 computed natively (ADDITIVE %.6g, COMBAT %.2f). DLL 2,676,736 B
-`9e62f22f…`. Static verification: builds clean (one pre-existing CRT
+`f7a1fee6…`. Static verification: builds clean (one pre-existing CRT
 warning). Live proof (readback/save-load/symmetry) PENDING — that is the
 next user run, not a repeat of the ordering run.
+
+Native logging appends across sessions (plus a session header per Install),
+so new-game → save → menu → reload preserves both population sequences.
 
 ## Manual test checklist (write build — next user run)
 

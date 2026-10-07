@@ -2,7 +2,7 @@
 
 Fork: `../CivilizationVI_CommunityExtension-x10-spike`, branch
 `x10-lifecycle-log`. Logging + definition-write prototype. Built DLL (local,
-gitignored): 2,678,272 B, current write build SHA-256 `6545ff98…373b8b`
+gitignored): 2,678,272 B, current write build SHA-256 `f7a1fee6…d00fd91d5`
 (MSVC 14.51, SDK 26100,
 Release x64).
 
@@ -10,6 +10,19 @@ Assumed GameCore: file `GameCore_XP2_FinalRelease.dll`, PE timestamp
 `0x667c6f5b`, `SizeOfImage` `0xc60000`, SHA-256 `324c51e9…` (user install).
 Reference RVAs are the `cur` column (installed build 15038592) of
 `civ6-gamecore-reference/reference/data/function_index.json`.
+
+## TypedVariant id=4 (live evidence + static analysis, 2026-10-07)
+
+Live: variant id=4, Lua value 7.3000001907349 (= float32(7.3) widened).
+Static: no `cvtss2sd`/`cvtps2pd` anywhere in .text (float→double widening is
+not done by the engine in native code); no float-domain setup parameter
+exists; our parameter is Domain='text'. The Lua→variant direction stores
+text via the string branch. Conclusion: id=4 is handled as the STRING
+representation ("7.3000001907349" — frontend float-formatted text), decoded
+by layout-validated string read + `strtod`. Float32/64 type IDs remain
+unestablished — there is deliberately no float branch; unknown types fail
+closed logging exact id/flags/payload. The next live log records the
+accepted branch's id, confirming or refuting this.
 
 ## ModifierDefinitionReference ABI (resolved, 2026-10-07)
 
