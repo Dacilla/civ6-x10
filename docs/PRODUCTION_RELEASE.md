@@ -5,10 +5,11 @@ Status vocabulary (do not conflate):
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **729-entry production slice: STATICALLY VERIFIED, awaiting
-  production-candidate live test.** All 729 generated entries transform at
-  k=7.3 (native parity harness + `test_full_registry_transforms_at_k73`);
-  runtime mismatch checks happen live against loaded definitions.
+- **686-entry certified production slice: STATICALLY VERIFIED, awaiting
+  production-candidate live test.** 601 unconditional entries transform at
+  any k; 85 count-like entries apply only on integral results (at k=7.3:
+  612 static successes of 686 — honest fractional refusal, never flooring).
+  Full gate in `docs/SEMANTIC_CERTIFICATION.md`.
 - **Workshop release: NOT READY.** No publish until the production-candidate
   live test passes and logs are reviewed.
 
@@ -37,7 +38,8 @@ folder only; Workshop paths refused).
 
 25 modifier definitions are owned by both Policies and Governments
 (registry: 394 traits-only, 292 policies-only, 18 governments-only,
-25 shared; 722 unique definitions, 729 entries). A definition-level mutation
+25 shared; 682 unique definitions, 686 entries: 601 unconditional + 85
+count-like conditional). A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
 modules are enabled.** Disabling one module never leaves its mutation active
@@ -62,11 +64,11 @@ ownership counts + shared-definition count.
 ## Native architecture notes
 
 - Signed transforms: `FiniteSane` bound (`|v| <= 1e6`); negativity is valid
-  (44 negative entries incl. all 8 discounts). Family validity stays
+  (43 negative entries incl. 19 discounts). Family validity stays
   per-transform (probability/discount ranges, combat log domain, count
   integrality — fractional counts refused, never floored).
 - Multi-argument writer: `WriteDefinition` applies ALL matching entries per
-  definition (7 two-argument definitions: Amount + TurnsActive); post-Add
+  definition (4 two-argument definitions keep Amount + TurnsActive); post-Add
   verification covers every touched element. One argument's refusal never
   blocks another.
 - Compatibility: all build/ABI constants (PE identity, hook RVAs, config
@@ -80,7 +82,7 @@ ownership counts + shared-definition count.
 ## Public-data hygiene (explicit release decision, no legal claim made)
 
 The CE-X10 tree currently carries the generated registry
-(`X10/X10ProductionRegistry.inc`, ~746 lines: 729 Firaxis modifier IDs +
+(`X10/X10ProductionRegistry.inc`: 686 certified Firaxis modifier IDs +
 official values). Earlier project policy avoided publishing bulk extracted
 Firaxis data. Decision for Release 1:
 
@@ -117,5 +119,6 @@ Prerequisites: production DLL built, hash matches
    `spike/uninstall-prod-test.ps1`).
 
 Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
-found=true`, 729-eligible write sequence with `stored_after_add MATCH` and no
+found=true`, up to 612-eligible write sequence at k=7.3 (601 unconditional
++ 11 exact-integral conditional) with `stored_after_add MATCH` and no
 unexpected MISMATCH, probe PASS lines, identical values across save/reload.

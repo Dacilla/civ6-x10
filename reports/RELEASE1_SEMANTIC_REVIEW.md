@@ -12,7 +12,7 @@ policies, or governments. Counts derived, never hard-coded.
 | Global NEEDS_REVIEW | 843 |
 | RELEASE_1 rows | 513 |
 | RELEASE_1 NEEDS_REVIEW (before review) | 233 |
-| Certified by family rule this pass | 407 |
+| Auto-ruled this pass (heuristics: NOT certified, never production-eligible alone) | 407 |
 | Remaining ambiguous | 106 |
 
 Machine-readable: `data/release1_semantics.csv` (decision ledger),

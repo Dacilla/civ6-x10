@@ -1,27 +1,27 @@
-# Semantic families (reviewed). Transform keys resolve in transformations.yml.
+# Semantic families (auto-rule heuristics: NOT certified; production needs certification.py). Transform keys resolve in transformations.yml.
 families:
-  FLAT_AMOUNT: {transform: canonical_x10_multiply, confidence: reviewed}
-  FLAT_YIELD: {transform: canonical_x10_multiply, confidence: reviewed}
-  PERCENT_BONUS: {transform: canonical_x10_multiply, confidence: reviewed}
-  PRODUCTION_PERCENT: {transform: canonical_x10_multiply, confidence: reviewed}
-  GREAT_PERSON_POINTS: {transform: canonical_x10_multiply, confidence: reviewed}
-  AMENITY: {transform: canonical_x10_multiply, confidence: reviewed}
-  HOUSING: {transform: canonical_x10_multiply, confidence: reviewed}
-  LOYALTY: {transform: canonical_x10_multiply, confidence: reviewed}
-  TOURISM: {transform: canonical_x10_multiply, confidence: reviewed}
-  FAITH: {transform: canonical_x10_multiply, confidence: reviewed}
-  GOLD: {transform: canonical_x10_multiply, confidence: reviewed}
-  EXPERIENCE: {transform: canonical_x10_multiply, confidence: reviewed}
-  DURATION: {transform: canonical_x10_multiply, confidence: reviewed}
-  CHARGES: {transform: canonical_x10_multiply, confidence: reviewed}
-  MOVEMENT: {transform: canonical_x10_multiply, confidence: reviewed}
-  RANGE: {transform: canonical_x10_multiply, confidence: reviewed}
-  RADIUS: {transform: canonical_x10_multiply, confidence: reviewed}
-  COMBAT_STRENGTH_BONUS: {transform: canonical_combat_bonus, confidence: reviewed}
-  DEFEATED_STRENGTH_SCALING: {transform: canonical_x10_multiply, confidence: reviewed}
-  PROBABILITY: {transform: repeated_probability, confidence: reviewed}
-  DISCOUNT: {transform: compound_discount, confidence: reviewed}
-  SELECTOR: {transform: unchanged, confidence: reviewed}
+  FLAT_AMOUNT: {transform: canonical_x10_multiply, confidence: auto_rule}
+  FLAT_YIELD: {transform: canonical_x10_multiply, confidence: auto_rule}
+  PERCENT_BONUS: {transform: canonical_x10_multiply, confidence: auto_rule}
+  PRODUCTION_PERCENT: {transform: canonical_x10_multiply, confidence: auto_rule}
+  GREAT_PERSON_POINTS: {transform: canonical_x10_multiply, confidence: auto_rule}
+  AMENITY: {transform: canonical_x10_multiply, confidence: auto_rule}
+  HOUSING: {transform: canonical_x10_multiply, confidence: auto_rule}
+  LOYALTY: {transform: canonical_x10_multiply, confidence: auto_rule}
+  TOURISM: {transform: canonical_x10_multiply, confidence: auto_rule}
+  FAITH: {transform: canonical_x10_multiply, confidence: auto_rule}
+  GOLD: {transform: canonical_x10_multiply, confidence: auto_rule}
+  EXPERIENCE: {transform: canonical_x10_multiply, confidence: auto_rule}
+  DURATION: {transform: canonical_x10_multiply, confidence: auto_rule}
+  CHARGES: {transform: canonical_x10_multiply, confidence: auto_rule}
+  MOVEMENT: {transform: canonical_x10_multiply, confidence: auto_rule}
+  RANGE: {transform: canonical_x10_multiply, confidence: auto_rule}
+  RADIUS: {transform: canonical_x10_multiply, confidence: auto_rule}
+  COMBAT_STRENGTH_BONUS: {transform: canonical_combat_bonus, confidence: auto_rule}
+  DEFEATED_STRENGTH_SCALING: {transform: canonical_x10_multiply, confidence: auto_rule}
+  PROBABILITY: {transform: repeated_probability, confidence: auto_rule}
+  DISCOUNT: {transform: compound_discount, confidence: auto_rule}
+  SELECTOR: {transform: unchanged, confidence: auto_rule}
   # Refusals / human queue (never auto-emitted):
   BOOLEAN_UNLOCK: {transform: refused_no_multiplier, confidence: needs_human}
   STRUCTURAL_SLOT: {transform: refused_no_multiplier, confidence: needs_human}

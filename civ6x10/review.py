@@ -107,7 +107,7 @@ def _join_effect(rows: list[dict], scoped: list[dict]) -> list[dict]:
 
 def _summarize(ledger, manifests, stats) -> dict:
     fam = Counter(r["review_family"] for r in ledger)
-    auto = sum(1 for r in ledger if r["review_confidence"] == "reviewed")
+    auto = sum(1 for r in ledger if r["review_confidence"] == "auto_rule")
     ambig = [r for r in ledger if r["review_confidence"] == "needs_human"]
     mod_stats = {}
     for name, rows in manifests.items():
@@ -151,7 +151,7 @@ policies, or governments. Counts derived, never hard-coded.
 | Global NEEDS_REVIEW | {summary['global_needs_review']} |
 | RELEASE_1 rows | {summary['release1_rows']} |
 | RELEASE_1 NEEDS_REVIEW (before review) | {summary['release1_needs_review']} |
-| Certified by family rule this pass | {summary['reviewed_by_family']} |
+| Auto-ruled this pass (heuristics: NOT certified, never production-eligible alone) | {summary['reviewed_by_family']} |
 | Remaining ambiguous | {summary['ambiguous_rows']} |
 
 Machine-readable: `data/release1_semantics.csv` (decision ledger),

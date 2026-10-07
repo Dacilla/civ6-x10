@@ -27,7 +27,8 @@ Two multiplier paths were evaluated:
 - **A. Generated preset SQL** (Off/×2/×3/×5/×10/×20/×50/×100): deterministic,
   audited, works today. Shippable fallback, retained regardless.
 - **B. CE dynamic overrides** (arbitrary k, e.g. 7.3×): four-ID architecture
-  proof is LIVE_GAME_VERIFIED (2026-10-07); the 729-entry production slice
+  proof is LIVE_GAME_VERIFIED (2026-10-07); the 686-entry certified production
+slice
   (generated registry + native transforms + controller packaging) is
   STATICALLY VERIFIED and awaits the production-candidate live test —
   see `docs/PRODUCTION_RELEASE.md`. The init-phase Lua setter is abandoned.
@@ -44,11 +45,13 @@ numbers are generated from `rules/` + `manifests/`.
 
 ## Component status
 
-Release 1: traits, policies, governments (729-entry production registry:
-722 unique definitions — 394 traits-only, 292 policies-only,
-18 governments-only, 25 shared policies+governments; STATICALLY VERIFIED,
-awaiting production-candidate live test — see `docs/PRODUCTION_RELEASE.md`
-for packaging, shared-ownership rule, and UUIDs). Later: pantheons,
+Release 1: traits, policies, governments (686-entry certified production
+registry: 682 unique definitions — 359 traits-only, 284 policies-only,
+18 governments-only, 25 shared policies+governments; 601 unconditional +
+85 count-like conditional. STATICALLY VERIFIED, awaiting
+production-candidate live test — see `docs/PRODUCTION_RELEASE.md`
+for packaging, shared-ownership rule, and UUIDs, and
+`docs/SEMANTIC_CERTIFICATION.md` for the certification gate). Later: pantheons,
 governors, wonders, city-states/suzerain; then optional
 belief/great-people/promotion modules. Unrelated global semantics stay
 NEEDS_REVIEW by design.

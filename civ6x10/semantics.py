@@ -29,7 +29,8 @@ def infer_family(modifier_type: str, effect_type: str, argument_name: str,
                  values: list[str]) -> tuple[str, str, str]:
     """Return (family, transform, confidence).
 
-    confidence is 'reviewed' (family rule) or 'needs_human' (ambiguous).
+    confidence is 'auto_rule' (heuristic family rule: NOT semantic proof;
+    never production-eligible on its own) or 'needs_human' (ambiguous).
     transform names a key in rules/transformations.yml.
     """
     mt = modifier_type or ""
@@ -37,7 +38,7 @@ def infer_family(modifier_type: str, effect_type: str, argument_name: str,
     arg = argument_name or ""
 
     if arg in SELECTOR_ARGS:
-        return ("SELECTOR", "unchanged", "reviewed")
+        return ("SELECTOR", "unchanged", "auto_rule")
 
     nums: list[float] = []
     non_numeric = False
@@ -53,59 +54,59 @@ def infer_family(modifier_type: str, effect_type: str, argument_name: str,
         # non-numeric reference argument with an unusual name: treat as
         # selector only when the effect taxonomy says reference; else refuse.
         if "GRANT" in mt or "EFFECT_GRANT" in et or arg.endswith("Type"):
-            return ("SELECTOR", "unchanged", "reviewed")
+            return ("SELECTOR", "unchanged", "auto_rule")
         return ("UNKNOWN", "decision_required", "needs_human")
 
     # combat bonuses (formula, never flat x10)
     if arg == "Amount" and (COMBAT_HINT.search(et) or COMBAT_HINT.search(mt)):
-        return ("COMBAT_STRENGTH_BONUS", "canonical_combat_bonus", "reviewed")
+        return ("COMBAT_STRENGTH_BONUS", "canonical_combat_bonus", "auto_rule")
     if "DefeatedStrength" in arg or "DEFEATED" in et.upper():
-        return ("DEFEATED_STRENGTH_SCALING", "canonical_x10_multiply", "reviewed")
+        return ("DEFEATED_STRENGTH_SCALING", "canonical_x10_multiply", "auto_rule")
     # discounts (negative percents on cost-like modifiers)
     if arg in ("Percent", "Amount") and DISCOUNT_HINT.search(mt + " " + et):
         if any(n < 0 for n in nums):
-            return ("DISCOUNT", "compound_discount", "reviewed")
+            return ("DISCOUNT", "compound_discount", "auto_rule")
     # probabilities
     if PROB_HINT.search(arg) or PROB_HINT.search(et):
-        return ("PROBABILITY", "repeated_probability", "reviewed")
+        return ("PROBABILITY", "repeated_probability", "auto_rule")
     # durations / charges / spatial budgets
     if arg in ("TurnsActive", "Duration", "Turns"):
-        return ("DURATION", "canonical_x10_multiply", "reviewed")
+        return ("DURATION", "canonical_x10_multiply", "auto_rule")
     if arg in ("Charges", "SpreadCharges", "BuilderCharges", "Spreads"):
-        return ("CHARGES", "canonical_x10_multiply", "reviewed")
+        return ("CHARGES", "canonical_x10_multiply", "auto_rule")
     if arg in ("Range", "SpreadRange"):
-        return ("RANGE", "canonical_x10_multiply", "reviewed")
+        return ("RANGE", "canonical_x10_multiply", "auto_rule")
     if arg in ("Radius",):
-        return ("RADIUS", "canonical_x10_multiply", "reviewed")
+        return ("RADIUS", "canonical_x10_multiply", "auto_rule")
     if "Movement" in arg or arg in ("BaseMoves", "ExtraMoves"):
-        return ("MOVEMENT", "canonical_x10_multiply", "reviewed")
+        return ("MOVEMENT", "canonical_x10_multiply", "auto_rule")
     # named percent / yield semantics
     if arg == "Percent" and "PRODUCTION" in (mt + et).upper():
-        return ("PRODUCTION_PERCENT", "canonical_x10_multiply", "reviewed")
+        return ("PRODUCTION_PERCENT", "canonical_x10_multiply", "auto_rule")
     if arg == "Percent":
-        return ("PERCENT_BONUS", "canonical_x10_multiply", "reviewed")
+        return ("PERCENT_BONUS", "canonical_x10_multiply", "auto_rule")
     if arg in ("PointsPerTurn", "Points"):
-        return ("GREAT_PERSON_POINTS", "canonical_x10_multiply", "reviewed")
+        return ("GREAT_PERSON_POINTS", "canonical_x10_multiply", "auto_rule")
     if arg in ("Loyalty",):
-        return ("LOYALTY", "canonical_x10_multiply", "reviewed")
+        return ("LOYALTY", "canonical_x10_multiply", "auto_rule")
     if arg in ("Amenities", "Amenity", "AddAmenity"):
-        return ("AMENITY", "canonical_x10_multiply", "reviewed")
+        return ("AMENITY", "canonical_x10_multiply", "auto_rule")
     if arg in ("Housing",):
-        return ("HOUSING", "canonical_x10_multiply", "reviewed")
+        return ("HOUSING", "canonical_x10_multiply", "auto_rule")
     if arg in ("Tourism", "TourismBomb"):
-        return ("TOURISM", "canonical_x10_multiply", "reviewed")
+        return ("TOURISM", "canonical_x10_multiply", "auto_rule")
     if arg in ("Experience", "UnitExperience", "XP"):
-        return ("EXPERIENCE", "canonical_x10_multiply", "reviewed")
+        return ("EXPERIENCE", "canonical_x10_multiply", "auto_rule")
     if arg in ("Faith",):
-        return ("FAITH", "canonical_x10_multiply", "reviewed")
+        return ("FAITH", "canonical_x10_multiply", "auto_rule")
     if arg in ("Gold",):
-        return ("GOLD", "canonical_x10_multiply", "reviewed")
+        return ("GOLD", "canonical_x10_multiply", "auto_rule")
     # generic numeric residuum
     if arg in ("Amount", "Value", "YieldChange", "BonusRate", "YieldModifier",
                "NumSlots", "Cost", "Combat", "RangedCombat", "Bombard",
                "Strength"):
         fam = "FLAT_YIELD" if "YIELD" in (mt + et).upper() else "FLAT_AMOUNT"
-        return (fam, "canonical_x10_multiply", "reviewed")
+        return (fam, "canonical_x10_multiply", "auto_rule")
     # zero-only / boolean-shaped numerics stay human decisions
     if all(n == 0 for n in nums):
         return ("BOOLEAN_UNLOCK", "refused_no_multiplier", "needs_human")

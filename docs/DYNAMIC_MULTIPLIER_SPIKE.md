@@ -125,7 +125,8 @@ shared entries need all owners enabled). Transforms computed natively
 (signed ADDITIVE/DISCOUNT `%.6g`, COMBAT `%.2f`; fractional counts refused,
 never floored). Static verification: builds clean (only pre-existing CRT
 warnings); native parity harness proves agreement with `civ6x10/transforms.py`
-on the required signed cases. Four-ID proof LIVE_GAME_VERIFIED; 729-entry
+on the required signed cases. Four-ID proof LIVE_GAME_VERIFIED; 686-entry
+certified
 production slice STATICALLY VERIFIED, awaiting the production-candidate live
 test (`docs/PRODUCTION_RELEASE.md`) — that is the next user run, not a
 repeat of the ordering run.

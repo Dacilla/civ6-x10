@@ -1,0 +1,152 @@
+# Certified semantic overrides for the production native registry.
+#
+# The auto classifier (civ6x10/semantics.py) emits only AUTO_RULE heuristics,
+# which are NEVER production-eligible on their own. A manifest row enters the
+# native registry only when certification.py certifies it from:
+#   (a) agreement with the effect-semantic floor (data/local/effect_semantics.csv), or
+#   (b) an entry below, or
+#   (c) the certified category families listed below.
+# Every entry carries rationale + evidence. Generation fails on any strong-family
+# contradiction not resolved here. EffectType names are functional identifiers
+# used as join keys, not copied content.
+
+# Manifest families certified as a category when the sem floor is
+# MAGNITUDE_UNCLASSIFIED (scalar numeric definition + official-mismatch guard;
+# float path live-proven). Each needs its one-line rationale.
+certified_category_families:
+  FLAT_AMOUNT: {kind: ADDITIVE, rationale: "scalar additive magnitude; canonical x10 multiply"}
+  FLAT_YIELD: {kind: ADDITIVE, rationale: "scalar yield magnitude (flat or percent); canonical x10 multiply"}
+  PERCENT_BONUS: {kind: ADDITIVE, rationale: "scalar percent magnitude; scaling the percent scales the effect"}
+  PRODUCTION_PERCENT: {kind: ADDITIVE, rationale: "scalar production percent; canonical x10 multiply"}
+  GREAT_PERSON_POINTS: {kind: ADDITIVE, rationale: "great-person flows; point Amounts are discrete (see count_like_exact_effects)"}
+  AMENITY: {kind: ADDITIVE, rationale: "amenity pressure is float-valued; canonical x10 multiply"}
+  HOUSING: {kind: ADDITIVE, rationale: "housing capacity scales as a magnitude; float-safe"}
+  LOYALTY: {kind: ADDITIVE, rationale: "loyalty pressure is float-valued (live-proven 21.9 write); canonical x10 multiply"}
+  TOURISM: {kind: ADDITIVE, rationale: "tourism yields are float-valued; canonical x10 multiply"}
+  FAITH: {kind: ADDITIVE, rationale: "faith flow magnitude; canonical x10 multiply"}
+  GOLD: {kind: ADDITIVE, rationale: "gold flow magnitude; canonical x10 multiply"}
+  EXPERIENCE: {kind: ADDITIVE, rationale: "XP modifier percents; canonical x10 multiply"}
+  PROBABILITY: {kind: PROBABILITY, rationale: "chance-argument probability; repeated-trial compounding"}
+  DURATION: {kind: ADDITIVE, rationale: "turn durations are whole turns; conditional on integral results (family-implied count-like)"}
+  CHARGES: {kind: ADDITIVE, rationale: "charges/spreads are whole uses; conditional on integral results (family-implied count-like)"}
+  MOVEMENT: {kind: ADDITIVE, rationale: "movement points are whole points; conditional on integral results (family-implied count-like)"}
+  RANGE: {kind: ADDITIVE, rationale: "ranges count whole tiles; conditional on integral results (family-implied count-like)"}
+  RADIUS: {kind: ADDITIVE, rationale: "radii count whole tiles; conditional on integral results (family-implied count-like)"}
+
+# EffectTypes whose sem-floor family is MIXED_VALUE_DOMAIN (argument takes both
+# scalar numerics and vector values across definitions) but whose SCALAR
+# per-definition rows are certified ADDITIVE. Vector-valued sibling definitions
+# never enter production (non-numeric officials are excluded; the native
+# official-mismatch guard skips schema drift).
+mixed_overrides:
+  - effect: EFFECT_ADJUST_CITY_YIELD_MODIFIER
+    argument: Amount
+    kind: ADDITIVE
+    rationale: "scalar per-definition percent/flat yield modifiers (e.g. COLONIALTAXES_FOREIGNGOLD 25); vector siblings excluded as non-numeric"
+  - effect: EFFECT_ADJUST_PLOT_YIELD
+    argument: Amount
+    kind: ADDITIVE
+    rationale: "scalar per-definition plot yields (e.g. GAUL_MINE_CULTURE 1); engine parses float yields; vector siblings excluded as non-numeric"
+
+# Combat-strength-point effects (sem floor: MAGNITUDE_UNCLASSIFIED) certified for
+# the combat formula b_k = 25*ln(k*(exp(b/25)-1)+1). Curated per effect, never
+# by keyword: each Amount below is Civ VI combat-strength points, matching the
+# sem-certified Toqui precedent (EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER).
+combat_effects:
+  - effect: EFFECT_ADJUST_UNIT_BARBARIAN_COMBAT
+    rationale: "+N combat strength vs barbarians (Discipline/Caesar +5); strength-difference model applies"
+  - effect: EFFECT_ADD_DIPLOMATIC_COMBAT_MODIFIER
+    rationale: "+N diplomatic combat-strength modifier (Territorial War +5); combat-strength points"
+  - effect: EFFECT_ADJUST_CORPS_ARMY_MODIFIED_STRENGTH
+    rationale: "corps/army strength value (Land Corps/Armies +5); combat-strength points"
+  - effect: EFFECT_ADJUST_UNIT_DIPLO_VISIBILITY_COMBAT_MODIFIER
+    rationale: "visibility-derived combat-strength modifier (+3); combat-strength points"
+
+# Effects excluded by curation (sem floor: MAGNITUDE_UNCLASSIFIED, but the value
+# is a grant / boolean / threshold / sentinel / non-strength modifier).
+# Each: never ADDITIVE, never certified.
+excluded_effects:
+  - effect: EFFECT_ADJUST_EXTRA_UNIT_COPY
+    rationale: "grants one free unit copy (Scythian horse archer); object grant, not a magnitude"
+  - effect: EFFECT_ADJUST_EXTRA_UNIT_COPY_TAG
+    rationale: "grants one free unit copy by class; object grant, not a magnitude"
+  - effect: EFFECT_ADJUST_PLAYER_ADJUST_ENVOYS_NON_SPECIALTY
+    rationale: "grants a free envoy on district completion; envoy objects are DECISION_REQUIRED"
+  - effect: EFFECT_ADJUST_PLAYER_SPECIFIC_DISTRICT_GRANT_ENVOYS
+    rationale: "grants a free envoy; envoy objects are DECISION_REQUIRED"
+  - effect: EFFECT_ADJUST_DUPLICATE_FIRST_INFLUENCE_TOKEN
+    rationale: "boolean token doubler (Amount=1); no meaningful multiplier"
+  - effect: EFFECT_ADJUST_DUPLICATE_INFLUENCE_TOKEN_WHEN_RIVAL_GOVERNMENT
+    rationale: "boolean token doubler (Amount=1); no meaningful multiplier"
+  - effect: EFFECT_ADJUST_DUPLICATE_INFLUENCE_TOKEN_WHEN_SAME_RELIGION
+    rationale: "boolean token doubler (Amount=1); no meaningful multiplier"
+  - effect: EFFECT_ADJUST_DUPLICATE_INFLUENCE_TOKEN_WHEN_TRADE_ROUTE_TO
+    rationale: "boolean token doubler (Amount=1); no meaningful multiplier"
+  - effect: EFFECT_ADJUST_UNIT_GRANT_EXPERIENCE
+    rationale: "sentinel Amount=-1 (spies start promoted); not a magnitude"
+  - effect: EFFECT_ADJUST_FREE_CIVIC_BOOST_FIRST_TRADING_POST_EACH_CIV
+    rationale: "grants one eureka object per civ; object grant, not a magnitude"
+  - effect: EFFECT_ADJUST_FREE_TECH_BOOST_FIRST_TRADING_POST_EACH_CIV
+    rationale: "grants one eureka object per civ; object grant, not a magnitude"
+  - effect: EFFECT_ADJUST_FREE_CIVIC_BOOST_WONDER_ERA
+    rationale: "grants one eureka object; object grant, not a magnitude"
+  - effect: EFFECT_ADJUST_FREE_TECH_BOOST_WONDER_ERA
+    rationale: "grants one eureka object; object grant, not a magnitude"
+  - effect: EFFECT_ADJUST_AUTO_THEMED_BUILDINGS_WITH_X_SLOTS
+    rationale: "Amount=2/3 is an eligibility slot threshold (Kristina); scaling to 14.6/21.9 disables the ability"
+  - effect: EFFECT_ADJUST_UNIT_STRENGTH_REDUCTION_FOR_DAMAGE_MODIFIER
+    rationale: "damage-reduction modifier (50), not combat-strength points; neither combat formula nor flat x10 applies"
+
+# Effect substrings marking indivisible counts (discrete objects/levels/slots/
+# tiles/turns/points). Certified rows on these effects are count-like:
+# exact-integer results may apply, fractional results refuse at runtime.
+count_like_effects:
+  - pattern: TRADE_ROUTE_CAPACITY
+    rationale: "route capacity counts whole routes"
+  - pattern: CHARGES
+    rationale: "unit/spread charges are whole uses"
+  - pattern: SPREADS
+    rationale: "religious spreads are whole uses"
+  - pattern: GREAT_WORK_SLOTS
+    rationale: "great-work slots are whole slots"
+  - pattern: CITY_POPULATION
+    rationale: "population counts whole citizens"
+  - pattern: QUEST_COUNT
+    rationale: "commemoration quest counts are whole"
+  - pattern: EXTRA_DISTRICTS
+    rationale: "extra district allowances are whole districts"
+  - pattern: CITY_TILES
+    rationale: "city-tile grants count whole tiles"
+  - pattern: STOCKPILE_CAP
+    rationale: "stockpile caps are whole-unit limits"
+  - pattern: GREAT_PERSON_POINTS
+    rationale: "great-person point Amounts are whole points (percent/refund/modifier variants stay additive)"
+    exclude_effects: [EFFECT_ADJUST_GREAT_PERSON_POINTS_PERCENT,
+      EFFECT_ADJUST_CITY_GREAT_PERSON_POINTS_MODIFIER,
+      EFFECT_ADJUST_GREAT_PERSON_POINTS_REFUND_PERCENT]
+  - pattern: ALLIANCE_POINTS
+    rationale: "alliance points are whole points"
+  - pattern: DIPLO_VISIBILITY
+    rationale: "diplomatic visibility advances in whole levels"
+  - pattern: EXPENDED_GREAT_PERSON_TILES
+    rationale: "expended-GP tile grants count whole tiles"
+  - pattern: STEAL_TECH_BOOSTS
+    rationale: "stolen boosts count whole boosts"
+  - pattern: FEATURE_APPEAL_MODIFIER
+    rationale: "appeal ratings are whole levels"
+  - pattern: CITY_APPEAL
+    rationale: "appeal ratings are whole levels"
+  - pattern: SPY_BONUS
+    rationale: "spy operation bonuses are whole levels"
+  - pattern: OUTER_DEFENSE
+    rationale: "outer defense is a whole-number rating"
+  - pattern: FREE_POWER
+    rationale: "granted power counts whole power units"
+  - pattern: RESOURCE_ACCUMULATION
+    rationale: "accumulated resources count whole units per turn"
+  - pattern: EXTRA_ACCUMALATION
+    rationale: "accumulated resources count whole units per turn"
+
+# Argument names that are indivisible regardless of effect.
+count_like_args: [TurnsActive, Duration, Turns, Charges, SpreadCharges,
+  BuilderCharges, Spreads, NumSlots]

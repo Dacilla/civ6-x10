@@ -64,7 +64,17 @@ def cmd_generate_registry(args) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(emit_cxx(entries), encoding="utf-8")
     rep = Path(str(out) + ".coverage.json")
+    ledger = report.pop("conflict_ledger")
     rep.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    import csv
+    with open(Path(str(out) + ".conflicts.csv"), "w", encoding="utf-8",
+               newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=[
+            "modifier_id", "effect_type", "argument", "sem_family",
+            "proposed_family", "proposed_transform", "cert_source",
+            "resolution"])
+        w.writeheader()
+        w.writerows(ledger)
     print(f"wrote {out} ({len(entries)} entries)")
     print(json.dumps(report, indent=1))
     return 0

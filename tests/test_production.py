@@ -1,4 +1,4 @@
-"""Production registry tests: generation, parity, save/load derivation."""
+"""Production registry tests: certification gate, parity, save/load derivation."""
 from __future__ import annotations
 
 import sys
@@ -10,17 +10,40 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 ROOT = Path(__file__).resolve().parents[1]
 
 from civ6x10 import transforms as T
-from civ6x10.production import build_production_registry
+from civ6x10.certification import certify_row, load_rules
+from civ6x10.production import (
+    SemanticConflict,
+    build_production_registry,
+)
 
 
 def synth(module="traits", mid="M_X", arg="Amount", official="7",
           family="FLAT_AMOUNT", transform="canonical_x10_multiply",
-          status="ok", confidence="reviewed", obj="T_X"):
-    return {"object_id": obj, "modifier_id": mid, "modifier_type": "MT_X",
-            "effect_type": "ET_X", "argument_name": arg,
+          status="ok", confidence="auto_rule", obj="T_X",
+          modifier_type="MODIFIER_PLAYER_ADJUST_UNIT_PRODUCTION",
+          effect_type="EFFECT_ADJUST_UNIT_PRODUCTION"):
+    return {"object_id": obj, "modifier_id": mid, "modifier_type": modifier_type,
+            "effect_type": effect_type, "argument_name": arg,
             "official_value": official, "semantic_family": family,
             "transformation": transform, "generated_value": "",
             "status": status, "confidence": confidence, "module": module}
+
+
+def sem_row(modifier_type="MODIFIER_PLAYER_ADJUST_UNIT_PRODUCTION",
+            effect_type="EFFECT_ADJUST_UNIT_PRODUCTION", arg="Amount",
+            family="MAGNITUDE_UNCLASSIFIED", transform="CANONICAL_X10_MULTIPLY",
+            confidence="NEEDS_REVIEW"):
+    return {"modifier_type": modifier_type, "effect_type": effect_type,
+            "argument_name": arg, "semantic_family": family,
+            "transformation_family": transform, "confidence": confidence}
+
+
+def sem_floor_for(rows):
+    floor = {}
+    for r in rows:
+        floor[(r["modifier_type"], r["effect_type"], r["argument_name"])] = \
+            sem_row(r["modifier_type"], r["effect_type"], r["argument_name"])
+    return floor
 
 
 def load_manifests():
@@ -38,8 +61,12 @@ def load_manifests():
 
 class TestProductionRegistry(unittest.TestCase):
     def test_generation_core(self):
-        # Fixture-driven (CI-safe): duplicates merge, unknown/refused/
-        # undecided/selector rows excluded, deterministic output.
+        # Fixture-driven (CI-safe): duplicates merge with owners union,
+        # heuristic confidence alone never admits, undecided excluded,
+        # deterministic output.
+        floor = {("MODIFIER_PLAYER_ADJUST_UNIT_PRODUCTION",
+                  "EFFECT_ADJUST_UNIT_PRODUCTION", "Amount"):
+                 sem_row(family="MAGNITUDE_UNCLASSIFIED")}
         rows = [
             synth(mid="M_A"),
             synth(mid="M_A"),  # duplicate
@@ -48,23 +75,36 @@ class TestProductionRegistry(unittest.TestCase):
             synth(mid="M_C", family="SELECTOR", transform="unchanged"),
             synth(mid="M_D", family="BOOLEAN_UNLOCK",
                   transform="refused_no_multiplier", status="refused"),
-            synth(mid="M_E", family="COMBAT_STRENGTH_BONUS",
-                  transform="canonical_combat_bonus", official="5"),
         ]
-        entries, report = build_production_registry(rows)
+        entries, report = build_production_registry(rows, sem_floor=floor)
         self.assertEqual([(e["modifier_id"], e["kind"]) for e in entries],
-                         [("M_A", "ADDITIVE"), ("M_E", "COMBAT")])
-        e2, _ = build_production_registry(list(reversed(rows)))
+                         [("M_A", "ADDITIVE")])
+        self.assertEqual(entries[0]["cert_source"], "category:FLAT_AMOUNT")
+        # Manifest claims of DISCOUNT/COMBAT/PROBABILITY need floor
+        # agreement: a bare heuristic claim fails closed.
+        with self.assertRaises(SemanticConflict):
+            build_production_registry(
+                [synth(mid="M_E", family="COMBAT_STRENGTH_BONUS",
+                       transform="canonical_combat_bonus", official="5")],
+                sem_floor=floor)
+        e2, _ = build_production_registry([rows[0], rows[1]],
+                                          sem_floor=floor)
         self.assertEqual(e2, entries)
 
     def test_manifest_parity(self):
-        # Local-only: manifests need reviewed data (gitignored).
+        # Local-only: manifests need local auto-ruled data (gitignored).
         try:
             rows = load_manifests()
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         entries, report = build_production_registry(rows)
-        self.assertEqual(len(entries), report["eligible"])
+        self.assertEqual(len(entries), 686)
+        self.assertEqual(report["eligible"], 686)
+        self.assertEqual(report["unique_definitions"], 682)
+        self.assertEqual(report["shared_definitions"], 25)
+        self.assertEqual(report["certified_unconditional"], 601)
+        self.assertEqual(report["certified_count_like_conditional"], 85)
+        self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
         for mid in ("TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
                     "AGOGE_ANCIENT_MELEE_PRODUCTION",
@@ -74,7 +114,7 @@ class TestProductionRegistry(unittest.TestCase):
         keys = [(e["modifier_id"], e["argument"]) for e in entries]
         self.assertEqual(len(keys), len(set(keys)))
         kinds = {e["kind"] for e in entries}
-        self.assertTrue(kinds <= {"ADDITIVE", "COMBAT", "PROBABILITY", "DISCOUNT"})
+        self.assertEqual(kinds, {"ADDITIVE", "COMBAT", "DISCOUNT"})
 
 
 class TestProductionTransforms(unittest.TestCase):
@@ -125,7 +165,7 @@ class TestProductionTransforms(unittest.TestCase):
         from civ6x10.production import build_production_registry
         entries, _ = build_production_registry(rows)
         neg = [e for e in entries if float(e["official"]) < 0]
-        self.assertGreaterEqual(len(neg), 44)
+        self.assertEqual(len(neg), 43)
         for e in entries:
             v = float(e["official"])
             if e["kind"] == "ADDITIVE":
@@ -137,20 +177,29 @@ class TestProductionTransforms(unittest.TestCase):
                     T.compound_discount_for_multiplier(v, 7.3),
                     (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1))
         discs = [e for e in entries if e["kind"] == "DISCOUNT"]
-        self.assertEqual(len(discs), 8)
+        self.assertEqual(len(discs), 19)
 
     def test_full_registry_transforms_at_k73(self):
-        # Static expectation: all 729 entries transform at k=7.3 (mismatch
-        # checks happen at runtime against live definitions).
+        # Honest static expectation at k=7.3 (runtime mismatch checks happen
+        # live against loaded definitions):
+        #   601 unconditional entries: every one transforms;
+        #   85 conditional (count-like) entries: 11 exact-integral apply,
+        #   74 fractional refuse safely (never floored).
+        # Static successful transforms: 601 + 11 = 612 < registry size 686.
         import math
         try:
             rows = load_manifests()
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         from civ6x10.production import build_production_registry
-        entries, _ = build_production_registry(rows)
+        entries, report = build_production_registry(rows)
+        self.assertEqual(len(entries), 686)
+        un = [e for e in entries if not e["count_like"]]
+        co = [e for e in entries if e["count_like"]]
+        self.assertEqual(len(un), 601)
+        self.assertEqual(len(co), 85)
         ok = 0
-        for e in entries:
+        for e in un:
             v = float(e["official"])
             if e["kind"] == "ADDITIVE":
                 r = v * 7.3
@@ -159,24 +208,32 @@ class TestProductionTransforms(unittest.TestCase):
             elif e["kind"] == "DISCOUNT":
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1)
-            elif e["kind"] == "PROBABILITY":
-                p = v / 100.0 if abs(v) > 1 else v
-                r = (1.0 - (1.0 - p) ** 7.3) * (100.0 if abs(v) > 1 else 1.0)
             else:
                 continue
-            if math.isfinite(r) and abs(r) <= 1000000:
-                if e["count_like"] and abs(r - round(r)) > 1e-9:
-                    continue  # refused, not floored
-                ok += 1
-        self.assertEqual(ok, 729)
+            self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
+            ok += 1
+        self.assertEqual(ok, 601)
+        exact = [e for e in co
+                 if abs(float(e["official"]) * 7.3
+                        - round(float(e["official"]) * 7.3)) < 1e-9]
+        refused = [e for e in co if e not in exact]
+        self.assertEqual(len(exact), 11)
+        self.assertEqual(len(refused), 74)
+        # Static expectation: 612 successful transforms of 686 certified.
+        self.assertEqual(ok + len(exact), 612)
 
     def test_shared_ownership_and_conflicts(self):
-        from civ6x10.production import build_production_registry, RegistryConflict
+        from civ6x10.production import (RegistryConflict, SemanticConflict,
+                                        build_production_registry)
+        floor = {("MT_S", "ET_S", "Amount"): sem_row(
+            "MT_S", "ET_S", "Amount", family="MAGNITUDE_UNCLASSIFIED")}
         rows = [
-            synth(module="policies", mid="M_S", official="5"),
-            synth(module="governments", mid="M_S", official="5"),
+            synth(module="policies", mid="M_S", modifier_type="MT_S",
+                  effect_type="ET_S"),
+            synth(module="governments", mid="M_S", modifier_type="MT_S",
+                  effect_type="ET_S"),
         ]
-        entries, report = build_production_registry(rows)
+        entries, report = build_production_registry(rows, sem_floor=floor)
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0]["owners"], 2 | 4)
         self.assertEqual(report["shared_definitions"], 1)
@@ -185,10 +242,21 @@ class TestProductionTransforms(unittest.TestCase):
             synth(module="governments", mid="M_X", official="6"),
         ]
         with self.assertRaises(RegistryConflict):
-            build_production_registry(bad)
+            build_production_registry(bad, sem_floor={
+                ("MODIFIER_PLAYER_ADJUST_UNIT_PRODUCTION",
+                 "EFFECT_ADJUST_UNIT_PRODUCTION", "Amount"): sem_row(
+                    family="MAGNITUDE_UNCLASSIFIED")})
+        # Strong-family contradiction with no curated resolution fails.
+        # (Grant/spatial/defeated rows resolve to exclusions; a row with NO
+        # floor coverage at all cannot be verified and fails.)
+        with self.assertRaises(SemanticConflict):
+            build_production_registry(
+                [synth(mid="M_NOFLOOR", modifier_type="MODIFIER_X_UNKNOWN",
+                       effect_type="EFFECT_X_UNKNOWN")],
+                sem_floor={})
 
     def test_multi_argument_definitions(self):
-        # The 7 two-argument definitions must expose BOTH args as entries.
+        # Four two-argument definitions keep BOTH args as entries.
         try:
             rows = load_manifests()
         except FileNotFoundError:
@@ -198,10 +266,11 @@ class TestProductionTransforms(unittest.TestCase):
         entries, _ = build_production_registry(rows)
         per_def = Counter(e["modifier_id"] for e in entries)
         multi = {m: c for m, c in per_def.items() if c > 1}
-        self.assertGreaterEqual(len(multi), 7)
+        self.assertEqual(len(multi), 4)
         self.assertIn("TRAIT_TERRITORIAL_WAR_COMBAT", multi)
-        # Every second argument is a count-like duration 10 -> 73 at k=7.3:
-        # exact integer results apply; writer must not stop after Amount.
+        # Every surviving second argument is a count-like duration 10 -> 73
+        # at k=7.3: exact integer results apply; the writer must not stop
+        # after the first argument.
         for e in entries:
             if e["modifier_id"] in multi and e["argument"] == "TurnsActive":
                 self.assertTrue(e["count_like"])
