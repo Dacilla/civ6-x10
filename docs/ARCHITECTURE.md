@@ -26,14 +26,15 @@ Two multiplier paths were evaluated:
 
 - **A. Generated preset SQL** (Off/×2/×3/×5/×10/×20/×50/×100): deterministic,
   audited, works today. Shippable fallback, retained regardless.
-- **B. CE dynamic overrides** (arbitrary k, e.g. 7.3×): LIVE lifecycle test
-  (2026-10-07) proved gameplay Lua initializes AFTER first attachment, so
-  the init-phase Lua setter is abandoned. Native definition-population
-  write prototype in progress in the local CE fork.
+- **B. CE dynamic overrides** (arbitrary k, e.g. 7.3×): four-ID architecture
+  proof is LIVE_GAME_VERIFIED (2026-10-07); the 729-entry production slice
+  (generated registry + native transforms + controller packaging) is
+  STATICALLY VERIFIED and awaits the production-candidate live test —
+  see `docs/PRODUCTION_RELEASE.md`. The init-phase Lua setter is abandoned.
 
-Current recommendation: **HYBRID** pending the native write test —
-numeric DB modifiers stay generated; CE path for arbitrary multipliers and
-special mechanics once validated.
+Current recommendation: **HYBRID** — numeric DB modifiers stay generated;
+CE path for arbitrary multipliers and special mechanics, validated per
+release on the production candidate before any Workshop publish.
 
 ## Clean-room policy
 
@@ -43,7 +44,11 @@ numbers are generated from `rules/` + `manifests/`.
 
 ## Component status
 
-Release 1: traits, policies, governments (RELEASE_1 scope: 513 registry rows,
-407 family-certified, 106 genuinely ambiguous). Later: pantheons, governors,
-wonders, city-states/suzerain; then optional belief/great-people/promotion
-modules. Unrelated global semantics stay NEEDS_REVIEW by design.
+Release 1: traits, policies, governments (729-entry production registry:
+722 unique definitions — 394 traits-only, 292 policies-only,
+18 governments-only, 25 shared policies+governments; STATICALLY VERIFIED,
+awaiting production-candidate live test — see `docs/PRODUCTION_RELEASE.md`
+for packaging, shared-ownership rule, and UUIDs). Later: pantheons,
+governors, wonders, city-states/suzerain; then optional
+belief/great-people/promotion modules. Unrelated global semantics stay
+NEEDS_REVIEW by design.

@@ -1,10 +1,12 @@
 # Native Hook Validation (X10 lifecycle test fork)
 
 Fork: `../CivilizationVI_CommunityExtension-x10-spike`, branch
-`x10-lifecycle-log`. Logging + definition-write prototype. Built DLL (local,
-gitignored): 2,678,272 B, current write build SHA-256 `989617c7…fad2c`
-(MSVC 14.51, SDK 26100,
-Release x64).
+`x10-lifecycle-log`. Logging + production definition-write engine. Built DLL
+(local, gitignored): 2,742,784 B, current production-candidate SHA-256
+`2fe9c778…ccf8c77d` (MSVC 14.51, SDK 26100, Release x64). Superseded hashes
+(`989617c7…`, `f0daac3d…`, `1594d354…`) must NOT be used for any new run —
+the production-candidate package is hash-pinned in
+`spike/EXPECTED_DLL_SHA256.txt`.
 
 Assumed GameCore: file `GameCore_XP2_FinalRelease.dll`, PE timestamp
 `0x667c6f5b`, `SizeOfImage` `0xc60000`, SHA-256 `324c51e9…` (user install).
@@ -35,8 +37,8 @@ classic `shared_ptr` control block). Raw definition = `*(void**)d0`, with
 null + vtable-pointer validation (`ResolveDefinitionReference`, fail-closed).
 Mutation happens BEFORE `orig_Add`: the definition is fully constructed by
 the caller and not yet system-visible, so no shared-reference aliasing is
-relied upon. Post-`orig_Add`, the touched element is re-read for
-`stored_after_add`.
+relied upon. Post-`orig_Add`, every touched element is re-read for
+`stored_after_add` (multi-argument capable).
 
 ## String reader (SSO + heap reads, SSO-only writes)
 
@@ -51,7 +53,7 @@ printable ASCII, NUL-terminated. Heap WRITES remain refused; proof values
 | Hook | RVA | Reference identity evidence |
 |---|---|---|
 | `PopulateModifierDefinitions` | 0x96f6c0 | Named entry, size 2180; ends at 0x96FF40, immediately before `PopulateRequirementDefinitions` 0x96FF50 (exact adjacency, same `DatabaseUtility` family). Full signature `void(pDB, ModifierSystem&)` — 2 pointers, exact detour. Observed prologue `48 89 54 24 10…` (mov-spill, consistent with ≥2 args). |
-| `AddModifierDefinition` | 0x943110 | Named entry, size 330. Full signature `void(this, ModifierDefinitionReference)`; the reference is passed as two 8-byte slots, consistent with the shared_ptr reference pattern used throughout this TU (`FAutoVariable<vector<shared_ptr<…>>>` entries at 0x92f6b0, 0x934790, …). Observed prologue `48 89 5c 24 08…`. Residual risk: struct width is inferred, not proven — stated openly; a wrong width would corrupt the forwarded call, which is why validation is fail-closed and the run is disposable. |
+| `AddModifierDefinition` | profile `addRva` | Named entry, size 330. Full signature `void(this, ModifierDefinitionReference)`; the reference arrives as a single pointer (RDX) to a 16-byte shared_ptr-like `{_Ptr,_Rep}` (see ABI section above). The hook forwards both reference slots to `orig_Add` for call fidelity and resolves the raw definition via `*(void**)d0` (fail-closed). Observed prologue `48 89 5c 24 08…`. Residual risk: reference width is inferred, not proven — stated openly; validation is fail-closed and every run is disposable. |
 | `DynamicModifier` ctor A | 0x92a4f0 | Named entry, size 3367. Full signature: this + 5 const references (all pointers — exact under x64 ABI). Neighbors are same-family object code (`AttachModifierResult` ctor 0x929a80, `ModifierObject` ctor 0x92d1b0). Observed prologue `48 89 5c 24 08…`. |
 | `DynamicModifier` ctor B | 0x92b220 | Named entry, size 2141, same signature as A. Both overload entries are hooked because either may construct the first instance. |
 
@@ -62,14 +64,17 @@ safer constructor hook is preferred, per §9).
 
 ## Runtime validation (fail-closed)
 
-Before installing anything, the fork checks: module filename,
-PE timestamp, SizeOfImage, each RVA inside executable `.text` (parsed from
-the loaded image, cross-checked by confirming CE's own working offsets land
-in `.text`), and a masked prologue class per target
-(`48 89 ?? 24 ??` / `40 5?` / `48 83 EC ??` — generic x64 shapes, never
-copies of observed bytes). Any failure → `HOOK VALIDATION FAILED` +
+Before installing anything, the fork selects a `GameCoreCompatibilityProfile`
+(`X10Compat.h`: PE timestamp, image size, hook/config RVAs, manager offsets,
+vtable slot, variant + definition + SSO layout) by loaded-module identity or
+installs zero hooks. Each profile target is then checked inside executable
+`.text` (parsed from the loaded image) with a masked prologue class per
+target (`48 89 ?? 24 ??` / `40 5?` / `48 83 EC ??` — generic x64 shapes,
+never copies of observed bytes). Any failure → `HOOK VALIDATION FAILED` +
 `NO X10 LIFECYCLE HOOKS INSTALLED`, zero hooks. Success logs
-`ALL_REQUIRED_SIGNATURES_VALID` plus per-hook PASS lines.
+`ALL_REQUIRED_SIGNATURES_VALID` plus per-hook PASS lines. Hook installation
+is transactional and X10-only (create-all, then enable-all, unwinding only
+X10 hooks on failure); unrelated CE hooks are never disabled or removed.
 
 ## Residual risks (open)
 

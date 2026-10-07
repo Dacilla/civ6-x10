@@ -113,24 +113,32 @@ arbitrary numeric input per module once the CE path validates. Fractional k
 on REPEAT_GRANT/CHARGES/integer counts is DECISION_REQUIRED (no silent
 flooring); slots and booleans never scale.
 
-## Write implementation status (2026-10-07, NOT live-tested)
+## Write implementation status (production slice, 2026-10-07)
 
-Implemented in the fork (`X10Write.h/.cpp`, committed locally, no upstream
-contact): native `TryGetGameConfigurationValue` (GetInstance → game/root
-variant managers → virtual +0x68 lookup → INT32/FLOAT32-typed extract with
-the engine's own int-mask check; unknown types fail closed, never string-
-probed), and SSO-inline
-argument rewrites at `AddModifierDefinition` (post-construction, pre-attach;
-every shape re-validated per element; official-mismatch skips). Transforms
-computed natively (ADDITIVE %.6g, COMBAT %.2f). DLL 2,676,736 B
-`989617c7…`. Static verification: builds clean (one pre-existing CRT
-warning). Live proof (readback/save-load/symmetry) PENDING — that is the
-next user run, not a repeat of the ordering run.
+Implemented in the fork (`X10Write.h/.cpp`, `X10Transforms.h`,
+`X10Compat.h`, branch `x10-lifecycle-log`, no upstream contact): native
+config read (GetInstance → game/root variant managers → profile vtable-slot
+lookup → INT32/FLOAT32-typed extract; unknown types fail closed), and
+multi-argument SSO-inline rewrites at `AddModifierDefinition`
+(pre-attach; every shape re-validated per element; official-mismatch skips;
+shared entries need all owners enabled). Transforms computed natively
+(signed ADDITIVE/DISCOUNT `%.6g`, COMBAT `%.2f`; fractional counts refused,
+never floored). Static verification: builds clean (only pre-existing CRT
+warnings); native parity harness proves agreement with `civ6x10/transforms.py`
+on the required signed cases. Four-ID proof LIVE_GAME_VERIFIED; 729-entry
+production slice STATICALLY VERIFIED, awaiting the production-candidate live
+test (`docs/PRODUCTION_RELEASE.md`) — that is the next user run, not a
+repeat of the ordering run.
 
 Native logging appends across sessions (plus a session header per Install),
 so new-game → save → menu → reload preserves both population sequences.
 
-## Manual test checklist (write build — next user run)
+## Manual test checklist (production candidate — next user run)
+
+Production-candidate steps live in `docs/PRODUCTION_RELEASE.md`
+(`spike/install-prod-test.ps1`: CE-X10 engine + X10 controller +
+disposable probe, `X10_MULTIPLIER` configuration). The checklist below is
+the superseded four-ID write-build record, kept for history:
 
 1. Run `spike\install-live-test.ps1` (assembles + hash-verifies + installs).
 2. Additional Content: DISABLE Workshop Community Extension; ENABLE X10 CE

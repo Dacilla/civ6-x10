@@ -5,13 +5,6 @@
 -- Module toggles are INTEGER 0/1 (bool domains have no proven native reader;
 -- int variants are proven). Supported modules default ON; unsupported ones
 -- default OFF and are ignored loudly by the native layer if enabled.
--- SHARED-DEFINITION RULE (Release 1): 25 modifier definitions are owned by
--- both Policies and Governments. A definition-level mutation is globally
--- shared, so exact independent toggles are impossible: a shared definition
--- is transformed ONLY if ALL owning supported modules are enabled.
--- Disabling Policies (or Governments) therefore never leaves an X10 mutation
--- active through the other owner. Per-entry owners bitmask lives in the
--- generated registry (1=traits 2=policies 4=governments).
 INSERT OR IGNORE INTO Parameters
   (ParameterId, Name, Description, Domain, DefaultValue,
    ConfigurationGroup, ConfigurationId, GroupId, Visible, SupportsSinglePlayer)
