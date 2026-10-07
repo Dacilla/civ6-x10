@@ -117,12 +117,13 @@ flooring); slots and booleans never scale.
 
 Implemented in the fork (`X10Write.h/.cpp`, committed locally, no upstream
 contact): native `TryGetGameConfigurationValue` (GetInstance → game/root
-variant maps → FindVariant → typed extract with the engine's own int-mask
-check + strict string validation; fail-closed, no Lua), and SSO-inline
+variant managers → virtual +0x68 lookup → INT32/FLOAT32-typed extract with
+the engine's own int-mask check; unknown types fail closed, never string-
+probed), and SSO-inline
 argument rewrites at `AddModifierDefinition` (post-construction, pre-attach;
 every shape re-validated per element; official-mismatch skips). Transforms
 computed natively (ADDITIVE %.6g, COMBAT %.2f). DLL 2,676,736 B
-`f7a1fee6…`. Static verification: builds clean (one pre-existing CRT
+`989617c7…`. Static verification: builds clean (one pre-existing CRT
 warning). Live proof (readback/save-load/symmetry) PENDING — that is the
 next user run, not a repeat of the ordering run.
 

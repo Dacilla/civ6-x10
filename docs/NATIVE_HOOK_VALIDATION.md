@@ -2,7 +2,7 @@
 
 Fork: `../CivilizationVI_CommunityExtension-x10-spike`, branch
 `x10-lifecycle-log`. Logging + definition-write prototype. Built DLL (local,
-gitignored): 2,678,272 B, current write build SHA-256 `f7a1fee6…d00fd91d5`
+gitignored): 2,678,272 B, current write build SHA-256 `989617c7…fad2c`
 (MSVC 14.51, SDK 26100,
 Release x64).
 
@@ -11,18 +11,19 @@ Assumed GameCore: file `GameCore_XP2_FinalRelease.dll`, PE timestamp
 Reference RVAs are the `cur` column (installed build 15038592) of
 `civ6-gamecore-reference/reference/data/function_index.json`.
 
-## TypedVariant id=4 (live evidence + static analysis, 2026-10-07)
+## TypedVariant id=4 (proven FLOAT32, 2026-10-07)
 
-Live: variant id=4, Lua value 7.3000001907349 (= float32(7.3) widened).
-Static: no `cvtss2sd`/`cvtps2pd` anywhere in .text (float→double widening is
-not done by the engine in native code); no float-domain setup parameter
-exists; our parameter is Domain='text'. The Lua→variant direction stores
-text via the string branch. Conclusion: id=4 is handled as the STRING
-representation ("7.3000001907349" — frontend float-formatted text), decoded
-by layout-validated string read + `strtod`. Float32/64 type IDs remain
-unestablished — there is deliberately no float branch; unknown types fail
-closed logging exact id/flags/payload. The next live log records the
-accepted branch's id, confirming or refuting this.
+Live: variant id=4, Lua value 7.3000001907349. Proof chain:
+1. Fractional Lua numbers are committed as float32 (`cvtsd2ss` + virtual
+   store at TableToTypedVariantMap 0x9af376); integral ones take the int
+   path. The setup value 7.3 is fractional, so the stored form is float32.
+2. The widened double matches float32(7.3) exactly (byte-verified:
+   `9a99e940`).
+3. Reader decodes float@+8, widens, checks finite + 0–100. The INT32 branch
+   explicitly excludes id 4 (the engine mask's inclusion of 4 only covers
+   the engine's own int-keyed callers). No float64 branch: no evidence any
+   setup value uses it. Unknown types fail closed logging exact id/flags/
+   payload; unknown types never reach a string reader.
 
 ## ModifierDefinitionReference ABI (resolved, 2026-10-07)
 

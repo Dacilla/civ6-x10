@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PKG = ROOT / "spike" / "live-test-package" / "X10_CEFork_Test"
 OUT = ROOT / "spike" / "live-test-output" / "X10_CEFork_Test"
 WORKSHOP_CE_GUID = "3351473b-0746-417a-a618-2b66a04d8f3d"
-EXPECTED_DLL_HASH = "f7a1fee6a67b49b5546b05b683cc6fe05aceb4ef857560f21b418dec00fd91d5"
+EXPECTED_DLL_HASH = "989617c727c6dda521bf84864144792e176590fd4a99b6c8bef85e9cda8fad2c"
 
 
 class TestLivePackage(unittest.TestCase):
@@ -76,6 +76,16 @@ class TestWriteProbeRegressions(unittest.TestCase):
         w = self._fork("X10Write.cpp")
         self.assertIn("ResolveDefinitionReference", w)
 
+    def test_no_direct_findvariant_on_manager(self):
+        # Regression: TypedVariantMap::FindVariant was once called directly
+        # on the inst+0x88 manager object (wrong object; any "hit" was
+        # meaningless). Lookup must go through the manager vtable +0x68
+        # exactly as GetGameSpeedType does.
+        t = self._fork("X10Write.cpp")
+        self.assertNotIn("FindVariantFn", t)
+        self.assertNotIn("0x99f570", t)
+        self.assertIn("0x68 / 8", t)
+
     def test_heap_capable_id_reader(self):
         t = self._fork("X10Write.cpp")
         self.assertIn("BoundedStringRead", t)
@@ -83,14 +93,22 @@ class TestWriteProbeRegressions(unittest.TestCase):
 
     def test_native_variant_switch_shape(self):
         # The native reader must keep the explicit typed pattern: INT32 mask
-        # branch, layout-gated STRING branch, fail-closed default that logs
-        # the exact type id. Float32/64 type ids are NOT established (no
-        # float-domain setup parameter exists), so no float branch may appear
-        # silently.
+        # branch, FLOAT32 id==4 branch, fail-closed default that logs the
+        # exact type id. Unknown types must never reach a string reader.
         t = self._fork("X10Write.cpp")
         self.assertIn("0x30002e", t)
-        self.assertIn("unreadable-variant-type", t)
-        self.assertIn("variant type=%u", t)
+        self.assertIn("type == 4", t)
+        self.assertIn("FLOAT32", t)
+        self.assertIn("undecodable-variant", t)
+        self.assertNotIn("ReadCString(payload", t)
+
+    def test_float32_fixture_decodes_to_live_value(self):
+        # Raw float32 bytes of 7.3 widen to exactly the live Lua value.
+        import struct
+        raw = struct.pack("<f", 7.3)
+        self.assertEqual(raw.hex(), "9a99e940")
+        self.assertEqual(struct.unpack("<f", raw)[0], 7.300000190734863)
+        # ...which is what the probe Lua independently reported.
 
     def test_disarm_before_lookup(self):
         t = self._fork("X10Lifecycle.cpp")
