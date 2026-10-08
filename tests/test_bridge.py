@@ -388,5 +388,160 @@ class TestBridgeMechanics(unittest.TestCase):
         self.assertIn("AND EXISTS (SELECT 1 FROM Building_YieldChanges", sql)
 
 
+    def test_bridge_sql_shipped_in_controller_package(self):
+        # The generated bridge SQL ships inside the controller mod (InGame
+        # UpdateDatabase + Files) so helper modifiers exist before native
+        # populate.
+        mi = (ROOT / "controller" / "X10" / "X10.modinfo").read_text(
+            encoding="utf-8")
+        self.assertIn('<UpdateDatabase id="X10WonderBridge">', mi)
+        self.assertIn("<File>Config/X10WonderBridge.sql</File>", mi)
+        sql = (ROOT / "controller" / "X10" / "Config" / "X10WonderBridge.sql"
+               ).read_text(encoding="utf-8")
+        self.assertIn("X10_PANAMA_CANAL_YIELD_GOLD", sql)
+        self.assertIn("AND EXISTS (SELECT 1 FROM Building_YieldChanges", sql)
+        self.assertIn("CREATE TRIGGER IF NOT EXISTS X10_TRG_", sql)
+        self.assertIn("X10BridgeDiag", sql)
+
+
+def synthetic_db():
+    # Minimal bridge schema (CI-safe, no official DB needed).
+    import sqlite3
+    db = sqlite3.connect(":memory:")
+    db.execute("CREATE TABLE Buildings (BuildingType TEXT, Housing INTEGER, Entertainment INTEGER)")
+    db.execute("CREATE TABLE Building_YieldChanges (BuildingType TEXT, YieldType TEXT, YieldChange INTEGER)")
+    db.execute("CREATE TABLE Building_GreatPersonPoints (BuildingType TEXT, GreatPersonClassType TEXT, PointsPerTurn INTEGER)")
+    db.execute("CREATE TABLE Modifiers (ModifierId TEXT, ModifierType TEXT, RunOnce INTEGER, NewOnly INTEGER, Permanent INTEGER, Repeatable INTEGER, OwnerRequirementSetId TEXT, SubjectRequirementSetId TEXT, OwnerStackLimit INTEGER, SubjectStackLimit INTEGER)")
+    db.execute("CREATE TABLE BuildingModifiers (BuildingType TEXT, ModifierId TEXT)")
+    db.execute("CREATE TABLE ModifierArguments (ModifierId TEXT, Name TEXT, Type TEXT, Value TEXT, Extra TEXT, SecondExtra TEXT)")
+    return db
+
+
+PORTUGAL_CELLS = [
+    {"building_type": "BUILDING_ETEMENANKI", "source_table": "Building_YieldChanges",
+     "source_family": "yield", "key": "YieldType=YIELD_SCIENCE",
+     "value_column": "YieldChange", "value": "2"},
+    {"building_type": "BUILDING_TORRE_DE_BELEM", "source_table": "Building_YieldChanges",
+     "source_family": "yield", "key": "YieldType=YIELD_GOLD",
+     "value_column": "YieldChange", "value": "5"},
+    {"building_type": "BUILDING_TORRE_DE_BELEM", "source_table": "Building_GreatPersonPoints",
+     "source_family": "gpp", "key": "GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL",
+     "value_column": "PointsPerTurn", "value": "1"},
+]
+
+
+def diag(db, hid):
+    return db.execute(
+        "SELECT expected, observed, helper_exists, attached, amount_exists,"
+        " zeroed, origin FROM X10BridgeDiag WHERE helper_id=?",
+        (hid,)).fetchone()
+
+
+class TestBridgeTriggers(unittest.TestCase):
+    # Phase-3D: deferred guarded triggers for rows inserted AFTER the bridge
+    # runs (proven live: Portugal-pack rows arrive after X10WonderBridge).
+
+    def test_late_insert_trigger_materializes(self):
+        # The live incident replayed: bridge first (rows absent), DLC inserts
+        # later with exact baselines.
+        from civ6x10.bridge import emit_bridge_sql as emit
+        db = synthetic_db()
+        db.executescript(emit(PORTUGAL_CELLS))
+        self.assertEqual(
+            db.execute("SELECT COUNT(*) FROM X10BridgeDiag WHERE observed IS NULL").fetchone()[0], 3)
+        db.execute("INSERT INTO Building_YieldChanges VALUES ('BUILDING_ETEMENANKI','YIELD_SCIENCE',2)")
+        db.execute("INSERT INTO Building_YieldChanges VALUES ('BUILDING_TORRE_DE_BELEM','YIELD_GOLD',5)")
+        db.execute("INSERT INTO Building_GreatPersonPoints VALUES ('BUILDING_TORRE_DE_BELEM','GREAT_PERSON_CLASS_ADMIRAL',1)")
+        db.commit()
+        for hid, want in (("X10_ETEMENANKI_YIELD_SCIENCE", "2"),
+                          ("X10_TORRE_DE_BELEM_YIELD_GOLD", "5"),
+                          ("X10_TORRE_DE_BELEM_GPP_ADMIRAL", "1")):
+            self.assertEqual(
+                db.execute("SELECT COUNT(*) FROM Modifiers WHERE ModifierId=?", (hid,)).fetchone()[0], 1, hid)
+            self.assertEqual(
+                db.execute("SELECT Value FROM ModifierArguments WHERE ModifierId=? AND Name='Amount'", (hid,)).fetchone()[0],
+                want, hid)
+            self.assertEqual(diag(db, hid)[1:], ("0", 1, 1, 1, 1, "trigger"), hid)
+        self.assertEqual(
+            db.execute("SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType='BUILDING_ETEMENANKI'").fetchone()[0], 0)
+        db.close()
+
+    def test_late_drift_records_mismatch(self):
+        # Late row with a changed value: no helper, vanilla untouched, diag
+        # records the drift (distinguishes it from never-arrived).
+        from civ6x10.bridge import emit_bridge_sql as emit
+        db = synthetic_db()
+        db.executescript(emit(PORTUGAL_CELLS[:1]))
+        db.execute("INSERT INTO Building_YieldChanges VALUES ('BUILDING_ETEMENANKI','YIELD_SCIENCE',9)")
+        db.commit()
+        self.assertEqual(
+            db.execute("SELECT COUNT(*) FROM Modifiers WHERE ModifierId='X10_ETEMENANKI_YIELD_SCIENCE'").fetchone()[0], 0)
+        self.assertEqual(
+            db.execute("SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType='BUILDING_ETEMENANKI'").fetchone()[0], 9)
+        self.assertEqual(diag(db, "X10_ETEMENANKI_YIELD_SCIENCE")[1:],
+                         ("9", 0, 0, 0, 0, "late-baseline-mismatch"))
+        db.close()
+
+    def test_absent_stays_absent(self):
+        # Content genuinely unavailable: no helper, diag observed NULL.
+        from civ6x10.bridge import emit_bridge_sql as emit
+        db = synthetic_db()
+        db.executescript(emit(PORTUGAL_CELLS[:1]))
+        self.assertEqual(
+            db.execute("SELECT COUNT(*) FROM Modifiers WHERE ModifierId LIKE 'X10%'").fetchone()[0], 0)
+        self.assertEqual(diag(db, "X10_ETEMENANKI_YIELD_SCIENCE")[1:],
+                         (None, 0, 0, 0, 0, "immediate"))
+        db.close()
+
+    def test_bridge_time_states_in_diag(self):
+        # At bridge time the diag already distinguishes exact / drifted /
+        # absent source rows.
+        from civ6x10.bridge import emit_bridge_sql as emit
+        cells = [
+            {"building_type": "BUILDING_A", "source_table": "Building_YieldChanges",
+             "source_family": "yield", "key": "YieldType=YIELD_GOLD",
+             "value_column": "YieldChange", "value": "10"},
+            {"building_type": "BUILDING_B", "source_table": "Building_YieldChanges",
+             "source_family": "yield", "key": "YieldType=YIELD_GOLD",
+             "value_column": "YieldChange", "value": "10"},
+            {"building_type": "BUILDING_C", "source_table": "Building_YieldChanges",
+             "source_family": "yield", "key": "YieldType=YIELD_GOLD",
+             "value_column": "YieldChange", "value": "10"},
+        ]
+        db = synthetic_db()
+        db.execute("INSERT INTO Building_YieldChanges VALUES ('BUILDING_A','YIELD_GOLD',10)")
+        db.execute("INSERT INTO Building_YieldChanges VALUES ('BUILDING_B','YIELD_GOLD',99)")
+        db.commit()
+        db.executescript(emit(cells))
+        self.assertEqual(diag(db, "X10_A_YIELD_GOLD")[1:], ("0", 1, 1, 1, 1, "immediate"))
+        self.assertEqual(diag(db, "X10_B_YIELD_GOLD")[1:],
+                         ("99", 0, 0, 0, 0, "immediate"))
+        self.assertEqual(
+            db.execute("SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType='BUILDING_B'").fetchone()[0], 99)
+        self.assertEqual(diag(db, "X10_C_YIELD_GOLD")[1:],
+                         (None, 0, 0, 0, 0, "immediate"))
+        db.close()
+
+    def test_triggers_deterministic_and_idempotent(self):
+        from civ6x10.bridge import emit_bridge_sql as emit
+        try:
+            rows = build_wonder_direct(local_db())
+        except FileNotFoundError:
+            self.skipTest("official DB copy unavailable (local-only)")
+        sql1, sql2 = emit(rows), emit(rows)
+        self.assertEqual(sql1, sql2)
+        import re
+        names = re.findall(r"CREATE TRIGGER IF NOT EXISTS (\S+)", sql1)
+        self.assertEqual(len(names), 2 * len(rows))
+        self.assertEqual(len(set(names)), len(names))
+        self.assertTrue(all(n.startswith("X10_TRG") for n in names))
+        db = synthetic_db()
+        db.executescript(sql1)
+        n0 = db.execute("SELECT COUNT(*) FROM Modifiers").fetchone()[0]
+        db.executescript(sql1)  # reapply: no dupes, no errors
+        self.assertEqual(db.execute("SELECT COUNT(*) FROM Modifiers").fetchone()[0], n0)
+        db.close()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

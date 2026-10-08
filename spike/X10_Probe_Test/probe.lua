@@ -79,3 +79,38 @@ for _, t in ipairs(TARGETS) do
   end
 end
 plog("[X10Probe] done")
+
+-- Phase-3D bridge materialization diagnostic: dump X10BridgeDiag (written by
+-- X10WonderBridge.sql immediate statements + deferred triggers) so one live
+-- run proves per-cell source state. Lines go through the native logger into
+-- %TEMP%\X10Lifecycle.log with the [X10BridgeDiag] prefix.
+local function dump_bridge_diag()
+  local q = "SELECT helper_id, source_table, source_key, expected, observed,"
+    .. " helper_exists, attached, amount_exists, zeroed, origin"
+    .. " FROM X10BridgeDiag ORDER BY helper_id"
+  local ok, res = pcall(function() return DB.Query(q) end)
+  if not ok or res == nil then
+    plog("[X10BridgeDiag] UNAVAILABLE (diagnostics query failed)")
+    return
+  end
+  local n_exp, n_mat, n_un = 0, 0, 0
+  for _, row in ipairs(res) do
+    if type(row) == "table" then
+      n_exp = n_exp + 1
+      local got = tonumber(row.helper_exists) or 0
+      if got == 1 then n_mat = n_mat + 1 end
+      if row.observed == nil then n_un = n_un + 1 end
+      plog(string.format("[X10BridgeDiag] %s src=%s|%s exp=%s obs=%s"
+        .. " helper=%s attach=%s amount=%s zeroed=%s origin=%s",
+        tostring(row.helper_id), tostring(row.source_table),
+        tostring(row.source_key), tostring(row.expected),
+        tostring(row.observed), tostring(row.helper_exists),
+        tostring(row.attached), tostring(row.amount_exists),
+        tostring(row.zeroed), tostring(row.origin)))
+    end
+  end
+  plog(string.format("[X10BridgeDiag] bridge_expected=%d"
+    .. " bridge_materialized=%d bridge_unavailable=%d",
+    n_exp, n_mat, n_un))
+end
+dump_bridge_diag()

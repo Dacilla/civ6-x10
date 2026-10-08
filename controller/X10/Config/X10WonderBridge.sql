@@ -5,6 +5,22 @@
 -- it holds that value AND its helper exists. Drift leaves vanilla
 -- untouched and the dormant registry row can never match at runtime.
 -- Helpers run InGame (UpdateDatabase) before native populate.
+-- Phase 3D: AFTER INSERT triggers replicate the same guarded logic
+-- for rows inserted after this script runs (DLC load order);
+-- X10BridgeDiag records per-cell state for the probe dump.
+
+CREATE TABLE IF NOT EXISTS X10BridgeDiag (
+  helper_id TEXT PRIMARY KEY,
+  source_table TEXT NOT NULL,
+  source_key TEXT NOT NULL,
+  expected TEXT NOT NULL,
+  observed TEXT,
+  helper_exists INTEGER NOT NULL DEFAULT 0,
+  attached INTEGER NOT NULL DEFAULT 0,
+  amount_exists INTEGER NOT NULL DEFAULT 0,
+  zeroed INTEGER NOT NULL DEFAULT 0,
+  origin TEXT NOT NULL DEFAULT 'bridge-time'
+);
 
 -- BUILDING_ALHAMBRA PointsPerTurn=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -26,6 +42,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMB
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_ALHAMBRA' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND PointsPerTurn = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ALHAMBRA_GPP_GENERAL', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL', '2',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_ALHAMBRA' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_ALHAMBRA' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+  'immediate';
 
 -- BUILDING_ALHAMBRA Entertainment=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -43,6 +69,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMB
 UPDATE Buildings SET Entertainment = 0
 WHERE BuildingType = 'BUILDING_ALHAMBRA' AND Entertainment = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ALHAMBRA_ENTERTAINMENT', 'Buildings', '-', '2',
+  (SELECT Entertainment FROM Buildings WHERE BuildingType = 'BUILDING_ALHAMBRA'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Buildings WHERE BuildingType = 'BUILDING_ALHAMBRA' AND Entertainment = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+  'immediate';
 
 -- BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION PointsPerTurn=5 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -64,6 +100,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_AMUNDS
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 5
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST', '5',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+  'immediate';
 
 -- BUILDING_ANGKOR_WAT YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -89,6 +135,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ANGKOR
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_ANGKOR_WAT' AND YieldType = 'YIELD_FAITH' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ANGKOR_WAT_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ANGKOR_WAT' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ANGKOR_WAT' AND ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ANGKOR_WAT' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_BIG_BEN PointsPerTurn=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -110,6 +166,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BE
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_BIG_BEN' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND PointsPerTurn = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_BIG_BEN_GPP_MERCHANT', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT', '3',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BIG_BEN' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BIG_BEN' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+  'immediate';
 
 -- BUILDING_BIG_BEN YieldChange=6 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -135,6 +201,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BE
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_BIG_BEN' AND YieldType = 'YIELD_GOLD' AND YieldChange = 6
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_BIG_BEN_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '6',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_BIG_BEN' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_BIG_BEN' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_BOLSHOI_THEATRE PointsPerTurn=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -156,6 +232,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHO
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND PointsPerTurn = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN', '2',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+  'immediate';
 
 -- BUILDING_BOLSHOI_THEATRE PointsPerTurn=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -177,6 +263,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHO
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND PointsPerTurn = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_BOLSHOI_THEATRE_GPP_WRITER', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_WRITER', '2',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+  'immediate';
 
 -- BUILDING_BROADWAY PointsPerTurn=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -198,6 +294,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADW
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_BROADWAY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND PointsPerTurn = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_BROADWAY_GPP_MUSICIAN', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN', '3',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BROADWAY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BROADWAY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+  'immediate';
 
 -- BUILDING_BROADWAY PointsPerTurn=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -219,6 +325,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADW
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_BROADWAY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND PointsPerTurn = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_BROADWAY_GPP_WRITER', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_WRITER', '3',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BROADWAY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_BROADWAY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+  'immediate';
 
 -- BUILDING_CASA_DE_CONTRATACION PointsPerTurn=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -240,6 +356,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CASA_D
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND PointsPerTurn = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT', '3',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+  'immediate';
 
 -- BUILDING_COLOSSEUM YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -265,6 +391,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSS
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_COLOSSEUM' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_COLOSSEUM' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSEUM' AND ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_COLOSSEUM' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_COLOSSUS PointsPerTurn=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -286,6 +422,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSS
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_COLOSSUS' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND PointsPerTurn = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_COLOSSUS_GPP_ADMIRAL', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL', '1',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_COLOSSUS' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_COLOSSUS' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+  'immediate';
 
 -- BUILDING_COLOSSUS YieldChange=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -311,6 +457,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSS
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_COLOSSUS' AND YieldType = 'YIELD_GOLD' AND YieldChange = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_COLOSSUS_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '3',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_COLOSSUS' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_COLOSSUS' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_CRISTO_REDENTOR YieldChange=4 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -336,6 +492,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CRISTO
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_CRISTO_REDENTOR' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 4
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_CRISTO_REDENTOR_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '4',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_CRISTO_REDENTOR' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CRISTO_REDENTOR' AND ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_CRISTO_REDENTOR' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_ESTADIO_DO_MARACANA YieldChange=6 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -361,6 +527,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ESTADI
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 6
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '6',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_ETEMENANKI YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -386,6 +562,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ETEMEN
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_ETEMENANKI' AND YieldType = 'YIELD_SCIENCE' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ETEMENANKI_YIELD_SCIENCE', 'Building_YieldChanges', 'YieldType=YIELD_SCIENCE', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ETEMENANKI' AND YieldType = 'YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ETEMENANKI' AND ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ETEMENANKI' AND YieldType = 'YIELD_SCIENCE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+  'immediate';
 
 -- BUILDING_FORBIDDEN_CITY YieldChange=5 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -411,6 +597,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_FORBID
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_FORBIDDEN_CITY' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 5
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_FORBIDDEN_CITY_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '5',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_FORBIDDEN_CITY' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_FORBIDDEN_CITY' AND ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_FORBIDDEN_CITY' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_GOLDEN_GATE_BRIDGE Entertainment=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -428,6 +624,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GOLDEN
 UPDATE Buildings SET Entertainment = 0
 WHERE BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND Entertainment = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT', 'Buildings', '-', '3',
+  (SELECT Entertainment FROM Buildings WHERE BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Buildings WHERE BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND Entertainment = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+  'immediate';
 
 -- BUILDING_GREAT_BATH Entertainment=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -445,6 +651,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Buildings SET Entertainment = 0
 WHERE BuildingType = 'BUILDING_GREAT_BATH' AND Entertainment = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_BATH_ENTERTAINMENT', 'Buildings', '-', '1',
+  (SELECT Entertainment FROM Buildings WHERE BuildingType = 'BUILDING_GREAT_BATH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Buildings WHERE BuildingType = 'BUILDING_GREAT_BATH' AND Entertainment = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+  'immediate';
 
 -- BUILDING_GREAT_BATH Housing=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -462,6 +678,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Buildings SET Housing = 0
 WHERE BuildingType = 'BUILDING_GREAT_BATH' AND Housing = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_BATH_HOUSING', 'Buildings', '-', '3',
+  (SELECT Housing FROM Buildings WHERE BuildingType = 'BUILDING_GREAT_BATH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_HOUSING'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_HOUSING' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Buildings WHERE BuildingType = 'BUILDING_GREAT_BATH' AND Housing = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING'),
+  'immediate';
 
 -- BUILDING_GREAT_LIBRARY PointsPerTurn=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -483,6 +709,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_LIBRARY_GPP_SCIENTIST', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST', '1',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+  'immediate';
 
 -- BUILDING_GREAT_LIBRARY PointsPerTurn=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -504,6 +740,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND PointsPerTurn = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_LIBRARY_GPP_WRITER', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_WRITER', '1',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+  'immediate';
 
 -- BUILDING_GREAT_LIBRARY YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -529,6 +775,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND YieldType = 'YIELD_SCIENCE' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_LIBRARY_YIELD_SCIENCE', 'Building_YieldChanges', 'YieldType=YIELD_SCIENCE', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND YieldType = 'YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND YieldType = 'YIELD_SCIENCE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+  'immediate';
 
 -- BUILDING_GREAT_LIGHTHOUSE PointsPerTurn=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -550,6 +806,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND PointsPerTurn = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL', '1',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+  'immediate';
 
 -- BUILDING_GREAT_LIGHTHOUSE YieldChange=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -575,6 +841,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND YieldType = 'YIELD_GOLD' AND YieldChange = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '3',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_GREAT_ZIMBABWE PointsPerTurn=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -596,6 +872,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND PointsPerTurn = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_ZIMBABWE_GPP_MERCHANT', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT', '2',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+  'immediate';
 
 -- BUILDING_GREAT_ZIMBABWE YieldChange=5 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -621,6 +907,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND YieldType = 'YIELD_GOLD' AND YieldChange = 5
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_GREAT_ZIMBABWE_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '5',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_HAGIA_SOPHIA YieldChange=4 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -646,6 +942,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HAGIA_
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_HAGIA_SOPHIA' AND YieldType = 'YIELD_FAITH' AND YieldChange = 4
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_HAGIA_SOPHIA_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '4',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_HAGIA_SOPHIA' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HAGIA_SOPHIA' AND ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_HAGIA_SOPHIA' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_HANGING_GARDENS Housing=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -663,6 +969,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HANGIN
 UPDATE Buildings SET Housing = 0
 WHERE BuildingType = 'BUILDING_HANGING_GARDENS' AND Housing = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_HANGING_GARDENS_HOUSING', 'Buildings', '-', '2',
+  (SELECT Housing FROM Buildings WHERE BuildingType = 'BUILDING_HANGING_GARDENS'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HANGING_GARDENS' AND ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Buildings WHERE BuildingType = 'BUILDING_HANGING_GARDENS' AND Housing = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+  'immediate';
 
 -- BUILDING_HERMITAGE PointsPerTurn=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -684,6 +1000,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HERMIT
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_HERMITAGE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND PointsPerTurn = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_HERMITAGE_GPP_ARTIST', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_ARTIST', '3',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_HERMITAGE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HERMITAGE' AND ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_HERMITAGE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+  'immediate';
 
 -- BUILDING_JEBEL_BARKAL YieldChange=4 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -709,6 +1035,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_JEBEL_
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_JEBEL_BARKAL' AND YieldType = 'YIELD_FAITH' AND YieldChange = 4
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_JEBEL_BARKAL_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '4',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_JEBEL_BARKAL' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_JEBEL_BARKAL' AND ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_JEBEL_BARKAL' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_MACHU_PICCHU YieldChange=4 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -734,6 +1070,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MACHU_
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_MACHU_PICCHU' AND YieldType = 'YIELD_GOLD' AND YieldChange = 4
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_MACHU_PICCHU_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '4',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MACHU_PICCHU' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MACHU_PICCHU' AND ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MACHU_PICCHU' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_MAHABODHI_TEMPLE YieldChange=4 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -759,6 +1105,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MAHABO
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 4
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_MAHABODHI_TEMPLE_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '4',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_MEENAKSHI_TEMPLE YieldChange=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -784,6 +1140,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MEENAK
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '3',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_MONT_ST_MICHEL YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -809,6 +1175,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MONT_S
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_MONT_ST_MICHEL' AND YieldType = 'YIELD_FAITH' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_MONT_ST_MICHEL_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MONT_ST_MICHEL' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MONT_ST_MICHEL' AND ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_MONT_ST_MICHEL' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_ORACLE YieldChange=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -834,6 +1210,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_ORACLE' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ORACLE_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '1',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ORACLE' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ORACLE' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_ORACLE YieldChange=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -859,6 +1245,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_ORACLE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ORACLE_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '1',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ORACLE' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ORACLE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_ORSZAGHAZ YieldChange=4 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -884,6 +1280,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORSZAG
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_ORSZAGHAZ' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 4
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_ORSZAGHAZ_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '4',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ORSZAGHAZ' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORSZAGHAZ' AND ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_ORSZAGHAZ' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_OXFORD_UNIVERSITY PointsPerTurn=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -905,6 +1311,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_OXFORD
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST', '3',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+  'immediate';
 
 -- BUILDING_PANAMA_CANAL YieldChange=10 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -930,6 +1346,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PANAMA
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_PANAMA_CANAL' AND YieldType = 'YIELD_GOLD' AND YieldChange = 10
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_PANAMA_CANAL_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '10',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_PANAMA_CANAL' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PANAMA_CANAL' AND ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_PANAMA_CANAL' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_POTALA_PALACE YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -955,6 +1381,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_POTALA_PALACE_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_POTALA_PALACE YieldChange=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -980,6 +1416,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_POTALA_PALACE_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '3',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_PYRAMIDS YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1005,6 +1451,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PYRAMI
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_PYRAMIDS' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_PYRAMIDS_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_PYRAMIDS' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PYRAMIDS' AND ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_PYRAMIDS' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_STATUE_OF_ZEUS YieldChange=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1030,6 +1486,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STATUE
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND YieldType = 'YIELD_GOLD' AND YieldChange = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_STATUE_OF_ZEUS_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '3',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_STONEHENGE YieldChange=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1055,6 +1521,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STONEH
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_STONEHENGE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_STONEHENGE_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '2',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_STONEHENGE' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STONEHENGE' AND ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_STONEHENGE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_SYDNEY_OPERA_HOUSE PointsPerTurn=5 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1076,6 +1552,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND PointsPerTurn = 5
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN', '5',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+  'immediate';
 
 -- BUILDING_SYDNEY_OPERA_HOUSE YieldChange=8 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1101,6 +1587,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 8
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE', 'Building_YieldChanges', 'YieldType=YIELD_CULTURE', '8',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND YieldType = 'YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+  'immediate';
 
 -- BUILDING_TEMPLE_ARTEMIS YieldChange=4 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1126,6 +1622,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND YieldType = 'YIELD_FOOD' AND YieldChange = 4
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_TEMPLE_ARTEMIS_YIELD_FOOD', 'Building_YieldChanges', 'YieldType=YIELD_FOOD', '4',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND YieldType = 'YIELD_FOOD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND YieldType = 'YIELD_FOOD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+  'immediate';
 
 -- BUILDING_TEMPLE_ARTEMIS Housing=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1143,6 +1649,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE
 UPDATE Buildings SET Housing = 0
 WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND Housing = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_TEMPLE_ARTEMIS_HOUSING', 'Buildings', '-', '3',
+  (SELECT Housing FROM Buildings WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Buildings WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND Housing = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+  'immediate';
 
 -- BUILDING_TERRACOTTA_ARMY PointsPerTurn=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1164,6 +1680,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TERRAC
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND PointsPerTurn = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_TERRACOTTA_ARMY_GPP_GENERAL', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL', '1',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+  'immediate';
 
 -- BUILDING_TORRE_DE_BELEM PointsPerTurn=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1185,6 +1711,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND PointsPerTurn = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_TORRE_DE_BELEM_GPP_ADMIRAL', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL', '1',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+  'immediate';
 
 -- BUILDING_TORRE_DE_BELEM YieldChange=5 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1210,6 +1746,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND YieldType = 'YIELD_GOLD' AND YieldChange = 5
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_TORRE_DE_BELEM_YIELD_GOLD', 'Building_YieldChanges', 'YieldType=YIELD_GOLD', '5',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND YieldType = 'YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND YieldType = 'YIELD_GOLD' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+  'immediate';
 
 -- BUILDING_UNIVERSITY_SANKORE PointsPerTurn=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1231,6 +1777,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVER
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST', '2',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+  'immediate';
 
 -- BUILDING_UNIVERSITY_SANKORE YieldChange=1 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1256,6 +1812,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVER
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 1
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_UNIVERSITY_SANKORE_YIELD_FAITH', 'Building_YieldChanges', 'YieldType=YIELD_FAITH', '1',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND YieldType = 'YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND YieldType = 'YIELD_FAITH' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+  'immediate';
 
 -- BUILDING_UNIVERSITY_SANKORE YieldChange=3 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1281,6 +1847,16 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVER
 UPDATE Building_YieldChanges SET YieldChange = 0
 WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND YieldType = 'YIELD_SCIENCE' AND YieldChange = 3
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE', 'Building_YieldChanges', 'YieldType=YIELD_SCIENCE', '3',
+  (SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND YieldType = 'YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND YieldType = 'YIELD_SCIENCE' AND YieldChange = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+  'immediate';
 
 -- BUILDING_VENETIAN_ARSENAL PointsPerTurn=2 (bridged)
 INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
@@ -1302,3 +1878,3021 @@ WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_VENETI
 UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0
 WHERE BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND PointsPerTurn = 2
   AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER');
+INSERT OR REPLACE INTO X10BridgeDiag
+  (helper_id, source_table, source_key, expected, observed, helper_exists, attached, amount_exists, zeroed, origin)
+SELECT 'X10_VENETIAN_ARSENAL_GPP_ENGINEER', 'Building_GreatPersonPoints', 'GreatPersonClassType=GREAT_PERSON_CLASS_ENGINEER', '2',
+  (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER'),
+  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER' AND Name = 'Amount'),
+  EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND PointsPerTurn = 0)
+    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+  'immediate';
+
+-- Deferred triggers (Phase 3D: DLC load order).
+-- X10_ALHAMBRA_GPP_GENERAL deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ALHAMBRA_GPP_GENERAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ALHAMBRA_GPP_GENERAL', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ALHAMBRA', 'X10_ALHAMBRA_GPP_GENERAL'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_GPP_GENERAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ALHAMBRA_GPP_GENERAL', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ALHAMBRA_GPP_GENERAL', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_GENERAL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 2);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ALHAMBRA_GPP_GENERAL';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ALHAMBRA_GPP_GENERAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_GPP_GENERAL'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ALHAMBRA_GPP_GENERAL';
+END;
+
+-- X10_ALHAMBRA_ENTERTAINMENT deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ALHAMBRA_ENTERTAINMENT
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.Entertainment = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ALHAMBRA_ENTERTAINMENT', 'MODIFIER_SINGLE_CITY_ADJUST_ENTERTAINMENT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.Entertainment = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ALHAMBRA', 'X10_ALHAMBRA_ENTERTAINMENT'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.Entertainment = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ALHAMBRA_ENTERTAINMENT', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.Entertainment = 2);
+  UPDATE Buildings SET Entertainment = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Entertainment FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Entertainment = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ALHAMBRA_ENTERTAINMENT';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ALHAMBRA_ENTERTAINMENT
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ALHAMBRA' AND NEW.Entertainment != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Entertainment FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ALHAMBRA' AND ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Entertainment = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ALHAMBRA_ENTERTAINMENT'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ALHAMBRA_ENTERTAINMENT';
+END;
+
+-- X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 5
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 5);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION', 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST', 'Amount', 'ARGTYPE_IDENTITY', '5'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 5);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn != 5
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION' AND ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST';
+END;
+
+-- X10_ANGKOR_WAT_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ANGKOR_WAT_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ANGKOR_WAT' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ANGKOR_WAT_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ANGKOR_WAT' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ANGKOR_WAT', 'X10_ANGKOR_WAT_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ANGKOR_WAT' AND ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ANGKOR_WAT' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ANGKOR_WAT_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ANGKOR_WAT' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ANGKOR_WAT_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_ANGKOR_WAT'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ANGKOR_WAT' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ANGKOR_WAT_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ANGKOR_WAT' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ANGKOR_WAT' AND ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ANGKOR_WAT_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ANGKOR_WAT_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ANGKOR_WAT' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ANGKOR_WAT' AND ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ANGKOR_WAT_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ANGKOR_WAT_YIELD_FAITH';
+END;
+
+-- X10_BIG_BEN_GPP_MERCHANT deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_BIG_BEN_GPP_MERCHANT
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_BIG_BEN_GPP_MERCHANT', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_BIG_BEN', 'X10_BIG_BEN_GPP_MERCHANT'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_GPP_MERCHANT')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BIG_BEN_GPP_MERCHANT', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BIG_BEN_GPP_MERCHANT', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_MERCHANT'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_BIG_BEN_GPP_MERCHANT';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_BIG_BEN_GPP_MERCHANT
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_GPP_MERCHANT'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_BIG_BEN_GPP_MERCHANT';
+END;
+
+-- X10_BIG_BEN_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_BIG_BEN_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 6
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_BIG_BEN_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 6);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_BIG_BEN', 'X10_BIG_BEN_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 6);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BIG_BEN_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '6'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 6);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BIG_BEN_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_BIG_BEN'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 6);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BIG_BEN_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 6);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_BIG_BEN_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_BIG_BEN_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BIG_BEN' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 6
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BIG_BEN' AND ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BIG_BEN_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_BIG_BEN_YIELD_GOLD';
+END;
+
+-- X10_BOLSHOI_THEATRE_GPP_MUSICIAN deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_BOLSHOI_THEATRE_GPP_MUSICIAN
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_BOLSHOI_THEATRE', 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_MUSICIAN'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 2);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_BOLSHOI_THEATRE_GPP_MUSICIAN
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_BOLSHOI_THEATRE_GPP_MUSICIAN';
+END;
+
+-- X10_BOLSHOI_THEATRE_GPP_WRITER deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_BOLSHOI_THEATRE_GPP_WRITER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_BOLSHOI_THEATRE_GPP_WRITER', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_BOLSHOI_THEATRE', 'X10_BOLSHOI_THEATRE_GPP_WRITER'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BOLSHOI_THEATRE_GPP_WRITER', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BOLSHOI_THEATRE_GPP_WRITER', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_WRITER'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 2);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_BOLSHOI_THEATRE_GPP_WRITER';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_BOLSHOI_THEATRE_GPP_WRITER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BOLSHOI_THEATRE' AND ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BOLSHOI_THEATRE_GPP_WRITER'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_BOLSHOI_THEATRE_GPP_WRITER';
+END;
+
+-- X10_BROADWAY_GPP_MUSICIAN deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_BROADWAY_GPP_MUSICIAN
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_BROADWAY_GPP_MUSICIAN', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_BROADWAY', 'X10_BROADWAY_GPP_MUSICIAN'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_MUSICIAN')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BROADWAY_GPP_MUSICIAN', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BROADWAY_GPP_MUSICIAN', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_MUSICIAN'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 3);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_BROADWAY_GPP_MUSICIAN';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_BROADWAY_GPP_MUSICIAN
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_MUSICIAN'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_BROADWAY_GPP_MUSICIAN';
+END;
+
+-- X10_BROADWAY_GPP_WRITER deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_BROADWAY_GPP_WRITER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_BROADWAY_GPP_WRITER', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_BROADWAY', 'X10_BROADWAY_GPP_WRITER'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_WRITER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BROADWAY_GPP_WRITER', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_BROADWAY_GPP_WRITER', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_WRITER'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 3);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_BROADWAY_GPP_WRITER';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_BROADWAY_GPP_WRITER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_BROADWAY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_BROADWAY' AND ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_BROADWAY_GPP_WRITER'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_BROADWAY_GPP_WRITER';
+END;
+
+-- X10_CASA_DE_CONTRATACION_GPP_MERCHANT deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_CASA_DE_CONTRATACION_GPP_MERCHANT
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_CASA_DE_CONTRATACION', 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_MERCHANT'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 3);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_CASA_DE_CONTRATACION_GPP_MERCHANT
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CASA_DE_CONTRATACION' AND ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT';
+END;
+
+-- X10_COLOSSEUM_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_COLOSSEUM_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_COLOSSEUM', 'X10_COLOSSEUM_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSEUM' AND ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_COLOSSEUM'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSEUM' AND ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_COLOSSEUM_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_COLOSSEUM_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSEUM' AND ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_COLOSSEUM_YIELD_CULTURE';
+END;
+
+-- X10_COLOSSUS_GPP_ADMIRAL deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_COLOSSUS_GPP_ADMIRAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_COLOSSUS_GPP_ADMIRAL', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_COLOSSUS', 'X10_COLOSSUS_GPP_ADMIRAL'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSUS_GPP_ADMIRAL', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSUS_GPP_ADMIRAL', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_ADMIRAL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_COLOSSUS_GPP_ADMIRAL';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_COLOSSUS_GPP_ADMIRAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_GPP_ADMIRAL'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_COLOSSUS_GPP_ADMIRAL';
+END;
+
+-- X10_COLOSSUS_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_COLOSSUS_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_COLOSSUS_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_COLOSSUS', 'X10_COLOSSUS_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSUS_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSUS_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_COLOSSUS'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_COLOSSUS_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_COLOSSUS_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_COLOSSUS_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_COLOSSUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_COLOSSUS' AND ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSUS_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_COLOSSUS_YIELD_GOLD';
+END;
+
+-- X10_CRISTO_REDENTOR_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_CRISTO_REDENTOR_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_CRISTO_REDENTOR' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_CRISTO_REDENTOR_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_CRISTO_REDENTOR' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_CRISTO_REDENTOR', 'X10_CRISTO_REDENTOR_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CRISTO_REDENTOR' AND ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_CRISTO_REDENTOR' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_CRISTO_REDENTOR_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '4'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_CRISTO_REDENTOR' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_CRISTO_REDENTOR_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_CRISTO_REDENTOR'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_CRISTO_REDENTOR' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_CRISTO_REDENTOR_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_CRISTO_REDENTOR' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CRISTO_REDENTOR' AND ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_CRISTO_REDENTOR_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_CRISTO_REDENTOR_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_CRISTO_REDENTOR' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 4
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_CRISTO_REDENTOR' AND ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_CRISTO_REDENTOR_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_CRISTO_REDENTOR_YIELD_CULTURE';
+END;
+
+-- X10_ESTADIO_DO_MARACANA_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ESTADIO_DO_MARACANA_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 6
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 6);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ESTADIO_DO_MARACANA', 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 6);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '6'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 6);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_ESTADIO_DO_MARACANA'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 6);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 6);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ESTADIO_DO_MARACANA_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 6
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ESTADIO_DO_MARACANA' AND ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ESTADIO_DO_MARACANA_YIELD_CULTURE';
+END;
+
+-- X10_ETEMENANKI_YIELD_SCIENCE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ETEMENANKI_YIELD_SCIENCE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ETEMENANKI' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ETEMENANKI_YIELD_SCIENCE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ETEMENANKI' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ETEMENANKI', 'X10_ETEMENANKI_YIELD_SCIENCE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ETEMENANKI' AND ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ETEMENANKI' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ETEMENANKI_YIELD_SCIENCE', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ETEMENANKI' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ETEMENANKI_YIELD_SCIENCE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_ETEMENANKI'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ETEMENANKI' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ETEMENANKI_YIELD_SCIENCE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_SCIENCE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ETEMENANKI' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ETEMENANKI' AND ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ETEMENANKI_YIELD_SCIENCE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ETEMENANKI_YIELD_SCIENCE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ETEMENANKI' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ETEMENANKI' AND ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ETEMENANKI_YIELD_SCIENCE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ETEMENANKI_YIELD_SCIENCE';
+END;
+
+-- X10_FORBIDDEN_CITY_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_FORBIDDEN_CITY_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_FORBIDDEN_CITY' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 5
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_FORBIDDEN_CITY_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_FORBIDDEN_CITY' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 5);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_FORBIDDEN_CITY', 'X10_FORBIDDEN_CITY_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_FORBIDDEN_CITY' AND ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_FORBIDDEN_CITY' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_FORBIDDEN_CITY_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '5'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_FORBIDDEN_CITY' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_FORBIDDEN_CITY_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_FORBIDDEN_CITY'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_FORBIDDEN_CITY' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_FORBIDDEN_CITY_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_FORBIDDEN_CITY' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 5);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_FORBIDDEN_CITY' AND ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_FORBIDDEN_CITY_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_FORBIDDEN_CITY_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_FORBIDDEN_CITY' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 5
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_FORBIDDEN_CITY' AND ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_FORBIDDEN_CITY_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_FORBIDDEN_CITY_YIELD_CULTURE';
+END;
+
+-- X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GOLDEN_GATE_BRIDGE_ENTERTAINMENT
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND NEW.Entertainment = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT', 'MODIFIER_SINGLE_CITY_ADJUST_ENTERTAINMENT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND NEW.Entertainment = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GOLDEN_GATE_BRIDGE', 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND NEW.Entertainment = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND NEW.Entertainment = 3);
+  UPDATE Buildings SET Entertainment = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Entertainment FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Entertainment = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GOLDEN_GATE_BRIDGE_ENTERTAINMENT
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND NEW.Entertainment != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Entertainment FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GOLDEN_GATE_BRIDGE' AND ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Entertainment = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT';
+END;
+
+-- X10_GREAT_BATH_ENTERTAINMENT deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_BATH_ENTERTAINMENT
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Entertainment = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_BATH_ENTERTAINMENT', 'MODIFIER_SINGLE_CITY_ADJUST_ENTERTAINMENT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Entertainment = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_BATH', 'X10_GREAT_BATH_ENTERTAINMENT'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Entertainment = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_BATH_ENTERTAINMENT', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Entertainment = 1);
+  UPDATE Buildings SET Entertainment = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Entertainment FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Entertainment = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_BATH_ENTERTAINMENT';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_BATH_ENTERTAINMENT
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Entertainment != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Entertainment FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Entertainment = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_ENTERTAINMENT'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_BATH_ENTERTAINMENT';
+END;
+
+-- X10_GREAT_BATH_HOUSING deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_BATH_HOUSING
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Housing = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_BATH_HOUSING', 'MODIFIER_SINGLE_CITY_ADJUST_BUILDING_HOUSING', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Housing = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_BATH', 'X10_GREAT_BATH_HOUSING'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_HOUSING')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Housing = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_BATH_HOUSING', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_HOUSING' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Housing = 3);
+  UPDATE Buildings SET Housing = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Housing FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_HOUSING'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_HOUSING' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Housing = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_BATH_HOUSING';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_BATH_HOUSING
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_BATH' AND NEW.Housing != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Housing FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_BATH' AND ModifierId = 'X10_GREAT_BATH_HOUSING'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_BATH_HOUSING' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Housing = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_BATH_HOUSING'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_BATH_HOUSING';
+END;
+
+-- X10_GREAT_LIBRARY_GPP_SCIENTIST deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_LIBRARY_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_LIBRARY_GPP_SCIENTIST', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_LIBRARY', 'X10_GREAT_LIBRARY_GPP_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIBRARY_GPP_SCIENTIST', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIBRARY_GPP_SCIENTIST', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 1);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_LIBRARY_GPP_SCIENTIST';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_LIBRARY_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_SCIENTIST'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_LIBRARY_GPP_SCIENTIST';
+END;
+
+-- X10_GREAT_LIBRARY_GPP_WRITER deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_LIBRARY_GPP_WRITER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_LIBRARY_GPP_WRITER', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_LIBRARY', 'X10_GREAT_LIBRARY_GPP_WRITER'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIBRARY_GPP_WRITER', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIBRARY_GPP_WRITER', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_WRITER'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn = 1);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_LIBRARY_GPP_WRITER';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_LIBRARY_GPP_WRITER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_WRITER' AND NEW.PointsPerTurn != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_GPP_WRITER'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_LIBRARY_GPP_WRITER';
+END;
+
+-- X10_GREAT_LIBRARY_YIELD_SCIENCE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_LIBRARY_YIELD_SCIENCE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_LIBRARY_YIELD_SCIENCE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_LIBRARY', 'X10_GREAT_LIBRARY_YIELD_SCIENCE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIBRARY_YIELD_SCIENCE', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIBRARY_YIELD_SCIENCE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_GREAT_LIBRARY'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIBRARY_YIELD_SCIENCE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_SCIENCE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_LIBRARY_YIELD_SCIENCE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_LIBRARY_YIELD_SCIENCE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIBRARY' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIBRARY' AND ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIBRARY_YIELD_SCIENCE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_LIBRARY_YIELD_SCIENCE';
+END;
+
+-- X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_LIGHTHOUSE_GPP_ADMIRAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_LIGHTHOUSE', 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_ADMIRAL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_LIGHTHOUSE_GPP_ADMIRAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL';
+END;
+
+-- X10_GREAT_LIGHTHOUSE_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_LIGHTHOUSE_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_LIGHTHOUSE', 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_GREAT_LIGHTHOUSE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_LIGHTHOUSE_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_LIGHTHOUSE' AND ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_LIGHTHOUSE_YIELD_GOLD';
+END;
+
+-- X10_GREAT_ZIMBABWE_GPP_MERCHANT deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_ZIMBABWE_GPP_MERCHANT
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_ZIMBABWE_GPP_MERCHANT', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_ZIMBABWE', 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_ZIMBABWE_GPP_MERCHANT', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_ZIMBABWE_GPP_MERCHANT', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_MERCHANT'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn = 2);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_ZIMBABWE_GPP_MERCHANT
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MERCHANT' AND NEW.PointsPerTurn != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_ZIMBABWE_GPP_MERCHANT';
+END;
+
+-- X10_GREAT_ZIMBABWE_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_GREAT_ZIMBABWE_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_GREAT_ZIMBABWE_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_GREAT_ZIMBABWE', 'X10_GREAT_ZIMBABWE_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_ZIMBABWE_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '5'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_ZIMBABWE_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_GREAT_ZIMBABWE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_GREAT_ZIMBABWE_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_GREAT_ZIMBABWE_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_GREAT_ZIMBABWE_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 5
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_GREAT_ZIMBABWE' AND ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_GREAT_ZIMBABWE_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_GREAT_ZIMBABWE_YIELD_GOLD';
+END;
+
+-- X10_HAGIA_SOPHIA_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_HAGIA_SOPHIA_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_HAGIA_SOPHIA' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_HAGIA_SOPHIA_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_HAGIA_SOPHIA' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_HAGIA_SOPHIA', 'X10_HAGIA_SOPHIA_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HAGIA_SOPHIA' AND ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_HAGIA_SOPHIA' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_HAGIA_SOPHIA_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '4'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_HAGIA_SOPHIA' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_HAGIA_SOPHIA_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_HAGIA_SOPHIA'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_HAGIA_SOPHIA' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_HAGIA_SOPHIA_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_HAGIA_SOPHIA' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HAGIA_SOPHIA' AND ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_HAGIA_SOPHIA_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_HAGIA_SOPHIA_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_HAGIA_SOPHIA' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 4
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HAGIA_SOPHIA' AND ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HAGIA_SOPHIA_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_HAGIA_SOPHIA_YIELD_FAITH';
+END;
+
+-- X10_HANGING_GARDENS_HOUSING deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_HANGING_GARDENS_HOUSING
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_HANGING_GARDENS' AND NEW.Housing = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_HANGING_GARDENS_HOUSING', 'MODIFIER_SINGLE_CITY_ADJUST_BUILDING_HOUSING', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_HANGING_GARDENS' AND NEW.Housing = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_HANGING_GARDENS', 'X10_HANGING_GARDENS_HOUSING'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HANGING_GARDENS' AND ModifierId = 'X10_HANGING_GARDENS_HOUSING')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_HANGING_GARDENS' AND NEW.Housing = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_HANGING_GARDENS_HOUSING', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_HANGING_GARDENS' AND NEW.Housing = 2);
+  UPDATE Buildings SET Housing = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Housing FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HANGING_GARDENS' AND ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Housing = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_HANGING_GARDENS_HOUSING';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_HANGING_GARDENS_HOUSING
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_HANGING_GARDENS' AND NEW.Housing != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Housing FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HANGING_GARDENS' AND ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Housing = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HANGING_GARDENS_HOUSING'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_HANGING_GARDENS_HOUSING';
+END;
+
+-- X10_HERMITAGE_GPP_ARTIST deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_HERMITAGE_GPP_ARTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_HERMITAGE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND NEW.PointsPerTurn = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_HERMITAGE_GPP_ARTIST', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_HERMITAGE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND NEW.PointsPerTurn = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_HERMITAGE', 'X10_HERMITAGE_GPP_ARTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HERMITAGE' AND ModifierId = 'X10_HERMITAGE_GPP_ARTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_HERMITAGE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_HERMITAGE_GPP_ARTIST', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_HERMITAGE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_HERMITAGE_GPP_ARTIST', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_ARTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_HERMITAGE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND NEW.PointsPerTurn = 3);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HERMITAGE' AND ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_HERMITAGE_GPP_ARTIST';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_HERMITAGE_GPP_ARTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_HERMITAGE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ARTIST' AND NEW.PointsPerTurn != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_HERMITAGE' AND ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_HERMITAGE_GPP_ARTIST'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_HERMITAGE_GPP_ARTIST';
+END;
+
+-- X10_JEBEL_BARKAL_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_JEBEL_BARKAL_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_JEBEL_BARKAL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_JEBEL_BARKAL_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_JEBEL_BARKAL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_JEBEL_BARKAL', 'X10_JEBEL_BARKAL_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_JEBEL_BARKAL' AND ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_JEBEL_BARKAL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_JEBEL_BARKAL_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '4'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_JEBEL_BARKAL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_JEBEL_BARKAL_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_JEBEL_BARKAL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_JEBEL_BARKAL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_JEBEL_BARKAL_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_JEBEL_BARKAL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_JEBEL_BARKAL' AND ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_JEBEL_BARKAL_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_JEBEL_BARKAL_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_JEBEL_BARKAL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 4
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_JEBEL_BARKAL' AND ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_JEBEL_BARKAL_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_JEBEL_BARKAL_YIELD_FAITH';
+END;
+
+-- X10_MACHU_PICCHU_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_MACHU_PICCHU_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MACHU_PICCHU' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 4
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_MACHU_PICCHU_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MACHU_PICCHU' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 4);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_MACHU_PICCHU', 'X10_MACHU_PICCHU_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MACHU_PICCHU' AND ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MACHU_PICCHU' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MACHU_PICCHU_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '4'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MACHU_PICCHU' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MACHU_PICCHU_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_MACHU_PICCHU'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MACHU_PICCHU' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MACHU_PICCHU_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MACHU_PICCHU' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 4);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MACHU_PICCHU' AND ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_MACHU_PICCHU_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_MACHU_PICCHU_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MACHU_PICCHU' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 4
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MACHU_PICCHU' AND ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MACHU_PICCHU_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_MACHU_PICCHU_YIELD_GOLD';
+END;
+
+-- X10_MAHABODHI_TEMPLE_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_MAHABODHI_TEMPLE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_MAHABODHI_TEMPLE_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_MAHABODHI_TEMPLE', 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MAHABODHI_TEMPLE_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '4'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MAHABODHI_TEMPLE_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_MAHABODHI_TEMPLE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MAHABODHI_TEMPLE_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 4);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_MAHABODHI_TEMPLE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 4
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MAHABODHI_TEMPLE' AND ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_MAHABODHI_TEMPLE_YIELD_FAITH';
+END;
+
+-- X10_MEENAKSHI_TEMPLE_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_MEENAKSHI_TEMPLE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_MEENAKSHI_TEMPLE', 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_MEENAKSHI_TEMPLE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_MEENAKSHI_TEMPLE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MEENAKSHI_TEMPLE' AND ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_MEENAKSHI_TEMPLE_YIELD_FAITH';
+END;
+
+-- X10_MONT_ST_MICHEL_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_MONT_ST_MICHEL_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MONT_ST_MICHEL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_MONT_ST_MICHEL_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MONT_ST_MICHEL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_MONT_ST_MICHEL', 'X10_MONT_ST_MICHEL_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MONT_ST_MICHEL' AND ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MONT_ST_MICHEL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MONT_ST_MICHEL_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MONT_ST_MICHEL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MONT_ST_MICHEL_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_MONT_ST_MICHEL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MONT_ST_MICHEL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_MONT_ST_MICHEL_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_MONT_ST_MICHEL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MONT_ST_MICHEL' AND ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_MONT_ST_MICHEL_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_MONT_ST_MICHEL_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_MONT_ST_MICHEL' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_MONT_ST_MICHEL' AND ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_MONT_ST_MICHEL_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_MONT_ST_MICHEL_YIELD_FAITH';
+END;
+
+-- X10_ORACLE_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ORACLE_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ORACLE_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ORACLE', 'X10_ORACLE_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORACLE_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORACLE_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_ORACLE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORACLE_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 1);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ORACLE_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ORACLE_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ORACLE_YIELD_CULTURE';
+END;
+
+-- X10_ORACLE_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ORACLE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ORACLE_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ORACLE', 'X10_ORACLE_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORACLE_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORACLE_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_ORACLE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORACLE_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ORACLE_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ORACLE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ORACLE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORACLE' AND ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORACLE_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ORACLE_YIELD_FAITH';
+END;
+
+-- X10_ORSZAGHAZ_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_ORSZAGHAZ_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ORSZAGHAZ' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_ORSZAGHAZ_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORSZAGHAZ' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_ORSZAGHAZ', 'X10_ORSZAGHAZ_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORSZAGHAZ' AND ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORSZAGHAZ' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORSZAGHAZ_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '4'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORSZAGHAZ' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORSZAGHAZ_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_ORSZAGHAZ'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORSZAGHAZ' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_ORSZAGHAZ_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_ORSZAGHAZ' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 4);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORSZAGHAZ' AND ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_ORSZAGHAZ_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_ORSZAGHAZ_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_ORSZAGHAZ' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 4
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_ORSZAGHAZ' AND ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_ORSZAGHAZ_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_ORSZAGHAZ_YIELD_CULTURE';
+END;
+
+-- X10_OXFORD_UNIVERSITY_GPP_SCIENTIST deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_OXFORD_UNIVERSITY_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_OXFORD_UNIVERSITY', 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 3);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_OXFORD_UNIVERSITY_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_OXFORD_UNIVERSITY' AND ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_OXFORD_UNIVERSITY_GPP_SCIENTIST';
+END;
+
+-- X10_PANAMA_CANAL_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_PANAMA_CANAL_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_PANAMA_CANAL' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 10
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_PANAMA_CANAL_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PANAMA_CANAL' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 10);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_PANAMA_CANAL', 'X10_PANAMA_CANAL_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PANAMA_CANAL' AND ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PANAMA_CANAL' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 10);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_PANAMA_CANAL_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '10'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PANAMA_CANAL' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 10);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_PANAMA_CANAL_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_PANAMA_CANAL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PANAMA_CANAL' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 10);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_PANAMA_CANAL_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PANAMA_CANAL' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 10);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PANAMA_CANAL' AND ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_PANAMA_CANAL_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_PANAMA_CANAL_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_PANAMA_CANAL' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 10
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PANAMA_CANAL' AND ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PANAMA_CANAL_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_PANAMA_CANAL_YIELD_GOLD';
+END;
+
+-- X10_POTALA_PALACE_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_POTALA_PALACE_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_POTALA_PALACE_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_POTALA_PALACE', 'X10_POTALA_PALACE_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_POTALA_PALACE_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_POTALA_PALACE_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_POTALA_PALACE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_POTALA_PALACE_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_POTALA_PALACE_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_POTALA_PALACE_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_POTALA_PALACE_YIELD_CULTURE';
+END;
+
+-- X10_POTALA_PALACE_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_POTALA_PALACE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_POTALA_PALACE_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_POTALA_PALACE', 'X10_POTALA_PALACE_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_POTALA_PALACE_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_POTALA_PALACE_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_POTALA_PALACE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_POTALA_PALACE_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 3);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_POTALA_PALACE_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_POTALA_PALACE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_POTALA_PALACE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_POTALA_PALACE' AND ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_POTALA_PALACE_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_POTALA_PALACE_YIELD_FAITH';
+END;
+
+-- X10_PYRAMIDS_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_PYRAMIDS_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_PYRAMIDS' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_PYRAMIDS_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PYRAMIDS' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_PYRAMIDS', 'X10_PYRAMIDS_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PYRAMIDS' AND ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PYRAMIDS' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_PYRAMIDS_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PYRAMIDS' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_PYRAMIDS_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_PYRAMIDS'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PYRAMIDS' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_PYRAMIDS_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_PYRAMIDS' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PYRAMIDS' AND ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_PYRAMIDS_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_PYRAMIDS_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_PYRAMIDS' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_PYRAMIDS' AND ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_PYRAMIDS_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_PYRAMIDS_YIELD_CULTURE';
+END;
+
+-- X10_STATUE_OF_ZEUS_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_STATUE_OF_ZEUS_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_STATUE_OF_ZEUS_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_STATUE_OF_ZEUS', 'X10_STATUE_OF_ZEUS_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_STATUE_OF_ZEUS_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_STATUE_OF_ZEUS_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_STATUE_OF_ZEUS'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_STATUE_OF_ZEUS_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 3);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_STATUE_OF_ZEUS_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_STATUE_OF_ZEUS_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STATUE_OF_ZEUS' AND ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STATUE_OF_ZEUS_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_STATUE_OF_ZEUS_YIELD_GOLD';
+END;
+
+-- X10_STONEHENGE_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_STONEHENGE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_STONEHENGE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_STONEHENGE_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STONEHENGE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_STONEHENGE', 'X10_STONEHENGE_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STONEHENGE' AND ModifierId = 'X10_STONEHENGE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STONEHENGE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_STONEHENGE_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STONEHENGE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_STONEHENGE_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_STONEHENGE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STONEHENGE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_STONEHENGE_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_STONEHENGE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 2);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STONEHENGE' AND ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_STONEHENGE_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_STONEHENGE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_STONEHENGE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_STONEHENGE' AND ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_STONEHENGE_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_STONEHENGE_YIELD_FAITH';
+END;
+
+-- X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 5
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 5);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_SYDNEY_OPERA_HOUSE', 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN', 'Amount', 'ARGTYPE_IDENTITY', '5'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_MUSICIAN'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn = 5);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_MUSICIAN' AND NEW.PointsPerTurn != 5
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN';
+END;
+
+-- X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_SYDNEY_OPERA_HOUSE_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 8
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 8);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_SYDNEY_OPERA_HOUSE', 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 8);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '8'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 8);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_SYDNEY_OPERA_HOUSE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 8);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 8);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_SYDNEY_OPERA_HOUSE_YIELD_CULTURE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange != 8
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_SYDNEY_OPERA_HOUSE' AND ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE';
+END;
+
+-- X10_TEMPLE_ARTEMIS_YIELD_FOOD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_TEMPLE_ARTEMIS_YIELD_FOOD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.YieldType = 'YIELD_FOOD' AND NEW.YieldChange = 4
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_TEMPLE_ARTEMIS_YIELD_FOOD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.YieldType = 'YIELD_FOOD' AND NEW.YieldChange = 4);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_TEMPLE_ARTEMIS', 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.YieldType = 'YIELD_FOOD' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TEMPLE_ARTEMIS_YIELD_FOOD', 'Amount', 'ARGTYPE_IDENTITY', '4'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.YieldType = 'YIELD_FOOD' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TEMPLE_ARTEMIS_YIELD_FOOD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_TEMPLE_ARTEMIS'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.YieldType = 'YIELD_FOOD' AND NEW.YieldChange = 4);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TEMPLE_ARTEMIS_YIELD_FOOD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FOOD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.YieldType = 'YIELD_FOOD' AND NEW.YieldChange = 4);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_TEMPLE_ARTEMIS_YIELD_FOOD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.YieldType = 'YIELD_FOOD' AND NEW.YieldChange != 4
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_TEMPLE_ARTEMIS_YIELD_FOOD';
+END;
+
+-- X10_TEMPLE_ARTEMIS_HOUSING deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_TEMPLE_ARTEMIS_HOUSING
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.Housing = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_TEMPLE_ARTEMIS_HOUSING', 'MODIFIER_SINGLE_CITY_ADJUST_BUILDING_HOUSING', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.Housing = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_TEMPLE_ARTEMIS', 'X10_TEMPLE_ARTEMIS_HOUSING'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.Housing = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TEMPLE_ARTEMIS_HOUSING', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Buildings WHERE NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.Housing = 3);
+  UPDATE Buildings SET Housing = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Housing FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Housing = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_TEMPLE_ARTEMIS_HOUSING';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_TEMPLE_ARTEMIS_HOUSING
+AFTER INSERT ON Buildings
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND NEW.Housing != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT Housing FROM Buildings WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TEMPLE_ARTEMIS' AND ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Buildings WHERE rowid = NEW.rowid AND Housing = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TEMPLE_ARTEMIS_HOUSING'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_TEMPLE_ARTEMIS_HOUSING';
+END;
+
+-- X10_TERRACOTTA_ARMY_GPP_GENERAL deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_TERRACOTTA_ARMY_GPP_GENERAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_TERRACOTTA_ARMY_GPP_GENERAL', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_TERRACOTTA_ARMY', 'X10_TERRACOTTA_ARMY_GPP_GENERAL'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TERRACOTTA_ARMY_GPP_GENERAL', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TERRACOTTA_ARMY_GPP_GENERAL', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_GENERAL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn = 1);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_TERRACOTTA_ARMY_GPP_GENERAL';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_TERRACOTTA_ARMY_GPP_GENERAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_GENERAL' AND NEW.PointsPerTurn != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TERRACOTTA_ARMY' AND ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TERRACOTTA_ARMY_GPP_GENERAL'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_TERRACOTTA_ARMY_GPP_GENERAL';
+END;
+
+-- X10_TORRE_DE_BELEM_GPP_ADMIRAL deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_TORRE_DE_BELEM_GPP_ADMIRAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_TORRE_DE_BELEM_GPP_ADMIRAL', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_TORRE_DE_BELEM', 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TORRE_DE_BELEM_GPP_ADMIRAL', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TORRE_DE_BELEM_GPP_ADMIRAL', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_ADMIRAL'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn = 1);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_TORRE_DE_BELEM_GPP_ADMIRAL
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ADMIRAL' AND NEW.PointsPerTurn != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_TORRE_DE_BELEM_GPP_ADMIRAL';
+END;
+
+-- X10_TORRE_DE_BELEM_YIELD_GOLD deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_TORRE_DE_BELEM_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_TORRE_DE_BELEM_YIELD_GOLD', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_TORRE_DE_BELEM', 'X10_TORRE_DE_BELEM_YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TORRE_DE_BELEM_YIELD_GOLD', 'Amount', 'ARGTYPE_IDENTITY', '5'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TORRE_DE_BELEM_YIELD_GOLD', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_TORRE_DE_BELEM'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_TORRE_DE_BELEM_YIELD_GOLD', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_GOLD'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange = 5);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_TORRE_DE_BELEM_YIELD_GOLD';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_TORRE_DE_BELEM_YIELD_GOLD
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_TORRE_DE_BELEM' AND NEW.YieldType = 'YIELD_GOLD' AND NEW.YieldChange != 5
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_TORRE_DE_BELEM' AND ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_TORRE_DE_BELEM_YIELD_GOLD'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_TORRE_DE_BELEM_YIELD_GOLD';
+END;
+
+-- X10_UNIVERSITY_SANKORE_GPP_SCIENTIST deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_UNIVERSITY_SANKORE_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_UNIVERSITY_SANKORE', 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_SCIENTIST'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn = 2);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_UNIVERSITY_SANKORE_GPP_SCIENTIST
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_SCIENTIST' AND NEW.PointsPerTurn != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_UNIVERSITY_SANKORE_GPP_SCIENTIST';
+END;
+
+-- X10_UNIVERSITY_SANKORE_YIELD_FAITH deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_UNIVERSITY_SANKORE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_FAITH', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_UNIVERSITY_SANKORE', 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_FAITH', 'Amount', 'ARGTYPE_IDENTITY', '1'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_FAITH', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_UNIVERSITY_SANKORE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_FAITH', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_FAITH'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange = 1);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_UNIVERSITY_SANKORE_YIELD_FAITH
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_FAITH' AND NEW.YieldChange != 1
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_UNIVERSITY_SANKORE_YIELD_FAITH';
+END;
+
+-- X10_UNIVERSITY_SANKORE_YIELD_SCIENCE deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_UNIVERSITY_SANKORE_YIELD_SCIENCE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 3
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 3);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_UNIVERSITY_SANKORE', 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE', 'Amount', 'ARGTYPE_IDENTITY', '3'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_UNIVERSITY_SANKORE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE' AND Name = 'BuildingType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 3);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_SCIENCE'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE' AND Name = 'YieldType')
+    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange = 3);
+  UPDATE Building_YieldChanges SET YieldChange = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_UNIVERSITY_SANKORE_YIELD_SCIENCE
+AFTER INSERT ON Building_YieldChanges
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND NEW.YieldType = 'YIELD_SCIENCE' AND NEW.YieldChange != 3
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT YieldChange FROM Building_YieldChanges WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_UNIVERSITY_SANKORE' AND ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_YieldChanges WHERE rowid = NEW.rowid AND YieldChange = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_UNIVERSITY_SANKORE_YIELD_SCIENCE';
+END;
+
+-- X10_VENETIAN_ARSENAL_GPP_ENGINEER deferred triggers (late-arriving source rows)
+CREATE TRIGGER IF NOT EXISTS X10_TRG_VENETIAN_ARSENAL_GPP_ENGINEER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND NEW.PointsPerTurn = 2
+BEGIN
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
+  SELECT 'X10_VENETIAN_ARSENAL_GPP_ENGINEER', 'MODIFIER_SINGLE_CITY_ADJUST_GREAT_PERSON_POINT', 0, 0, 0, 0
+  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND NEW.PointsPerTurn = 2);
+  INSERT INTO BuildingModifiers (BuildingType, ModifierId)
+  SELECT 'BUILDING_VENETIAN_ARSENAL', 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'
+  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_VENETIAN_ARSENAL_GPP_ENGINEER', 'Amount', 'ARGTYPE_IDENTITY', '2'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER' AND Name = 'Amount')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND NEW.PointsPerTurn = 2);
+  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
+  SELECT 'X10_VENETIAN_ARSENAL_GPP_ENGINEER', 'GreatPersonClassType', 'ARGTYPE_IDENTITY', 'GREAT_PERSON_CLASS_ENGINEER'
+  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER' AND Name = 'GreatPersonClassType')
+    AND EXISTS (SELECT 1 FROM Building_GreatPersonPoints WHERE NEW.BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND NEW.PointsPerTurn = 2);
+  UPDATE Building_GreatPersonPoints SET PointsPerTurn = 0 WHERE rowid = NEW.rowid
+    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER');
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+    origin = 'trigger'
+  WHERE helper_id = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER';
+END;
+CREATE TRIGGER IF NOT EXISTS X10_TRGD_VENETIAN_ARSENAL_GPP_ENGINEER
+AFTER INSERT ON Building_GreatPersonPoints
+FOR EACH ROW
+WHEN NEW.BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND NEW.GreatPersonClassType = 'GREAT_PERSON_CLASS_ENGINEER' AND NEW.PointsPerTurn != 2
+  AND NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER')
+BEGIN
+  UPDATE X10BridgeDiag SET
+    observed = (SELECT PointsPerTurn FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid),
+    helper_exists = EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+    attached = EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING_VENETIAN_ARSENAL' AND ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+    amount_exists = EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER' AND Name = 'Amount'),
+    zeroed = EXISTS(SELECT 1 FROM Building_GreatPersonPoints WHERE rowid = NEW.rowid AND PointsPerTurn = 0)
+      AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER'),
+    origin = 'late-baseline-mismatch'
+  WHERE helper_id = 'X10_VENETIAN_ARSENAL_GPP_ENGINEER';
+END;

@@ -192,6 +192,16 @@ handle ABSENT (not a failure — the native MATCH line is the proof).
 The Panama helper populates from the database at load (bridge SQL attaches
 it to the wonder), so its MATCH line needs no in-game action.
 
+Phase-3D note (Portugal-pack load order): the 3C live run showed 748+119
+with exactly three helpers unmaterialized — all three source rows arrive
+via Portugal's gameplay update AFTER X10WonderBridge executes (proven from
+the run logs; both DLC packs were enabled). The bridge SQL now carries
+deferred guarded triggers + an `X10BridgeDiag` table; the next run must show
+`definitions_added=3267 writes=750 transform_refused=120 post_add_match=750
+mismatch=0 unreadable=0`, both MATCH witnesses (Zeus 365, Panama 73), and
+57 `[X10BridgeDiag]` lines (54 immediate + 3 trigger) with
+`bridge_materialized=57 bridge_unavailable=0`. Native DLL unchanged by 3D.
+
 Gameplay proof for the helper mechanism (beyond definition-store
 persistence): modifierization is a new gameplay path, so one practical
 check is needed that a generated helper actually contributes to an active

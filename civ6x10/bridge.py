@@ -260,8 +260,213 @@ def _baseline_pred(row: dict) -> str:
     return " AND ".join(parts)
 
 
+def _row_keys(row: dict) -> dict:
+    return dict(p.split("=", 1) for p in row["key"].split("|")) if row["key"] != "-" else {}
+
+
+def _key_pred(row: dict, keys: dict) -> str:
+    # Row identity WITHOUT the value (used for readback/diag subqueries).
+    parts = ["BuildingType = '%s'" % row["building_type"]]
+    for k in sorted(keys):
+        parts.append("%s = '%s'" % (k, keys[k].replace("'", "''")))
+    return " AND ".join(parts)
+
+
+def _new_baseline_pred(row: dict, keys: dict) -> str:
+    # Baseline predicate against the arriving row inside a trigger.
+    parts = ["NEW.BuildingType = '%s'" % row["building_type"]]
+    for k in sorted(keys):
+        parts.append("NEW.%s = '%s'" % (k, keys[k].replace("'", "''")))
+    parts.append("NEW.%s = %s" % (row["value_column"], row["value"]))
+    return " AND ".join(parts)
+
+
+def _new_key_pred(row: dict, keys: dict) -> str:
+    parts = ["NEW.BuildingType = '%s'" % row["building_type"]]
+    for k in sorted(keys):
+        parts.append("NEW.%s = '%s'" % (k, keys[k].replace("'", "''")))
+    return " AND ".join(parts)
+
+
+def _helper_inserts(spec: dict, hid: str, row: dict, keys: dict, base: str) -> list[str]:
+    # Immediate-path statements: created only under the baseline EXISTS guard.
+    stmts = [(
+        "INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly,"
+        " Permanent, Repeatable)\n"
+        "SELECT '%s', '%s', 0, 0, 0, 0\n"
+        "WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')\n"
+        "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
+            hid, spec["modifier_type"], hid, row["source_table"], base))]
+    stmts.append(
+        "INSERT INTO BuildingModifiers (BuildingType, ModifierId)\n"
+        "SELECT '%s', '%s'\n"
+        "WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers"
+        " WHERE BuildingType = '%s' AND ModifierId = '%s')\n"
+        "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
+            row["building_type"], hid, row["building_type"], hid,
+            row["source_table"], base))
+    stmts.append(
+        "INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
+        "SELECT '%s', 'Amount', 'ARGTYPE_IDENTITY', '%s'\n"
+        "WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
+        " WHERE ModifierId = '%s' AND Name = 'Amount')\n"
+        "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
+            hid, row["value"], hid, row["source_table"], base))
+    for extra in spec["extra_args"]:
+        stmts.append(
+            "INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
+            "SELECT '%s', '%s', 'ARGTYPE_IDENTITY', '%s'\n"
+            "WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
+            " WHERE ModifierId = '%s' AND Name = '%s')\n"
+            "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
+                hid, extra, _extra_value(extra, keys, row).replace("'", "''"),
+                hid, extra, row["source_table"], base))
+    return stmts
+
+
+def _helper_inserts_trigger(spec: dict, hid: str, row: dict, keys: dict) -> list[str]:
+    # Trigger-body variant: guards reference the arriving (NEW) row, which by
+    # WHEN already satisfies the baseline; NOT EXISTS keeps idempotence.
+    guard = "EXISTS (SELECT 1 FROM %s WHERE %s)" % (
+        row["source_table"], _new_baseline_pred(row, keys))
+    stmts = [(
+        "  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly,"
+        " Permanent, Repeatable)\n"
+        "  SELECT '%s', '%s', 0, 0, 0, 0\n"
+        "  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')\n"
+        "    AND %s;" % (hid, spec["modifier_type"], hid, guard))]
+    stmts.append(
+        "  INSERT INTO BuildingModifiers (BuildingType, ModifierId)\n"
+        "  SELECT '%s', '%s'\n"
+        "  WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers"
+        " WHERE BuildingType = '%s' AND ModifierId = '%s')\n"
+        "    AND %s;" % (row["building_type"], hid, row["building_type"],
+                         hid, guard))
+    stmts.append(
+        "  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
+        "  SELECT '%s', 'Amount', 'ARGTYPE_IDENTITY', '%s'\n"
+        "  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
+        " WHERE ModifierId = '%s' AND Name = 'Amount')\n"
+        "    AND %s;" % (hid, row["value"], hid, guard))
+    for extra in spec["extra_args"]:
+        stmts.append(
+            "  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
+            "  SELECT '%s', '%s', 'ARGTYPE_IDENTITY', '%s'\n"
+            "  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
+            " WHERE ModifierId = '%s' AND Name = '%s')\n"
+            "    AND %s;" % (
+                hid, extra, _extra_value(extra, keys, row).replace("'", "''"),
+                hid, extra, guard))
+    return stmts
+
+
+DIAG_DDL = """CREATE TABLE IF NOT EXISTS X10BridgeDiag (
+  helper_id TEXT PRIMARY KEY,
+  source_table TEXT NOT NULL,
+  source_key TEXT NOT NULL,
+  expected TEXT NOT NULL,
+  observed TEXT,
+  helper_exists INTEGER NOT NULL DEFAULT 0,
+  attached INTEGER NOT NULL DEFAULT 0,
+  amount_exists INTEGER NOT NULL DEFAULT 0,
+  zeroed INTEGER NOT NULL DEFAULT 0,
+  origin TEXT NOT NULL DEFAULT 'bridge-time'
+);"""
+
+
+def _diag_insert(hid: str, row: dict, keys: dict) -> str:
+    # Unconditional single-row readback: distinguishes absent (observed NULL),
+    # drifted (observed != expected), and bridged (observed 0 + helper) states.
+    keypred = _key_pred(row, keys)
+    return (
+        "INSERT OR REPLACE INTO X10BridgeDiag\n"
+        "  (helper_id, source_table, source_key, expected, observed,"
+        " helper_exists, attached, amount_exists, zeroed, origin)\n"
+        "SELECT '%s', '%s', '%s', '%s',\n"
+        "  (SELECT %s FROM %s WHERE %s),\n"
+        "  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = '%s'),\n"
+        "  EXISTS(SELECT 1 FROM BuildingModifiers WHERE BuildingType = '%s'"
+        " AND ModifierId = '%s'),\n"
+        "  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = '%s'"
+        " AND Name = 'Amount'),\n"
+        "  EXISTS(SELECT 1 FROM %s WHERE %s AND %s = 0)\n"
+        "    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = '%s'),\n"
+        "  'immediate';" % (
+            hid, row["source_table"], row["key"], row["value"],
+            row["value_column"], row["source_table"], keypred,
+            hid, row["building_type"], hid, hid,
+            row["source_table"], keypred, row["value_column"], hid))
+
+
+def _diag_trigger_update(hid: str, row: dict, origin: str) -> str:
+    return (
+        "UPDATE X10BridgeDiag SET\n"
+        "  observed = (SELECT %s FROM %s WHERE rowid = NEW.rowid),\n"
+        "  helper_exists = EXISTS(SELECT 1 FROM Modifiers"
+        " WHERE ModifierId = '%s'),\n"
+        "  attached = EXISTS(SELECT 1 FROM BuildingModifiers"
+        " WHERE BuildingType = '%s' AND ModifierId = '%s'),\n"
+        "  amount_exists = EXISTS(SELECT 1 FROM ModifierArguments"
+        " WHERE ModifierId = '%s' AND Name = 'Amount'),\n"
+        "  zeroed = EXISTS(SELECT 1 FROM %s WHERE rowid = NEW.rowid"
+        " AND %s = 0)\n"
+        "    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = '%s'),\n"
+        "  origin = '%s'\n"
+        "WHERE helper_id = '%s';" % (
+            row["value_column"], row["source_table"], hid,
+            row["building_type"], hid, hid,
+            row["source_table"], row["value_column"], hid, origin, hid))
+
+
+def _materialize_trigger(spec: dict, hid: str, row: dict, keys: dict) -> str:
+    # Phase 3D: deferred guarded path for rows inserted AFTER the bridge ran
+    # (proven live: Portugal-pack rows arrive after X10WonderBridge executes).
+    # WHEN encodes the identical baseline predicate against the arriving row;
+    # zeroing stays conditional on helper existence. Same fail-closed rules,
+    # just deferred. Trigger names are deterministic (X10_TRG_<id-suffix>).
+    tname = "X10_TRG_" + hid[len("X10_"):]
+    body = _helper_inserts_trigger(spec, hid, row, keys)
+    zero = (
+        "  UPDATE %s SET %s = 0 WHERE rowid = NEW.rowid\n"
+        "    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s');"
+        % (row["source_table"], row["value_column"], hid))
+    diag = "\n".join("  " + ln for ln in _diag_trigger_update(
+        hid, row, "trigger").split("\n"))
+    return (
+        "CREATE TRIGGER IF NOT EXISTS %s\n"
+        "AFTER INSERT ON %s\nFOR EACH ROW\nWHEN %s\nBEGIN\n%s\n%s\n%s\nEND;"
+        % (tname, row["source_table"], _new_baseline_pred(row, keys),
+           "\n".join(body), zero, diag))
+
+
+def _drift_trigger(hid: str, row: dict, keys: dict) -> str:
+    # Records late-arriving rows whose value BREAKS the baseline, so the diag
+    # distinguishes never-arrived (observed NULL) from drifted (observed != V).
+    # Guarded on helper absence: must never overwrite a successfully bridged
+    # row's record.
+    tname = "X10_TRGD_" + hid[len("X10_"):]
+    when = "%s AND NEW.%s != %s\n  AND NOT EXISTS" \
+           " (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')" % (
+               _new_key_pred(row, keys), row["value_column"], row["value"],
+               hid)
+    diag = "\n".join("  " + ln for ln in _diag_trigger_update(
+        hid, row, "late-baseline-mismatch").split("\n"))
+    return (
+        "CREATE TRIGGER IF NOT EXISTS %s\n"
+        "AFTER INSERT ON %s\nFOR EACH ROW\nWHEN %s\nBEGIN\n%s\nEND;"
+        % (tname, row["source_table"], when, diag))
+
+
 def emit_bridge_sql(direct_rows: list[dict]) -> str:
-    """Guarded helper-creation + direct-zeroing SQL (deterministic)."""
+    """Guarded helper-creation + direct-zeroing SQL (deterministic).
+
+    Two execution paths share identical predicates:
+    - immediate: rows present when the bridge runs (base/expansion content);
+    - deferred triggers: rows inserted AFTER the bridge runs (proven live:
+      DLC-pack rows arrive later). WHEN encodes the baseline; zeroing stays
+      conditional on helper existence. A diagnostics table records per-cell
+      state for the local-only probe dump.
+    """
     spec_by_family = {s["family"]: s for s in BRIDGES}
     chunks = [
         "-- GENERATED by civ6x10.bridge from audited direct wonder values.",
@@ -271,50 +476,33 @@ def emit_bridge_sql(direct_rows: list[dict]) -> str:
         "-- it holds that value AND its helper exists. Drift leaves vanilla",
         "-- untouched and the dormant registry row can never match at runtime.",
         "-- Helpers run InGame (UpdateDatabase) before native populate.",
+        "-- Phase 3D: AFTER INSERT triggers replicate the same guarded logic",
+        "-- for rows inserted after this script runs (DLC load order);",
+        "-- X10BridgeDiag records per-cell state for the probe dump.",
+        "",
+        DIAG_DDL,
         "",
     ]
+    trigs: list[str] = []
     for r in direct_rows:
         spec = spec_by_family[r["source_family"]]
         hid = helper_id(r)
         base = _baseline_pred(r)
-        keys = dict(p.split("=", 1) for p in r["key"].split("|")) if r["key"] != "-" else {}
+        keys = _row_keys(r)
         chunks.append("-- %s %s=%s (bridged)" % (
             r["building_type"], r["value_column"], r["value"]))
-        chunks.append(
-            "INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly,"
-            " Permanent, Repeatable)\n"
-            "SELECT '%s', '%s', 0, 0, 0, 0\n"
-            "WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')\n"
-            "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-                hid, spec["modifier_type"], hid, r["source_table"], base))
-        chunks.append(
-            "INSERT INTO BuildingModifiers (BuildingType, ModifierId)\n"
-            "SELECT '%s', '%s'\n"
-            "WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers"
-            " WHERE BuildingType = '%s' AND ModifierId = '%s')\n"
-            "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-                r["building_type"], hid, r["building_type"], hid,
-                r["source_table"], base))
-        chunks.append(
-            "INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
-            "SELECT '%s', 'Amount', 'ARGTYPE_IDENTITY', '%s'\n"
-            "WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
-            " WHERE ModifierId = '%s' AND Name = 'Amount')\n"
-            "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-                hid, r["value"], hid, r["source_table"], base))
-        for extra in spec["extra_args"]:
-            chunks.append(
-                "INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
-                "SELECT '%s', '%s', 'ARGTYPE_IDENTITY', '%s'\n"
-                "WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
-                " WHERE ModifierId = '%s' AND Name = '%s')\n"
-                "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-                    hid, extra, _extra_value(extra, keys, r).replace("'", "''"), hid, extra,
-                    r["source_table"], base))
+        chunks.extend(_helper_inserts(spec, hid, r, keys, base))
         vcol = r["value_column"]
         chunks.append(
             "UPDATE %s SET %s = 0\nWHERE %s\n"
             "  AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s');"
             % (r["source_table"], vcol, base, hid))
+        chunks.append(_diag_insert(hid, r, keys))
         chunks.append("")
+        trigs.append("-- %s deferred triggers (late-arriving source rows)" % hid)
+        trigs.append(_materialize_trigger(spec, hid, r, keys))
+        trigs.append(_drift_trigger(hid, r, keys))
+        trigs.append("")
+    chunks.append("-- Deferred triggers (Phase 3D: DLC load order).")
+    chunks.extend(trigs)
     return "\n".join(chunks)

@@ -254,3 +254,74 @@ The test now proves all four cases instead of modeling k=0 as helper-zero.
   (738 uncond + 132 cond; static at FLOAT32 k=7.3: **750 writes /
   120 refusals**).
 - All 715 pre-Wonder rows and all 97 modifier-backed wonder rows unchanged.
+
+## Phase 3D: three missing helpers — DLC load order (diagnosed, fixed)
+
+Phase-3C live validation was near-perfect (`writes=748 transform_refused=119
+official_mismatch=0 post_add_match=748 mismatch=0 unreadable=0`) with both
+witnesses MATCHING (Zeus 50→365, Panama helper 10→73 — the bridge
+architecture is LIVE-PROVEN). But 748+119=867, not 750+120=870: exactly
+three generated helpers never materialized (`definitions_added=3264 =
+3210 + 54`).
+
+### Exact cause per helper (proven, not inferred)
+
+All three missing source cells live in ONE file:
+`DLC/Portugal/Data/Portugal_Buildings.xml` — Torre gold (line 29), Torre
+admiral GPP (line 34), **and Etemenanki science (line 27)**. At
+X10WonderBridge execution time those rows were absent (EXISTS guards
+correctly false → no helpers, no zeroing — fail-closed worked); Portugal's
+`PortugalGameplay` UpdateDatabase action inserts them later. Runtime proof
+from the live logs (no new run needed for the diagnosis):
+
+- Etemenanki modifier-backed definitions (`ETEMENANKI_SCIENCE_FLOODPLAINS`,
+  `..._PRODUCTION_MARSH`, …) populated and MATCHED → Babylon content
+  enabled; only the bridge helper is missing → the row arrived after the
+  bridge, not "never".
+- Portugal content likewise enabled (`TRADE_PRODUCTION_FROM_FEITORIA`,
+  `TRADE_GOLD_FROM_FEITORIA` 4→29.2 MATCHED) → Torre rows existed by
+  populate time, yet no helpers → same late-arrival cause.
+- Content-disabled and baseline-drift causes are thereby excluded for all
+  three: the user's enabled content excludes nothing.
+
+No native change (writer/store verification was clean: 748/748/0/0). No
+load-order change (Civ VI offers no per-DLC ordering lever that survives
+users without those DLCs — hard dependencies would disable X10 for them).
+
+### Fix: deferred guarded triggers (order-agnostic, ownership-agnostic)
+
+`X10WonderBridge.sql` now emits, per bridged cell, two deterministic
+`AFTER INSERT` triggers alongside the unchanged immediate statements:
+
+- `X10_TRG_<helper>` materializes the helper when a late row arrives WITH
+  the baseline (WHEN = identical baseline predicate on NEW; zeroing stays
+  conditional on helper existence; NOT EXISTS keeps idempotence).
+- `X10_TRGD_<helper>` records late rows that BREAK the baseline
+  (`origin='late-baseline-mismatch'`), guarded on helper absence so it can
+  never overwrite a successful record.
+
+Same fail-closed rules, deferred. Triggers also cover any future
+late-loading content without further changes.
+
+### Diagnostics (local-only dump, no native change)
+
+New `X10BridgeDiag` table (helper, source table/key, expected, observed,
+helper/attach/amount/zeroed flags, origin) written unconditionally at
+bridge time and updated by triggers — distinguishing absent (observed NULL),
+drifted, and bridged states. Dumped by the disposable probe via
+`DB.Query` through the native logger (`[X10BridgeDiag]` lines in
+`X10Lifecycle.log`, incl. `bridge_expected/materialized/unavailable`
+summary). The table itself is inert data; log noise lives only in the
+never-shipped probe. Runtime validation reports materialization separately
+from transform refusals via this dump — the native writer is untouched.
+
+### Corrected expected counts (derived, unchanged totals)
+
+Registry still **870 entries**; with both DLC packs enabled the next run
+must show `definitions_added=3267 writes=750 transform_refused=120
+post_add_match=750 mismatch=0 unreadable=0` plus 57 `[X10BridgeDiag]` lines
+(54 `origin=immediate`, 3 `origin=trigger`) and
+`bridge_expected=57 bridge_materialized=57 bridge_unavailable=0`.
+Panama witness preserved. If content is genuinely unowned, the diag shows
+`bridge_unavailable=N` with vanilla untouched — legitimate, documented per
+run, never a failure.
