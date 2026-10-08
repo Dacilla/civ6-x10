@@ -179,9 +179,78 @@ runtime (official-mismatch guard). Statements are idempotent
 action (`Config/X10WonderBridge.sql`, wired in `X10.modinfo`) so helpers
 exist before native populate.
 
-### Totals
+### Totals (superseded by Phase 3C below)
 
 59 helpers → 59 registry entries (39 unconditional + 20 count-like GPP);
 final registry **872 entries / 868 definitions** (740 uncond + 132 cond;
 static at FLOAT32 k=7.3: **752 writes / 120 refusals**). All 715 pre-Wonder
 rows byte-identical; the 97 modifier-backed wonder rows unchanged.
+
+## Phase 3C: corrected bridge semantic equivalence
+
+The Phase-3B SQL architecture (guarded baseline predicates,
+zero-only-if-helper-exists, idempotence, deterministic IDs) is retained.
+Independent review found two equivalence defects, both corrected; all
+figures below are derived from generation/tests, not targeted.
+
+### A. Regional Entertainment excluded (Colosseum, Estadio)
+
+`Buildings.Entertainment` participates in `RegionalRange` for Colosseum
+(range 6) and Estadio (range 100000/global). The only official
+regional-entertainment modifier,
+`GREATPERSON_EXTRA_REGIONAL_BUILDING_ENTERTAINMENT`
+(`MODIFIER_PLAYER_DISTRICT_ADJUST_EXTRA_REGIONAL_ENTERTAINMENT`,
+`EFFECT_ADJUST_DISTRICT_EXTRA_REGIONAL_ENTERTAINMENT`), is a great-person
+one-shot (RunOnce=1, Permanent=1, district-in-tile attachment target) —
+entirely different lifetime, attachment, and scope from a persistent wonder
+aura. No `BuildingModifiers`-attached regional-entertainment precedent
+exists anywhere in the clean DB, so exact equivalence is unproven: both
+cells keep their vanilla direct values (never zeroed), generate no helpers,
+and both wonders are PARTIAL with the rationale recorded per cell. The
+three `RegionalRange=0` Entertainment rows (Alhambra, Great Bath, Golden
+Gate Bridge) retain the local Thermal Bath bridge. Regression test:
+nonzero Entertainment + nonzero RegionalRange MUST NOT use
+`MODIFIER_SINGLE_CITY_ADJUST_ENTERTAINMENT` (inventory absence + no helper
++ no zeroing + audit disposition agreement).
+
+### B. Yields re-bridged as building yields
+
+`Building_YieldChanges` helpers now use `MODIFIER_BUILDING_YIELD_CHANGE` /
+`EFFECT_ADJUST_BUILDING_YIELD_CHANGE` with all three arguments
+(`Amount` = audited value, `BuildingType` = owning wonder, `YieldType` =
+direct row type), attached through the wonder's `BuildingModifiers` — the
+same shape as the direct official precedents `ELECTRONICSFACTORY_CULTURE`
+(own-building attach, Amount 4 + BuildingType + YieldType, COLLECTION_OWNER)
+and `TSIKHE_FAITH_GOLDEN_AGE`. Building yield stays building yield; the
+generic city-yield effect appears nowhere in helpers or SQL (tested).
+
+### C. GPP and housing retained (documented, no mismatch)
+
+- GPP: helper effect (`EFFECT_ADJUST_GREAT_PERSON_POINTS`) and collection
+  (`COLLECTION_OWNER`) are identical to the official single-city shape;
+  Divine Spark shows Firaxis scoping this exact type to a building
+  (`BUILDING_IS_LIBRARY` subject requirement). Per-city owner-pooled whole-
+  point flow is unchanged, so no category-sensitive downstream consumer sees
+  a different event shape. Count-like (integral-only) behavior kept.
+- Housing: helper effect (`EFFECT_ADJUST_BUILDING_HOUSING`) and collection
+  (`COLLECTION_OWNER`) match the official shrine/temple housing modifiers
+  (Religious Community, Feed the World — all-zero flags, unconditional
+  shape). Per-city capacity is unchanged; the player-global housing variants
+  (`MODIFIER_PLAYER_CITIES_...`) are never used.
+
+### D. Corrected k=0/OFF invariant
+
+The bridge zeroes the direct cell, so the gameplay total is always
+`0 + helper(k)`: k=0 (native Off) and module OFF leave the helper at
+official V (native never arms writes) → total V; k=1 → V; k>1 ON → kV.
+The test now proves all four cases instead of modeling k=0 as helper-zero.
+
+### Corrected rollup and totals (derived)
+
+- Rollup: COMPLETE **22** / PARTIAL **29** / UNSUPPORTED **2** (Colosseum and
+  Estadio move COMPLETE → PARTIAL on the regional exclusion).
+- 57 helpers (31 building-yield + 20 count-like GPP + 3 housing + 3 local
+  entertainment) → registry **870 entries / 866 definitions**
+  (738 uncond + 132 cond; static at FLOAT32 k=7.3: **750 writes /
+  120 refusals**).
+- All 715 pre-Wonder rows and all 97 modifier-backed wonder rows unchanged.

@@ -15,7 +15,8 @@ wonders:
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
       rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
-        Bath precedent)
+        Bath precedent, attached to its own building via BuildingModifiers); local
+        only (RegionalRange=0); regional-scope cells excluded
     - table: Buildings
       key: GrantFortification
       value: 2
@@ -33,8 +34,10 @@ wonders:
       value: 2
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
   BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION:
     disposition: COMPLETE
     rows:
@@ -69,8 +72,10 @@ wonders:
       value: 5
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
   BUILDING_ANGKOR_WAT:
     disposition: COMPLETE
     rows:
@@ -94,8 +99,10 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_APADANA:
     disposition: UNSUPPORTED
     rows:
@@ -136,15 +143,19 @@ wonders:
       value: 6
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_MERCHANT
       value: 3
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
   BUILDING_BIOSPHERE:
     disposition: COMPLETE
     rows:
@@ -189,15 +200,19 @@ wonders:
       value: 2
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_WRITER
       value: 2
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatWorks
       key: MUSIC+WRITING slots
       value: 1+1 slots
@@ -226,15 +241,19 @@ wonders:
       value: 3
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_WRITER
       value: 3
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatWorks
       key: MUSIC x2 + WRITING x1
       value: slots
@@ -278,8 +297,10 @@ wonders:
       value: 3
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
   BUILDING_CHICHEN_ITZA:
     disposition: COMPLETE
     rows:
@@ -298,7 +319,7 @@ wonders:
       rationale: +1 production on jungle plots; scalar plot yield under the mixed
         plot-yield override
   BUILDING_COLOSSEUM:
-    disposition: COMPLETE
+    disposition: PARTIAL
     rows:
     - modifier_id: COLOSSEUM_IDENTITY
       argument: Amount
@@ -313,15 +334,20 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Buildings
       key: Entertainment
       value: 2
-      disposition: BRIDGED_NUMERIC
-      mechanism: ADDITIVE
-      rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
-        Bath precedent)
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: 'regional scope cannot be preserved by a local helper: Entertainment
+        participates in RegionalRange; the only official regional-entertainment modifier
+        (GREATPERSON_EXTRA_REGIONAL_BUILDING_ENTERTAINMENT) is a great-person one-shot
+        (RunOnce=1, Permanent=1, district-in-tile target), not a persistent wonder
+        aura - no equivalent; direct value left untouched, no helper generated'
     - table: Buildings
       key: RegionalRange
       value: 6
@@ -351,15 +377,19 @@ wonders:
       value: 1
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_YieldChanges
       key: YIELD_GOLD
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_CRISTO_REDENTOR:
     disposition: PARTIAL
     rows:
@@ -376,8 +406,10 @@ wonders:
       value: 4
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_EIFFEL_TOWER:
     disposition: COMPLETE
     rows:
@@ -389,7 +421,7 @@ wonders:
       rationale: +2 appeal is a whole appeal level (CITY_APPEAL pattern); integral
         results only
   BUILDING_ESTADIO_DO_MARACANA:
-    disposition: COMPLETE
+    disposition: PARTIAL
     rows: []
     direct:
     - table: Building_YieldChanges
@@ -397,15 +429,20 @@ wonders:
       value: 6
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Buildings
       key: Entertainment
       value: 2
-      disposition: BRIDGED_NUMERIC
-      mechanism: ADDITIVE
-      rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
-        Bath precedent)
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: 'regional scope cannot be preserved by a local helper: Entertainment
+        participates in RegionalRange; the only official regional-entertainment modifier
+        (GREATPERSON_EXTRA_REGIONAL_BUILDING_ENTERTAINMENT) is a great-person one-shot
+        (RunOnce=1, Permanent=1, district-in-tile target), not a persistent wonder
+        aura - no equivalent; direct value left untouched, no helper generated'
     - table: Buildings
       key: RegionalRange
       value: 100000
@@ -476,8 +513,10 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_FORBIDDEN_CITY:
     disposition: PARTIAL
     rows:
@@ -493,8 +532,10 @@ wonders:
       value: 5
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_GOLDEN_GATE_BRIDGE:
     disposition: PARTIAL
     rows:
@@ -539,7 +580,8 @@ wonders:
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
       rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
-        Bath precedent)
+        Bath precedent, attached to its own building via BuildingModifiers); local
+        only (RegionalRange=0); regional-scope cells excluded
     - table: Buildings_XP2
       key: Bridge
       value: 1
@@ -561,15 +603,18 @@ wonders:
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat housing via single-city BUILDING_HOUSING helper (Religious Community
-        precedent)
+      rationale: 'flat housing via single-city BUILDING_HOUSING helper (Religious
+        Community / Feed the World precedent: same effect EFFECT_ADJUST_BUILDING_HOUSING
+        and collection COLLECTION_OWNER, all-zero flags; per-city capacity unchanged,
+        not player-global housing)'
     - table: Buildings
       key: Entertainment
       value: 1
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
       rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
-        Bath precedent)
+        Bath precedent, attached to its own building via BuildingModifiers); local
+        only (RegionalRange=0); regional-scope cells excluded
     - table: Buildings_XP2
       key: PreventsFloods
       value: 1
@@ -592,15 +637,19 @@ wonders:
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_ADMIRAL
       value: 1
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
   BUILDING_GREAT_LIBRARY:
     disposition: PARTIAL
     rows:
@@ -624,22 +673,28 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_SCIENTIST
       value: 1
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_WRITER
       value: 1
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatWorks
       key: WRITING x2
       value: slots
@@ -674,15 +729,19 @@ wonders:
       value: 5
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_MERCHANT
       value: 2
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
   BUILDING_HAGIA_SOPHIA:
     disposition: COMPLETE
     rows:
@@ -699,8 +758,10 @@ wonders:
       value: 4
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_HALICARNASSUS_MAUSOLEUM:
     disposition: PARTIAL
     rows:
@@ -740,8 +801,10 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat housing via single-city BUILDING_HOUSING helper (Religious Community
-        precedent)
+      rationale: 'flat housing via single-city BUILDING_HOUSING helper (Religious
+        Community / Feed the World precedent: same effect EFFECT_ADJUST_BUILDING_HOUSING
+        and collection COLLECTION_OWNER, all-zero flags; per-city capacity unchanged,
+        not player-global housing)'
   BUILDING_HERMITAGE:
     disposition: COMPLETE
     rows: []
@@ -751,8 +814,10 @@ wonders:
       value: 3
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatWorks
       key: ART x4 + NonUnique 3/2
       value: slots+yields
@@ -794,8 +859,10 @@ wonders:
       value: 4
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Buildings
       key: RegionalRange
       value: 6
@@ -1018,8 +1085,10 @@ wonders:
       value: 4
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_MAHABODHI_TEMPLE:
     disposition: PARTIAL
     rows:
@@ -1042,8 +1111,10 @@ wonders:
       value: 4
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_MEENAKSHI_TEMPLE:
     disposition: PARTIAL
     rows:
@@ -1066,8 +1137,10 @@ wonders:
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_MONT_ST_MICHEL:
     disposition: PARTIAL
     rows:
@@ -1084,8 +1157,10 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Buildings
       key: GrantFortification
       value: 2
@@ -1157,15 +1232,19 @@ wonders:
       value: 1
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_YieldChanges
       key: YIELD_FAITH
       value: 1
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_ORSZAGHAZ:
     disposition: PARTIAL
     rows:
@@ -1182,8 +1261,10 @@ wonders:
       value: 4
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_OXFORD_UNIVERSITY:
     disposition: PARTIAL
     rows:
@@ -1206,8 +1287,10 @@ wonders:
       value: 3
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatWorks
       key: WRITING x2
       value: slots
@@ -1223,8 +1306,10 @@ wonders:
       value: 10
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Buildings_XP2
       key: CanalWonder
       value: 1
@@ -1262,15 +1347,19 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_YieldChanges
       key: YIELD_FAITH
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_PYRAMIDS:
     disposition: PARTIAL
     rows:
@@ -1293,8 +1382,10 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_RUHR_VALLEY:
     disposition: COMPLETE
     rows:
@@ -1361,8 +1452,10 @@ wonders:
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_STONEHENGE:
     disposition: PARTIAL
     rows:
@@ -1385,8 +1478,10 @@ wonders:
       value: 2
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Buildings
       key: AdjacentResource
       value: RESOURCE_STONE
@@ -1431,15 +1526,19 @@ wonders:
       value: 8
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_MUSICIAN
       value: 5
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_GreatWorks
       key: MUSIC x3
       value: slots
@@ -1471,15 +1570,19 @@ wonders:
       value: 4
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Buildings
       key: Housing
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat housing via single-city BUILDING_HOUSING helper (Religious Community
-        precedent)
+      rationale: 'flat housing via single-city BUILDING_HOUSING helper (Religious
+        Community / Feed the World precedent: same effect EFFECT_ADJUST_BUILDING_HOUSING
+        and collection COLLECTION_OWNER, all-zero flags; per-city capacity unchanged,
+        not player-global housing)'
   BUILDING_TERRACOTTA_ARMY:
     disposition: PARTIAL
     rows:
@@ -1496,8 +1599,10 @@ wonders:
       value: 1
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
   BUILDING_TORRE_DE_BELEM:
     disposition: PARTIAL
     rows:
@@ -1520,15 +1625,19 @@ wonders:
       value: 1
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_YieldChanges
       key: YIELD_GOLD
       value: 5
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_UNIVERSITY_SANKORE:
     disposition: COMPLETE
     rows:
@@ -1568,22 +1677,28 @@ wonders:
       value: 2
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'
     - table: Building_YieldChanges
       key: YIELD_FAITH
       value: 1
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
     - table: Building_YieldChanges
       key: YIELD_SCIENCE
       value: 3
       disposition: BRIDGED_NUMERIC
       mechanism: ADDITIVE
-      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
-        precedent, COLLECTION_OWNER)
+      rationale: building yield via BUILDING_YIELD_CHANGE helper (EFFECT_ADJUST_BUILDING_YIELD_CHANGE;
+        direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE and TSIKHE_FAITH_GOLDEN_AGE
+        carry Amount+BuildingType+YieldType, COLLECTION_OWNER - building yield stays
+        building yield)
   BUILDING_VENETIAN_ARSENAL:
     disposition: PARTIAL
     rows:
@@ -1612,5 +1727,7 @@ wonders:
       value: 2
       disposition: BRIDGED_COUNT_LIKE
       mechanism: ADDITIVE
-      rationale: whole great-person points via single-city GPP helper (Divine Spark
-        precedent); integral results only
+      rationale: 'whole great-person points via single-city GPP helper (Divine Spark
+        precedent: same effect EFFECT_ADJUST_GREAT_PERSON_POINTS and collection COLLECTION_OWNER
+        with building scope via BUILDING_IS_LIBRARY; per-city owner-pooled flow unchanged,
+        no category-sensitive downstream change); integral results only'

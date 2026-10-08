@@ -48,7 +48,11 @@ class TestDirectInventory(unittest.TestCase):
         by_table = collections.Counter(r["source_table"] for r in rows)
         self.assertEqual(by_table["Building_YieldChanges"], 31)
         self.assertEqual(by_table["Building_GreatPersonPoints"], 20)
-        self.assertEqual(by_table["Buildings"], 8)  # 3 housing + 5 entertainment
+        # 3 housing + 3 local entertainment. Colosseum (range 6) and Estadio
+        # (range global) entertainment never bridges: regional scope cannot
+        # be preserved by a local helper.
+        self.assertEqual(by_table["Buildings"], 6)
+        self.assertEqual(len(rows), 57)
         # Zero-row gameplay tables stay empty (proves the scan ran).
         import sqlite3
         db = sqlite3.connect(str(local_db()))
@@ -71,7 +75,7 @@ class TestDirectInventory(unittest.TestCase):
         # selector/structural (AdjacentResource x2, GrantFortification x2
         # counted separately below with DefenseModifier/RegionalRange).
         direct = [r for r in rows if r["source_table"] == "Buildings"]
-        self.assertEqual(len(direct), 8)
+        self.assertEqual(len(direct), 6)
 
     def test_fixture_spot_values(self):
         # Task fixtures, verified against the clean DB.
@@ -98,11 +102,14 @@ class TestDirectInventory(unittest.TestCase):
                       if r["building_type"] == "BUILDING_GREAT_BATH")
         self.assertEqual(bath, ["Entertainment", "Housing"])
         # Structural scope never enters the bridged inventory: Colosseum
-        # contributes exactly its culture yield + entertainment rows.
+        # contributes exactly its culture yield (its Entertainment is
+        # regional, excluded); Estadio contributes exactly its culture.
         col = sorted((r["source_table"], r["value_column"]) for r in rows
                      if r["building_type"] == "BUILDING_COLOSSEUM")
-        self.assertEqual(col, [("Building_YieldChanges", "YieldChange"),
-                               ("Buildings", "Entertainment")])
+        self.assertEqual(col, [("Building_YieldChanges", "YieldChange")])
+        est = sorted((r["source_table"], r["value_column"]) for r in rows
+                     if r["building_type"] == "BUILDING_ESTADIO_DO_MARACANA")
+        self.assertEqual(est, [("Building_YieldChanges", "YieldChange")])
 
     def test_every_direct_row_has_disposition(self):
         audit = load_audit()
@@ -141,7 +148,7 @@ class TestDirectInventory(unittest.TestCase):
 
     def test_former_nones_represented(self):
         audit = load_audit()
-        for b in ("BUILDING_ESTADIO_DO_MARACANA", "BUILDING_HERMITAGE",
+        for b in ("BUILDING_HERMITAGE",
                   "BUILDING_PANAMA_CANAL", "BUILDING_SYDNEY_OPERA_HOUSE",
                   "BUILDING_TEMPLE_ARTEMIS"):
             rec = audit[b]
@@ -149,6 +156,16 @@ class TestDirectInventory(unittest.TestCase):
             bridged = [d for d in rec.get("direct", [])
                        if d["disposition"].startswith("BRIDGED")]
             self.assertTrue(bridged, b)
+        # Estadio keeps its bridged culture but drops to PARTIAL: its
+        # Entertainment is regional (range global) with no equivalent.
+        rec = audit["BUILDING_ESTADIO_DO_MARACANA"]
+        self.assertEqual(rec["disposition"], "PARTIAL")
+        bridged = [d for d in rec.get("direct", [])
+                   if d["disposition"].startswith("BRIDGED")]
+        self.assertTrue(bridged)
+        excluded = [d for d in rec.get("direct", [])
+                    if d["disposition"] == "EXCLUDED"]
+        self.assertTrue(any(d["key"] == "Entertainment" for d in excluded))
 
 
 class TestBridgeMechanics(unittest.TestCase):
@@ -170,9 +187,11 @@ class TestBridgeMechanics(unittest.TestCase):
         self.assertEqual(n, 0)
 
     def test_k1_and_off_invariant(self):
-        # Invariant: OFF/k=1 -> 0 + V = vanilla; ON at k -> 0 + kV.
-        # The SQL zeroes the cell and the helper carries V (asserted from
-        # the generated text); the arithmetic is the native ADDITIVE path.
+        # Real controller behavior: the bridge zeroes the direct cell, so
+        # the gameplay total is 0 + helper(k). k=0 (native Off) and module
+        # OFF leave the helper at official V (native never arms writes);
+        # k=1 is identity; k>1 scales. Total is vanilla V in every
+        # non-scaling case, kV when ON.
         try:
             rows = build_wonder_direct(local_db())
         except FileNotFoundError:
@@ -184,10 +203,14 @@ class TestBridgeMechanics(unittest.TestCase):
                 hid, r["value"]), sql)
             self.assertIn("SET %s = 0" % r["value_column"], sql)
             v = float(r["value"])
+            direct_after_bridge = 0.0
             for k in (0.0, 1.0, 7.3, 10.0, 4.25):
-                got = 0.0 + (0.0 if k == 0.0 else T.scale_flat(v, k))
-                self.assertAlmostEqual(got, 0.0 if k == 0.0 else v * k)
-            self.assertAlmostEqual(0.0 + T.scale_flat(v, 1.0), v)
+                helper = v if k in (0.0, 1.0) else T.scale_flat(v, k)
+                total = direct_after_bridge + helper
+                want = v if k in (0.0, 1.0) else v * k
+                self.assertAlmostEqual(total, want, msg=(hid, k))
+            # Module OFF with k>1 configured: native unarmed, helper stays V.
+            self.assertAlmostEqual(direct_after_bridge + v, v)
 
     def test_bridged_scale_at_arbitrary_k(self):
         import math
@@ -201,7 +224,7 @@ class TestBridgeMechanics(unittest.TestCase):
             h["module"] = "wonders"
         entries, report = build_production_registry(helpers)
         self.assertEqual(report["unresolved_conflicts"], [])
-        self.assertEqual(len(entries), 59)
+        self.assertEqual(len(entries), 57)
         kf = T.stored_float32(7.3)
         for k in (1.0, 10.0, 4.25, kf):
             for e in entries:
@@ -225,9 +248,76 @@ class TestBridgeMechanics(unittest.TestCase):
         for h in helpers:
             h["module"] = "wonders"
         entries, _ = build_production_registry(helpers)
-        self.assertEqual(len(entries), 59)
+        self.assertEqual(len(entries), 57)
         for e in entries:
             self.assertTrue(e["modifier_id"].startswith("X10_"))
+
+    def test_regional_entertainment_never_local(self):
+        # Phase-3C regression: nonzero Entertainment + nonzero RegionalRange
+        # MUST NOT use MODIFIER_SINGLE_CITY_ADJUST_ENTERTAINMENT. The two
+        # regional cells keep their vanilla direct values (no zeroing) and
+        # get no helper.
+        try:
+            rows = build_wonder_direct(local_db())
+        except FileNotFoundError:
+            self.skipTest("official DB copy unavailable (local-only)")
+        by_building = {}
+        for r in rows:
+            by_building.setdefault(r["building_type"], []).append(r)
+        for b in ("BUILDING_COLOSSEUM", "BUILDING_ESTADIO_DO_MARACANA"):
+            ent = [r for r in by_building.get(b, [])
+                   if r["value_column"] == "Entertainment"]
+            self.assertEqual(ent, [], b)
+        sql = emit_bridge_sql(rows)
+        self.assertNotIn("X10_COLOSSEUM_ENTERTAINMENT", sql)
+        self.assertNotIn("X10_ESTADIO_DO_MARACANA_ENTERTAINMENT", sql)
+        for b in ("BUILDING_COLOSSEUM", "BUILDING_ESTADIO_DO_MARACANA"):
+            self.assertNotIn(
+                "SET Entertainment = 0\nWHERE BuildingType = '%s'" % b, sql)
+        # Audit dispositions agree: EXCLUDED with regional rationale.
+        audit = load_audit()
+        for b in ("BUILDING_COLOSSEUM", "BUILDING_ESTADIO_DO_MARACANA"):
+            rec = audit[b]
+            self.assertEqual(rec["disposition"], "PARTIAL", b)
+            ent = [d for d in rec.get("direct", [])
+                   if d["table"] == "Buildings" and d["key"] == "Entertainment"]
+            self.assertEqual(len(ent), 1, b)
+            self.assertEqual(ent[0]["disposition"], "EXCLUDED", b)
+            self.assertIn("RegionalRange", ent[0]["rationale"], b)
+
+    def test_yield_helpers_are_building_yield_change(self):
+        # Phase-3C: every generated yield helper preserves the building-yield
+        # category — MODIFIER_BUILDING_YIELD_CHANGE /
+        # EFFECT_ADJUST_BUILDING_YIELD_CHANGE with all three arguments
+        # (Amount + BuildingType naming the owning wonder + YieldType).
+        # The generic city-yield effect must never appear.
+        try:
+            rows = build_wonder_direct(local_db())
+        except FileNotFoundError:
+            self.skipTest("official DB copy unavailable (local-only)")
+        from civ6x10.production import build_production_registry
+        helpers = build_bridge_helpers(rows)
+        by_id: dict = {}
+        for h in helpers:
+            by_id.setdefault(h["modifier_id"], {})[h["argument_name"]] = h
+        n_yield = 0
+        for hid, args in by_id.items():
+            if "YieldType" not in args:
+                continue
+            n_yield += 1
+            self.assertEqual(args["Amount"]["modifier_type"],
+                             "MODIFIER_BUILDING_YIELD_CHANGE", hid)
+            self.assertEqual(args["Amount"]["effect_type"],
+                             "EFFECT_ADJUST_BUILDING_YIELD_CHANGE", hid)
+            self.assertEqual(args["BuildingType"]["official_value"],
+                             args["Amount"]["object_id"], hid)
+            self.assertTrue(
+                args["BuildingType"]["official_value"].startswith("BUILDING_"),
+                hid)
+        self.assertEqual(n_yield, 31)
+        sql = emit_bridge_sql(rows)
+        self.assertNotIn("EFFECT_ADJUST_CITY_YIELD_CHANGE", sql)
+        self.assertNotIn("MODIFIER_SINGLE_CITY_ADJUST_YIELD_CHANGE", sql)
 
     def test_drift_fails_closed_synthetic(self):
         # Full mechanism test on a synthetic DB (CI-safe): create, zero,

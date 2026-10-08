@@ -28,18 +28,28 @@ import sqlite3
 from pathlib import Path
 
 # Each bridge: direct source, helper shape, native kind behavior.
-# Equivalence per family is proven in docs/WONDER_AUDIT.md (official
-# single-city precedents: Monument culture, Divine Spark GPP, Religious
-# Community housing, Thermal Bath entertainment; all COLLECTION_OWNER).
+# Equivalence per family is proven in docs/WONDER_AUDIT.md:
+# - yield: direct BuildingModifiers precedents ELECTRONICSFACTORY_CULTURE
+#   and TSIKHE_FAITH_GOLDEN_AGE (own building attach, Amount+BuildingType+
+#   YieldType, COLLECTION_OWNER) — building yield stays building yield.
+# - gpp/housing/local-entertainment: official single-city shapes with
+#   identical effect+collection (Divine Spark GPP with BUILDING_IS_LIBRARY
+#   building scope; Religious Community / Feed the World shrine housing,
+#   all-zero flags; Thermal Bath entertainment attached to its building).
+# - regional entertainment has NO equivalent: the only official regional
+#   modifier (GREATPERSON_EXTRA_REGIONAL_BUILDING_ENTERTAINMENT) is a
+#   great-person one-shot (RunOnce=1, Permanent=1, district-in-tile target),
+#   not a persistent wonder aura. Nonzero Entertainment + nonzero
+#   RegionalRange is therefore never bridged (guard in build_wonder_direct).
 BRIDGES = [
     {
         "family": "yield",
         "source_table": "Building_YieldChanges",
         "key_cols": ["YieldType"],
         "value_col": "YieldChange",
-        "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_YIELD_CHANGE",
-        "effect_type": "EFFECT_ADJUST_CITY_YIELD_CHANGE",
-        "extra_args": ["YieldType"],
+        "modifier_type": "MODIFIER_BUILDING_YIELD_CHANGE",
+        "effect_type": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE",
+        "extra_args": ["BuildingType", "YieldType"],
         "tag": lambda r: r["key_YieldType"],
     },
     {
@@ -84,11 +94,20 @@ NON_BRIDGED_TABLES = {
 
 
 def build_wonder_direct(db_path: str | Path) -> list[dict]:
-    """Closed-world direct-effect inventory for official wonders."""
+    """Closed-world direct-effect inventory for official wonders.
+
+    Regression guard (Phase 3C): nonzero Entertainment + nonzero
+    RegionalRange MUST NOT bridge to MODIFIER_SINGLE_CITY_ADJUST_ENTERTAINMENT
+    (regional scope cannot be preserved by a local helper). Those cells are
+    inventoried in the audit with EXCLUDED dispositions, never emitted here.
+    """
     db = sqlite3.connect(str(db_path))
     db.row_factory = sqlite3.Row
     wonders = [r[0] for r in db.execute(
         "SELECT BuildingType FROM Buildings WHERE IsWonder=1 ORDER BY BuildingType")]
+    regional = {b for (b,) in db.execute(
+        "SELECT BuildingType FROM Buildings WHERE IsWonder=1 "
+        "AND RegionalRange IS NOT NULL AND RegionalRange != 0")}
     rows: list[dict] = []
     for spec in BRIDGES:
         t = spec["source_table"]
@@ -97,6 +116,8 @@ def build_wonder_direct(db_path: str | Path) -> list[dict]:
             q = "SELECT BuildingType, %s AS v FROM Buildings WHERE IsWonder=1" % spec["value_col"]
             for b, v in db.execute(q):
                 if v is None or v == 0 or v == "":
+                    continue
+                if spec["family"] == "entertainment" and b in regional:
                     continue
                 rows.append(_direct_row(b, spec, {}, v))
         else:
@@ -183,6 +204,17 @@ def helper_id(row: dict) -> str:
                           spec["tag"](keyrec))
 
 
+def _extra_value(extra: str, keys: dict, row: dict) -> str:
+    # YieldType / GreatPersonClassType come from the direct row key;
+    # BuildingType names the owning wonder (Electronics Factory precedent:
+    # the helper's BuildingType arg is its own attached building).
+    if extra in keys:
+        return keys[extra]
+    if extra == "BuildingType":
+        return row["building_type"]
+    raise KeyError(extra)
+
+
 def build_bridge_helpers(direct_rows: list[dict]) -> list[dict]:
     """Manifest-shaped helper rows (module=wonders) for bridged direct cells."""
     from .modules import build_manifest
@@ -202,14 +234,15 @@ def build_bridge_helpers(direct_rows: list[dict]) -> list[dict]:
             "bridged_from": "%s|%s|%s" % (r["building_type"], r["source_table"], r["key"]),
         })
         for extra in spec["extra_args"]:
+            val = _extra_value(extra, keys, r)
             raws.append({
                 "building_type": r["building_type"],
                 "modifier_id": helper_id(r),
                 "modifier_type": spec["modifier_type"],
                 "effect_type": spec["effect_type"],
                 "argument_name": extra,
-                "official_value": keys[extra],
-                "argument_value": keys[extra],
+                "official_value": val,
+                "argument_value": val,
                 "bridged_from": "%s|%s|%s" % (r["building_type"], r["source_table"], r["key"]),
             })
     # id_col="building_type" fills object_id; effect_type preset survives
@@ -276,7 +309,7 @@ def emit_bridge_sql(direct_rows: list[dict]) -> str:
                 "WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
                 " WHERE ModifierId = '%s' AND Name = '%s')\n"
                 "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-                    hid, extra, keys[extra].replace("'", "''"), hid, extra,
+                    hid, extra, _extra_value(extra, keys, r).replace("'", "''"), hid, extra,
                     r["source_table"], base))
         vcol = r["value_column"]
         chunks.append(

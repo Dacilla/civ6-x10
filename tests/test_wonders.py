@@ -124,8 +124,8 @@ class TestWonderAudit(unittest.TestCase):
         from collections import Counter
         audit = load_audit()
         c = Counter(rec["disposition"] for rec in audit.values())
-        self.assertEqual(c["COMPLETE"], 24)
-        self.assertEqual(c["PARTIAL"], 27)
+        self.assertEqual(c["COMPLETE"], 22)
+        self.assertEqual(c["PARTIAL"], 29)
         self.assertEqual(c["UNSUPPORTED"] + c["NONE"], 2)
 
 
