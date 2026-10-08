@@ -183,6 +183,88 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIn("MH_RemoveHook", t)
         self.assertIn("MH_DisableHook(created[i])", t)
 
+    def test_post_add_mismatch_increments_counter(self):
+        # A post-Add MISMATCH must feed the aggregate mismatch counter;
+        # the old code logged MISMATCH while mismatches= stayed 0.
+        w = self._fork("X10Write.cpp")
+        inc = "InterlockedIncrement(&s_postAddMismatch)"
+        self.assertEqual(w.count(inc), 2)  # id-mismatch + value-mismatch
+        for needle in ("MISMATCH via=store-lookup", "stored_id_mismatch"):
+            i_log = w.index(needle)
+            # an increment precedes each MISMATCH log line
+            prev = w.rfind(inc, 0, i_log)
+            self.assertNotEqual(prev, -1, needle)
+            self.assertLess(i_log - prev, 600, needle)
+        h = self._fork("X10Write.h")
+        self.assertIn("PostAddMismatchThisPopulate", h)
+
+    def test_unreadable_is_not_match(self):
+        # Lookup miss / typed-or-consumed / fault paths count unreadable;
+        # MATCH is emitted only on a verified string read.
+        w = self._fork("X10Write.cpp")
+        self.assertGreaterEqual(
+            w.count("InterlockedIncrement(&s_postAddUnreadable)"), 4)
+        self.assertEqual(w.count("expected=%s MATCH via=store-lookup"), 1)
+        self.assertEqual(w.count("MISMATCH via=store-lookup"), 1)
+        self.assertIn("PostAddUnreadableThisPopulate",
+                      self._fork("X10Write.h"))
+
+    def test_summary_reports_post_add_counters(self):
+        # The exit summary derives every field from counters, so it cannot
+        # report zero mismatches after a MISMATCH line was emitted.
+        t = self._fork("X10Lifecycle.cpp")
+        i_exit = t.index("PopulateModifierDefinitions EXIT")
+        tail = t[i_exit:]
+        for acc in ("PostAddMatchThisPopulate",
+                    "PostAddMismatchThisPopulate",
+                    "PostAddUnreadableThisPopulate",
+                    "TransformRefusedThisPopulate"):
+            self.assertIn(acc, tail)
+        self.assertNotIn("mismatches=%ld", tail)
+        w = self._fork("X10Write.cpp")
+        for reset in ("s_postAddMatch = 0", "s_postAddMismatch = 0",
+                      "s_postAddUnreadable = 0", "s_transformRefused = 0"):
+            self.assertIn(reset, w)
+
+    def test_verifier_uses_no_preadd_pointer(self):
+        # Touched carries logical identity only; post-Add proof comes from
+        # the registered store via the engine getter, never a retained
+        # pre-Add element address.
+        h = self._fork("X10Write.h")
+        body = h[h.index("struct Touched"):h.index("};", h.index("struct Touched"))]
+        self.assertNotIn("element", body)
+        self.assertNotIn("void*", body)
+        self.assertIn("VerifyStoredAfterAdd(void* system", h)
+        w = self._fork("X10Write.cpp")
+        self.assertNotIn("touched[i].element", w)
+        self.assertNotIn(".element", self._code(w))
+        self.assertIn("getDefRva", self._code(w))
+
+    def test_store_lookup_validated_not_hooked(self):
+        # getDefRva lives in the profile, is validated like a hook target
+        # (in-text + prologue), is called but never hooked; a failed
+        # validation degrades the witness loudly without touching the writer.
+        c = self._fork("X10Compat.h")
+        self.assertIn("getDefRva", c)
+        self.assertIn("0x951d90", c)
+        lc = self._fork("X10Lifecycle.cpp")
+        self.assertIn("GetModifierDefinition", lc)
+        self.assertIn("SetStoreLookupProven", lc)
+        self.assertIn("STORE LOOKUP UNPROVEN", lc)
+        i_val = lc.index("s_profile->getDefRva")
+        self.assertIn("IsPrologue", lc[i_val:i_val + 600])
+
+    def test_toqui_loyalty_excluded_pending_recert(self):
+        import yaml
+        rules = yaml.safe_load(
+            open(ROOT / "civ6x10" / "rules" / "certified_overrides.yml",
+                 encoding="utf-8"))
+        hit = [e for e in rules["excluded_effects"]
+               if e["effect"] == "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE"]
+        self.assertEqual(len(hit), 1)
+        self.assertIn("TOQUI", hit[0]["rationale"])
+        self.assertIn("re-certif", hit[0]["rationale"].lower())
+
     def test_production_package_metadata(self):
         import re
         uuid = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-"

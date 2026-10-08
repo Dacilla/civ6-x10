@@ -5,12 +5,14 @@ Status vocabulary (do not conflate):
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **686-entry certified production slice: STATICALLY VERIFIED, awaiting
-  production-candidate live test.** 601 unconditional entries transform at
+- **684-entry certified production slice: STATICALLY VERIFIED, awaiting
+  production-candidate live test.** 599 unconditional entries transform at
   any k; 85 count-like entries apply only on integral results under the
-  FLOAT32-aware exactness rule (at live stored-float k=7.3: 612 static
-  successes of 686 — honest fractional refusal, never flooring).
-  Full gate in `docs/SEMANTIC_CERTIFICATION.md`.
+  FLOAT32-aware exactness rule (at live stored-float k=7.3: 610 static
+  successes of 684 — honest fractional refusal, never flooring).
+  Full gate in `docs/SEMANTIC_CERTIFICATION.md`. The Toqui loyalty pair
+  (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) is temporarily excluded pending
+  stored-form re-certification (see below).
 - **Workshop release: NOT READY.** No publish until the production-candidate
   live test passes and logs are reviewed.
 
@@ -38,8 +40,8 @@ folder only; Workshop paths refused).
 ## Shared-definition ownership (Release 1 rule)
 
 25 modifier definitions are owned by both Policies and Governments
-(registry: 394 traits-only, 292 policies-only, 18 governments-only,
-25 shared; 682 unique definitions, 686 entries: 601 unconditional + 85
+(registry: 357 traits-only, 284 policies-only, 18 governments-only,
+25 shared; 680 unique definitions, 684 entries: 599 unconditional + 85
 count-like conditional). A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
@@ -71,8 +73,14 @@ ownership counts + shared-definition count.
   integrality — fractional counts refused, never floored).
 - Multi-argument writer: `WriteDefinition` applies ALL matching entries per
   definition (4 two-argument definitions keep Amount + TurnsActive); post-Add
-  verification covers every touched element. One argument's refusal never
-  blocks another.
+  verification covers every touched entry by logical identity (ID + argument
+  + expected), resolved through the registered store — never a retained
+  pre-Add pointer. One argument's refusal never blocks another.
+- Post-Add witness tiers: textual definition retained → MATCH/MISMATCH
+  (both increment `post_add_match`/`post_add_mismatch`); definition found
+  but value blank/absent → typed-or-consumed (`post_add_unreadable`);
+  lookup miss/fault/degraded path → unreadable. Exit summary is fully
+  counter-derived and cannot report zero mismatches after a MISMATCH line.
 - Compatibility: all build/ABI constants (PE identity, hook RVAs, config
   reader RVAs, manager offsets, vtable slot, variant layout, definition
   layout, SSO assumptions) live in `GameCoreCompatibilityProfile`
@@ -81,10 +89,25 @@ ownership counts + shared-definition count.
   unwinding only X10 hooks on failure). Upstream CE hooks are never
   disabled/removed by X10 failure paths.
 
+## Toqui loyalty stored-form hold (2026-10-08)
+
+Live runs showed `TOQUI_DOMESTIC_LOYALTY` / `TOQUI_FOREIGN_LOYALTY`
+(`EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE`, Amount 4 → 29.2) verifying blank
+post-Add while 610 siblings MATCH on both initial load and reload: the raw
+string reads back empty (size 0, clean — not unreadable), unique to the two
+definitions sharing that effect plus `OncePerCity` / `Domestic|ForeignCities`
+flag args. Static analysis proves in-place post-Add string emptying but not
+which engine op performs it (move/clear/realloc inside Add's store path).
+Both entries are therefore **temporarily excluded** from the certified
+registry (`excluded_effects` in `certified_overrides.yml`, rationale cites
+this hold) until the store-lookup witness proves stored MATCH or typed-value
+persistence live. Re-certification procedure: remove the exclusion entry,
+regenerate, rebuild, run once, require `MATCH via=store-lookup` for both.
+
 ## Public-data hygiene (explicit release decision, no legal claim made)
 
 The CE-X10 tree currently carries the generated registry
-(`X10/X10ProductionRegistry.inc`: 686 certified Firaxis modifier IDs +
+(`X10/X10ProductionRegistry.inc`: 684 certified Firaxis modifier IDs +
 official values). Earlier project policy avoided publishing bulk extracted
 Firaxis data. Decision for Release 1:
 
@@ -121,7 +144,11 @@ Prerequisites: production DLL built, hash matches
    `spike/uninstall-prod-test.ps1`).
 
 Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
-found=true`, up to 612-eligible write sequence at live stored-float k=7.3
-(601 unconditional + 11 exact-integral conditional under the
-FLOAT32-quantization-aware rule) with `stored_after_add MATCH` and no
-unexpected MISMATCH, probe PASS lines, identical values across save/reload.
+found=true`, up to 610-eligible write sequence at live stored-float k=7.3
+(599 unconditional + 11 exact-integral conditional under the
+FLOAT32-quantization-aware rule) with `stored_after_add MATCH
+via=store-lookup`, `post_add_mismatch=0`, `post_add_unreadable=0`, probe PASS
+lines, identical values across save/reload. The exit summary is fully
+counter-derived (`writes / transform_refused / official_mismatch /
+post_add_match / post_add_mismatch / post_add_unreadable / skipped_other`):
+it cannot report zero mismatches after a MISMATCH line.

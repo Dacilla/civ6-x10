@@ -32,6 +32,7 @@ and fail generation.
 | 2 | `AUTO_THEME` slot thresholds (Amount=2/3) scaled | Excluded: eligibility thresholds, not magnitudes |
 | 1 | `NATIONALIDENTITY` damage-reduction modifier (50) scaled as strength | Excluded: not strength points |
 | 16 | Curated grant/boolean/sentinel effects (extra unit copies, free envoys, token doublers, -1 spy sentinel, eureka grants) | Excluded with per-effect rationale |
+| 2 | Toqui governor-loyalty Amounts verify blank post-Add (stored-form proof pending) | Temporarily excluded (`EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE`); re-certify via store-lookup witness |
 | 33+ | Indivisible counts emitted unconditional (`FLAT_AMOUNT`, countLike=false) | Certified as count-like conditional (exact-integer applies, fractional refuses) |
 
 Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
@@ -39,11 +40,11 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
 
 ## New certified registry
 
-- **686 entries / 682 unique definitions / 25 shared** (traits-only 359,
+- **684 entries / 680 unique definitions / 25 shared** (traits-only 357,
   policies-only 284, governments-only 18, shared 25).
-- **601 unconditional** (every one transforms at k=7.3), **85 conditional
+- **599 unconditional** (every one transforms at k=7.3), **85 conditional
   count-like** (11 exact-integral apply at live FLOAT32 k=7.3, 74 fractional
-  refuse safely). Static successful transforms at k=7.3: **612 of 686** —
+  refuse safely). Static successful transforms at k=7.3: **610 of 684** —
   lower than the registry size by design (§10 honesty), and derived from the
   actual stored-float multiplier, not decimal 7.3 (see FLOAT32 exactness).
 - Kinds: 664 ADDITIVE, 15 DISCOUNT, 7 COMBAT, 0 PROBABILITY (no probability

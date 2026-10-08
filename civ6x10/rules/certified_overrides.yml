@@ -136,6 +136,8 @@ excluded_effects:
     rationale: "Amount=2/3 is an eligibility slot threshold (Kristina); scaling to 14.6/21.9 disables the ability"
   - effect: EFFECT_ADJUST_UNIT_STRENGTH_REDUCTION_FOR_DAMAGE_MODIFIER
     rationale: "damage-reduction modifier (50), not combat-strength points; neither combat formula nor flat x10 applies"
+  - effect: EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
+    rationale: "TEMPORARY stored-form exclusion (2026-10-08): TOQUI_DOMESTIC_LOYALTY / TOQUI_FOREIGN_LOYALTY Amount rewrites (4 -> 29.2 at k=7.3) verify blank post-Add while 610 siblings MATCH, so raw-string persistence for this effect is unproven; re-certify via the store-lookup witness (stored MATCH or typed-value proof) before re-admitting"
 
 # Effect substrings marking indivisible counts (discrete objects/levels/slots/
 # tiles/turns/points). Certified rows on these effects are count-like:

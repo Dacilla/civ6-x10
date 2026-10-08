@@ -99,11 +99,11 @@ class TestProductionRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         entries, report = build_production_registry(rows)
-        self.assertEqual(len(entries), 686)
-        self.assertEqual(report["eligible"], 686)
-        self.assertEqual(report["unique_definitions"], 682)
+        self.assertEqual(len(entries), 684)
+        self.assertEqual(report["eligible"], 684)
+        self.assertEqual(report["unique_definitions"], 680)
         self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 601)
+        self.assertEqual(report["certified_unconditional"], 599)
         self.assertEqual(report["certified_count_like_conditional"], 85)
         self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
@@ -112,6 +112,21 @@ class TestProductionRegistry(unittest.TestCase):
                     "TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS",
                     "TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV"):
             self.assertIn(mid, ids, mid)
+        # Toqui governor-loyalty Amounts are temporarily excluded: their raw
+        # strings verified blank post-Add while 610 siblings MATCH, so
+        # stored-form persistence is unproven (see docs; re-certify via the
+        # store-lookup witness before re-admitting).
+        self.assertNotIn("TOQUI_DOMESTIC_LOYALTY", ids)
+        self.assertNotIn("TOQUI_FOREIGN_LOYALTY", ids)
+        for c in report["conflict_ledger"]:
+            if (c["modifier_id"] in ("TOQUI_DOMESTIC_LOYALTY",
+                                     "TOQUI_FOREIGN_LOYALTY")
+                    and c["argument"] == "Amount"):
+                self.assertEqual(c["resolution"], "excluded:curated-effect", c)
+                self.assertEqual(
+                    c["cert_source"],
+                    "curated-effect:excluded-effect:"
+                    "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE", c)
         keys = [(e["modifier_id"], e["argument"]) for e in entries]
         self.assertEqual(len(keys), len(set(keys)))
         kinds = {e["kind"] for e in entries}
@@ -200,10 +215,12 @@ class TestProductionTransforms(unittest.TestCase):
         # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
         # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
         # live against loaded definitions):
-        #   601 unconditional entries: every one transforms;
+        #   599 unconditional entries: every one transforms;
         #   85 conditional (count-like) entries: 11 exact-integral apply,
         #   74 fractional refuse safely (never floored).
-        # Static successful transforms: 601 + 11 = 612 < registry size 686.
+        # Static successful transforms: 599 + 11 = 610 < registry size 684
+        # (Toqui loyalty pair temporarily excluded pending stored-form
+        # re-certification).
         import math
         try:
             rows = load_manifests()
@@ -213,10 +230,10 @@ class TestProductionTransforms(unittest.TestCase):
         entries, report = build_production_registry(rows)
         kf = T.stored_float32(7.3)
         self.assertEqual(kf, 7.300000190734863)  # live representation
-        self.assertEqual(len(entries), 686)
+        self.assertEqual(len(entries), 684)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        self.assertEqual(len(un), 601)
+        self.assertEqual(len(un), 599)
         self.assertEqual(len(co), 85)
         ok = 0
         for e in un:
@@ -232,14 +249,14 @@ class TestProductionTransforms(unittest.TestCase):
                 continue
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 601)
+        self.assertEqual(ok, 599)
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
         self.assertEqual(len(exact), 11)
         self.assertEqual(len(refused), 74)
-        # Static expectation: 612 successful transforms of 686 certified.
-        self.assertEqual(ok + len(exact), 612)
+        # Static expectation: 610 successful transforms of 684 certified.
+        self.assertEqual(ok + len(exact), 610)
 
     def test_shared_ownership_and_conflicts(self):
         from civ6x10.production import (RegistryConflict, SemanticConflict,
