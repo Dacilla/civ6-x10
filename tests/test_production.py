@@ -258,6 +258,28 @@ class TestProductionTransforms(unittest.TestCase):
         # Static expectation: 610 successful transforms of 684 certified.
         self.assertEqual(ok + len(exact), 610)
 
+    def test_verifier_key_capacity(self):
+        # Exact live fixture: the 66-char Magnificences ID truncated to
+        # ..._SQUARE_OR_CHAT by the old 64-byte Touched.id. Full ID
+        # byte-for-byte, length 66, and every registry identifier must fit
+        # the verifier buffers (id < 256, arg < 32); over-capacity must
+        # fail loudly, never look up a shortened ID.
+        try:
+            rows = load_manifests()
+        except FileNotFoundError:
+            self.skipTest("manifests unavailable (run review locally)")
+        from civ6x10.production import build_production_registry
+        entries, _ = build_production_registry(rows)
+        full = "MAGNIFICENCES_CULTURE_LUXURY_ADJACENT_TO_THEATER_SQUARE_OR_CHATEAU"
+        self.assertEqual(len(full), 66)
+        got = [e for e in entries if e["modifier_id"] == full]
+        self.assertEqual(len(got), 1)
+        self.assertEqual(got[0]["modifier_id"], full)
+        self.assertTrue(got[0]["modifier_id"].endswith("_OR_CHATEAU"))
+        for e in entries:
+            self.assertLess(len(e["modifier_id"]), 256, e["modifier_id"])
+            self.assertLess(len(e["argument"]), 32, e["argument"])
+
     def test_shared_ownership_and_conflicts(self):
         from civ6x10.production import (RegistryConflict, SemanticConflict,
                                         build_production_registry)

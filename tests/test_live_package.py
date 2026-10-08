@@ -265,6 +265,29 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIn("TOQUI", hit[0]["rationale"])
         self.assertIn("re-certif", hit[0]["rationale"].lower())
 
+    def test_verifier_id_buffer_fits_registry(self):
+        # Live 684-run proved truncation: the 66-char Magnificences ID was
+        # cut to 63 by Touched.id[64]. The buffer now follows an explicit
+        # capacity contract: no literal 63-cap, no silent truncation.
+        h = self._fork("X10Write.h")
+        body = h[h.index("struct Touched"):h.index("};", h.index("struct Touched"))]
+        self.assertIn("char id[256]", body)
+        w = self._fork("X10Write.cpp")
+        self.assertNotIn("len > 63", w)
+        self.assertIn("sizeof(t->id) - 1", w)
+        self.assertIn("verifier-key-too-long", w)
+        self.assertIn("key.capa = sizeof(t->id)", w)
+
+    def test_installer_clears_previous_run_logs(self):
+        # Fresh install clears both TEMP logs once; nothing clears them
+        # between new game and save reload (append required within one test).
+        inst = (ROOT / "spike" / "install-prod-test.ps1"
+                ).read_text(encoding="utf-8")
+        self.assertIn("X10Lifecycle.log", inst)
+        self.assertIn("X10Probe.log", inst)
+        self.assertIn("GetTempPath", inst)
+        self.assertEqual(inst.count("Remove-Item $p"), 1)
+
     def test_production_package_metadata(self):
         import re
         uuid = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-"

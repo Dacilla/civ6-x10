@@ -3,6 +3,13 @@
 $ErrorActionPreference = 'Stop'
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 & (Join-Path $here 'assemble-prod-test.ps1')
+# Clear previous-run logs once per fresh install so the next population is
+# unambiguous. Never cleared between new game and save reload: the native log
+# appends within one test (both sessions must be preserved).
+foreach ($log in @('X10Lifecycle.log', 'X10Probe.log')) {
+    $p = Join-Path ([IO.Path]::GetTempPath()) $log
+    if (Test-Path $p) { Remove-Item $p -Force; Write-Host "cleared previous: $p" }
+}
 $src = Join-Path $here 'prod-test-output'
 $mods = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'My Games\Sid Meier''s Civilization VI\Mods'
 if (-not (Test-Path $mods)) { throw "Mods directory not found: $mods" }
