@@ -14,6 +14,9 @@ local TARGETS = {
   { id = "GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER", arg = "Amount", official = "25", kind = "flat" },
   -- Phase-3 wonder witness: requires building the Statue of Zeus in-game.
   { id = "STAUEZEUS_ANTI_CAVALRY_PRODUCTION", arg = "Amount", official = "50", kind = "flat" },
+  -- Phase-3B direct-bridge witness: Panama Canal helper, created by the
+  -- generated bridge SQL (guarded on the audited official Gold=10).
+  { id = "X10_PANAMA_CANAL_YIELD_GOLD", arg = "Amount", official = "10", kind = "flat" },
 }
 
 local raw = GameConfiguration.GetValue("X10_MULTIPLIER")

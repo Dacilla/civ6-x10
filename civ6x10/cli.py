@@ -63,18 +63,29 @@ def cmd_inventory_wonders(args) -> int:
     return 0
 
 
+def cmd_inventory_wonder_direct(args) -> int:
+    from .bridge import build_wonder_direct, write_direct_csv
+    rows = build_wonder_direct(args.db)
+    write_direct_csv(rows, args.out)
+    print(f"wrote {args.out} ({len(rows)} rows)")
+    return 0
+
+
+def cmd_generate_bridge_sql(args) -> int:
+    from .bridge import emit_bridge_sql, load_direct_csv
+    rows = load_direct_csv(args.csv)
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(emit_bridge_sql(rows), encoding="utf-8")
+    print(f"wrote {out} ({len(rows)} bridged cells)")
+    return 0
+
+
 def cmd_generate_registry(args) -> int:
     import json
-    import yaml
+    from .bridge import collect_registry_rows
     from .production import build_production_registry, emit_cxx
-    rows: list[dict] = []
-    for module in ("traits", "policies", "governments", "pantheons", "wonders"):
-        man = yaml.safe_load(
-            open(ROOT / "manifests" / f"{module}.yml", encoding="utf-8"))
-        for r in man[module]:
-            r = dict(r)
-            r["module"] = module
-            rows.append(r)
+    rows = collect_registry_rows(ROOT)
     entries, report = build_production_registry(rows)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -136,6 +147,15 @@ def main(argv=None) -> int:
                    help="official Gameplay SQLite COPY (never the live install)")
     p.add_argument("--out", default=str(ROOT / "data" / "local" / "wonder_effects.csv"))
     p.set_defaults(fn=cmd_inventory_wonders)
+    p = sub.add_parser("inventory-wonder-direct")
+    p.add_argument("--db", required=True,
+                   help="official Gameplay SQLite COPY (never the live install)")
+    p.add_argument("--out", default=str(ROOT / "data" / "local" / "wonder_direct.csv"))
+    p.set_defaults(fn=cmd_inventory_wonder_direct)
+    p = sub.add_parser("generate-bridge-sql")
+    p.add_argument("--csv", default=str(ROOT / "data" / "local" / "wonder_direct.csv"))
+    p.add_argument("--out", default=str(ROOT / "controller" / "X10" / "Config" / "X10WonderBridge.sql"))
+    p.set_defaults(fn=cmd_generate_bridge_sql)
     p = sub.add_parser("generate-registry")
     p.add_argument("--out", default=str(ROOT / "build" / "X10ProductionRegistry.inc"))
     p.set_defaults(fn=cmd_generate_registry)

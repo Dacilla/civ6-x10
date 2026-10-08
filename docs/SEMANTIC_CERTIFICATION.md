@@ -40,9 +40,10 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
 
 ## New certified registry
 
-- **813 entries / 809 unique definitions / 25 shared** (358 traits-only
+- **872 entries / 868 unique definitions / 25 shared** (358 traits-only
   incl. Suleiman titles, 284 policies-only, 18 governments-only, 31
-  pantheons-only, 97 wonders-only; 701 unconditional + 112 count-like).
+  pantheons-only, 156 wonders-only = 97 modifier-backed + 59 generated
+  bridge helpers; 740 unconditional + 132 count-like).
   Frozen milestones: 684 Release-1 (`release1-684-live-validated`), 715
   Phase-2 (`phase2-715-live-validated`); every earlier line persists
   byte-identical, additions only.

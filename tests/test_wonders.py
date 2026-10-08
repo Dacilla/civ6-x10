@@ -24,6 +24,10 @@ def load_audit():
 
 
 def build_all():
+    # Modifier-backed stream only (5 manifests, no bridge helpers):
+    # pins the Phase-3 audit mapping. Bridge helpers are a separate
+    # audited stream covered by test_bridge.py; the shipped union
+    # (collect_registry_rows) is pinned in test_production.py.
     import yaml
     from civ6x10.production import build_production_registry
     rows = []
@@ -120,9 +124,9 @@ class TestWonderAudit(unittest.TestCase):
         from collections import Counter
         audit = load_audit()
         c = Counter(rec["disposition"] for rec in audit.values())
-        self.assertEqual(c["COMPLETE"], 19)
-        self.assertEqual(c["PARTIAL"], 14)
-        self.assertEqual(c["UNSUPPORTED"] + c["NONE"], 20)
+        self.assertEqual(c["COMPLETE"], 24)
+        self.assertEqual(c["PARTIAL"], 27)
+        self.assertEqual(c["UNSUPPORTED"] + c["NONE"], 2)
 
 
 class TestWonderRegistry(unittest.TestCase):

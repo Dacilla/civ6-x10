@@ -36,16 +36,9 @@ def floor_row(modifier_type, effect_type, arg, family,
 
 
 def load_manifests():
-    import yaml
-    rows = []
-    for module in ("traits", "policies", "governments", "pantheons"):
-        man = yaml.safe_load(
-            open(ROOT / "manifests" / f"{module}.yml", encoding="utf-8"))
-        for r in man[module]:
-            r = dict(r)
-            r["module"] = module
-            rows.append(r)
-    return rows
+    # Single shared source with the CLI (manifests + bridge helpers).
+    from civ6x10.bridge import collect_registry_rows
+    return collect_registry_rows(ROOT)
 
 
 def load_floor():

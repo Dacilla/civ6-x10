@@ -18,10 +18,14 @@
     <UpdateDatabase id="X10Dummy">
       <File>Config/Dummy.sql</File>
     </UpdateDatabase>
+    <UpdateDatabase id="X10WonderBridge">
+      <File>Config/X10WonderBridge.sql</File>
+    </UpdateDatabase>
   </InGameActions>
   <Files>
     <File>Config/X10Config.sql</File>
     <File>Config/Dummy.sql</File>
+    <File>Config/X10WonderBridge.sql</File>
   </Files>
 </Mod>
 <!-- Mod id 55d7b934-... is the stable internal Civ VI mod ID for the X10

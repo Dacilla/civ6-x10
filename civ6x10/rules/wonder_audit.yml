@@ -1,1005 +1,1616 @@
-# Wonder semantic audit (Phase 3). One explicit disposition per production-
-# relevant row: no Wonder falls through generic heuristics silently. Category
-# and mixed-override machinery is reused only where the recorded rationale
-# genuinely applies; every row below was inspected individually against the
-# official database. Dispositions: CERTIFIED_NUMERIC, CERTIFIED_COUNT_LIKE,
-# EXCLUDED (with reason). Wonder rollup: COMPLETE (all numerics certified) |
-# PARTIAL (some numeric excluded, noted) | UNSUPPORTED (no certifiable
-# numerics) | NONE (no modifiers at all).
 wonders:
   BUILDING_ALHAMBRA:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: ALHAMBRA_MILITARY_GOVERNMENT_SLOT
-        argument: GovernmentSlotType
-        official: SLOT_MILITARY
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "extra military policy slot is structural capacity, not a magnitude"
+    - modifier_id: ALHAMBRA_MILITARY_GOVERNMENT_SLOT
+      argument: GovernmentSlotType
+      official: SLOT_MILITARY
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: extra military policy slot is structural capacity, not a magnitude
+    direct:
+    - table: Buildings
+      key: Entertainment
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
+        Bath precedent)
+    - table: Buildings
+      key: GrantFortification
+      value: 2
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: fortification grant is structural defense capacity, not a magnitude
+    - table: Buildings
+      key: DefenseModifier
+      value: 4
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: defense rating kept conservative; no certified ×10 semantics
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_GENERAL
+      value: 2
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
   BUILDING_AMUNDSEN_SCOTT_RESEARCH_STATION:
     disposition: COMPLETE
     rows:
-      - modifier_id: AMUNDSEN_ADDPRODUCTIONYIELD
-        argument: Amount
-        official: "10"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+10% production to all cities; scalar yield modifier under the mixed city-yield override"
-      - modifier_id: AMUNDSEN_ADDSCIENCEYIELD
-        argument: Amount
-        official: "20"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+20% science; scalar yield modifier under the mixed override"
-      - modifier_id: AMUNDSEN_SNOW_ADDPRODUCTIONYIELD
-        argument: Amount
-        official: "10"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "snow-city +10% production variant of the same magnitude"
-      - modifier_id: AMUNDSEN_SNOW_ADDSCIENCEYIELD
-        argument: Amount
-        official: "20"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "snow-city +20% science variant of the same magnitude"
+    - modifier_id: AMUNDSEN_ADDPRODUCTIONYIELD
+      argument: Amount
+      official: '10'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +10% production to all cities; scalar yield modifier under the mixed
+        city-yield override
+    - modifier_id: AMUNDSEN_ADDSCIENCEYIELD
+      argument: Amount
+      official: '20'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +20% science; scalar yield modifier under the mixed override
+    - modifier_id: AMUNDSEN_SNOW_ADDPRODUCTIONYIELD
+      argument: Amount
+      official: '10'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: snow-city +10% production variant of the same magnitude
+    - modifier_id: AMUNDSEN_SNOW_ADDSCIENCEYIELD
+      argument: Amount
+      official: '20'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: snow-city +20% science variant of the same magnitude
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_SCIENTIST
+      value: 5
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
   BUILDING_ANGKOR_WAT:
     disposition: COMPLETE
     rows:
-      - modifier_id: ANGKORWAT_ADDHOUSING
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 housing is a housing magnitude, same premise as certified CAPITAL_HOUSING rows"
-      - modifier_id: ANGKORWAT_ADDPOPULATION
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 population is a whole citizen (CITY_POPULATION pattern); integral results only"
+    - modifier_id: ANGKORWAT_ADDHOUSING
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 housing is a housing magnitude, same premise as certified CAPITAL_HOUSING
+        rows
+    - modifier_id: ANGKORWAT_ADDPOPULATION
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 population is a whole citizen (CITY_POPULATION pattern); integral
+        results only
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_APADANA:
     disposition: UNSUPPORTED
     rows:
-      - modifier_id: APADANA_AWARD_TWO_INFLUENCE_TOKEN_MODIFIER
-        argument: Amount
-        official: "2"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants influence tokens (GRANT_OBJECT floor); token grants are DECISION_REQUIRED"
+    - modifier_id: APADANA_AWARD_TWO_INFLUENCE_TOKEN_MODIFIER
+      argument: Amount
+      official: '2'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants influence tokens (GRANT_OBJECT floor); token grants are DECISION_REQUIRED
+    direct:
+    - table: Building_GreatWorks
+      key: GREATWORKSLOT_PALACE x2
+      value: 2 slots + NonUnique 1/1
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: slots are structural capacity; per-slot non-unique yields are slot-coupled
+        mechanics, not plain city yields
   BUILDING_BIG_BEN:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: BIG_BEN_ECONOMIC_GOVERNMENT_SLOT
-        argument: GovernmentSlotType
-        official: SLOT_ECONOMIC
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "extra economic policy slot is structural capacity, not a magnitude"
-      - modifier_id: BIG_BEN_INCREASE_GOLD
-        argument: Amount
-        official: "50"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "one-shot treasury multiplication (+50): scaling to +500 invents 6x gold; repeated-application semantics unresolved; bespoke/DECISION_REQUIRED, never flat-multiplied"
+    - modifier_id: BIG_BEN_ECONOMIC_GOVERNMENT_SLOT
+      argument: GovernmentSlotType
+      official: SLOT_ECONOMIC
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: extra economic policy slot is structural capacity, not a magnitude
+    - modifier_id: BIG_BEN_INCREASE_GOLD
+      argument: Amount
+      official: '50'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: 'one-shot treasury multiplication (+50): scaling to +500 invents
+        6x gold; repeated-application semantics unresolved; bespoke/DECISION_REQUIRED,
+        never flat-multiplied'
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 6
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_MERCHANT
+      value: 3
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
   BUILDING_BIOSPHERE:
     disposition: COMPLETE
     rows:
-      - modifier_id: BIOSPHERE_ADJUST_APPEAL_MARSH
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 marsh appeal is a whole appeal level; integral results only"
-      - modifier_id: BIOSPHERE_ADJUST_APPEAL_RAINFOREST
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 rainforest appeal is a whole appeal level; integral results only"
-      - modifier_id: BIOSPHERE_GREEN_ENERGY_TOURISM
-        argument: Amount
-        official: "100"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+100 renewable-energy tourism read at percent scale (flat +100 would dwarf all tourism yields); tourism percent magnitude"
-      - modifier_id: BIOSPHERE_MODIFIED_FREE_POWER
-        argument: Amount
-        official: "200"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+200 power units are whole units (FREE_POWER pattern); integral results only (exact at 7.3 -> 1460)"
+    - modifier_id: BIOSPHERE_ADJUST_APPEAL_MARSH
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 marsh appeal is a whole appeal level; integral results only
+    - modifier_id: BIOSPHERE_ADJUST_APPEAL_RAINFOREST
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 rainforest appeal is a whole appeal level; integral results only
+    - modifier_id: BIOSPHERE_GREEN_ENERGY_TOURISM
+      argument: Amount
+      official: '100'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +100 renewable-energy tourism read at percent scale (flat +100 would
+        dwarf all tourism yields); tourism percent magnitude
+    - modifier_id: BIOSPHERE_MODIFIED_FREE_POWER
+      argument: Amount
+      official: '200'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +200 power units are whole units (FREE_POWER pattern); integral results
+        only (exact at 7.3 -> 1460)
   BUILDING_BOLSHOI_THEATRE:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: BOLSHOI_THEATRE_FREE_CIVICS
-        argument: Amount
-        official: "2"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants two free civics (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: BOLSHOI_THEATRE_FREE_CIVICS
+      argument: Amount
+      official: '2'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants two free civics (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_MUSICIAN
+      value: 2
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_WRITER
+      value: 2
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatWorks
+      key: MUSIC+WRITING slots
+      value: 1+1 slots
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: slots are structural capacity
   BUILDING_BROADWAY:
     disposition: PARTIAL
     rows:
-      - modifier_id: BROADWAY_ADDCULTUREYIELD
-        argument: Amount
-        official: "20"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+20% culture in the Broadway city; scalar yield modifier"
-      - modifier_id: BUILDING_BROADWAY_RANDOMCIVICBOOST
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants a random civic boost (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: BROADWAY_ADDCULTUREYIELD
+      argument: Amount
+      official: '20'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +20% culture in the Broadway city; scalar yield modifier
+    - modifier_id: BUILDING_BROADWAY_RANDOMCIVICBOOST
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants a random civic boost (GRANT_OBJECT floor); object grants are
+        DECISION_REQUIRED
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_MUSICIAN
+      value: 3
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_WRITER
+      value: 3
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatWorks
+      key: MUSIC x2 + WRITING x1
+      value: slots
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: slots are structural capacity
   BUILDING_CASA_DE_CONTRATACION:
     disposition: COMPLETE
     rows:
-      - modifier_id: CONTRATACION_FOREIGNFAITH
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% faith from foreign trade routes; scalar yield modifier under the mixed override"
-      - modifier_id: CONTRATACION_FOREIGNGOLD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% gold from foreign trade routes; scalar yield modifier under the mixed override"
-      - modifier_id: CONTRATACION_FOREIGNPRODUCTION
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% production from foreign trade routes; scalar yield modifier under the mixed override"
-      - modifier_id: CONTRATACION_GOVERNOR_POINTS
-        argument: Delta
-        official: "3"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+3 governor titles are whole titles (narrow Delta-on-GOVERNOR_POINTS rule); integral results only"
+    - modifier_id: CONTRATACION_FOREIGNFAITH
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% faith from foreign trade routes; scalar yield modifier under
+        the mixed override
+    - modifier_id: CONTRATACION_FOREIGNGOLD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% gold from foreign trade routes; scalar yield modifier under
+        the mixed override
+    - modifier_id: CONTRATACION_FOREIGNPRODUCTION
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% production from foreign trade routes; scalar yield modifier
+        under the mixed override
+    - modifier_id: CONTRATACION_GOVERNOR_POINTS
+      argument: Delta
+      official: '3'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +3 governor titles are whole titles (narrow Delta-on-GOVERNOR_POINTS
+        rule); integral results only
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_MERCHANT
+      value: 3
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
   BUILDING_CHICHEN_ITZA:
     disposition: COMPLETE
     rows:
-      - modifier_id: CHICHEN_ITZA_JUNGLE_CULTURE_MODIFIER
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 culture on jungle plots; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: CHICHEN_ITZA_JUNGLE_PRODUCTION_MODIFIER
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 production on jungle plots; scalar plot yield under the mixed plot-yield override"
+    - modifier_id: CHICHEN_ITZA_JUNGLE_CULTURE_MODIFIER
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 culture on jungle plots; scalar plot yield under the mixed plot-yield
+        override
+    - modifier_id: CHICHEN_ITZA_JUNGLE_PRODUCTION_MODIFIER
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 production on jungle plots; scalar plot yield under the mixed
+        plot-yield override
   BUILDING_COLOSSEUM:
     disposition: COMPLETE
     rows:
-      - modifier_id: COLOSSEUM_IDENTITY
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 loyalty pressure; loyalty is float-valued, same premise as certified identity rows"
+    - modifier_id: COLOSSEUM_IDENTITY
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 loyalty pressure; loyalty is float-valued, same premise as certified
+        identity rows
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Buildings
+      key: Entertainment
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
+        Bath precedent)
+    - table: Buildings
+      key: RegionalRange
+      value: 6
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: area of effect is structural scope, not a magnitude
   BUILDING_COLOSSUS:
     disposition: PARTIAL
     rows:
-      - modifier_id: COLOSSUS_ADDTRADEROUTE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 trade-route capacity counts whole routes (TRADE_ROUTE_CAPACITY pattern); integral results only"
-      - modifier_id: COLOSSUS_GRANT_TRADER
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants one free Trader unit (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: COLOSSUS_ADDTRADEROUTE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 trade-route capacity counts whole routes (TRADE_ROUTE_CAPACITY
+        pattern); integral results only
+    - modifier_id: COLOSSUS_GRANT_TRADER
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants one free Trader unit (GRANT_OBJECT floor); object grants are
+        DECISION_REQUIRED
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_ADMIRAL
+      value: 1
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_CRISTO_REDENTOR:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: CRISTOREDENTOR_BEACHTOURISM
-        argument: ScalingFactor
-        official: "200"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "ScalingFactor 200 tourism scaling has unresolved percent-vs-factor semantics; DECISION_REQUIRED, never assumed"
+    - modifier_id: CRISTOREDENTOR_BEACHTOURISM
+      argument: ScalingFactor
+      official: '200'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: ScalingFactor 200 tourism scaling has unresolved percent-vs-factor
+        semantics; DECISION_REQUIRED, never assumed
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 4
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_EIFFEL_TOWER:
     disposition: COMPLETE
     rows:
-      - modifier_id: EIFFEL_TOWER_ADDAPPEAL
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 appeal is a whole appeal level (CITY_APPEAL pattern); integral results only"
+    - modifier_id: EIFFEL_TOWER_ADDAPPEAL
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 appeal is a whole appeal level (CITY_APPEAL pattern); integral
+        results only
   BUILDING_ESTADIO_DO_MARACANA:
-    disposition: NONE
+    disposition: COMPLETE
     rows: []
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 6
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Buildings
+      key: Entertainment
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
+        Bath precedent)
+    - table: Buildings
+      key: RegionalRange
+      value: 100000
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: global area of effect is structural scope, not a magnitude
   BUILDING_ETEMENANKI:
     disposition: COMPLETE
     rows:
-      - modifier_id: ETEMENANKI_PRODUCTION_FLOODPLAINS
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 floodplains production; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: ETEMENANKI_PRODUCTION_GRASS_FLOODPLAINS
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 grass-floodplains production; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: ETEMENANKI_PRODUCTION_MARSH
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 marsh production; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: ETEMENANKI_PRODUCTION_PLAINS_FLOODPLAINS
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 plains-floodplains production; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: ETEMENANKI_SCIENCE_FLOODPLAINS
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 floodplains science; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: ETEMENANKI_SCIENCE_GRASS_FLOODPLAINS
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 grass-floodplains science; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: ETEMENANKI_SCIENCE_MARSH
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 marsh science; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: ETEMENANKI_SCIENCE_PLAINS_FLOODPLAINS
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 plains-floodplains science; scalar plot yield under the mixed plot-yield override"
+    - modifier_id: ETEMENANKI_PRODUCTION_FLOODPLAINS
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 floodplains production; scalar plot yield under the mixed plot-yield
+        override
+    - modifier_id: ETEMENANKI_PRODUCTION_GRASS_FLOODPLAINS
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 grass-floodplains production; scalar plot yield under the mixed
+        plot-yield override
+    - modifier_id: ETEMENANKI_PRODUCTION_MARSH
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 marsh production; scalar plot yield under the mixed plot-yield
+        override
+    - modifier_id: ETEMENANKI_PRODUCTION_PLAINS_FLOODPLAINS
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 plains-floodplains production; scalar plot yield under the mixed
+        plot-yield override
+    - modifier_id: ETEMENANKI_SCIENCE_FLOODPLAINS
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 floodplains science; scalar plot yield under the mixed plot-yield
+        override
+    - modifier_id: ETEMENANKI_SCIENCE_GRASS_FLOODPLAINS
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 grass-floodplains science; scalar plot yield under the mixed plot-yield
+        override
+    - modifier_id: ETEMENANKI_SCIENCE_MARSH
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 marsh science; scalar plot yield under the mixed plot-yield override
+    - modifier_id: ETEMENANKI_SCIENCE_PLAINS_FLOODPLAINS
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 plains-floodplains science; scalar plot yield under the mixed
+        plot-yield override
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_SCIENCE
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_FORBIDDEN_CITY:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: FORBIDDEN_CITY_WILDCARD_GOVERNMENT_SLOT
-        argument: GovernmentSlotType
-        official: SLOT_WILDCARD
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "extra wildcard policy slot is structural capacity, not a magnitude"
+    - modifier_id: FORBIDDEN_CITY_WILDCARD_GOVERNMENT_SLOT
+      argument: GovernmentSlotType
+      official: SLOT_WILDCARD
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: extra wildcard policy slot is structural capacity, not a magnitude
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 5
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_GOLDEN_GATE_BRIDGE:
     disposition: PARTIAL
     rows:
-      - modifier_id: GOLDENGATE_CITYAPPEAL
-        argument: Amount
-        official: "4"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+4 appeal is a whole appeal level; integral results only"
-      - modifier_id: GOLDENGATE_GRANT_ROUTES
-        argument: Radius
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "route grant in radius is an area effect plus object grant; grant/area semantics unresolved"
-      - modifier_id: GOLDENGATE_IMPROVEMENT_TOURISM
-        argument: Amount
-        official: "100"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+100 improvement tourism read at percent scale (flat +100 would dwarf tourism yields); tourism percent magnitude"
-      - modifier_id: GOLDENGATE_NATIONAL_PARK_TOURISM
-        argument: Amount
-        official: "100"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+100 national-park tourism read at percent scale; tourism percent magnitude"
-      - modifier_id: GOLDENGATE_REMOVE_CLIFFS
-        argument: Radius
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "cliff removal in radius is a terrain/map effect (SPATIAL_BUDGET floor); not a magnitude"
+    - modifier_id: GOLDENGATE_CITYAPPEAL
+      argument: Amount
+      official: '4'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +4 appeal is a whole appeal level; integral results only
+    - modifier_id: GOLDENGATE_GRANT_ROUTES
+      argument: Radius
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: route grant in radius is an area effect plus object grant; grant/area
+        semantics unresolved
+    - modifier_id: GOLDENGATE_IMPROVEMENT_TOURISM
+      argument: Amount
+      official: '100'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +100 improvement tourism read at percent scale (flat +100 would dwarf
+        tourism yields); tourism percent magnitude
+    - modifier_id: GOLDENGATE_NATIONAL_PARK_TOURISM
+      argument: Amount
+      official: '100'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +100 national-park tourism read at percent scale; tourism percent
+        magnitude
+    - modifier_id: GOLDENGATE_REMOVE_CLIFFS
+      argument: Radius
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: cliff removal in radius is a terrain/map effect (SPATIAL_BUDGET floor);
+        not a magnitude
+    direct:
+    - table: Buildings
+      key: Entertainment
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
+        Bath precedent)
+    - table: Buildings_XP2
+      key: Bridge
+      value: 1
+      disposition: UNCHANGED
+      mechanism: NONE
+      rationale: map flag, not a magnitude
   BUILDING_GREAT_BATH:
     disposition: COMPLETE
     rows:
-      - modifier_id: GREATBATH_FLOODFAITH
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 faith per flood event; flat yield magnitude"
+    - modifier_id: GREATBATH_FLOODFAITH
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 faith per flood event; flat yield magnitude
+    direct:
+    - table: Buildings
+      key: Housing
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat housing via single-city BUILDING_HOUSING helper (Religious Community
+        precedent)
+    - table: Buildings
+      key: Entertainment
+      value: 1
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat entertainment via single-city ENTERTAINMENT helper (Thermal
+        Bath precedent)
+    - table: Buildings_XP2
+      key: PreventsFloods
+      value: 1
+      disposition: UNCHANGED
+      mechanism: NONE
+      rationale: map flag, not a magnitude
   BUILDING_GREAT_LIGHTHOUSE:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: GREATLIGHTHOUSE_ADJUST_EMBARKED_MOVEMENT
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "+1 embarked movement is a spatial budget (SPATIAL_BUDGET floor); not a magnitude"
-      - modifier_id: GREATLIGHTHOUSE_ADJUST_SEA_MOVEMENT
-        argument: AbilityType
-        official: ABILITY_GREAT_LIGHTHOUSE_MOVEMENT
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants a movement ability object; selector-typed ability grant with no numeric magnitude"
+    - modifier_id: GREATLIGHTHOUSE_ADJUST_EMBARKED_MOVEMENT
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: +1 embarked movement is a spatial budget (SPATIAL_BUDGET floor);
+        not a magnitude
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_ADMIRAL
+      value: 1
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
   BUILDING_GREAT_LIBRARY:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: GREATLIBRARY_BOOST_SCIENTIST
-        argument: TechBoost
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants tech boosts with great scientists (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-      - modifier_id: GREAT_LIBRARY_ANCIENT_CLASSICAL_TECH_BOOSTS
-        argument: EndEraType
-        official: ERA_CLASSICAL
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants all ancient/classical eureka objects (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-  BUILDING_GREAT_LIGHTHOUSE:
-    disposition: UNSUPPORTED
-    rows:
-      - modifier_id: GREATLIGHTHOUSE_ADJUST_EMBARKED_MOVEMENT
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "+1 embarked movement is a spatial budget (SPATIAL_BUDGET floor); not a magnitude"
+    - modifier_id: GREATLIBRARY_BOOST_SCIENTIST
+      argument: TechBoost
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants tech boosts with great scientists (GRANT_OBJECT floor); object
+        grants are DECISION_REQUIRED
+    - modifier_id: GREAT_LIBRARY_ANCIENT_CLASSICAL_TECH_BOOSTS
+      argument: EndEraType
+      official: ERA_CLASSICAL
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants all ancient/classical eureka objects (GRANT_OBJECT floor);
+        object grants are DECISION_REQUIRED
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_SCIENCE
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_SCIENTIST
+      value: 1
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_WRITER
+      value: 1
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatWorks
+      key: WRITING x2
+      value: slots
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: slots are structural capacity
   BUILDING_GREAT_ZIMBABWE:
     disposition: COMPLETE
     rows:
-      - modifier_id: GREAT_ZIMBABWE_ADDTRADEROUTE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 trade-route capacity counts whole routes; integral results only"
-      - modifier_id: GREAT_ZIMBABWE_DOMESTICBONUSRESOURCEGOLD
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 gold per bonus resource on domestic routes; flat trade-yield magnitude"
-      - modifier_id: GREAT_ZIMBABWE_INTERNATIONALBONUSRESOURCEGOLD
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 gold per bonus resource on international routes; flat trade-yield magnitude"
+    - modifier_id: GREAT_ZIMBABWE_ADDTRADEROUTE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 trade-route capacity counts whole routes; integral results only
+    - modifier_id: GREAT_ZIMBABWE_DOMESTICBONUSRESOURCEGOLD
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 gold per bonus resource on domestic routes; flat trade-yield magnitude
+    - modifier_id: GREAT_ZIMBABWE_INTERNATIONALBONUSRESOURCEGOLD
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 gold per bonus resource on international routes; flat trade-yield
+        magnitude
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 5
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_MERCHANT
+      value: 2
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
   BUILDING_HAGIA_SOPHIA:
     disposition: COMPLETE
     rows:
-      - modifier_id: HAGIA_SOPHIA_ADJUST_RELIGIOUS_CHARGES
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 missionary/apostle spread charge is a whole use (SPREAD_CHARGES); integral results only"
+    - modifier_id: HAGIA_SOPHIA_ADJUST_RELIGIOUS_CHARGES
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 missionary/apostle spread charge is a whole use (SPREAD_CHARGES);
+        integral results only
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 4
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_HALICARNASSUS_MAUSOLEUM:
     disposition: PARTIAL
     rows:
-      - modifier_id: HALICARNASSUS_ADJUST_ENGINEER_CHARGES
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 great-engineer charge is a whole use (CHARGES pattern); integral results only"
-      - modifier_id: HALICARNASSUS_MAUSOLEUM_YIELD_MODIFIER
-        argument: Amount
-        official: "1,1,1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "vector-valued Amount (one per yield) is non-numeric; undecided, never split or scaled"
-      - modifier_id: HALICARNASSUS_MAUSOLEUM_YIELD_MODIFIER
-        argument: Amount
-        official: "1,1,1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "vector-valued Amount (one per yield) is non-numeric; undecided, never split or scaled"
+    - modifier_id: HALICARNASSUS_ADJUST_ENGINEER_CHARGES
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 great-engineer charge is a whole use (CHARGES pattern); integral
+        results only
+    - modifier_id: HALICARNASSUS_MAUSOLEUM_YIELD_MODIFIER
+      argument: Amount
+      official: 1,1,1
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: vector-valued Amount (one per yield) is non-numeric; undecided, never
+        split or scaled
+    - modifier_id: HALICARNASSUS_MAUSOLEUM_YIELD_MODIFIER
+      argument: Amount
+      official: 1,1,1
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: vector-valued Amount (one per yield) is non-numeric; undecided, never
+        split or scaled
   BUILDING_HANGING_GARDENS:
     disposition: COMPLETE
     rows:
-      - modifier_id: HANGING_GARDEN_ADDGROWTH
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% growth is a scalar growth percent"
+    - modifier_id: HANGING_GARDEN_ADDGROWTH
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% growth is a scalar growth percent
+    direct:
+    - table: Buildings
+      key: Housing
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat housing via single-city BUILDING_HOUSING helper (Religious Community
+        precedent)
   BUILDING_HERMITAGE:
-    disposition: NONE
+    disposition: COMPLETE
     rows: []
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_ARTIST
+      value: 3
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatWorks
+      key: ART x4 + NonUnique 3/2
+      value: slots+yields
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: slots are structural capacity; non-unique slot yields are slot-coupled
+        mechanics, not plain city yields
   BUILDING_HUEY_TEOCALLI:
     disposition: COMPLETE
     rows:
-      - modifier_id: HUEY_LAKE_FOOD_MODIFIER
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 lake food; scalar plot yield under the mixed plot-yield override (entertainment row carries no numeric argument)"
-      - modifier_id: HUEY_LAKE_PRODUCTION_MODIFIER
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 lake production; scalar plot yield under the mixed plot-yield override"
+    - modifier_id: HUEY_LAKE_FOOD_MODIFIER
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 lake food; scalar plot yield under the mixed plot-yield override
+        (entertainment row carries no numeric argument)
+    - modifier_id: HUEY_LAKE_PRODUCTION_MODIFIER
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 lake production; scalar plot yield under the mixed plot-yield
+        override
   BUILDING_JEBEL_BARKAL:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: JEBELBARKAL_GRANT_FOUR_IRON_PER_TURN
-        argument: Amount
-        official: "6"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "deliberate floor boundary: EFFECT_GRANT_FREE_RESOURCE_EXTRACTED is GRANT_OBJECT in the sem floor while adjust-style extraction is a flow; grants stay excluded without positive proof (see docs)"
+    - modifier_id: JEBELBARKAL_GRANT_FOUR_IRON_PER_TURN
+      argument: Amount
+      official: '6'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: 'deliberate floor boundary: EFFECT_GRANT_FREE_RESOURCE_EXTRACTED
+        is GRANT_OBJECT in the sem floor while adjust-style extraction is a flow;
+        grants stay excluded without positive proof (see docs)'
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 4
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Buildings
+      key: RegionalRange
+      value: 6
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: iron radius is structural scope, not a magnitude
   BUILDING_KILWA_KISIWANI:
     disposition: PARTIAL
     rows:
-      - modifier_id: KILWA_PLAYERCITIES_ADDCULTUREYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% suzerain-city culture; scalar yield modifier under the mixed override"
-      - modifier_id: KILWA_PLAYERCITIES_ADDFAITHYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% suzerain-city faith; scalar yield modifier under the mixed override"
-      - modifier_id: KILWA_PLAYERCITIES_ADDGOLDYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% suzerain-city gold; scalar yield modifier under the mixed override"
-      - modifier_id: KILWA_PLAYERCITIES_ADDPRODUCTIONBUILDINGS
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% suzerain-city building production; scalar production percent"
-      - modifier_id: KILWA_PLAYERCITIES_ADDPRODUCTIONDISTRICTS
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% suzerain-city district production; scalar production percent"
-      - modifier_id: KILWA_PLAYERCITIES_ADDPRODUCTIONUNITS
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% suzerain-city unit production; scalar production percent"
-      - modifier_id: KILWA_PLAYERCITIES_ADDSCIENCEYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+15% suzerain-city science; scalar yield modifier under the mixed override"
-      - modifier_id: KILWA_SINGLE_ADDCULTUREYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "Kilwa-city +15% culture; scalar yield magnitude"
-      - modifier_id: KILWA_SINGLE_ADDFAITHYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "Kilwa-city +15% faith; scalar yield magnitude"
-      - modifier_id: KILWA_SINGLE_ADDGOLDYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "Kilwa-city +15% gold; scalar yield magnitude"
-      - modifier_id: KILWA_SINGLE_ADDPRODUCTIONBUILDINGS
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "Kilwa-city +15% building production; scalar production percent"
-      - modifier_id: KILWA_SINGLE_ADDPRODUCTIONDISTRICTS
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "Kilwa-city +15% district production; scalar production percent"
-      - modifier_id: KILWA_SINGLE_ADDPRODUCTIONUNITS
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "Kilwa-city +15% unit production; scalar production percent"
-      - modifier_id: KILWA_SINGLE_ADDSCIENCEYIELD
-        argument: Amount
-        official: "15"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "Kilwa-city +15% science; scalar yield magnitude"
-      - modifier_id: KILWA_THREE_INFLUENCE_TOKENS
-        argument: Amount
-        official: "3"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants three influence tokens (GRANT_OBJECT floor); token grants are DECISION_REQUIRED"
+    - modifier_id: KILWA_PLAYERCITIES_ADDCULTUREYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% suzerain-city culture; scalar yield modifier under the mixed
+        override
+    - modifier_id: KILWA_PLAYERCITIES_ADDFAITHYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% suzerain-city faith; scalar yield modifier under the mixed override
+    - modifier_id: KILWA_PLAYERCITIES_ADDGOLDYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% suzerain-city gold; scalar yield modifier under the mixed override
+    - modifier_id: KILWA_PLAYERCITIES_ADDPRODUCTIONBUILDINGS
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% suzerain-city building production; scalar production percent
+    - modifier_id: KILWA_PLAYERCITIES_ADDPRODUCTIONDISTRICTS
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% suzerain-city district production; scalar production percent
+    - modifier_id: KILWA_PLAYERCITIES_ADDPRODUCTIONUNITS
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% suzerain-city unit production; scalar production percent
+    - modifier_id: KILWA_PLAYERCITIES_ADDSCIENCEYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +15% suzerain-city science; scalar yield modifier under the mixed
+        override
+    - modifier_id: KILWA_SINGLE_ADDCULTUREYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: Kilwa-city +15% culture; scalar yield magnitude
+    - modifier_id: KILWA_SINGLE_ADDFAITHYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: Kilwa-city +15% faith; scalar yield magnitude
+    - modifier_id: KILWA_SINGLE_ADDGOLDYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: Kilwa-city +15% gold; scalar yield magnitude
+    - modifier_id: KILWA_SINGLE_ADDPRODUCTIONBUILDINGS
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: Kilwa-city +15% building production; scalar production percent
+    - modifier_id: KILWA_SINGLE_ADDPRODUCTIONDISTRICTS
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: Kilwa-city +15% district production; scalar production percent
+    - modifier_id: KILWA_SINGLE_ADDPRODUCTIONUNITS
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: Kilwa-city +15% unit production; scalar production percent
+    - modifier_id: KILWA_SINGLE_ADDSCIENCEYIELD
+      argument: Amount
+      official: '15'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: Kilwa-city +15% science; scalar yield magnitude
+    - modifier_id: KILWA_THREE_INFLUENCE_TOKENS
+      argument: Amount
+      official: '3'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants three influence tokens (GRANT_OBJECT floor); token grants
+        are DECISION_REQUIRED
   BUILDING_KOTOKU_IN:
     disposition: PARTIAL
     rows:
-      - modifier_id: KOTOKU_ADDFAITHYIELD
-        argument: Amount
-        official: "20"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+20% faith in the Kotoku city; scalar yield magnitude"
-      - modifier_id: KOTOKU_GRANTMONKS
-        argument: Amount
-        official: "4"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants four Warrior Monks (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: KOTOKU_ADDFAITHYIELD
+      argument: Amount
+      official: '20'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +20% faith in the Kotoku city; scalar yield magnitude
+    - modifier_id: KOTOKU_GRANTMONKS
+      argument: Amount
+      official: '4'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants four Warrior Monks (GRANT_OBJECT floor); object grants are
+        DECISION_REQUIRED
   BUILDING_MACHU_PICCHU:
     disposition: COMPLETE
     rows:
-      - modifier_id: MACHUPICCHU_COMMERCIALHUB_DESERTMOUNTAIN_GOLD
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 commercial-hub desert-mountain gold; per-plot adjacency magnitude (representative of 15 Machu Picchu rows)"
-      - modifier_id: MACHUPICCHU_COMMERCIALHUB_GRASSMOUNTAIN_GOLD
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 commercial-hub grass-mountain gold; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_COMMERCIALHUB_PLAINSMOUNTAIN_GOLD
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 commercial-hub plains-mountain gold; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_COMMERCIALHUB_SNOWMOUNTAIN_GOLD
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 commercial-hub snow-mountain gold; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_COMMERCIALHUB_TUNDRAMOUNTAIN_GOLD
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 commercial-hub tundra-mountain gold; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_INDUSTRIALZONE_DESERTMOUNTAIN_PRODUCTION
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 industrial-zone desert-mountain production; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_INDUSTRIALZONE_GRASSMOUNTAIN_PRODUCTION
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 industrial-zone grass-mountain production; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_INDUSTRIALZONE_PLAINSMOUNTAIN_PRODUCTION
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 industrial-zone plains-mountain production; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_INDUSTRIALZONE_SNOWMOUNTAIN_PRODUCTION
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 industrial-zone snow-mountain production; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_INDUSTRIALZONE_TUNDRAMOUNTAIN_PRODUCTION
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 industrial-zone tundra-mountain production; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_THEATER_DESERTMOUNTAIN_CULTURE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 theater desert-mountain culture; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_THEATER_GRASSMOUNTAIN_CULTURE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 theater grass-mountain culture; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_THEATER_PLAINSMOUNTAIN_CULTURE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 theater plains-mountain culture; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_THEATER_SNOWMOUNTAIN_CULTURE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 theater snow-mountain culture; per-plot adjacency magnitude"
-      - modifier_id: MACHUPICCHU_THEATER_TUNDRAMOUNTAIN_CULTURE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 theater tundra-mountain culture; per-plot adjacency magnitude"
+    - modifier_id: MACHUPICCHU_COMMERCIALHUB_DESERTMOUNTAIN_GOLD
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 commercial-hub desert-mountain gold; per-plot adjacency magnitude
+        (representative of 15 Machu Picchu rows)
+    - modifier_id: MACHUPICCHU_COMMERCIALHUB_GRASSMOUNTAIN_GOLD
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 commercial-hub grass-mountain gold; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_COMMERCIALHUB_PLAINSMOUNTAIN_GOLD
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 commercial-hub plains-mountain gold; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_COMMERCIALHUB_SNOWMOUNTAIN_GOLD
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 commercial-hub snow-mountain gold; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_COMMERCIALHUB_TUNDRAMOUNTAIN_GOLD
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 commercial-hub tundra-mountain gold; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_INDUSTRIALZONE_DESERTMOUNTAIN_PRODUCTION
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 industrial-zone desert-mountain production; per-plot adjacency
+        magnitude
+    - modifier_id: MACHUPICCHU_INDUSTRIALZONE_GRASSMOUNTAIN_PRODUCTION
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 industrial-zone grass-mountain production; per-plot adjacency
+        magnitude
+    - modifier_id: MACHUPICCHU_INDUSTRIALZONE_PLAINSMOUNTAIN_PRODUCTION
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 industrial-zone plains-mountain production; per-plot adjacency
+        magnitude
+    - modifier_id: MACHUPICCHU_INDUSTRIALZONE_SNOWMOUNTAIN_PRODUCTION
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 industrial-zone snow-mountain production; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_INDUSTRIALZONE_TUNDRAMOUNTAIN_PRODUCTION
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 industrial-zone tundra-mountain production; per-plot adjacency
+        magnitude
+    - modifier_id: MACHUPICCHU_THEATER_DESERTMOUNTAIN_CULTURE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 theater desert-mountain culture; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_THEATER_GRASSMOUNTAIN_CULTURE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 theater grass-mountain culture; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_THEATER_PLAINSMOUNTAIN_CULTURE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 theater plains-mountain culture; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_THEATER_SNOWMOUNTAIN_CULTURE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 theater snow-mountain culture; per-plot adjacency magnitude
+    - modifier_id: MACHUPICCHU_THEATER_TUNDRAMOUNTAIN_CULTURE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 theater tundra-mountain culture; per-plot adjacency magnitude
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 4
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_MAHABODHI_TEMPLE:
     disposition: PARTIAL
     rows:
-      - modifier_id: MAHABODHITEMPLE_APOSTLE
-        argument: Amount
-        official: "2"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants two Apostles (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-      - modifier_id: MAHABODHI_DIPLOVP
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 diplomatic victory points are whole points (DIPLOMATIC_VICTORY_POINTS pattern); integral results only"
+    - modifier_id: MAHABODHITEMPLE_APOSTLE
+      argument: Amount
+      official: '2'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants two Apostles (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+    - modifier_id: MAHABODHI_DIPLOVP
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 diplomatic victory points are whole points (DIPLOMATIC_VICTORY_POINTS
+        pattern); integral results only
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 4
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_MEENAKSHI_TEMPLE:
     disposition: PARTIAL
     rows:
-      - modifier_id: MEENAKSHITEMPLE_FREE_GURU
-        argument: Amount
-        official: "2"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants two Gurus (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-      - modifier_id: MEENAKSHITEMPLE_GURU_DISCOUNT
-        argument: Amount
-        official: "30"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: DISCOUNT
-        rationale: "30% guru faith-purchase discount under the curated UNIT_PURCHASE_COST percent classification"
+    - modifier_id: MEENAKSHITEMPLE_FREE_GURU
+      argument: Amount
+      official: '2'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants two Gurus (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+    - modifier_id: MEENAKSHITEMPLE_GURU_DISCOUNT
+      argument: Amount
+      official: '30'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: DISCOUNT
+      rationale: 30% guru faith-purchase discount under the curated UNIT_PURCHASE_COST
+        percent classification
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_MONT_ST_MICHEL:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: MONT_ST_MICHEL_GRANT_MARTYR
-        argument: PromotionType
-        official: PROMOTION_MARTYR
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants a Martyr promotion; selector-typed promotion grant with no numeric magnitude"
+    - modifier_id: MONT_ST_MICHEL_GRANT_MARTYR
+      argument: PromotionType
+      official: PROMOTION_MARTYR
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants a Martyr promotion; selector-typed promotion grant with no
+        numeric magnitude
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Buildings
+      key: GrantFortification
+      value: 2
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: fortification grant is structural defense capacity, not a magnitude
+    - table: Buildings
+      key: DefenseModifier
+      value: 6
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: defense rating kept conservative; no certified ×10 semantics
   BUILDING_ORACLE:
     disposition: COMPLETE
     rows:
-      - modifier_id: ORACLE_GREATADMIRALPOINTS
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 great-admiral points are whole points (GREAT_PERSON_POINTS pattern); integral results only"
-      - modifier_id: ORACLE_GREATENGINEERPOINTS
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 great-engineer points are whole points; integral results only"
-      - modifier_id: ORACLE_GREATGENERALPOINTS
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 great-general points are whole points; integral results only"
-      - modifier_id: ORACLE_GREATMERCHANTPOINTS
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 great-merchant points are whole points; integral results only"
-      - modifier_id: ORACLE_GREATPROPHETPOINTS
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 great-prophet points are whole points; integral results only"
-      - modifier_id: ORACLE_GREATSCIENTISTPOINTS
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 great-scientist points are whole points; integral results only"
-      - modifier_id: ORACLE_GREATWRITERPOINTS
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+2 great-writer points are whole points; integral results only"
-      - modifier_id: ORACLE_PATRONAGE_FAITH_DISCOUNT
-        argument: Amount
-        official: "25"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: DISCOUNT
-        rationale: "25% great-person patronage discount under the curated PATRONAGE percent classification"
+    - modifier_id: ORACLE_GREATADMIRALPOINTS
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 great-admiral points are whole points (GREAT_PERSON_POINTS pattern);
+        integral results only
+    - modifier_id: ORACLE_GREATENGINEERPOINTS
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 great-engineer points are whole points; integral results only
+    - modifier_id: ORACLE_GREATGENERALPOINTS
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 great-general points are whole points; integral results only
+    - modifier_id: ORACLE_GREATMERCHANTPOINTS
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 great-merchant points are whole points; integral results only
+    - modifier_id: ORACLE_GREATPROPHETPOINTS
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 great-prophet points are whole points; integral results only
+    - modifier_id: ORACLE_GREATSCIENTISTPOINTS
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 great-scientist points are whole points; integral results only
+    - modifier_id: ORACLE_GREATWRITERPOINTS
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +2 great-writer points are whole points; integral results only
+    - modifier_id: ORACLE_PATRONAGE_FAITH_DISCOUNT
+      argument: Amount
+      official: '25'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: DISCOUNT
+      rationale: 25% great-person patronage discount under the curated PATRONAGE percent
+        classification
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 1
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 1
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_ORSZAGHAZ:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: ORSZAGHAZ_DOUBLE_FAVOR_SUZERAIN
-        argument: Amount
-        official: "100"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "favor multiplier (doubling): multiplicative factor, not an additive magnitude; DECISION_REQUIRED"
+    - modifier_id: ORSZAGHAZ_DOUBLE_FAVOR_SUZERAIN
+      argument: Amount
+      official: '100'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: 'favor multiplier (doubling): multiplicative factor, not an additive
+        magnitude; DECISION_REQUIRED'
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 4
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_OXFORD_UNIVERSITY:
     disposition: PARTIAL
     rows:
-      - modifier_id: OXFORD_ADDSCIENCEYIELD
-        argument: Amount
-        official: "20"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+20% science in the Oxford city; scalar yield magnitude"
-      - modifier_id: OXFORD_UNIVERSITY_FREE_TECHS
-        argument: Amount
-        official: "2"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants two free technologies (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: OXFORD_ADDSCIENCEYIELD
+      argument: Amount
+      official: '20'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +20% science in the Oxford city; scalar yield magnitude
+    - modifier_id: OXFORD_UNIVERSITY_FREE_TECHS
+      argument: Amount
+      official: '2'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants two free technologies (GRANT_OBJECT floor); object grants
+        are DECISION_REQUIRED
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_SCIENTIST
+      value: 3
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatWorks
+      key: WRITING x2
+      value: slots
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: slots are structural capacity
   BUILDING_PANAMA_CANAL:
-    disposition: NONE
+    disposition: COMPLETE
     rows: []
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 10
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Buildings_XP2
+      key: CanalWonder
+      value: 1
+      disposition: UNCHANGED
+      mechanism: NONE
+      rationale: map flag, not a magnitude
   BUILDING_PETRA:
     disposition: UNSUPPORTED
     rows:
-      - modifier_id: PETRA_YIELD_MODIFIER
-        argument: Amount
-        official: "2,2,1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "vector-valued Amount (one per yield) is non-numeric; undecided, never split or scaled"
+    - modifier_id: PETRA_YIELD_MODIFIER
+      argument: Amount
+      official: 2,2,1
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: vector-valued Amount (one per yield) is non-numeric; undecided, never
+        split or scaled
   BUILDING_POTALA_PALACE:
     disposition: PARTIAL
     rows:
-      - modifier_id: POTALA_DIPLOVP
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 diplomatic victory point is a whole point; integral results only"
-      - modifier_id: POTALA_PALACE_DIPLOMATIC_GOVERNMENT_SLOT
-        argument: GovernmentSlotType
-        official: SLOT_DIPLOMATIC
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "extra diplomatic policy slot is structural capacity, not a magnitude"
+    - modifier_id: POTALA_DIPLOVP
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 diplomatic victory point is a whole point; integral results only
+    - modifier_id: POTALA_PALACE_DIPLOMATIC_GOVERNMENT_SLOT
+      argument: GovernmentSlotType
+      official: SLOT_DIPLOMATIC
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: extra diplomatic policy slot is structural capacity, not a magnitude
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_PYRAMIDS:
     disposition: PARTIAL
     rows:
-      - modifier_id: PYRAMID_ADJUST_BUILDER_CHARGES
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 builder charge is a whole use (CHARGES pattern, same as SERFDOM_BUILDERCHARGES); integral results only"
-      - modifier_id: PYRAMID_GRANT_BUILDERS
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants one free Builder (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: PYRAMID_ADJUST_BUILDER_CHARGES
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 builder charge is a whole use (CHARGES pattern, same as SERFDOM_BUILDERCHARGES);
+        integral results only
+    - modifier_id: PYRAMID_GRANT_BUILDERS
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants one free Builder (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_RUHR_VALLEY:
     disposition: COMPLETE
     rows:
-      - modifier_id: RUHRVALLEY_ADDPRODUCTIONYIELD
-        argument: Amount
-        official: "20"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+20% Ruhr-city production; scalar yield magnitude"
-      - modifier_id: RUHR_VALLEY_PRODUCTION_MODIFIER
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 mine/quarry production; scalar plot yield under the mixed plot-yield override"
+    - modifier_id: RUHRVALLEY_ADDPRODUCTIONYIELD
+      argument: Amount
+      official: '20'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +20% Ruhr-city production; scalar yield magnitude
+    - modifier_id: RUHR_VALLEY_PRODUCTION_MODIFIER
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 mine/quarry production; scalar plot yield under the mixed plot-yield
+        override
   BUILDING_STATUE_LIBERTY:
     disposition: COMPLETE
     rows:
-      - modifier_id: STATUELIBERTY_CITIES_ALWAYS_LOYAL
-        argument: AlwaysLoyal
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "always-loyal flag is boolean (refused at manifest level); not a magnitude"
-      - modifier_id: STATUELIBERTY_DIPLOVP
-        argument: Amount
-        official: "4"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+4 diplomatic victory points are whole points; integral results only"
+    - modifier_id: STATUELIBERTY_CITIES_ALWAYS_LOYAL
+      argument: AlwaysLoyal
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: always-loyal flag is boolean (refused at manifest level); not a magnitude
+    - modifier_id: STATUELIBERTY_DIPLOVP
+      argument: Amount
+      official: '4'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +4 diplomatic victory points are whole points; integral results only
   BUILDING_STATUE_OF_ZEUS:
     disposition: PARTIAL
     rows:
-      - modifier_id: STAUEZEUS_ANTI_CAVALRY_PRODUCTION
-        argument: Amount
-        official: "50"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+50% anti-cavalry production, same premise as certified AGOGE unit-production rows"
-      - modifier_id: STAUEZEUS_GRANT_ARCHERS
-        argument: Amount
-        official: "3"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants three Archers (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-      - modifier_id: STAUEZEUS_GRANT_BATTERINGRAM
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants one Battering Ram (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-      - modifier_id: STAUEZEUS_GRANT_SPEARMEN
-        argument: Amount
-        official: "3"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants three Spearmen (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: STAUEZEUS_ANTI_CAVALRY_PRODUCTION
+      argument: Amount
+      official: '50'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +50% anti-cavalry production, same premise as certified AGOGE unit-production
+        rows
+    - modifier_id: STAUEZEUS_GRANT_ARCHERS
+      argument: Amount
+      official: '3'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants three Archers (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+    - modifier_id: STAUEZEUS_GRANT_BATTERINGRAM
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants one Battering Ram (GRANT_OBJECT floor); object grants are
+        DECISION_REQUIRED
+    - modifier_id: STAUEZEUS_GRANT_SPEARMEN
+      argument: Amount
+      official: '3'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants three Spearmen (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_STONEHENGE:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: STONEHENGE_ALTERNATE_GRANT_APOSTLE
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants one Apostle (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-      - modifier_id: STONEHENGE_GRANT_PROPHET
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants one Great Prophet (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
+    - modifier_id: STONEHENGE_ALTERNATE_GRANT_APOSTLE
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants one Apostle (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+    - modifier_id: STONEHENGE_GRANT_PROPHET
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants one Great Prophet (GRANT_OBJECT floor); object grants are
+        DECISION_REQUIRED
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 2
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Buildings
+      key: AdjacentResource
+      value: RESOURCE_STONE
+      disposition: UNCHANGED
+      mechanism: NONE
+      rationale: placement requirement string, not a magnitude
   BUILDING_ST_BASILS_CATHEDRAL:
     disposition: PARTIAL
     rows:
-      - modifier_id: STBASILS_ADDCULTURE_MODIFIER
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 tundra culture; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: STBASILS_ADDFOOD_MODIFIER
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 tundra food; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: STBASILS_ADDPRODUCTION_MODIFIER
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 tundra production; scalar plot yield under the mixed plot-yield override"
-      - modifier_id: STBASILS_ADDRELIGIOUSTOURISM
-        argument: ScalingFactor
-        official: "200"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "ScalingFactor 200 religious-tourism scaling has unresolved percent-vs-factor semantics; DECISION_REQUIRED, never assumed"
+    - modifier_id: STBASILS_ADDCULTURE_MODIFIER
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 tundra culture; scalar plot yield under the mixed plot-yield override
+    - modifier_id: STBASILS_ADDFOOD_MODIFIER
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 tundra food; scalar plot yield under the mixed plot-yield override
+    - modifier_id: STBASILS_ADDPRODUCTION_MODIFIER
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 tundra production; scalar plot yield under the mixed plot-yield
+        override
+    - modifier_id: STBASILS_ADDRELIGIOUSTOURISM
+      argument: ScalingFactor
+      official: '200'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: ScalingFactor 200 religious-tourism scaling has unresolved percent-vs-factor
+        semantics; DECISION_REQUIRED, never assumed
   BUILDING_SYDNEY_OPERA_HOUSE:
-    disposition: NONE
+    disposition: COMPLETE
     rows: []
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_CULTURE
+      value: 8
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_MUSICIAN
+      value: 5
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_GreatWorks
+      key: MUSIC x3
+      value: slots
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: slots are structural capacity
   BUILDING_TAJ_MAHAL:
     disposition: COMPLETE
     rows:
-      - modifier_id: TAJ_MAHAL_EXTRA_ERA_SCORE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_COUNT_LIKE
-        mechanism: ADDITIVE
-        rationale: "+1 era score per pride moment is a whole point (ERA_SCORE pattern); integral results only"
-      - modifier_id: TAJ_MAHAL_EXTRA_ERA_SCORE
-        argument: MinScore
-        official: "2"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "MinScore 2 is an eligibility threshold, not a magnitude"
+    - modifier_id: TAJ_MAHAL_EXTRA_ERA_SCORE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: +1 era score per pride moment is a whole point (ERA_SCORE pattern);
+        integral results only
+    - modifier_id: TAJ_MAHAL_EXTRA_ERA_SCORE
+      argument: MinScore
+      official: '2'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: MinScore 2 is an eligibility threshold, not a magnitude
   BUILDING_TEMPLE_ARTEMIS:
-    disposition: NONE
+    disposition: COMPLETE
     rows: []
+    direct:
+    - table: Building_YieldChanges
+      key: YIELD_FOOD
+      value: 4
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Buildings
+      key: Housing
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat housing via single-city BUILDING_HOUSING helper (Religious Community
+        precedent)
   BUILDING_TERRACOTTA_ARMY:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: TERRACOTTA_ARMY_LEVEL_UP_UNITS
-        argument: Amount
-        official: "-1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "sentinel Amount=-1 (all units start promoted), same curated exclusion as UNIQUE_LEADER_SPIES_START_PROMOTED; not a magnitude"
+    - modifier_id: TERRACOTTA_ARMY_LEVEL_UP_UNITS
+      argument: Amount
+      official: '-1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: sentinel Amount=-1 (all units start promoted), same curated exclusion
+        as UNIQUE_LEADER_SPIES_START_PROMOTED; not a magnitude
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_GENERAL
+      value: 1
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
   BUILDING_TORRE_DE_BELEM:
     disposition: PARTIAL
     rows:
-      - modifier_id: TORREDEBELEM_CHEAPEST_BUILDING
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants the cheapest building (GRANT_OBJECT floor); object grants are DECISION_REQUIRED"
-      - modifier_id: TORREDEBELEM_TRADE_GOLD_LUXURIES
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 gold per luxury on international routes; flat trade-yield magnitude"
+    - modifier_id: TORREDEBELEM_CHEAPEST_BUILDING
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants the cheapest building (GRANT_OBJECT floor); object grants
+        are DECISION_REQUIRED
+    - modifier_id: TORREDEBELEM_TRADE_GOLD_LUXURIES
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 gold per luxury on international routes; flat trade-yield magnitude
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_ADMIRAL
+      value: 1
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_YieldChanges
+      key: YIELD_GOLD
+      value: 5
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_UNIVERSITY_SANKORE:
     disposition: COMPLETE
     rows:
-      - modifier_id: SANKORE_TRADE_DOMESTIC_FAITH
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 domestic-route faith to others; flat trade-yield magnitude"
-      - modifier_id: SANKORE_TRADE_DOMESTIC_SCIENCE
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 domestic-route science to others; flat trade-yield magnitude"
-      - modifier_id: SANKORE_TRADE_GAIN_SCIENCE
-        argument: Amount
-        official: "2"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+2 science from incoming routes; flat trade-yield magnitude"
-      - modifier_id: SANKORE_TRADE_OFFER_GOLD
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 gold to others on outgoing routes; flat trade-yield magnitude"
-      - modifier_id: SANKORE_TRADE_OFFER_SCIENCE
-        argument: Amount
-        official: "1"
-        disposition: CERTIFIED_NUMERIC
-        mechanism: ADDITIVE
-        rationale: "+1 science to others on outgoing routes; flat trade-yield magnitude"
+    - modifier_id: SANKORE_TRADE_DOMESTIC_FAITH
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 domestic-route faith to others; flat trade-yield magnitude
+    - modifier_id: SANKORE_TRADE_DOMESTIC_SCIENCE
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 domestic-route science to others; flat trade-yield magnitude
+    - modifier_id: SANKORE_TRADE_GAIN_SCIENCE
+      argument: Amount
+      official: '2'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +2 science from incoming routes; flat trade-yield magnitude
+    - modifier_id: SANKORE_TRADE_OFFER_GOLD
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 gold to others on outgoing routes; flat trade-yield magnitude
+    - modifier_id: SANKORE_TRADE_OFFER_SCIENCE
+      argument: Amount
+      official: '1'
+      disposition: CERTIFIED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: +1 science to others on outgoing routes; flat trade-yield magnitude
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_SCIENTIST
+      value: 2
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only
+    - table: Building_YieldChanges
+      key: YIELD_FAITH
+      value: 1
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
+    - table: Building_YieldChanges
+      key: YIELD_SCIENCE
+      value: 3
+      disposition: BRIDGED_NUMERIC
+      mechanism: ADDITIVE
+      rationale: flat city yield via single-city YIELD_CHANGE helper (Monument-culture
+        precedent, COLLECTION_OWNER)
   BUILDING_VENETIAN_ARSENAL:
-    disposition: UNSUPPORTED
+    disposition: PARTIAL
     rows:
-      - modifier_id: VENETIAN_ARSENAL_EXTRANAVALCARRIER
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants an extra naval copy (curated EXTRA_UNIT_COPY_TAG exclusion); not a magnitude"
-      - modifier_id: VENETIAN_ARSENAL_EXTRANAVALMELEE
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants an extra naval copy (curated exclusion); not a magnitude"
-      - modifier_id: VENETIAN_ARSENAL_EXTRANAVALRANGED
-        argument: Amount
-        official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants an extra naval copy (curated exclusion); not a magnitude"
+    - modifier_id: VENETIAN_ARSENAL_EXTRANAVALCARRIER
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants an extra naval copy (curated EXTRA_UNIT_COPY_TAG exclusion);
+        not a magnitude
+    - modifier_id: VENETIAN_ARSENAL_EXTRANAVALMELEE
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants an extra naval copy (curated exclusion); not a magnitude
+    - modifier_id: VENETIAN_ARSENAL_EXTRANAVALRANGED
+      argument: Amount
+      official: '1'
+      disposition: EXCLUDED
+      mechanism: NONE
+      rationale: grants an extra naval copy (curated exclusion); not a magnitude
+    direct:
+    - table: Building_GreatPersonPoints
+      key: GREAT_PERSON_CLASS_ENGINEER
+      value: 2
+      disposition: BRIDGED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole great-person points via single-city GPP helper (Divine Spark
+        precedent); integral results only

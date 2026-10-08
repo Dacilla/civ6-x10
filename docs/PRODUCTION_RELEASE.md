@@ -9,10 +9,10 @@
 - Pantheons: **CERTIFIED** (Phase 2: 23 pantheons audited, 31 native rows —
   28 unconditional + 3 count-like; 3 partial with documented exclusions;
   see `docs/PANTHEON_AUDIT.md`). Awaiting targeted live validation.
-- Wonders: **CERTIFIED** (Phase 3: 53 wonders audited — 19 complete,
-  14 partial, 20 unsupported/none; 97 native rows, 74 unconditional +
-  23 conditional; see `docs/WONDER_AUDIT.md`). Awaiting targeted live
-  validation.
+- Wonders: **CERTIFIED** (Phase 3 + 3B: 53 wonders audited — 24 complete,
+  27 partial, 2 unsupported; 156 native rows = 97 modifier-backed + 59
+  generated direct-table bridge helpers; see `docs/WONDER_AUDIT.md`).
+  Awaiting targeted live validation.
 - Governors / Suzerains: not started (remain unsupported).
 
 Follow-up (not a blocker): the two excluded Toqui governor-pressure rows
@@ -25,11 +25,11 @@ Status vocabulary (do not conflate):
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **813-entry certified production slice (684 Release-1 + 31 Pantheon + 98
-  Wonder/Suleiman): STATICALLY VERIFIED, awaiting targeted live test.**
-  701 unconditional entries transform at any k; 112 count-like entries
+- **872-entry certified production slice (684 Release-1 + 31 Pantheon + 157
+  Wonder/Suleiman incl. 59 bridge helpers): STATICALLY VERIFIED, awaiting targeted live test.**
+  740 unconditional entries transform at any k; 132 count-like entries
   apply only on integral results under the FLOAT32-aware exactness rule
-  (at live stored-float k=7.3: 713 static successes of 813 — honest
+  (at live stored-float k=7.3: 752 static successes of 872 — honest
   fractional refusal, never flooring). Full gate in
   `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit in
   `docs/PANTHEON_AUDIT.md`, wonder audit in `docs/WONDER_AUDIT.md`.
@@ -63,8 +63,9 @@ folder only; Workshop paths refused).
 
 25 modifier definitions are owned by both Policies and Governments
 (registry: 358 traits-only, 284 policies-only, 18 governments-only,
-31 pantheons-only, 97 wonders-only, 25 shared policies+governments;
-809 unique definitions, 813 entries: 701 unconditional + 112
+31 pantheons-only, 156 wonders-only = 97 modifier-backed + 59 generated
+bridge helpers, 25 shared policies+governments;
+868 unique definitions, 872 entries: 740 unconditional + 132
 count-like conditional). A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
@@ -177,13 +178,18 @@ building the Statue of Zeus additionally proves the gameplay effect.
 
 Pass target (one population, no reload required — save/reload determinism
 already proven repeatedly):
-`writes=713 transform_refused=100 official_mismatch=0 post_add_match=713
+`writes=752 transform_refused=120 official_mismatch=0 post_add_match=752
 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`,
 plus `STAUEZEUS_ANTI_CAVALRY_PRODUCTION
-stored_after_add=365 expected=365 MATCH via=store-lookup`.
+stored_after_add=365 expected=365 MATCH via=store-lookup`
+AND the direct-bridge witness `X10_PANAMA_CANAL_YIELD_GOLD
+stored_after_add=73 expected=73 MATCH via=store-lookup`
+(Panama helper Amount 10 → 10×7.3).
 If Zeus was built before the probe ran, expect the probe line
 `... Amount=365 expected=365.00 PASS`; otherwise the probe reports the
 handle ABSENT (not a failure — the native MATCH line is the proof).
+The Panama helper populates from the database at load (bridge SQL attaches
+it to the wonder), so its MATCH line needs no in-game action.
 
 ## Production-candidate live test (run only on instruction)
 
@@ -203,8 +209,8 @@ Prerequisites: production DLL built, hash matches
    `spike/uninstall-prod-test.ps1`).
 
 Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
-found=true`, up to 638-eligible write sequence at live stored-float k=7.3
-(627 unconditional + 11 exact-integral conditional under the
+found=true`, up to 752-eligible write sequence at live stored-float k=7.3
+(740 unconditional + 12 exact-integral conditional under the
 FLOAT32-quantization-aware rule) with `stored_after_add MATCH
 via=store-lookup`, `post_add_mismatch=0`, `post_add_unreadable=0`, probe PASS
 lines, identical values across save/reload. The exit summary is fully

@@ -47,17 +47,10 @@ def sem_floor_for(rows):
 
 
 def load_manifests():
-    import yaml
-    rows = []
-    for module in ("traits", "policies", "governments", "pantheons",
-                   "wonders"):
-        man = yaml.safe_load(
-            open(ROOT / "manifests" / f"{module}.yml", encoding="utf-8"))
-        for r in man[module]:
-            r = dict(r)
-            r["module"] = module
-            rows.append(r)
-    return rows
+    # Single shared source with the CLI: 5 manifests + generated bridge
+    # helpers, so tests certify exactly what ships.
+    from civ6x10.bridge import collect_registry_rows
+    return collect_registry_rows(ROOT)
 
 
 class TestProductionRegistry(unittest.TestCase):
@@ -100,12 +93,12 @@ class TestProductionRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         entries, report = build_production_registry(rows)
-        self.assertEqual(len(entries), 813)
-        self.assertEqual(report["eligible"], 813)
-        self.assertEqual(report["unique_definitions"], 809)
+        self.assertEqual(len(entries), 872)
+        self.assertEqual(report["eligible"], 872)
+        self.assertEqual(report["unique_definitions"], 868)
         self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 701)
-        self.assertEqual(report["certified_count_like_conditional"], 112)
+        self.assertEqual(report["certified_unconditional"], 740)
+        self.assertEqual(report["certified_count_like_conditional"], 132)
         self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
         for mid in ("TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
@@ -219,7 +212,7 @@ class TestProductionTransforms(unittest.TestCase):
         #   701 unconditional entries: every one transforms;
         #   112 conditional (count-like) entries: 12 exact-integral apply,
         #   100 fractional refuse safely (never floored).
-        # Static successful transforms: 701 + 12 = 713 < registry size 813
+        # Static successful transforms: 701 + 12 = 752 < registry size 872
         # (Toqui loyalty pair temporarily excluded pending stored-form
         # re-certification).
         import math
@@ -231,11 +224,11 @@ class TestProductionTransforms(unittest.TestCase):
         entries, report = build_production_registry(rows)
         kf = T.stored_float32(7.3)
         self.assertEqual(kf, 7.300000190734863)  # live representation
-        self.assertEqual(len(entries), 813)
+        self.assertEqual(len(entries), 872)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        self.assertEqual(len(un), 701)
-        self.assertEqual(len(co), 112)
+        self.assertEqual(len(un), 740)
+        self.assertEqual(len(co), 132)
         ok = 0
         for e in un:
             v = float(e["official"])
@@ -250,14 +243,14 @@ class TestProductionTransforms(unittest.TestCase):
                 continue
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 701)
+        self.assertEqual(ok, 740)
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
         self.assertEqual(len(exact), 12)
-        self.assertEqual(len(refused), 100)
-        # Static expectation: 713 successful transforms of 813 certified.
-        self.assertEqual(ok + len(exact), 713)
+        self.assertEqual(len(refused), 120)
+        # Static expectation: 752 successful transforms of 872 certified.
+        self.assertEqual(ok + len(exact), 752)
 
     def test_verifier_key_capacity(self):
         # Exact live fixture: the 66-char Magnificences ID truncated to
