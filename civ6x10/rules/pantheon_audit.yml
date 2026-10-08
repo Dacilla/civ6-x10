@@ -1,0 +1,281 @@
+# Pantheon semantic audit (Phase 2). One explicit disposition per production
+# row: no Pantheon falls through generic heuristics silently. Category and
+# mixed-override machinery is reused only where the recorded rationale
+# genuinely applies; every row below was inspected individually against the
+# official database. Dispositions: CERTIFIED_NUMERIC, CERTIFIED_COUNT_LIKE,
+# EXCLUDED (with reason). Belief-level rollup: COMPLETE (all numerics
+# certified) | PARTIAL (some numeric excluded, noted).
+pantheons:
+  BELIEF_CITY_PATRON_GODDESS:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: CITY_PATRON_GODDESS_DISTRICT_PRODUCTION_MODIFIER
+        argument: Amount
+        official: "25"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+25% district production is a scalar production percent, same premise as certified PRODUCTION_GOVERNMENT_DISTRICT rows"
+  BELIEF_DANCE_OF_THE_AURORA:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: DANCE_OF_THE_AURORA_FAITHTUNDRAADJACENCY
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 faith per adjacent tundra tile on holy sites; per-plot yield magnitude"
+      - modifier_id: DANCE_OF_THE_AURORA_FAITHTUNDRAHILLSADJACENCY
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 faith per adjacent tundra-hills tile; per-plot yield magnitude"
+  BELIEF_DESERT_FOLKLORE:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: DESERT_FOLKLORE_FAITHDESERTADJACENCY
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 faith per adjacent desert tile; per-plot yield magnitude"
+      - modifier_id: DESERT_FOLKLORE_FAITHDESERTHILLSADJACENCY
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 faith per adjacent desert-hills tile; per-plot yield magnitude"
+  BELIEF_DIVINE_SPARK:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: DIVINE_SPARK_HOLY_SITE_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_COUNT_LIKE
+        mechanism: ADDITIVE
+        rationale: "+1 great prophet point is a whole point (same premise as certified FRESCOES artist points); integral results only"
+      - modifier_id: DIVINE_SPARK_SCIENTIST_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_COUNT_LIKE
+        mechanism: ADDITIVE
+        rationale: "+1 great scientist point is a whole point; integral results only"
+      - modifier_id: DIVINE_SPARK_WRITER_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_COUNT_LIKE
+        mechanism: ADDITIVE
+        rationale: "+1 great writer point is a whole point; integral results only"
+  BELIEF_EARTH_GODDESS:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: EARTH_GODDESS_APPEAL_FAITH_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 faith on breathtaking-appeal plots; scalar plot yield under the mixed plot-yield override (vector siblings excluded as non-numeric)"
+  BELIEF_FERTILITY_RITES:
+    disposition: PARTIAL
+    rows:
+      - modifier_id: FERTILITY_RITES_BUILDER_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: EXCLUDED
+        mechanism: NONE
+        rationale: "grants one free Builder object (EFFECT_GRANT_UNIT_IN_CITY); object grants are DECISION_REQUIRED, same as excluded settler/free-unit grants"
+      - modifier_id: FERTILITY_RITES_GROWTH
+        argument: Amount
+        official: "10"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+10% city growth is a scalar growth percent; scaling the percent scales the effect"
+  BELIEF_GODDESS_OF_FESTIVALS:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GODDESS_OF_FESTIVALS_PLANTATION_CULTURE_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 culture on plantation plots; scalar plot yield under the mixed plot-yield override. The historical mod targeted GODDESS_OF_FESTIVALS_PLANTATION_TAG_FOOD_MODIFIER, which matches zero rows in the current database, so it silently did nothing"
+  BELIEF_GODDESS_OF_FIRE:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GODDESS_OF_FIRE_FEATURES_FAITH_MODIFIER
+        argument: Amount
+        official: "2"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+2 faith on volcanic/geothermal plots; scalar plot yield under the mixed plot-yield override"
+  BELIEF_GODDESS_OF_THE_HUNT:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GODDESS_OF_THE_HUNT_CAMP_FOOD_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 food on camps; scalar plot yield under the mixed plot-yield override"
+      - modifier_id: GODDESS_OF_THE_HUNT_CAMP_PRODUCTION_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 production on camps; scalar plot yield under the mixed plot-yield override"
+  BELIEF_GOD_OF_CRAFTSMEN:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GOD_OF_CRAFTSMEN_STRATEGIC_IMPROVED_FAITH_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 faith on improved strategic plots; scalar plot yield under the mixed plot-yield override"
+      - modifier_id: GOD_OF_CRAFTSMEN_STRATEGIC_IMPROVED_PRODUCTION_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 production on improved strategic plots; scalar plot yield under the mixed plot-yield override"
+  BELIEF_GOD_OF_HEALING:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GOD_OF_HEALING_UNIT_HEALING_MODIFIER
+        argument: Amount
+        official: "30"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+30 HP-per-turn unit healing is a flat rate magnitude; scaling the rate scales the effect (Type=ALL selector row excluded)"
+  BELIEF_GOD_OF_THE_FORGE:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER
+        argument: Amount
+        official: "25"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+25% ancient/classical military-unit production; era bounds are selectors (excluded rows), the percent itself is a plain production magnitude"
+  BELIEF_GOD_OF_THE_OPEN_SKY:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GOD_OF_THE_OPEN_SKY_PASTURE_CULTURE_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 culture on pastures; scalar plot yield under the mixed plot-yield override"
+  BELIEF_GOD_OF_THE_SEA:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: GOD_OF_THE_SEA_FISHINGBOATS_PRODUCTION_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 production on fishing boats; scalar plot yield under the mixed plot-yield override"
+  BELIEF_GOD_OF_WAR:
+    disposition: PARTIAL
+    rows:
+      - modifier_id: GOD_OF_WAR_FAITH_KILLS_MODIFIER
+        argument: PercentDefeatedStrength
+        official: "50"
+        disposition: EXCLUDED
+        mechanism: NONE
+        rationale: "faith per kill scales with the overkill margin (DEFEATED_STRENGTH_SCALING), same preserved DECISION_REQUIRED as TRAIT_LEADER_FAITH_KILLS"
+  BELIEF_INITIATION_RITES:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: INITIATION_RITES_FAITH_DISPERSAL_MODIFIER
+        argument: Amount
+        official: "50"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+50 flat faith on dispersing a barbarian outpost; one-time yield magnitude"
+      - modifier_id: INITIATION_RITES_HEALING_DISPERSAL_MODIFIER
+        argument: Amount
+        official: "100"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+100 heal amount on disperse; flat heal magnitude"
+  BELIEF_LADY_OF_THE_REEDS_AND_MARSHES:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: LADY_OF_THE_REEDS_PRODUCTION2_MODIFIER
+        argument: Amount
+        official: "2"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+2 production on marsh/oasis plots; scalar plot yield under the mixed plot-yield override"
+  BELIEF_MONUMENT_TO_THE_GODS:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: MONUMENT_TO_THE_GODS_ANCIENTCLASSICALWONDER_MODIFIER
+        argument: Amount
+        official: "15"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+15% ancient/classical wonder production, same premise as certified CORVEE wonder-era rows; era/IsWonder selectors excluded"
+  BELIEF_RELIGIOUS_IDOLS:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: RELIGIOUS_IDOLS_BONUS_MINE_FAITH_MODIFIER
+        argument: Amount
+        official: "2"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+2 faith on bonus-resource mines; scalar plot yield under the mixed plot-yield override"
+      - modifier_id: RELIGIOUS_IDOLS_LUXURY_MINE_FAITH_MODIFIER
+        argument: Amount
+        official: "2"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+2 faith on luxury mines; scalar plot yield under the mixed plot-yield override"
+  BELIEF_RELIGIOUS_SETTLEMENTS:
+    disposition: PARTIAL
+    rows:
+      - modifier_id: RELIGIOUS_SETTLEMENTS_CULTUREBORDER
+        argument: Amount
+        official: "15"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+15 border-expansion rate magnitude; scaling the rate scales the effect"
+      - modifier_id: RELIGIOUS_SETTLEMENTS_SETTLER_MODIFIER
+        argument: Amount
+        official: "1"
+        disposition: EXCLUDED
+        mechanism: NONE
+        rationale: "grants one free Settler object; object grants are DECISION_REQUIRED"
+  BELIEF_RIVER_GODDESS:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: RIVER_GODDESS_HOLY_SITE_AMENITIES_MODIFIER
+        argument: Amount
+        official: "2"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+2 amenities on riverside holy-site districts; amenity pressure magnitude"
+      - modifier_id: RIVER_GODDESS_HOLY_SITE_HOUSING_MODIFIER
+        argument: Amount
+        official: "2"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+2 housing on riverside holy-site districts; housing magnitude"
+  BELIEF_SACRED_PATH:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: SACRED_PATH_FAITHFEATUREADJACENCY
+        argument: Amount
+        official: "1"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+1 faith per adjacent jungle tile on holy sites; per-plot yield magnitude"
+  BELIEF_STONE_CIRCLES:
+    disposition: COMPLETE
+    rows:
+      - modifier_id: STONE_CIRCLES_QUARRY_FAITH_MODIFIER
+        argument: Amount
+        official: "2"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: "+2 faith on quarries; scalar plot yield under the mixed plot-yield override"

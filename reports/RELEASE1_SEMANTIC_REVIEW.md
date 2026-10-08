@@ -2,7 +2,7 @@
 
 Deterministically scoped from the official inventories: a registry row is in
 RELEASE_1 iff its (modifier_type, argument_name) occurs in official traits,
-policies, or governments. Counts derived, never hard-coded.
+policies, governments, or pantheons. Counts derived, never hard-coded.
 
 ## Scope
 
@@ -10,10 +10,10 @@ policies, or governments. Counts derived, never hard-coded.
 |---|---:|
 | Global registry rows | 1495 |
 | Global NEEDS_REVIEW | 843 |
-| RELEASE_1 rows | 513 |
-| RELEASE_1 NEEDS_REVIEW (before review) | 233 |
-| Auto-ruled this pass (heuristics: NOT certified, never production-eligible alone) | 407 |
-| Remaining ambiguous | 106 |
+| RELEASE_1 rows | 542 |
+| RELEASE_1 NEEDS_REVIEW (before review) | 247 |
+| Auto-ruled this pass (heuristics: NOT certified, never production-eligible alone) | 434 |
+| Remaining ambiguous | 108 |
 
 Machine-readable: `data/release1_semantics.csv` (decision ledger),
 `data/release1_summary.json`.
@@ -22,10 +22,10 @@ Machine-readable: `data/release1_semantics.csv` (decision ledger),
 
 | Family | Rows |
 |---|---:|
-| SELECTOR | 194 |
-| FLAT_AMOUNT | 143 |
-| UNKNOWN | 100 |
-| FLAT_YIELD | 53 |
+| SELECTOR | 207 |
+| FLAT_AMOUNT | 156 |
+| UNKNOWN | 102 |
+| FLAT_YIELD | 54 |
 | BOOLEAN_UNLOCK | 6 |
 | DISCOUNT | 4 |
 | PERCENT_BONUS | 4 |
@@ -40,7 +40,7 @@ Family rules live in `civ6x10/semantics.py`; transforms in
 `civ6x10/rules/transformations.yml`. Every auto-accepted row traces to its
 rule via `review_family`/`review_transform` in the ledger.
 
-## Ambiguous queue (first 40 of 106)
+## Ambiguous queue (first 40 of 108)
 
 | ModifierType | EffectType | Argument | Sample values |
 |---|---|---|---|

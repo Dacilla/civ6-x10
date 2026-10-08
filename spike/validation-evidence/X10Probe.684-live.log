@@ -1,0 +1,6 @@
+[X10Probe] configuration X10_MULTIPLIER=7.3000001907349
+[X10Probe] TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS handle=281 Amount=7.3 expected=7.30 PASS
+[X10Probe] TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] AGOGE_ANCIENT_MELEE_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] done

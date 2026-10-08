@@ -45,13 +45,13 @@ numbers are generated from `rules/` + `manifests/`.
 
 ## Component status
 
-Release 1: traits, policies, governments (686-entry certified production
-registry: 682 unique definitions — 359 traits-only, 284 policies-only,
-18 governments-only, 25 shared policies+governments; 601 unconditional +
-85 count-like conditional. STATICALLY VERIFIED, awaiting
-production-candidate live test — see `docs/PRODUCTION_RELEASE.md`
-for packaging, shared-ownership rule, and UUIDs, and
-`docs/SEMANTIC_CERTIFICATION.md` for the certification gate). Later: pantheons,
-governors, wonders, city-states/suzerain; then optional
-belief/great-people/promotion modules. Unrelated global semantics stay
-NEEDS_REVIEW by design.
+Release 1: traits, policies, governments (684-entry certified production
+registry — 680 unique definitions; LIVE_VALIDATED at FLOAT32 k=7.3 with
+610 writes + 74 refusals and 610/0/0 store-lookup verification, tag
+`release1-684-live-validated`, evidence in `spike/validation-evidence/`).
+Phase 2: pantheons (23 audited, +31 registry rows for 715 total; see
+`docs/PANTHEON_AUDIT.md`). Later: governors, wonders,
+city-states/suzerain; then optional belief/great-people/promotion modules.
+Unrelated global semantics stay NEEDS_REVIEW by design. See
+`docs/PRODUCTION_RELEASE.md` for packaging, shared-ownership rule, and
+UUIDs, and `docs/SEMANTIC_CERTIFICATION.md` for the certification gate.

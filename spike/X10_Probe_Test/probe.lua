@@ -9,6 +9,9 @@ local TARGETS = {
   { id = "TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",  arg = "Amount", official = "3",  kind = "flat" },
   { id = "AGOGE_ANCIENT_MELEE_PRODUCTION",         arg = "Amount", official = "50", kind = "flat" },
   { id = "TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV", arg = "Amount", official = "10", kind = "combat" },
+  -- Phase-2 pantheon witness: requires founding God of the Forge in-game.
+  -- Absent handle is reported, not failed (see loop below).
+  { id = "GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER", arg = "Amount", official = "25", kind = "flat" },
 }
 
 local raw = GameConfiguration.GetValue("X10_MULTIPLIER")

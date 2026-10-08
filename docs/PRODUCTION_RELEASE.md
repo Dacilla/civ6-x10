@@ -1,16 +1,33 @@
-# Production Release Track (Release 1)
+# Production Release Track (Release 1 + Phase 2)
+
+## Module status
+
+- Traits: **LIVE_VALIDATED** (tag `release1-684-live-validated`; evidence in
+  `spike/validation-evidence/`).
+- Policies: **LIVE_VALIDATED** (same tag/evidence).
+- Governments: **LIVE_VALIDATED** (same tag/evidence).
+- Pantheons: **CERTIFIED** (Phase 2: 23 pantheons audited, 31 native rows —
+  28 unconditional + 3 count-like; 3 partial with documented exclusions;
+  see `docs/PANTHEON_AUDIT.md`). Awaiting targeted live validation.
+- Governors / Wonders / Suzerains: not started (remain unsupported).
+
+Follow-up (not a blocker): the two excluded Toqui governor-pressure rows
+await stored-form re-certification via the store-lookup witness.
+
+Status vocabulary (do not conflate):
 
 Status vocabulary (do not conflate):
 
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **684-entry certified production slice: STATICALLY VERIFIED, awaiting
-  production-candidate live test.** 599 unconditional entries transform at
-  any k; 85 count-like entries apply only on integral results under the
-  FLOAT32-aware exactness rule (at live stored-float k=7.3: 610 static
-  successes of 684 — honest fractional refusal, never flooring).
-  Full gate in `docs/SEMANTIC_CERTIFICATION.md`. The Toqui loyalty pair
+- **715-entry certified production slice (684 Release-1 + 31 Pantheon):
+  STATICALLY VERIFIED, awaiting targeted live test.** 627 unconditional
+  entries transform at any k; 88 count-like entries apply only on integral
+  results under the FLOAT32-aware exactness rule (at live stored-float
+  k=7.3: 638 static successes of 715 — honest fractional refusal, never
+  flooring). Full gate in `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit
+  in `docs/PANTHEON_AUDIT.md`. The Toqui loyalty pair
   (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) is temporarily excluded pending
   stored-form re-certification (see below).
 - **Workshop release: NOT READY.** No publish until the production-candidate
@@ -41,7 +58,8 @@ folder only; Workshop paths refused).
 
 25 modifier definitions are owned by both Policies and Governments
 (registry: 357 traits-only, 284 policies-only, 18 governments-only,
-25 shared; 680 unique definitions, 684 entries: 599 unconditional + 85
+31 pantheons-only, 25 shared policies+governments;
+711 unique definitions, 715 entries: 627 unconditional + 88
 count-like conditional). A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
@@ -107,7 +125,7 @@ regenerate, rebuild, run once, require `MATCH via=store-lookup` for both.
 ## Public-data hygiene (explicit release decision, no legal claim made)
 
 The CE-X10 tree currently carries the generated registry
-(`X10/X10ProductionRegistry.inc`: 684 certified Firaxis modifier IDs +
+(`X10/X10ProductionRegistry.inc`: 715 certified Firaxis modifier IDs +
 official values). Earlier project policy avoided publishing bulk extracted
 Firaxis data. Decision for Release 1:
 
@@ -144,8 +162,8 @@ Prerequisites: production DLL built, hash matches
    `spike/uninstall-prod-test.ps1`).
 
 Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
-found=true`, up to 610-eligible write sequence at live stored-float k=7.3
-(599 unconditional + 11 exact-integral conditional under the
+found=true`, up to 638-eligible write sequence at live stored-float k=7.3
+(627 unconditional + 11 exact-integral conditional under the
 FLOAT32-quantization-aware rule) with `stored_after_add MATCH
 via=store-lookup`, `post_add_mismatch=0`, `post_add_unreadable=0`, probe PASS
 lines, identical values across save/reload. The exit summary is fully

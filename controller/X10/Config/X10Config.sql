@@ -11,7 +11,7 @@
 -- is transformed ONLY if ALL owning supported modules are enabled.
 -- Disabling Policies (or Governments) therefore never leaves an X10 mutation
 -- active through the other owner. Per-entry owners bitmask lives in the
--- generated registry (1=traits 2=policies 4=governments).
+-- generated registry (1=traits 2=policies 4=governments 8=pantheons).
 INSERT OR IGNORE INTO Parameters
   (ParameterId, Name, Description, Domain, DefaultValue,
    ConfigurationGroup, ConfigurationId, GroupId, Visible, SupportsSinglePlayer)
@@ -28,8 +28,8 @@ VALUES
   ('X10_MODULE_GOVERNMENTS', 'X10: Governments', 'Apply numeric government effects (slots stay structural).',
    'int', '1',
    'Game', 'X10_MODULE_GOVERNMENTS', 'GameOptions', 1, 1),
-  ('X10_MODULE_PANTHEONS', 'X10: Pantheons (unsupported)', 'Not yet implemented; ignored.',
-   'int', '0',
+  ('X10_MODULE_PANTHEONS', 'X10: Pantheons', 'Apply to founded-pantheon belief effects.',
+   'int', '1',
    'Game', 'X10_MODULE_PANTHEONS', 'GameOptions', 1, 1),
   ('X10_MODULE_GOVERNORS', 'X10: Governors (unsupported)', 'Not yet implemented; ignored.',
    'int', '0',
