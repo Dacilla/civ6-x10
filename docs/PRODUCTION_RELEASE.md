@@ -144,6 +144,33 @@ Firaxis data. Decision for Release 1:
 Migration is a pre-release step (tracked; the in-tree file remains until the
 stub + CI generation check land). No Workshop publish before it.
 
+## Phase-2 targeted live test (one game, no save/reload)
+
+Pantheon definitions populate from the database at load whether or not any
+player founds them, so the definition-level proof needs no in-game action;
+founding God of the Forge additionally proves the gameplay effect.
+
+1. `pwsh -NoProfile -File spike/install-prod-test.ps1` (hash-verifies
+   `bb60b850…`, installs, clears previous-run logs once).
+2. Disposable profile; disable Workshop CE; enable X10 CE Engine + X10 +
+   X10 Production Probe.
+3. Single Player > Create Game > Gathering Storm, ROME (Trajan), Small map,
+   2 AI. Multiplier 7.3, all supported modules ON (pantheons now supported).
+4. Start, reach the map, end 1 turn. (Optional gameplay proof: generate
+   faith — tribal villages/shrine — found **God of the Forge**, then inspect
+   a city's military-unit production tooltip for the transformed bonus.)
+5. Send `%TEMP%\X10Lifecycle.log` (+ `%TEMP%\X10Probe.log`).
+
+Pass target (one population, no reload required — save/reload determinism
+already proven repeatedly):
+`writes=638 transform_refused=77 official_mismatch=0 post_add_match=638
+post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`,
+plus `GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER
+stored_after_add=182.5 expected=182.5 MATCH via=store-lookup`.
+If the Forge was founded before the probe ran, expect the probe line
+`... Amount=182.5 expected=182.50 PASS`; otherwise the probe reports the
+handle ABSENT (not a failure — the native MATCH line is the proof).
+
 ## Production-candidate live test (run only on instruction)
 
 Prerequisites: production DLL built, hash matches
