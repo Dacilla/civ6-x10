@@ -2,10 +2,10 @@
 
 Fork: `../CivilizationVI_CommunityExtension-x10-spike`, branch
 `x10-lifecycle-log`. Logging + production definition-write engine. Built DLL
-(local, gitignored): 2,744,832 B, current production-candidate SHA-256
-`bb60b850…f215b` (MSVC 14.51, SDK 26100, Release x64). Superseded hashes
+(local, gitignored): 2,753,024 B, current production-candidate SHA-256
+`e966cc9c…e7eeab3` (MSVC 14.51, SDK 26100, Release x64). Superseded hashes
 (`989617c7…`, `f0daac3d…`, `1594d354…`, `2fe9c778…`, `269a1ed6…`, `bb4f1520…`,
-`69b80793…`, `a3622b6c…`)
+`69b80793…`, `a3622b6c…`, `bb60b850…`)
 must NOT be used for any new run — the production-candidate package is
 hash-pinned in `spike/EXPECTED_DLL_SHA256.txt`.
 

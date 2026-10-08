@@ -12,6 +12,8 @@ local TARGETS = {
   -- Phase-2 pantheon witness: requires founding God of the Forge in-game.
   -- Absent handle is reported, not failed (see loop below).
   { id = "GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER", arg = "Amount", official = "25", kind = "flat" },
+  -- Phase-3 wonder witness: requires building the Statue of Zeus in-game.
+  { id = "STAUEZEUS_ANTI_CAVALRY_PRODUCTION", arg = "Amount", official = "50", kind = "flat" },
 }
 
 local raw = GameConfiguration.GetValue("X10_MULTIPLIER")

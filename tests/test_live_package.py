@@ -184,18 +184,18 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIn("MH_DisableHook(created[i])", t)
 
     def test_pantheon_module_bit_wired(self):
-        # Pantheons are the fourth supported module (bit 8): native slots,
-        # mask, config default ON, and no unsupported warning for pantheons.
-        # Governors/Wonders/Suzerains stay unsupported.
+        # Pantheons are a supported module (bit 8): native slots, mask,
+        # config default ON. Wonders covered by the next test; governors /
+        # suzerain stay unsupported.
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[4]", w)
+        self.assertIn("s_modEnabled[3]", w)
         self.assertIn("mask |= 8", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("pantheons", true)', lc)
-        self.assertIn("bool mods[4]", lc)
+        self.assertIn("bool mods[5]", lc)
         self.assertNotIn('"pantheons", "governors"',
                          lc.replace(" ", "").replace("\n", ""))
-        self.assertIn('"governors","wonders","suzerain"',
+        self.assertIn('"governors","suzerain"',
                       lc.replace(" ", "").replace("\n", ""))
         h = self._fork("X10Write.h")
         self.assertIn("Arm(double k, const bool* mods, double kErr)", h)
@@ -205,11 +205,35 @@ class TestWriteProbeRegressions(unittest.TestCase):
                       "'Apply to founded-pantheon belief effects.',\n   'int', '1',",
                       cfg.replace("\r\n", "\n"))
         import re
-        for mod in ("GOVERNORS", "WONDERS", "SUZERAIN"):
+        for mod in ("GOVERNORS", "SUZERAIN"):
             m = re.search(r"X10_MODULE_%s'.*?\n.*?'(int)', '(0|1)'" % mod,
                           cfg, re.S)
             self.assertIsNotNone(m, mod)
             self.assertEqual(m.group(2), "0", mod)
+
+    def test_wonder_module_bit_wired(self):
+        # Wonders are the fifth supported module (bit 16): native slots,
+        # mask, config default ON, and no unsupported warning for wonders.
+        # Governors/Suzerain stay unsupported.
+        w = self._code(self._fork("X10Write.cpp"))
+        self.assertIn("s_modEnabled[5]", w)
+        self.assertIn("mask |= 16", w)
+        lc = self._fork("X10Lifecycle.cpp")
+        self.assertIn('ModuleEnabled("wonders", true)', lc)
+        self.assertIn("bool mods[5]", lc)
+        flat = lc.replace(" ", "").replace("\n", "")
+        self.assertNotIn('"wonders","suzerain"', flat)
+        self.assertIn('"governors","suzerain"', flat)
+        cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
+               ).read_text(encoding="utf-8")
+        self.assertIn("X10_MODULE_WONDERS', 'X10: Wonders', ",
+                      cfg.replace("\r\n", "\n"))
+        self.assertNotIn("X10: Wonders (unsupported)", cfg)
+        import re
+        m = re.search(r"X10_MODULE_WONDERS'.*?\n.*?'(int)', '(0|1)'",
+                      cfg, re.S)
+        self.assertIsNotNone(m)
+        self.assertEqual(m.group(2), "1")
 
     def test_post_add_mismatch_increments_counter(self):
         # A post-Add MISMATCH must feed the aggregate mismatch counter;

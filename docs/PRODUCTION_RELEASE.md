@@ -9,7 +9,11 @@
 - Pantheons: **CERTIFIED** (Phase 2: 23 pantheons audited, 31 native rows —
   28 unconditional + 3 count-like; 3 partial with documented exclusions;
   see `docs/PANTHEON_AUDIT.md`). Awaiting targeted live validation.
-- Governors / Wonders / Suzerains: not started (remain unsupported).
+- Wonders: **CERTIFIED** (Phase 3: 53 wonders audited — 19 complete,
+  14 partial, 20 unsupported/none; 97 native rows, 74 unconditional +
+  23 conditional; see `docs/WONDER_AUDIT.md`). Awaiting targeted live
+  validation.
+- Governors / Suzerains: not started (remain unsupported).
 
 Follow-up (not a blocker): the two excluded Toqui governor-pressure rows
 await stored-form re-certification via the store-lookup witness.
@@ -21,15 +25,16 @@ Status vocabulary (do not conflate):
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **715-entry certified production slice (684 Release-1 + 31 Pantheon):
-  STATICALLY VERIFIED, awaiting targeted live test.** 627 unconditional
-  entries transform at any k; 88 count-like entries apply only on integral
-  results under the FLOAT32-aware exactness rule (at live stored-float
-  k=7.3: 638 static successes of 715 — honest fractional refusal, never
-  flooring). Full gate in `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit
-  in `docs/PANTHEON_AUDIT.md`. The Toqui loyalty pair
-  (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) is temporarily excluded pending
-  stored-form re-certification (see below).
+- **813-entry certified production slice (684 Release-1 + 31 Pantheon + 98
+  Wonder/Suleiman): STATICALLY VERIFIED, awaiting targeted live test.**
+  701 unconditional entries transform at any k; 112 count-like entries
+  apply only on integral results under the FLOAT32-aware exactness rule
+  (at live stored-float k=7.3: 713 static successes of 813 — honest
+  fractional refusal, never flooring). Full gate in
+  `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit in
+  `docs/PANTHEON_AUDIT.md`, wonder audit in `docs/WONDER_AUDIT.md`.
+  The Toqui loyalty pair (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) is temporarily
+  excluded pending stored-form re-certification (see below).
 - **Workshop release: NOT READY.** No publish until the production-candidate
   live test passes and logs are reviewed.
 
@@ -57,9 +62,9 @@ folder only; Workshop paths refused).
 ## Shared-definition ownership (Release 1 rule)
 
 25 modifier definitions are owned by both Policies and Governments
-(registry: 357 traits-only, 284 policies-only, 18 governments-only,
-31 pantheons-only, 25 shared policies+governments;
-711 unique definitions, 715 entries: 627 unconditional + 88
+(registry: 358 traits-only, 284 policies-only, 18 governments-only,
+31 pantheons-only, 97 wonders-only, 25 shared policies+governments;
+809 unique definitions, 813 entries: 701 unconditional + 112
 count-like conditional). A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
@@ -125,7 +130,7 @@ regenerate, rebuild, run once, require `MATCH via=store-lookup` for both.
 ## Public-data hygiene (explicit release decision, no legal claim made)
 
 The CE-X10 tree currently carries the generated registry
-(`X10/X10ProductionRegistry.inc`: 715 certified Firaxis modifier IDs +
+(`X10/X10ProductionRegistry.inc`: 813 certified Firaxis modifier IDs +
 official values). Earlier project policy avoided publishing bulk extracted
 Firaxis data. Decision for Release 1:
 
@@ -144,31 +149,40 @@ Firaxis data. Decision for Release 1:
 Migration is a pre-release step (tracked; the in-tree file remains until the
 stub + CI generation check land). No Workshop publish before it.
 
-## Phase-2 targeted live test (one game, no save/reload)
+## Phase-2 targeted live test (VALIDATED 2026-10-08)
 
 Pantheon definitions populate from the database at load whether or not any
-player founds them, so the definition-level proof needs no in-game action;
-founding God of the Forge additionally proves the gameplay effect.
+player founds them. Run produced `writes=638 transform_refused=77
+official_mismatch=0 post_add_match=638 post_add_mismatch=0
+post_add_unreadable=0 skipped_other=0` (evidence in
+`spike/validation-evidence/`, tag `release1-684-live-validated` covers the
+pre-pantheon core).
 
-1. `pwsh -NoProfile -File spike/install-prod-test.ps1` (hash-verifies
-   `bb60b850…`, installs, clears previous-run logs once).
+## Phase-3 targeted live test (one game, no save/reload)
+
+Wonder definitions populate from the database at load whether or not any
+wonder is built, so the definition-level proof needs no in-game action;
+building the Statue of Zeus additionally proves the gameplay effect.
+
+1. `pwsh -NoProfile -File spike/install-prod-test.ps1` (hash-verifies the
+   current DLL, installs, clears previous-run logs once).
 2. Disposable profile; disable Workshop CE; enable X10 CE Engine + X10 +
    X10 Production Probe.
 3. Single Player > Create Game > Gathering Storm, ROME (Trajan), Small map,
-   2 AI. Multiplier 7.3, all supported modules ON (pantheons now supported).
-4. Start, reach the map, end 1 turn. (Optional gameplay proof: generate
-   faith — tribal villages/shrine — found **God of the Forge**, then inspect
-   a city's military-unit production tooltip for the transformed bonus.)
+   2 AI. Multiplier 7.3, all supported modules ON (wonders now supported).
+4. Start, reach the map, end 1 turn. (Optional gameplay proof: build the
+   **Statue of Zeus**, then inspect a city's anti-cavalry production
+   tooltip for the transformed bonus.)
 5. Send `%TEMP%\X10Lifecycle.log` (+ `%TEMP%\X10Probe.log`).
 
 Pass target (one population, no reload required — save/reload determinism
 already proven repeatedly):
-`writes=638 transform_refused=77 official_mismatch=0 post_add_match=638
+`writes=713 transform_refused=100 official_mismatch=0 post_add_match=713
 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`,
-plus `GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER
-stored_after_add=182.5 expected=182.5 MATCH via=store-lookup`.
-If the Forge was founded before the probe ran, expect the probe line
-`... Amount=182.5 expected=182.50 PASS`; otherwise the probe reports the
+plus `STAUEZEUS_ANTI_CAVALRY_PRODUCTION
+stored_after_add=365 expected=365 MATCH via=store-lookup`.
+If Zeus was built before the probe ran, expect the probe line
+`... Amount=365 expected=365.00 PASS`; otherwise the probe reports the
 handle ABSENT (not a failure — the native MATCH line is the proof).
 
 ## Production-candidate live test (run only on instruction)

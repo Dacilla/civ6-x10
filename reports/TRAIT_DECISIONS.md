@@ -1,6 +1,6 @@
 # Traits Decisions
 
-Manifest: `manifests/traits.yml` (1520 rows: 1139 ok, 15 refused, 366 undecided).
+Manifest: `manifests/traits.yml` (1520 rows: 1140 ok, 15 refused, 365 undecided).
 
 | Object | Modifier | Argument | Official | Family | Decision |
 |---|---|---|---|---|---|

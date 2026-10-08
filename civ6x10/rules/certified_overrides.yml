@@ -32,6 +32,7 @@ certified_category_families:
   MOVEMENT: {kind: ADDITIVE, rationale: "movement points are whole points; conditional on integral results (family-implied count-like)"}
   RANGE: {kind: ADDITIVE, rationale: "ranges count whole tiles; conditional on integral results (family-implied count-like)"}
   RADIUS: {kind: ADDITIVE, rationale: "radii count whole tiles; conditional on integral results (family-implied count-like)"}
+  GOVERNOR_TITLES: {kind: ADDITIVE, rationale: "governor titles are whole titles (narrow Delta-on-GOVERNOR_POINTS rule); conditional on integral results"}
 
 # EffectTypes whose sem-floor family is MIXED_VALUE_DOMAIN (argument takes both
 # scalar numerics and vector values across definitions) but whose SCALAR
@@ -136,6 +137,10 @@ excluded_effects:
     rationale: "Amount=2/3 is an eligibility slot threshold (Kristina); scaling to 14.6/21.9 disables the ability"
   - effect: EFFECT_ADJUST_UNIT_STRENGTH_REDUCTION_FOR_DAMAGE_MODIFIER
     rationale: "damage-reduction modifier (50), not combat-strength points; neither combat formula nor flat x10 applies"
+  - effect: EFFECT_ADJUST_MULTIPLY_TREASURY
+    rationale: "one-shot treasury multiplication (Big Ben +50): scaling the percent to +500 invents 6x gold; repeated-application semantics unresolved; DECISION_REQUIRED, never flat-multiplied"
+  - effect: EFFECT_ADJUST_PLAYER_SUZERAIN_FAVOR_MULTIPLIER
+    rationale: "favor multiplier (Orszaghaza +100 doubling): multiplicative factor, not an additive magnitude; DECISION_REQUIRED"
   - effect: EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
     rationale: "TEMPORARY stored-form exclusion (2026-10-08): TOQUI_DOMESTIC_LOYALTY / TOQUI_FOREIGN_LOYALTY Amount rewrites (4 -> 29.2 at k=7.3) verify blank post-Add while 610 siblings MATCH, so raw-string persistence for this effect is unproven; re-certify via the store-lookup witness (stored MATCH or typed-value proof) before re-admitting"
 
@@ -188,6 +193,12 @@ count_like_effects:
     rationale: "accumulated resources count whole units per turn"
   - pattern: EXTRA_ACCUMALATION
     rationale: "accumulated resources count whole units per turn"
+  - pattern: GOVERNOR_POINTS
+    rationale: "governor titles are whole titles (Casa de Contratacion +3, Suleiman +1)"
+  - pattern: DIPLOMATIC_VICTORY_POINTS
+    rationale: "diplomatic victory points are whole points"
+  - pattern: ERA_SCORE
+    rationale: "era score awards are whole points"
 
 # Argument names that are indivisible regardless of effect.
 count_like_args: [TurnsActive, Duration, Turns, Charges, SpreadCharges,

@@ -101,6 +101,10 @@ def infer_family(modifier_type: str, effect_type: str, argument_name: str,
         return ("FAITH", "canonical_x10_multiply", "auto_rule")
     if arg in ("Gold",):
         return ("GOLD", "canonical_x10_multiply", "auto_rule")
+    # Whole governor titles (narrow, effect-specific: Casa de Contratacion
+    # +3, Suleiman +1). Discrete titles, never a generic numeric fallback.
+    if arg == "Delta" and "GOVERNOR_POINTS" in et.upper():
+        return ("GOVERNOR_TITLES", "canonical_x10_multiply", "auto_rule")
     # generic numeric residuum
     if arg in ("Amount", "Value", "YieldChange", "BonusRate", "YieldModifier",
                "NumSlots", "Cost", "Combat", "RangedCombat", "Bombard",

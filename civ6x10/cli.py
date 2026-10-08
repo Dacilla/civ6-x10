@@ -55,12 +55,20 @@ def cmd_inventory_pantheons(args) -> int:
     return 0
 
 
+def cmd_inventory_wonders(args) -> int:
+    from .wonder import build_wonder_inventory, write_csv
+    rows = build_wonder_inventory(args.db)
+    write_csv(rows, args.out)
+    print(f"wrote {args.out} ({len(rows)} rows)")
+    return 0
+
+
 def cmd_generate_registry(args) -> int:
     import json
     import yaml
     from .production import build_production_registry, emit_cxx
     rows: list[dict] = []
-    for module in ("traits", "policies", "governments", "pantheons"):
+    for module in ("traits", "policies", "governments", "pantheons", "wonders"):
         man = yaml.safe_load(
             open(ROOT / "manifests" / f"{module}.yml", encoding="utf-8"))
         for r in man[module]:
@@ -115,7 +123,7 @@ def main(argv=None) -> int:
     p.add_argument("--audit-data", default=str(ROOT / "data" / "local"))
     p.set_defaults(fn=cmd_review)
     p = sub.add_parser("generate")
-    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons"])
+    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons", "wonders"])
     p.add_argument("--out", required=True)
     p.set_defaults(fn=cmd_generate)
     p = sub.add_parser("inventory-pantheons")
@@ -123,11 +131,16 @@ def main(argv=None) -> int:
                    help="official Gameplay SQLite COPY (never the live install)")
     p.add_argument("--out", default=str(ROOT / "data" / "local" / "pantheon_effects.csv"))
     p.set_defaults(fn=cmd_inventory_pantheons)
+    p = sub.add_parser("inventory-wonders")
+    p.add_argument("--db", required=True,
+                   help="official Gameplay SQLite COPY (never the live install)")
+    p.add_argument("--out", default=str(ROOT / "data" / "local" / "wonder_effects.csv"))
+    p.set_defaults(fn=cmd_inventory_wonders)
     p = sub.add_parser("generate-registry")
     p.add_argument("--out", default=str(ROOT / "build" / "X10ProductionRegistry.inc"))
     p.set_defaults(fn=cmd_generate_registry)
     p = sub.add_parser("verify")
-    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons"])
+    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons", "wonders"])
     p.add_argument("--db", required=True)
     p.set_defaults(fn=cmd_verify)
     args = ap.parse_args(argv)

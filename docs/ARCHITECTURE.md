@@ -49,9 +49,13 @@ Release 1: traits, policies, governments (684-entry certified production
 registry — 680 unique definitions; LIVE_VALIDATED at FLOAT32 k=7.3 with
 610 writes + 74 refusals and 610/0/0 store-lookup verification, tag
 `release1-684-live-validated`, evidence in `spike/validation-evidence/`).
-Phase 2: pantheons (23 audited, +31 registry rows for 715 total; see
-`docs/PANTHEON_AUDIT.md`). Later: governors, wonders,
-city-states/suzerain; then optional belief/great-people/promotion modules.
+Phase 2: pantheons (23 audited, +31 registry rows for 715 total;
+LIVE_VALIDATED at k=7.3 with 638 writes + 77 refusals and 638/0/0
+verification, tag `phase2-715-live-validated`; see `docs/PANTHEON_AUDIT.md`).
+Phase 3: wonders (53 audited — 19 complete, 14 partial, 20 unsupported/none;
++97 registry rows for 813 total; see `docs/WONDER_AUDIT.md`). Later:
+governors, city-states/suzerain; then optional belief/great-people/promotion
+modules.
 Unrelated global semantics stay NEEDS_REVIEW by design. See
 `docs/PRODUCTION_RELEASE.md` for packaging, shared-ownership rule, and
 UUIDs, and `docs/SEMANTIC_CERTIFICATION.md` for the certification gate.

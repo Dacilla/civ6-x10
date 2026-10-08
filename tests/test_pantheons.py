@@ -139,7 +139,10 @@ class TestPantheonRegistry(unittest.TestCase):
             entries, report = build_all()
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
-        self.assertEqual(len(entries), 715)
+        # Four-module build (wonders land in test_wonders.py): 715 shipped
+        # rows plus Suleiman governor titles, newly certified by the narrow
+        # Delta rule.
+        self.assertEqual(len(entries), 716)
         self.assertEqual(report["unresolved_conflicts"], [])
         pan = [e for e in entries if e["owners"] == 8]
         self.assertEqual(len(pan), 31)
@@ -186,9 +189,10 @@ class TestPantheonRegistry(unittest.TestCase):
                                  applied(e, 1 | 2 | 4), e)
 
     def test_pantheons_do_not_alter_baseline(self):
-        # The 684 pre-pantheon rows are byte/semantic stable: rebuild from
+        # The pre-pantheon rows are byte/semantic stable: rebuild from
         # the three old manifests and compare against the full build minus
-        # pantheon-owned entries.
+        # pantheon-owned entries (Suleiman governor titles now certify in
+        # both via the narrow Delta rule).
         import yaml
         from civ6x10.production import build_production_registry
         try:
@@ -206,8 +210,8 @@ class TestPantheonRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         rest = [e for e in entries if not (e["owners"] & 8)]
-        self.assertEqual(len(old_entries), 684)
-        self.assertEqual(len(rest), 684)
+        self.assertEqual(len(old_entries), 685)
+        self.assertEqual(len(rest), 685)
         self.assertEqual(
             sorted(map(str, old_entries)), sorted(map(str, rest)))
 

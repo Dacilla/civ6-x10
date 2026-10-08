@@ -11,6 +11,7 @@ from .modules import governments as mod_gov
 from .modules import pantheons as mod_pan
 from .modules import policies as mod_pol
 from .modules import traits as mod_traits
+from .modules import wonders as mod_won
 from .scope import build_release1_scope
 from .semantics import infer_family
 
@@ -37,6 +38,7 @@ def run_review(audit_data: Path, out_data: Path, out_reports: Path,
     pol_rows = load_csv(audit_data / "policy_effects.csv")
     gov_rows = load_csv(audit_data / "government_effects.csv")
     pan_rows = load_csv(audit_data / "pantheon_effects.csv")
+    won_rows = load_csv(audit_data / "wonder_effects.csv")
 
     # decision ledger over scoped registry rows with inspected official values
     ledger: list[dict] = []
@@ -78,6 +80,7 @@ def run_review(audit_data: Path, out_data: Path, out_reports: Path,
         "policies": mod_pol.build(_join_effect(pol_rows, scoped)),
         "governments": mod_gov.build(_join_effect(gov_rows, scoped)),
         "pantheons": mod_pan.build(_join_effect(pan_rows, scoped)),
+        "wonders": mod_won.build(_join_effect(won_rows, scoped)),
     }
     for name, rows in manifests.items():
         import yaml
@@ -91,7 +94,8 @@ def run_review(audit_data: Path, out_data: Path, out_reports: Path,
     for name, fname in (("policies", "POLICY_DECISIONS.md"),
                         ("governments", "GOVERNMENT_DECISIONS.md"),
                         ("traits", "TRAIT_DECISIONS.md"),
-                        ("pantheons", "PANTHEON_DECISIONS.md")):
+                        ("pantheons", "PANTHEON_DECISIONS.md"),
+                        ("wonders", "WONDER_DECISIONS.md")):
         _write_module_report(out_reports / fname,
                              name, manifests[name])
     return summary
@@ -145,7 +149,7 @@ def _write_review_report(path: Path, summary: dict, ledger: list[dict]) -> None:
 
 Deterministically scoped from the official inventories: a registry row is in
 RELEASE_1 iff its (modifier_type, argument_name) occurs in official traits,
-policies, governments, or pantheons. Counts derived, never hard-coded.
+policies, governments, pantheons, or wonders. Counts derived, never hard-coded.
 
 ## Scope
 

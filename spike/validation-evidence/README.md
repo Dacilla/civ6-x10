@@ -11,8 +11,13 @@ post_add_match=610 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`
 Rome gameplay witness (`X10Probe.684-live.log`): `Amount=7.3 PASS`.
 
 Files:
-- `X10Lifecycle.684-live.log` — full native session (hook validation,
-  per-definition writes, store-lookup MATCH lines, exit summary).
-- `X10Probe.684-live.log` — Lua gameplay probe readback.
+- `X10Lifecycle.684-live.log` — full native session for the 684-entry core
+  (`writes=610 ... post_add_match=610 ...`, tag baseline).
+- `X10Probe.684-live.log` — Lua gameplay probe readback for the 684 run.
+- `X10Lifecycle.715-live.log` — full native session with pantheons
+  (`writes=638 transform_refused=77 ... post_add_match=638 ...`).
+- `X10Probe.715-live.log` — probe readback incl. the (unfounded) Forge
+  witness reported ABSENT, not failed.
 
-Baseline tag: `release1-684-live-validated` (X10 @ d7266ab).
+Baseline tags: `release1-684-live-validated` (X10 @ d7266ab); pantheon run
+archived against X10 @ 702a05d / CE-X10 @ 5a5473c.

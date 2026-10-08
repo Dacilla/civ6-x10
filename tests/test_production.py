@@ -49,7 +49,8 @@ def sem_floor_for(rows):
 def load_manifests():
     import yaml
     rows = []
-    for module in ("traits", "policies", "governments", "pantheons"):
+    for module in ("traits", "policies", "governments", "pantheons",
+                   "wonders"):
         man = yaml.safe_load(
             open(ROOT / "manifests" / f"{module}.yml", encoding="utf-8"))
         for r in man[module]:
@@ -99,12 +100,12 @@ class TestProductionRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         entries, report = build_production_registry(rows)
-        self.assertEqual(len(entries), 715)
-        self.assertEqual(report["eligible"], 715)
-        self.assertEqual(report["unique_definitions"], 711)
+        self.assertEqual(len(entries), 813)
+        self.assertEqual(report["eligible"], 813)
+        self.assertEqual(report["unique_definitions"], 809)
         self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 627)
-        self.assertEqual(report["certified_count_like_conditional"], 88)
+        self.assertEqual(report["certified_unconditional"], 701)
+        self.assertEqual(report["certified_count_like_conditional"], 112)
         self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
         for mid in ("TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
@@ -193,7 +194,7 @@ class TestProductionTransforms(unittest.TestCase):
                     T.compound_discount_for_multiplier(v, 7.3),
                     (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1))
         discs = [e for e in entries if e["kind"] == "DISCOUNT"]
-        self.assertEqual(len(discs), 15)
+        self.assertEqual(len(discs), 17)
         # Flat gold-per-unit maintenance is ADDITIVE, not a percent discount:
         # 1 -> 7.3, 2 -> 14.6, -2 -> -14.6 at k=7.3.
         by_id = {}
@@ -215,10 +216,10 @@ class TestProductionTransforms(unittest.TestCase):
         # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
         # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
         # live against loaded definitions):
-        #   627 unconditional entries: every one transforms;
-        #   88 conditional (count-like) entries: 11 exact-integral apply,
-        #   77 fractional refuse safely (never floored).
-        # Static successful transforms: 627 + 11 = 638 < registry size 715
+        #   701 unconditional entries: every one transforms;
+        #   112 conditional (count-like) entries: 12 exact-integral apply,
+        #   100 fractional refuse safely (never floored).
+        # Static successful transforms: 701 + 12 = 713 < registry size 813
         # (Toqui loyalty pair temporarily excluded pending stored-form
         # re-certification).
         import math
@@ -230,11 +231,11 @@ class TestProductionTransforms(unittest.TestCase):
         entries, report = build_production_registry(rows)
         kf = T.stored_float32(7.3)
         self.assertEqual(kf, 7.300000190734863)  # live representation
-        self.assertEqual(len(entries), 715)
+        self.assertEqual(len(entries), 813)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        self.assertEqual(len(un), 627)
-        self.assertEqual(len(co), 88)
+        self.assertEqual(len(un), 701)
+        self.assertEqual(len(co), 112)
         ok = 0
         for e in un:
             v = float(e["official"])
@@ -249,14 +250,14 @@ class TestProductionTransforms(unittest.TestCase):
                 continue
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 627)
+        self.assertEqual(ok, 701)
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(len(exact), 11)
-        self.assertEqual(len(refused), 77)
-        # Static expectation: 638 successful transforms of 715 certified.
-        self.assertEqual(ok + len(exact), 638)
+        self.assertEqual(len(exact), 12)
+        self.assertEqual(len(refused), 100)
+        # Static expectation: 713 successful transforms of 813 certified.
+        self.assertEqual(ok + len(exact), 713)
 
     def test_verifier_key_capacity(self):
         # Exact live fixture: the 66-char Magnificences ID truncated to

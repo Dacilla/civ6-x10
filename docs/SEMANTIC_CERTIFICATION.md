@@ -40,11 +40,12 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
 
 ## New certified registry
 
-- **684 entries / 680 unique definitions / 25 shared** (traits-only 357,
-  policies-only 284, governments-only 18, shared 25) at the
-  `release1-684-live-validated` tag; Phase 2 adds 31 pantheon rows for
-  **715 entries / 711 unique definitions** (627 unconditional + 88
-  count-like).
+- **813 entries / 809 unique definitions / 25 shared** (358 traits-only
+  incl. Suleiman titles, 284 policies-only, 18 governments-only, 31
+  pantheons-only, 97 wonders-only; 701 unconditional + 112 count-like).
+  Frozen milestones: 684 Release-1 (`release1-684-live-validated`), 715
+  Phase-2 (`phase2-715-live-validated`); every earlier line persists
+  byte-identical, additions only.
 - **599 unconditional** (every one transforms at k=7.3), **85 conditional
   count-like** (11 exact-integral apply at live FLOAT32 k=7.3, 74 fractional
   refuse safely). Static successful transforms at k=7.3: **610 of 684** —

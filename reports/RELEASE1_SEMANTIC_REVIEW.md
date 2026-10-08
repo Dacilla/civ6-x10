@@ -2,7 +2,7 @@
 
 Deterministically scoped from the official inventories: a registry row is in
 RELEASE_1 iff its (modifier_type, argument_name) occurs in official traits,
-policies, governments, or pantheons. Counts derived, never hard-coded.
+policies, governments, pantheons, or wonders. Counts derived, never hard-coded.
 
 ## Scope
 
@@ -10,10 +10,10 @@ policies, governments, or pantheons. Counts derived, never hard-coded.
 |---|---:|
 | Global registry rows | 1495 |
 | Global NEEDS_REVIEW | 843 |
-| RELEASE_1 rows | 542 |
-| RELEASE_1 NEEDS_REVIEW (before review) | 247 |
-| Auto-ruled this pass (heuristics: NOT certified, never production-eligible alone) | 434 |
-| Remaining ambiguous | 108 |
+| RELEASE_1 rows | 604 |
+| RELEASE_1 NEEDS_REVIEW (before review) | 273 |
+| Auto-ruled this pass (heuristics: NOT certified, never production-eligible alone) | 466 |
+| Remaining ambiguous | 138 |
 
 Machine-readable: `data/release1_semantics.csv` (decision ledger),
 `data/release1_summary.json`.
@@ -22,9 +22,9 @@ Machine-readable: `data/release1_semantics.csv` (decision ledger),
 
 | Family | Rows |
 |---|---:|
-| SELECTOR | 207 |
+| SELECTOR | 238 |
 | FLAT_AMOUNT | 156 |
-| UNKNOWN | 102 |
+| UNKNOWN | 132 |
 | FLAT_YIELD | 54 |
 | BOOLEAN_UNLOCK | 6 |
 | DISCOUNT | 4 |
@@ -33,6 +33,7 @@ Machine-readable: `data/release1_semantics.csv` (decision ledger),
 | AMENITY | 2 |
 | COMBAT_STRENGTH_BONUS | 1 |
 | DEFEATED_STRENGTH_SCALING | 1 |
+| GOVERNOR_TITLES | 1 |
 | RANGE | 1 |
 | TOURISM | 1 |
 
@@ -40,12 +41,14 @@ Family rules live in `civ6x10/semantics.py`; transforms in
 `civ6x10/rules/transformations.yml`. Every auto-accepted row traces to its
 rule via `review_family`/`review_transform` in the ledger.
 
-## Ambiguous queue (first 40 of 108)
+## Ambiguous queue (first 40 of 138)
 
 | ModifierType | EffectType | Argument | Sample values |
 |---|---|---|---|
 | `MODIFIER_ADJUST_DIPLOMATIC_ACTION_PREFERENCE` | `EFFECT_ADJUST_DIPLOMATIC_ACTION_PREFERENCE` | `Action` | DIPLOACTION_DECLARE_WAR_MINOR_CIV|DIPLOACTION_GRANT_INFLUENC |
 | `MODIFIER_ADJUST_DIPLOMATIC_ACTION_PREFERENCE` | `EFFECT_ADJUST_DIPLOMATIC_ACTION_PREFERENCE` | `Favored` | 0|1|numeric Favored on MODIFIER_ADJUST_DIPLO |
+| `MODIFIER_CITY_ADJUST_TRADE_ROUTE_YIELD_PER_DESTINATION_LUXURY_FOR_INTERNATIONAL` | `EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_DESTINATION_LUXURY_RESOURCE_FOR_INTERNATIONAL` | `Amount` | numeric Amount on MODIFIER_CITY_ADJUST_T |
+| `MODIFIER_MAP_REMOVE_CLIFFS_IN_DIRECTION` | `EFFECT_MAP_REMOVE_CLIFFS_IN_DIRECTION` | `Radius` | spatial budget (Radius / EFFECT_MAP_REMO |
 | `MODIFIER_PLAYER_ADD_CULTURE_BOMB_TRIGGER` | `EFFECT_ADD_CULTURE_BOMB_TRIGGER` | `CaptureOwnedTerritory` | 0|numeric CaptureOwnedTerritory on MODIFIE |
 | `MODIFIER_PLAYER_ADD_DIPLOMATIC_ACTION_OVERRIDE` | `EFFECT_ADD_DIPLOMATIC_ACTION_OVERRIDE` | `DiplomaticAction` | DIPLOACTION_DECLARE_LIBERATION_WAR|DIPLOACTION_DECLARE_TERRI |
 | `MODIFIER_PLAYER_ADD_DIPLOMATIC_COMBAT_MODIFIER` | `EFFECT_ADD_DIPLOMATIC_COMBAT_MODIFIER` | `DiplomaticYieldSource` | TERRITORIAL_EXPANSION_WAR_INITIATED|argument DiplomaticYield |
@@ -57,15 +60,18 @@ rule via `review_family`/`review_transform` in the ledger.
 | `MODIFIER_PLAYER_ADD_RELIGIOUS_BUILDING_MULTIPLIER` | `EFFECT_ADD_RELIGIOUS_BUILDING_MULTIPLIER` | `Multiplier` | 10|a factor is already multiplicative: x10  |
 | `MODIFIER_PLAYER_ADJUST_ALLIANCES_SHARED_VIS` | `EFFECT_ADJUST_PLAYER_ALL_ALLIANCES_PROVIDE_SHARED_VIS` | `ShareVis` | 1|boolean argument ShareVis |
 | `MODIFIER_PLAYER_ADJUST_ALLIED_WAR_DISCOUNT` | `EFFECT_ADJUST_PLAYER_ALLIED_WAR_DISCOUNT` | `Discount` | 150|engine EffectType EFFECT_ADJUST_PLAYER_A |
+| `MODIFIER_PLAYER_ADJUST_ALWAYS_FULL_RELIGIOUS_TOURISM` | `EFFECT_ADJUST_PLAYER_ALWAYS_FULL_RELIGIOUS_TOURISM` | `Enable` | numeric Enable on MODIFIER_PLAYER_ADJUST |
 | `MODIFIER_PLAYER_ADJUST_AUTO_THEME_BUILDINGS_WITH_X_SLOTS` | `EFFECT_ADJUST_AUTO_THEMED_BUILDINGS_WITH_X_SLOTS` | `IsWonder` | 0|1|boolean argument IsWonder |
 | `MODIFIER_PLAYER_ADJUST_BANNED_DIPLOMATIC_ACTION` | `EFFECT_ADJUST_BANNED_DIPLOMATIC_ACTIONS` | `Banned` | 1|numeric Banned on MODIFIER_PLAYER_ADJUST |
 | `MODIFIER_PLAYER_ADJUST_BUILDING_FAVOR` | `EFFECT_ADJUST_PLAYER_BUILDING_FAVOR` | `Favor` | 3|numeric Favor on MODIFIER_PLAYER_ADJUST_ |
 | `MODIFIER_PLAYER_ADJUST_CULTURE_BOMB_CONVERTS_CITY` | `EFFECT_ADJUST_CULTURE_BOMB_CONVERTS_CITY` | `ConvertsCity` | 1|numeric ConvertsCity on MODIFIER_PLAYER_ |
+| `MODIFIER_PLAYER_ADJUST_DIPLOMATIC_VICTORY_POINTS` | `EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS` | `Amount` | numeric Amount on MODIFIER_PLAYER_ADJUST |
+| `MODIFIER_PLAYER_ADJUST_DIPLOMATIC_VICTORY_POINTS` | `EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS` | `Tooltip` | argument Tooltip never takes a numeric v |
+| `MODIFIER_PLAYER_ADJUST_EMBARKED_MOVEMENT` | `EFFECT_ADJUST_PLAYER_EMBARKED_UNIT_MOVEMENT` | `Amount` | spatial budget (Amount / EFFECT_ADJUST_P |
 | `MODIFIER_PLAYER_ADJUST_EMERGENCY_FAVOR_MODIFIER` | `EFFECT_ADJUST_PLAYER_EMERGENCY_FAVOR_MODIFIER` | `Member` | 1|numeric Member on MODIFIER_PLAYER_ADJUST |
 | `MODIFIER_PLAYER_ADJUST_FAVOR_REFUND_FOR_SUCCESSFUL_RESOLUTION` | `EFFECT_ADJUST_PLAYER_FAVOR_REFUND_FOR_SUCCESSFUL_RESOLUTION` | `WhichEffect` | 2|numeric WhichEffect on MODIFIER_PLAYER_A |
 | `MODIFIER_PLAYER_ADJUST_FORBID_LAND_ROUTE` | `EFFECT_ADJUST_FORBID_LAND_ROUTE` | `Domestic` | 0|boolean argument Domestic |
 | `MODIFIER_PLAYER_ADJUST_GOLD_DISPERSAL` | `EFFECT_ADJUST_GOLD_DISPERSAL` | `Improvement` | IMPROVEMENT_BARBARIAN_CAMP|argument Improvement never takes  |
-| `MODIFIER_PLAYER_ADJUST_GOVERNOR_POINTS` | `EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS` | `Delta` | 1|numeric Delta on MODIFIER_PLAYER_ADJUST_ |
 | `MODIFIER_PLAYER_ADJUST_IDENTITY_PER_TURN_FROM_NEARBY_GREAT_WORKS` | `EFFECT_ADJUST_IDENTITY_PER_TURN_FROM_NEARBY_GREAT_WORKS` | `ForeignCities` | 1|numeric ForeignCities on MODIFIER_PLAYER |
 | `MODIFIER_PLAYER_ADJUST_IMMEDIATE_TRADING_POST` | `EFFECT_ADJUST_PLAYER_IMMEDIATE_TRADING_POST` | `ImmediateTradingPost` | 1|numeric ImmediateTradingPost on MODIFIER |
 | `MODIFIER_PLAYER_ADJUST_IMPROVED_ROUTE_LEVEL` | `EFFECT_ADJUST_PLAYER_IMPROVED_ROUTE_LEVEL` | `ImprovedRouteLevel` | 1|numeric ImprovedRouteLevel on MODIFIER_P |
@@ -74,16 +80,11 @@ rule via `review_family`/`review_transform` in the ledger.
 | `MODIFIER_PLAYER_ADJUST_JOINTWAR_PLUNDER` | `EFFECT_ADJUST_PLAYER_JOINTWAR_PLUNDER` | `Multiplier` | 100|a factor is already multiplicative: x10  |
 | `MODIFIER_PLAYER_ADJUST_MAX_WARMONGER_PERCENT` | `EFFECT_ADJUST_PLAYER_MAX_WARMONGER_PERCENT` | `MaxPercent` | 100|numeric MaxPercent on MODIFIER_PLAYER_AD |
 | `MODIFIER_PLAYER_ADJUST_OVERALL_TOURISM_REDUCTION` | `EFFECT_ADJUST_PLAYER_OVERALL_TOURISM_REDUCTION` | `Modifier` | 20|numeric Modifier on MODIFIER_PLAYER_ADJU |
+| `MODIFIER_PLAYER_ADJUST_PLAYER_ERA_SCORE_PER_PRIDE_MOMENT` | `EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_PRIDE_MOMENT` | `Amount` | numeric Amount on MODIFIER_PLAYER_ADJUST |
+| `MODIFIER_PLAYER_ADJUST_PLAYER_ERA_SCORE_PER_PRIDE_MOMENT` | `EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_PRIDE_MOMENT` | `MinScore` | numeric MinScore on MODIFIER_PLAYER_ADJU |
 | `MODIFIER_PLAYER_ADJUST_PLOT_YIELD` | `EFFECT_ADJUST_PLOT_YIELD` | `Amount` | -1|1|1, 1|2|4|argument Amount holds BOTH numeric and n |
 | `MODIFIER_PLAYER_ADJUST_PLOT_YIELD` | `EFFECT_ADJUST_PLOT_YIELD` | `ScalingFactor` | 200|a factor is already multiplicative: x10  |
 | `MODIFIER_PLAYER_ADJUST_POST_COMBAT_LOYALTY` | `EFFECT_ADJUST_PLAYER_POST_COMBAT_LOYALTY` | `AdditionalGoldenAge` | -20|numeric AdditionalGoldenAge on MODIFIER_ |
-| `MODIFIER_PLAYER_ADJUST_POST_COMBAT_LOYALTY` | `EFFECT_ADJUST_PLAYER_POST_COMBAT_LOYALTY` | `AffectLocal` | 0|numeric AffectLocal on MODIFIER_PLAYER_A |
-| `MODIFIER_PLAYER_ADJUST_PREVENT_HARVEST_RESOURCE` | `EFFECT_ADJUST_PLAYER_PREVENT_HARVEST_RESOURCE` | `Enable` | 1|numeric Enable on MODIFIER_PLAYER_ADJUST |
-| `MODIFIER_PLAYER_ADJUST_PROGRESS_DIFF_TRADE_BONUS` | `EFFECT_ADJUST_PLAYER_PROGRESS_DIFF_TRADE_BONUS` | `TechCivicsPerYield` | 3|numeric TechCivicsPerYield on MODIFIER_P |
-| `MODIFIER_PLAYER_ADJUST_RANDOM_EVENT_NO_UNIT_DAMAGE` | `EFFECT_ADJUST_RANDOM_EVENT_NO_UNIT_DAMAGE` | `NoDamage` | 1|numeric NoDamage on MODIFIER_PLAYER_ADJU |
-| `MODIFIER_PLAYER_ADJUST_RELIGION_BUILDING_DISCOUNT` | `EFFECT_ADJUST_RELIGION_BUILDING_DISCOUNT` | `Discount` | 90|engine EffectType EFFECT_ADJUST_RELIGION |
-| `MODIFIER_PLAYER_ADJUST_SKIP_FREE_CITY_STEP` | `EFFECT_ADJUST_PLAYER_SKIP_FREE_CITY_STEP` | `Skip` | 1|boolean argument Skip |
-| `MODIFIER_PLAYER_ADJUST_SPY_BONUS` | `EFFECT_ADJUST_PLAYER_SPY_BONUS` | `Offense` | 0|1|boolean argument Offense |
 
 Full queue: filter `data/release1_semantics.csv` on
 `review_confidence = needs_human`.
