@@ -12,17 +12,12 @@
   <InGameActions>
     <ImportFiles id="X10ProbeFiles">
       <File>probe.lua</File>
-      <File>stonediag.lua</File>
     </ImportFiles>
     <AddGameplayScripts id="X10Probe">
       <File>probe.lua</File>
     </AddGameplayScripts>
-    <AddGameplayScripts id="X10StoneDiag">
-      <File>stonediag.lua</File>
-    </AddGameplayScripts>
   </InGameActions>
   <Files>
     <File>probe.lua</File>
-    <File>stonediag.lua</File>
   </Files>
 </Mod>
