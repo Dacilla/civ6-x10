@@ -191,98 +191,199 @@ local function prepare_plot(pCity, pid, cid)
     return nil
   end
 
-  -- Returns the selected plot index, or nil for this candidate.
+  -- Deterministic nearest-first candidate order using the real Civ VI plot
+  -- distance (Map.GetPlotDistance; verified from NaturalWonderGenerator.lua),
+  -- radius 1 first, then 2, then 3. Only distances 1..3 are eligible.
+  local cands = {}
+  for dy = -3, 3 do
+    for dx = -3, 3 do
+      if dx ~= 0 or dy ~= 0 then
+        local d, okd = call(function()
+          return Map.GetPlotDistance(cx, cy, cx + dx, cy + dy)
+        end, "GetPlotDistance")
+        if okd and d ~= nil and d >= 1 and d <= 3 then
+          cands[#cands + 1] = { x = cx + dx, y = cy + dy, d = d }
+        end
+      end
+    end
+  end
+  table.sort(cands, function(a, b)
+    if a.d ~= b.d then return a.d < b.d end
+    if a.x ~= b.x then return a.x < b.x end
+    return a.y < b.y
+  end)
+
+  -- Adjacent RESOURCE_STONE, established ONLY via readback evidence:
+  -- reuse an existing stone plot, else place one on an eligible adjacent plot
+  -- (CanPlaceResource first, matching WorldBuilderPlotEditor.lua) and verify.
+  local function ensure_adjacent_stone(adj)
+    local adjList, okadj = call(function() return adj end, "adjacent list")
+    if not okadj or adjList == nil then return false end
+    -- pass 1: reuse
+    for i = 1, 6 do
+      local p = adjList[i]
+      if p ~= nil then
+        local ai = plot_info(p)
+        if ai.resource == "RESOURCE_STONE" then
+          slog(string.format(
+            "[X10StoneDiag] PREP adjacent stone REUSED index=%s x/y=%s/%s distance=1",
+            tostring(ai.index), tostring(ai.x), tostring(ai.y)))
+          return true
+        end
+      end
+    end
+    -- pass 2: place (each attempt verified by readback; keep trying others)
+    for i = 1, 6 do
+      local p = adjList[i]
+      if p ~= nil then
+        local ai = plot_info(p)
+        if ai.water ~= true and ai.mountain ~= true and
+           (ai.resource == nil or ai.resource == "none") then
+          local can, okcan = call(function()
+            return WorldBuilder.MapManager():CanPlaceResource(ai.index, stoneIdx, true)
+          end, "CanPlaceResource")
+          if okcan and can == true then
+            -- NOTE: call() returns (value, pcallOk); use the FIRST value.
+            local res2 = call(function()
+              return WorldBuilder.MapManager():SetResourceType(ai.index, stoneIdx, 1)
+            end, "SetResourceType")
+            local back = plot_info(p)
+            slog(string.format(
+              "[X10StoneDiag] PREP adjacent stone index=%s x/y=%s/%s -> set=%s readback=%s",
+              tostring(ai.index), tostring(ai.x), tostring(ai.y),
+              tostring(res2), tostring(back.resource)))
+            if back.resource == "RESOURCE_STONE" then
+              return true
+            end
+          else
+            slog(string.format(
+              "[X10StoneDiag] PREP adjacent stone NOT-PLACEABLE index=%s can=%s",
+              tostring(ai.index), tostring(can)))
+          end
+        end
+      end
+    end
+    return false
+  end
+
+  -- One candidate: mutation results are always confirmed by RE-READ.
   local function try_candidate(pos)
     local plot, okp = call(function() return Map.GetPlot(pos.x, pos.y) end,
                            "Map.GetPlot " .. pos.x .. "," .. pos.y)
     if not okp or plot == nil then return nil end
     local info = plot_info(plot)
-    log_plot("candidate", info)
-    if info.water == true or info.mountain == true or info.hills == true then
-      return nil
+    log_plot("candidate distance=" .. tostring(pos.d), info)
+
+    if info.water == true or info.mountain == true then return nil end
+
+    -- candidate resource: clear (probe-only) and verify
+    if info.resource ~= nil and info.resource ~= "none" then
+      local res = call(function()
+        return WorldBuilder.MapManager():SetResourceType(info.index, -1)
+      end, "SetResourceType-clear")
+      local back = plot_info(plot)
+      slog(string.format(
+        "[X10StoneDiag] PREP clear resource index=%s (%s) -> set=%s readback=%s",
+        tostring(info.index), tostring(info.resource), tostring(res),
+        tostring(back.resource)))
+      if back.resource ~= nil and back.resource ~= "none" then
+        slog("[X10StoneDiag] candidate rejected: resource not cleared")
+        return nil
+      end
     end
+
+    -- candidate improvement: clear and verify
     if info.improvement ~= nil and info.improvement ~= -1 then
-      local _, res1 = call(function()
+      local res = call(function()
         return WorldBuilder.MapManager():SetImprovementType(info.index, -1)
       end, "SetImprovementType")
-      slog(string.format("[X10StoneDiag] PREP clear improvement index=%s -> %s",
-        tostring(info.index), tostring(res1)))
+      local back = plot_info(plot)
+      slog(string.format(
+        "[X10StoneDiag] PREP clear improvement index=%s -> set=%s readback=%s",
+        tostring(info.index), tostring(res), tostring(back.improvement)))
+      if back.improvement ~= nil and back.improvement ~= -1 then
+        slog("[X10StoneDiag] candidate rejected: improvement not cleared")
+        return nil
+      end
     end
-    if info.feature ~= "none" then
-      local _, res1 = call(function()
+
+    -- candidate feature: clear and verify
+    if info.feature ~= nil and info.feature ~= "none" then
+      local res = call(function()
         return WorldBuilder.MapManager():SetFeatureType(info.index, -1)
       end, "SetFeatureType")
-      slog(string.format("[X10StoneDiag] PREP clear feature index=%s (%s) -> %s",
-        tostring(info.index), tostring(info.feature), tostring(res1)))
+      local back = plot_info(plot)
+      slog(string.format(
+        "[X10StoneDiag] PREP clear feature index=%s (%s) -> set=%s readback=%s",
+        tostring(info.index), tostring(info.feature), tostring(res),
+        tostring(back.feature)))
+      if back.feature ~= nil and back.feature ~= "none" then
+        slog("[X10StoneDiag] candidate rejected: feature not cleared")
+        return nil
+      end
     end
-    -- Adjacent RESOURCE_STONE: reuse one or place it (probe-only).
+
+    -- Final plot shape check (land / not mountain / not hills).
+    local shape = plot_info(plot)
+    if shape.water == true or shape.mountain == true or shape.hills == true then
+      slog("[X10StoneDiag] candidate rejected: not flat land")
+      return nil
+    end
+
+    -- Adjacent stone via readback evidence only.
     local adj, okadj = call(function()
       return Map.GetAdjacentPlots(info.x, info.y)
     end, "GetAdjacentPlots")
     local stone_ok = false
     if okadj and adj ~= nil then
-      for i = 1, 6 do
-        local p = adj[i]
-        if p ~= nil then
-          local ai = plot_info(p)
-          if ai.resource == "RESOURCE_STONE" then
-            stone_ok = true
-            break
-          end
-        end
-      end
-      if not stone_ok then
-        for i = 1, 6 do
-          local p = adj[i]
-          if p ~= nil then
-            local ai = plot_info(p)
-            if ai.water ~= true and ai.mountain ~= true and
-               (ai.resource == nil or ai.resource == "none") then
-              local _, res2 = call(function()
-                return WorldBuilder.MapManager():SetResourceType(ai.index,
-                                                                  stoneIdx, 1)
-              end, "SetResourceType")
-              slog(string.format(
-                "[X10StoneDiag] PREP adjacent stone index=%s x/y=%s/%s -> %s",
-                tostring(ai.index), tostring(ai.x), tostring(ai.y), tostring(res2)))
-              if res2 == true then stone_ok = true end
-              break
-            end
-          end
-        end
-      end
+      stone_ok = ensure_adjacent_stone(adj)
     end
     if not stone_ok then
-      slog("[X10StoneDiag] candidate rejected: no adjacent RESOURCE_STONE achievable")
+      slog("[X10StoneDiag] candidate rejected: no adjacent RESOURCE_STONE verified")
       return nil
     end
-    -- Ownership: assign the plot to the capital's owner city.
-    local _, res3 = call(function()
+
+    -- Ownership: assign the plot to the capital's owner city, then verify.
+    local res3 = call(function()
       return WorldBuilder.CityManager():SetPlotOwner(info.x, info.y, pid, cid)
     end, "SetPlotOwner")
+    local owned = plot_info(plot)
+    local owned_ok = (owned.is_owned == true) and
+      (owned.owner == pid)
     slog(string.format(
-      "[X10StoneDiag] PREP owner set x/y=%s/%s pid=%s cid=%s -> %s",
-      tostring(info.x), tostring(info.y), tostring(pid), tostring(cid), tostring(res3)))
-    local plot2, okp2 = call(function() return Map.GetPlot(info.x, info.y) end,
-                             "Map.GetPlot recheck")
-    if not okp2 or plot2 == nil then return nil end
-    local info2 = plot_info(plot2)
-    log_plot("selected", info2)
-    if info2.is_owned ~= true or (info2.owner ~= nil and info2.owner ~= pid) then
-      slog("[X10StoneDiag] candidate rejected: ownership not applied")
+      "[X10StoneDiag] PREP owner set x/y=%s/%s pid=%s cid=%s -> set=%s readback_owner=%s owned=%s",
+      tostring(info.x), tostring(info.y), tostring(pid), tostring(cid), tostring(res3),
+      tostring(owned.owner), tostring(owned.is_owned)))
+    if not owned_ok then
+      slog("[X10StoneDiag] candidate rejected: ownership not verified")
       return nil
     end
-    return info2.index
+
+    -- Authoritative PREFLIGHT: every condition must be true, from readback.
+    local pre = plot_info(plot)
+    local flat = (pre.hills ~= true and pre.mountain ~= true)
+    local land = (pre.water ~= true)
+    local feature_none = (pre.feature == nil or pre.feature == "none")
+    local imp_none = (pre.improvement == nil or pre.improvement == -1)
+    local res_none = (pre.resource == nil or pre.resource == "none")
+    local d_ok = (pos.d >= 1 and pos.d <= 3)
+    slog(string.format(
+      "[X10StoneDiag] PREFLIGHT plot=%s distance=%s owner=%s owned_by_capital=%s flat=%s land=%s feature=%s improvement=%s resource=%s adjacent_stone=%s",
+      tostring(pre.index), tostring(pos.d), tostring(pre.owner), tostring(owned_ok),
+      tostring(flat), tostring(land), tostring(pre.feature), tostring(pre.improvement),
+      tostring(pre.resource), tostring(stone_ok)))
+    if owned_ok and flat and land and feature_none and imp_none and res_none
+       and stone_ok and d_ok then
+      log_plot("selected distance=" .. tostring(pos.d), pre)
+      return pre.index
+    end
+    slog("[X10StoneDiag] candidate rejected: preflight conditions not all true")
+    return nil
   end
 
-  -- Candidate scan (deterministic order: increasing Chebyshev radius).
-  for dy = -3, 3 do
-    for dx = -3, 3 do
-      if dx ~= 0 or dy ~= 0 then
-        local r = try_candidate({ x = cx + dx, y = cy + dy })
-        if r ~= nil then return r end
-      end
-    end
+  for _, pos in ipairs(cands) do
+    local r = try_candidate(pos)
+    if r ~= nil then return r end
   end
   slog("[X10StoneDiag] LATCH-FAIL no eligible placement plot found near capital")
   return nil
