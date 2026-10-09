@@ -73,6 +73,24 @@ def _count_like(effect_type: str, argument_name: str, manifest_family: str,
     return False
 
 
+def _engine_integral_match(modifier_type: str, effect_type: str,
+                           argument_name: str, rules: dict) -> dict | None:
+    """Return the matching engine-integral override entry, if any.
+
+    Scoped by (modifier_type, effect, argument) so a curated entry cannot
+    silently widen across every carrier of an effect.
+    """
+    for entry in rules.get("engine_integral_effects") or []:
+        if entry.get("effect") != effect_type:
+            continue
+        if entry.get("modifier_type") and entry["modifier_type"] != modifier_type:
+            continue
+        if entry.get("argument") and entry["argument"] != argument_name:
+            continue
+        return entry
+    return None
+
+
 def certify_row(manifest_row: dict, sem_row: dict | None,
                 rules: dict | None = None) -> dict:
     """Certify one manifest row. Never trusts heuristic confidence.
@@ -172,6 +190,23 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
                     "count_like": False,
                     "source": "curated-effect:flat-cost:" + et,
                     "resolution": "certified"}
+        # Engine-representability override (Phase 3F): the effect applies
+        # Amount as an integer. Semantics stay as certified (same family and
+        # kind), but the runtime integral gate becomes mandatory so a
+        # fractional result is refused instead of engine-truncated.
+        eng = _engine_integral_match(mt, et, arg, rules)
+        if eng is not None:
+            category = (rules.get("certified_category_families") or {})
+            if proposed in category:
+                return {**base, "certified": True,
+                        "kind": category[proposed]["kind"],
+                        "count_like": True,
+                        "source": "curated-effect:engine-integral:" + et,
+                        "resolution": "certified"}
+            return {**base,
+                    "resolution": "conflict:engine-integral-uncertified-family:"
+                                  + proposed,
+                    "source": "none"}
         # Allowlisted plain-magnitude families.
         category = (rules.get("certified_category_families") or {})
         if proposed in category:

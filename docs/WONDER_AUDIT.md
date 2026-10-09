@@ -251,9 +251,10 @@ The test now proves all four cases instead of modeling k=0 as helper-zero.
   Estadio move COMPLETE → PARTIAL on the regional exclusion).
 - 57 helpers (31 building-yield + 20 count-like GPP + 3 housing + 3 local
   entertainment) → registry **870 entries / 866 definitions**
-  (738 uncond + 132 cond; static at FLOAT32 k=7.3: **750 writes /
-  120 refusals**).
-- All 715 pre-Wonder rows and all 97 modifier-backed wonder rows unchanged.
+  (707 uncond + 163 cond; static at FLOAT32 k=7.3: **720 writes /
+  150 refusals** - 30 of those refusals are Phase-3F integral-gated
+  building-yield helpers, see below).
+
 
 ## Phase 3D: three missing helpers — DLC load order (diagnosed, fixed)
 
@@ -318,10 +319,118 @@ from transform refusals via this dump — the native writer is untouched.
 ### Corrected expected counts (derived, unchanged totals)
 
 Registry still **870 entries**; with both DLC packs enabled the next run
-must show `definitions_added=3267 writes=750 transform_refused=120
+must show `definitions_added=3267 writes=720 transform_refused=150
 post_add_match=750 mismatch=0 unreadable=0` plus 57 `[X10BridgeDiag]` lines
 (54 `origin=immediate`, 3 `origin=trigger`) and
 `bridge_expected=57 bridge_materialized=57 bridge_unavailable=0`.
 Panama witness preserved. If content is genuinely unowned, the diag shows
 `bridge_unavailable=N` with vanilla untouched — legitimate, documented per
 run, never a failure.
+
+## Phase 3F: building-yield application is integral (engine representability)
+
+The Phase-3E active-gameplay proof reached the real effect and exposed a
+semantic constraint the definition store cannot show: the helper Amount 14.6
+was stored and verified (`official=2 k=7.3 requested=14.6 stored_after_add=14.6
+MATCH via=store-lookup`) yet the constructed Stonehenge contributed exactly
+**14.0** Faith to its city (`faith_before=0.0000`, `faith_next_turn=14.0000`,
+both read back with `%.4f` through `City:GetYield`).
+
+### Engine-semantics conclusion: the effect applies Amount as an integer
+
+Two hypotheses were separated using the evidence rather than assumed:
+
+- **UI/readback rounding — rejected.** `City:GetYield` was read as a float and
+  formatted `%.4f`; a fractional 14.6 would have printed `14.6000`, not
+  `14.0000`.
+- **Rounding to nearest — rejected.** 14.6 → 14 (nearest would be 15), so the
+  conversion is truncation inside the effect/application layer.
+- **Static corroboration.** All 12 official `MODIFIER_BUILDING_YIELD_CHANGE`
+  definitions carry integral Amounts (2, 3, 4), while the same
+  `ModifierArguments` schema elsewhere genuinely holds fractions (0.5, 0.6,
+  -0.5, 0.2 — 11 rows). The integral domain is therefore a property of
+  `EFFECT_ADJUST_BUILDING_YIELD_CHANGE`, not of the schema or of the data
+  authoring convention.
+- **No exact-equivalent fractional carrier.** The only other modifier type
+  dispatching this effect (`MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE`)
+  is player-scoped rather than building-scoped, and the city-scoped
+  `MODIFIER_SINGLE_CITY_ADJUST_YIELD_CHANGE` (`EFFECT_ADJUST_CITY_YIELD_CHANGE`)
+  changes the affected object from the building to the city, so building
+  equivalence is unproven and it was not adopted. Integral-gated refusal is
+  preferred over silently re-scoping the effect.
+
+### Correction: integral-gated refusal (existing machinery, new scope)
+
+The runtime integral gate already existed (registry `countLike` →
+`X10Transforms::Apply` refuses fractional results, and generation's
+`count_like_applies` mirrors it). Phase 3F adds a curated
+`engine_integral_effects` rule scoped to
+(`MODIFIER_BUILDING_YIELD_CHANGE`, `EFFECT_ADJUST_BUILDING_YIELD_CHANGE`,
+`Amount`): the rows keep their **ADDITIVE** family and kind (these are additive
+yields whose *engine representation* is integral — not conceptual object-count
+grants) but gain the mandatory integral check. Consequences:
+
+- `requested = official × k`; integral results write normally, fractional
+  results are **refused** — the definition keeps its official value, so with
+  the direct cell already zeroed gameplay is `0 + V` = vanilla V, never 0 and
+  never an approximation.
+- No floor/ceil/round anywhere; the refuse path is the same
+  `transform-refused` counter already exercised by count-like rows.
+- Registry-only change (no DLL rebuild: the native writer already reads
+  `countLike` from the generated table).
+
+### Affected-row inventory (all 31 bridged Building_YieldChanges helpers)
+
+Every row below is `MODIFIER_BUILDING_YIELD_CHANGE` / `Amount`, official value
+V, requested `V × 7.300000190734863`:
+
+| Wonder | helper ID | V | requested at 7.3 | integral? |
+|---|---|---|---|---|
+| Oracle | X10_ORACLE_YIELD_CULTURE | 1 | 7.300000191 | refuse |
+| Oracle | X10_ORACLE_YIELD_FAITH | 1 | 7.300000191 | refuse |
+| Sankore | X10_UNIVERSITY_SANKORE_YIELD_FAITH | 1 | 7.300000191 | refuse |
+| Angkor Wat | X10_ANGKOR_WAT_YIELD_FAITH | 2 | 14.600000381 | refuse |
+| Colosseum | X10_COLOSSEUM_YIELD_CULTURE | 2 | 14.600000381 | refuse |
+| Etemenanki | X10_ETEMENANKI_YIELD_SCIENCE | 2 | 14.600000381 | refuse |
+| Great Library | X10_GREAT_LIBRARY_YIELD_SCIENCE | 2 | 14.600000381 | refuse |
+| Mont St Michel | X10_MONT_ST_MICHEL_YIELD_FAITH | 2 | 14.600000381 | refuse |
+| Potala Palace | X10_POTALA_PALACE_YIELD_CULTURE | 2 | 14.600000381 | refuse |
+| Pyramids | X10_PYRAMIDS_YIELD_CULTURE | 2 | 14.600000381 | refuse |
+| Stonehenge | X10_STONEHENGE_YIELD_FAITH | 2 | 14.600000381 | refuse |
+| Colossus | X10_COLOSSUS_YIELD_GOLD | 3 | 21.900000572 | refuse |
+| Great Lighthouse | X10_GREAT_LIGHTHOUSE_YIELD_GOLD | 3 | 21.900000572 | refuse |
+| Meenakshi | X10_MEENAKSHI_TEMPLE_YIELD_FAITH | 3 | 21.900000572 | refuse |
+| Potala Palace | X10_POTALA_PALACE_YIELD_FAITH | 3 | 21.900000572 | refuse |
+| Statue of Zeus | X10_STATUE_OF_ZEUS_YIELD_GOLD | 3 | 21.900000572 | refuse |
+| Sankore | X10_UNIVERSITY_SANKORE_YIELD_SCIENCE | 3 | 21.900000572 | refuse |
+| Cristo Redentor | X10_CRISTO_REDENTOR_YIELD_CULTURE | 4 | 29.200000763 | refuse |
+| Hagia Sophia | X10_HAGIA_SOPHIA_YIELD_FAITH | 4 | 29.200000763 | refuse |
+| Jebel Barkal | X10_JEBEL_BARKAL_YIELD_FAITH | 4 | 29.200000763 | refuse |
+| Machu Picchu | X10_MACHU_PICCHU_YIELD_GOLD | 4 | 29.200000763 | refuse |
+| Mahabodhi | X10_MAHABODHI_TEMPLE_YIELD_FAITH | 4 | 29.200000763 | refuse |
+| Orszaghaza | X10_ORSZAGHAZ_YIELD_CULTURE | 4 | 29.200000763 | refuse |
+| Temple of Artemis | X10_TEMPLE_ARTEMIS_YIELD_FOOD | 4 | 29.200000763 | refuse |
+| Forbidden City | X10_FORBIDDEN_CITY_YIELD_CULTURE | 5 | 36.500000954 | refuse |
+| Great Zimbabwe | X10_GREAT_ZIMBABWE_YIELD_GOLD | 5 | 36.500000954 | refuse |
+| Torre de Belem | X10_TORRE_DE_BELEM_YIELD_GOLD | 5 | 36.500000954 | refuse |
+| Big Ben | X10_BIG_BEN_YIELD_GOLD | 6 | 43.800001144 | refuse |
+| Estadio Maracana | X10_ESTADIO_DO_MARACANA_YIELD_CULTURE | 6 | 43.800001144 | refuse |
+| Sydney Opera House | X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE | 8 | 58.400001526 | refuse |
+| **Panama Canal** | **X10_PANAMA_CANAL_YIELD_GOLD** | **10** | **73.000001907** | **write** |
+
+30 of 31 become refusals at the live stored-FLOAT32 k=7.3; Panama Canal
+(10 → 73) stays eligible, confirming the gate rather than a blanket block.
+At the default k=10 **all 31** write exactly (10, 20, 30, 40, 50, 60, 80, 100);
+at k=7.5 the even-valued rows write (2 → 15 etc., 19 of 31).
+
+### Deliberately out of scope (documented follow-up)
+
+21 live-validated Release-1 entries share this effect under the player-scoped
+carrier `MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE`
+(`TRAIT_IKANDA_*` ×10, `THIRDALTERNATIVE_*` ×10,
+`MILITARYRESEARCH_*` ×3; Amounts 1, 2, 4). The same engine truncation applies
+to them, so they should receive the identical gate — but they belong to the
+live-validated Release-1 core and changing them alters proven counts, so they
+are recorded here for a separately reviewed change rather than folded into
+Phase 3F. The rule table is already scoped by modifier type, so extending it
+is a one-line rules edit plus a recount.

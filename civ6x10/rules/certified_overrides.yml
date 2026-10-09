@@ -203,3 +203,39 @@ count_like_effects:
 # Argument names that are indivisible regardless of effect.
 count_like_args: [TurnsActive, Duration, Turns, Charges, SpreadCharges,
   BuilderCharges, Spreads, NumSlots]
+
+# ---------------------------------------------------------------------------
+# Engine-representability overrides (Phase 3F): effects that consume Amount as
+# an INTEGER at the application layer, independent of conceptual semantics.
+# Rows keep their additive family/kind but gain the mandatory runtime integral
+# gate (countLike): a fractional result is REFUSED (the definition keeps its
+# official value) instead of being silently truncated by the engine.
+# Never floor, ceil or round.
+#
+# Evidence for EFFECT_ADJUST_BUILDING_YIELD_CHANGE:
+#   * live (Phase 3E): bridge helper Amount 14.6 was stored in the definition
+#     store (stored_after_add=14.6 MATCH) yet the same city's Faith read back
+#     exactly 14.0000 -> truncation at application, not UI rounding (a float
+#     readback of 14.6 would have printed 14.6000), and 14.6 -> 14 (not 15)
+#     rules out rounding.
+#   * static: all 12 official MODIFIER_BUILDING_YIELD_CHANGE definitions carry
+#     integral Amounts (2, 3, 4) while the ModifierArguments schema elsewhere
+#     does hold fractions (0.5, 0.6, -0.5, 0.2), so the integral domain is a
+#     property of this effect rather than of the schema.
+#   * no exact-equivalent fractional building-scoped effect exists: the only
+#     other carrier of this effect (MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_
+#     YIELD_CHANGE) is player-scoped, and the city-scoped
+#     MODIFIER_SINGLE_CITY_ADJUST_YIELD_CHANGE changes the affected object
+#     from the building to the city, so building equivalence is unproven.
+#
+# Scope: the direct-table Building_YieldChanges bridge helpers. The 21
+# traits/policies entries sharing this effect (MODIFIER_PLAYER_CITIES_ADJUST_
+# BUILDING_YIELD_CHANGE: Ikanda, Third Alternative, Military Research) are
+# deliberately NOT gated here: they belong to the live-validated Release-1 core
+# and require their own reviewed change.
+# ---------------------------------------------------------------------------
+engine_integral_effects:
+  - modifier_type: MODIFIER_BUILDING_YIELD_CHANGE
+    effect: EFFECT_ADJUST_BUILDING_YIELD_CHANGE
+    argument: Amount
+    rationale: "integral building-yield application (Phase 3F live+static evidence above); additive family preserved, integral engine representation enforced by refusal"

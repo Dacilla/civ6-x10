@@ -27,9 +27,9 @@ Status vocabulary (do not conflate):
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
 - **870-entry certified production slice (684 Release-1 + 31 Pantheon + 155
   Wonder/Suleiman incl. 57 bridge helpers): STATICALLY VERIFIED, awaiting targeted live test.**
-  738 unconditional entries transform at any k; 132 count-like entries
+  707 unconditional entries transform at any k; 163 count-like entries
   apply only on integral results under the FLOAT32-aware exactness rule
-  (at live stored-float k=7.3: 750 static successes of 870 — honest
+  (at live stored-float k=7.3: 720 static successes of 870 — honest
   fractional refusal, never flooring). Full gate in
   `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit in
   `docs/PANTHEON_AUDIT.md`, wonder audit in `docs/WONDER_AUDIT.md`.
@@ -65,7 +65,7 @@ folder only; Workshop paths refused).
 (registry: 358 traits-only, 284 policies-only, 18 governments-only,
 31 pantheons-only, 154 wonders-only = 97 modifier-backed + 57 generated
 bridge helpers, 25 shared policies+governments;
-866 unique definitions, 870 entries: 738 unconditional + 132
+866 unique definitions, 870 entries: 707 unconditional + 163
 count-like conditional). A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
@@ -178,7 +178,7 @@ building the Statue of Zeus additionally proves the gameplay effect.
 
 Pass target (one population, no reload required — save/reload determinism
 already proven repeatedly):
-`writes=750 transform_refused=120 official_mismatch=0 post_add_match=750
+`writes=720 transform_refused=150 official_mismatch=0 post_add_match=720
 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`,
 plus `STAUEZEUS_ANTI_CAVALRY_PRODUCTION
 stored_after_add=365 expected=365 MATCH via=store-lookup`
@@ -197,7 +197,7 @@ with exactly three helpers unmaterialized — all three source rows arrive
 via Portugal's gameplay update AFTER X10WonderBridge executes (proven from
 the run logs; both DLC packs were enabled). The bridge SQL now carries
 deferred guarded triggers + an `X10BridgeDiag` table; the next run must show
-`definitions_added=3267 writes=750 transform_refused=120 post_add_match=750
+`definitions_added=3267 writes=720 transform_refused=150 post_add_match=720
 mismatch=0 unreadable=0`, both MATCH witnesses (Zeus 365, Panama 73), and
 57 `[X10BridgeDiag]` lines (54 immediate + 3 trigger) with
 `bridge_materialized=57 bridge_unavailable=0`. Native DLL unchanged by 3D.
@@ -234,7 +234,7 @@ Prerequisites: production DLL built, hash matches
 
 Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
 found=true`, up to 750-eligible write sequence at live stored-float k=7.3
-(738 unconditional + 12 exact-integral conditional under the
+(707 unconditional + 13 exact-integral conditional under the
 FLOAT32-quantization-aware rule) with `stored_after_add MATCH
 via=store-lookup`, `post_add_mismatch=0`, `post_add_unreadable=0`, probe PASS
 lines, identical values across save/reload. The exit summary is fully
