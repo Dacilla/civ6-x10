@@ -413,6 +413,62 @@ local function prepare_plot(pCity, pid, cid)
   return nil
 end
 
+-- Prerequisite technology, granted through the verified WorldBuilder player
+-- API (official evidence, WorldBuilderPlayerEditor.lua):
+--   OnTechSelected: local progress = selected and 100 or -1;
+--     WorldBuilder.PlayerManager():SetPlayerHasTech(playerIdx, techIdx, progress)
+--   OnPlayerTechEdited: WorldBuilder.PlayerManager():PlayerHasTech(player, tech)
+-- So: grant = SetPlayerHasTech(pid, techIndex, 100); readback = PlayerHasTech.
+-- The prerequisite is resolved dynamically from the Buildings row.
+local function ensure_prereq_tech(pid)
+  local pm, okpm = call(function() return WorldBuilder.PlayerManager() end,
+                        "PlayerManager()")
+  if not okpm or pm == nil then
+    slog("[X10StoneDiag] LATCH-INCONCLUSIVE WorldBuilder.PlayerManager() unavailable")
+    return false
+  end
+  if pm.SetPlayerHasTech == nil then
+    slog("[X10StoneDiag] LATCH-INCONCLUSIVE SetPlayerHasTech unavailable")
+    return false
+  end
+  local bi = GameInfo.Buildings["BUILDING_STONEHENGE"]
+  local prereqName = bi and bi.PrereqTech
+  if prereqName == nil or prereqName == "" or prereqName == "NONE" then
+    slog("[X10StoneDiag] TECH prerequisite=NONE (nothing to grant)")
+    return true
+  end
+  local techRow = GameInfo.Technologies[prereqName]
+  local techIdx = techRow and techRow.Index
+  slog(string.format("[X10StoneDiag] TECH prerequisite=%s", tostring(prereqName)))
+  slog(string.format("[X10StoneDiag] tech_index=%s", tostring(techIdx)))
+  if techIdx == nil then
+    slog("[X10StoneDiag] LATCH-INCONCLUSIVE prerequisite tech row not found")
+    return false
+  end
+  local had_before, okb = call(function()
+    return pm:PlayerHasTech(pid, techIdx)
+  end, "PlayerHasTech-before")
+  slog(string.format("[X10StoneDiag] had_before=%s", tostring(had_before)))
+  if okb and had_before == true then
+    slog("[X10StoneDiag] grant_result=already-owned")
+    slog(string.format("[X10StoneDiag] has_after=%s", "true"))
+    return true
+  end
+  local grantRes = call(function()
+    return pm:SetPlayerHasTech(pid, techIdx, 100)
+  end, "SetPlayerHasTech")
+  local has_after, oka = call(function()
+    return pm:PlayerHasTech(pid, techIdx)
+  end, "PlayerHasTech-after")
+  slog(string.format("[X10StoneDiag] grant_result=%s", tostring(grantRes)))
+  slog(string.format("[X10StoneDiag] has_after=%s", tostring(has_after)))
+  if has_after ~= true then
+    slog("[X10StoneDiag] LATCH-INCONCLUSIVE prerequisite tech not owned after grant")
+    return false
+  end
+  return true
+end
+
 local function phase_a()
   local pCity, pid = find_city()
   if pCity == nil then
@@ -469,6 +525,15 @@ local function phase_a()
     cname, cid, before, tostring(had), k, expected))
 
   if not had then
+    -- Prerequisite technology must exist before CreateBuilding: the live
+    -- run proved Stonehenge is otherwise rejected with MeetsRequirements=
+    -- false / NeededTech. Grant + readback first; inconclusive tech state
+    -- latches without touching placement or calling CreateBuilding.
+    if not ensure_prereq_tech(pid) then
+      slog("[X10StoneDiag] LATCH-INCONCLUSIVE prerequisite tech unavailable; not calling CreateBuilding")
+      PHASE = -1
+      return
+    end
     -- Stonehenge is a placed Wonder: the 4th CreateBuilding argument is the
     -- plot index, so a valid placement plot must be prepared first.
     local plotIdx = prepare_plot(pCity, pid, cid)
