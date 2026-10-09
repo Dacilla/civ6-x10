@@ -228,14 +228,20 @@ count_like_args: [TurnsActive, Duration, Turns, Charges, SpreadCharges,
 #     MODIFIER_SINGLE_CITY_ADJUST_YIELD_CHANGE changes the affected object
 #     from the building to the city, so building equivalence is unproven.
 #
-# Scope: the direct-table Building_YieldChanges bridge helpers. The 21
-# traits/policies entries sharing this effect (MODIFIER_PLAYER_CITIES_ADJUST_
-# BUILDING_YIELD_CHANGE: Ikanda, Third Alternative, Military Research) are
-# deliberately NOT gated here: they belong to the live-validated Release-1 core
-# and require their own reviewed change.
+# Scope: the direct-table Building_YieldChanges bridge helpers plus, since
+# Phase 3G, every production entry of the same engine effect under the
+# player-cities carrier (MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE:
+# 21 live-validated Release-1 rows - Ikanda, Third Alternative, Military
+# Research). Both carriers dispatch EFFECT_ADJUST_BUILDING_YIELD_CHANGE, so the
+# integral application applies identically; entries are keyed by modifier type,
+# never broadened by EffectType alone.
 # ---------------------------------------------------------------------------
 engine_integral_effects:
   - modifier_type: MODIFIER_BUILDING_YIELD_CHANGE
     effect: EFFECT_ADJUST_BUILDING_YIELD_CHANGE
     argument: Amount
-    rationale: "integral building-yield application (Phase 3F live+static evidence above); additive family preserved, integral engine representation enforced by refusal"
+    rationale: "integral building-yield application (Phase 3F live+static evidence below); additive family preserved, integral engine representation enforced by refusal"
+  - modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE
+    effect: EFFECT_ADJUST_BUILDING_YIELD_CHANGE
+    argument: Amount
+    rationale: "same engine effect (DynamicModifiers maps this carrier to EFFECT_ADJUST_BUILDING_YIELD_CHANGE, so the integral application applies identically); Phase 3G extends the gate to the 21 live-validated Release-1 rows (8 TRAIT_IKANDA_*, 10 THIRDALTERNATIVE_*, 3 MILITARYRESEARCH_*; official 1/2/4) that were deliberately left ungated in Phase 3F"

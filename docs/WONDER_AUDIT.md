@@ -253,7 +253,7 @@ The test now proves all four cases instead of modeling k=0 as helper-zero.
   entertainment) → registry **870 entries / 866 definitions**
   (707 uncond + 163 cond; static at FLOAT32 k=7.3: **720 writes /
   150 refusals** - 30 of those refusals are Phase-3F integral-gated
-  building-yield helpers, see below).
+  building-yield helpers, see below; Phase 3G later added 21 more).
 
 
 ## Phase 3D: three missing helpers — DLC load order (diagnosed, fixed)
@@ -319,8 +319,8 @@ from transform refusals via this dump — the native writer is untouched.
 ### Corrected expected counts (derived, unchanged totals)
 
 Registry still **870 entries**; with both DLC packs enabled the next run
-must show `definitions_added=3267 writes=720 transform_refused=150
-post_add_match=750 mismatch=0 unreadable=0` plus 57 `[X10BridgeDiag]` lines
+must show `definitions_added=3267 writes=699 transform_refused=171
+post_add_match=699 mismatch=0 unreadable=0` plus 57 `[X10BridgeDiag]` lines
 (54 `origin=immediate`, 3 `origin=trigger`) and
 `bridge_expected=57 bridge_materialized=57 bridge_unavailable=0`.
 Panama witness preserved. If content is genuinely unowned, the diag shows
@@ -376,8 +376,10 @@ grants) but gain the mandatory integral check. Consequences:
   never an approximation.
 - No floor/ceil/round anywhere; the refuse path is the same
   `transform-refused` counter already exercised by count-like rows.
-- Registry-only change (no DLL rebuild: the native writer already reads
-  `countLike` from the generated table).
+- The native writer source did NOT change (it already read `countLike`), but
+  the generated registry is compiled into the CE DLL, so every registry change
+  requires rebuilding and repackaging the DLL. Phase 3F therefore shipped a new
+  DLL whose only delta is the embedded registry table.
 
 ### Affected-row inventory (all 31 bridged Building_YieldChanges helpers)
 
@@ -423,14 +425,59 @@ V, requested `V × 7.300000190734863`:
 At the default k=10 **all 31** write exactly (10, 20, 30, 40, 50, 60, 80, 100);
 at k=7.5 the even-valued rows write (2 → 15 etc., 19 of 31).
 
-### Deliberately out of scope (documented follow-up)
+### Deferred at the time (superseded by Phase 3G)
 
 21 live-validated Release-1 entries share this effect under the player-scoped
 carrier `MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE`
 (`TRAIT_IKANDA_*` ×10, `THIRDALTERNATIVE_*` ×10,
-`MILITARYRESEARCH_*` ×3; Amounts 1, 2, 4). The same engine truncation applies
-to them, so they should receive the identical gate — but they belong to the
-live-validated Release-1 core and changing them alters proven counts, so they
-are recorded here for a separately reviewed change rather than folded into
-Phase 3F. The rule table is already scoped by modifier type, so extending it
-is a one-line rules edit plus a recount.
+`MILITARYRESEARCH_*` ×3; Amounts 1, 2, 4). Phase 3F left them ungated because
+they belong to the live-validated Release-1 core; **Phase 3G extended the
+identical, modifier-type-scoped gate to them** (see below), since the same
+engine truncation demonstrably applied to that carrier too.
+
+## Phase 3G: Release-1 carriers extended, then one final live validation
+
+Phase 3F gated only `MODIFIER_BUILDING_YIELD_CHANGE`. The clean DB's
+`DynamicModifiers` shows the second carrier
+`MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE` dispatching the **same**
+`EFFECT_ADJUST_BUILDING_YIELD_CHANGE`, so its 21 production rows carried the
+same latent truncation at fractional k. Phase 3G adds one narrowly scoped
+`engine_integral_effects` entry (identical modifier-type + effect + argument
+scoping; never broadened by EffectType alone) and changes nothing else:
+semantic kind stays ADDITIVE, and the transform algorithm, module ownership
+bitmasks and the native writer are untouched.
+
+### Exactly 21 rows moved from unconditional to integral-gated (verified mechanically)
+
+8 `TRAIT_IKANDA_*` (ARMORY_GOLD 2, ARMORY_SCIENCE 1, BARRACKS_GOLD 2,
+BARRACKS_SCIENCE 1, MILITARY_ACADEMY_GOLD 2, MILITARY_ACADEMY_SCIENCE 1,
+STABLE_GOLD 2, STABLE_SCIENCE 1), 10 `THIRDALTERNATIVE_*` (COAL / FOSSIL_FUEL /
+MILITARY_ACADEMY / POWER_PLANT / RESEARCH_LAB × CULTURE 2 + GOLD 4) and 3
+`MILITARYRESEARCH_*` (MILITARY_ACADEMY_SCIENCE 2, RENAISSANCE_WALLS_SCIENCE 2,
+SEAPORT_SCIENCE 2). Official Amounts are only 1, 2, 4. A closed-world diff
+(Phase-3G rule entry removed vs present) proves the ONLY differences in the
+whole 870-entry registry are `count_like` + `cert_source` on exactly these
+21 rows - no other Release-1 ID changes.
+
+### Behaviour of the extended set
+
+- k=7.300000190734863: **all 21 refuse** (7.3, 14.6, 29.2 - never truncated).
+- k=10: **all 21 write** (10, 20, 40) - the default multiplier is unaffected.
+- k=7.5: Amount 2/4 write (15, 30); only the four Amount=1 Ikanda Science rows
+  refuse (7.5).
+
+### Total production state after 3F + 3G
+
+**52 production entries** are protected by the engine-integral rule:
+**31 Wonder bridge helpers + 21 Release-1 player-cities entries**.
+Registry **870 entries / 866 unique definitions**, **686 unconditional + 184
+conditional**; at the live stored-FLOAT32 k=7.3: **699 writes / 171 refusals**
+(13 conditional integral successes), `definitions_added` still 3267.
+
+### Validation note
+
+Phase 3E already proved active bridge attachment AND gameplay application of a
+generated helper (Stonehenge: helper 14.6 stored, city Faith applied 14.0 -
+which is exactly what exposed the integral behaviour). No further active-Wonder
+gameplay diagnostic is required; the remaining live run is a final native
+registry/counter confirmation only.

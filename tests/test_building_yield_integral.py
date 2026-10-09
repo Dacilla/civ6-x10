@@ -165,22 +165,28 @@ class TestBuildingYieldCertification(unittest.TestCase):
         entries, report = registry_or_skip()
         self.assertEqual(len(entries), 870)
         self.assertEqual(report["unique_definitions"], 866)
-        self.assertEqual(report["certified_unconditional"], 707)
-        self.assertEqual(report["certified_count_like_conditional"], 163)
+        self.assertEqual(report["certified_unconditional"], 686)
+        self.assertEqual(report["certified_count_like_conditional"], 184)
         self.assertEqual(report["unresolved_conflicts"], [])
         gated = [e for e in entries
                  if e["cert_source"].startswith(
                      "curated-effect:engine-integral")]
-        self.assertEqual(len(gated), 31)
-        # Scoped: the same effect under the player-scoped carrier is NOT
-        # gated by this phase (documented Release-1-core follow-up).
+        self.assertEqual(len(gated), 52)
+        # Scoped to exactly the two carriers that dispatch the effect; the
+        # rule is never broadened by EffectType alone.
         row_eff = {(r["modifier_id"], r["argument_name"]):
                    (r.get("modifier_type"), r.get("effect_type"))
                    for r in load_rows()}
         carriers = {row_eff[(e["modifier_id"], e["argument"])][0]
                     for e in gated}
-        self.assertEqual(carriers, {"MODIFIER_BUILDING_YIELD_CHANGE"})
+        self.assertEqual(carriers, {"MODIFIER_BUILDING_YIELD_CHANGE",
+                                    "MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE"})
         self.assertTrue(all(e["count_like"] for e in gated))
+        self.assertTrue(all(e["kind"] == "ADDITIVE" for e in gated))
+        bridge = [e for e in gated if e["modifier_id"].startswith("X10_")]
+        release1 = [e for e in gated if not e["modifier_id"].startswith("X10_")]
+        self.assertEqual(len(bridge), 31)
+        self.assertEqual(len(release1), 21)
 
 
 class TestIntegralTransformMath(unittest.TestCase):
@@ -282,10 +288,189 @@ class TestIntegralTransformMath(unittest.TestCase):
             ok += 1
         exact = [e for e in co if T.count_like_applies(float(e["official"]), K73)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(ok, 707)
+        self.assertEqual(ok, 686)
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 150)
-        self.assertEqual(ok + len(exact), 720)
+        self.assertEqual(len(refused), 171)
+        self.assertEqual(ok + len(exact), 699)
+
+
+RELEASE1_CARRIER_IDS = (
+    "TRAIT_IKANDA_ARMORY_GOLD",
+    "TRAIT_IKANDA_ARMORY_SCIENCE",
+    "TRAIT_IKANDA_BARRACKS_GOLD",
+    "TRAIT_IKANDA_BARRACKS_SCIENCE",
+    "TRAIT_IKANDA_MILITARY_ACADEMY_GOLD",
+    "TRAIT_IKANDA_MILITARY_ACADEMY_SCIENCE",
+    "TRAIT_IKANDA_STABLE_GOLD",
+    "TRAIT_IKANDA_STABLE_SCIENCE",
+    "THIRDALTERNATIVE_COAL_POWER_PLANT_CULTURE_MODIFIER",
+    "THIRDALTERNATIVE_COAL_POWER_PLANT_GOLD_MODIFIER",
+    "THIRDALTERNATIVE_FOSSIL_FUEL_POWER_PLANT_CULTURE_MODIFIER",
+    "THIRDALTERNATIVE_FOSSIL_FUEL_POWER_PLANT_GOLD_MODIFIER",
+    "THIRDALTERNATIVE_MILITARY_ACADEMY_CULTURE_MODIFIER",
+    "THIRDALTERNATIVE_MILITARY_ACADEMY_GOLD_MODIFIER",
+    "THIRDALTERNATIVE_POWER_PLANT_CULTURE_MODIFIER",
+    "THIRDALTERNATIVE_POWER_PLANT_GOLD_MODIFIER",
+    "THIRDALTERNATIVE_RESEARCH_LAB_CULTURE_MODIFIER",
+    "THIRDALTERNATIVE_RESEARCH_LAB_GOLD_MODIFIER",
+    "MILITARYRESEARCH_MILITARY_ACADEMY_SCIENCE_MODIFIER",
+    "MILITARYRESEARCH_RENAISSANCE_WALLS_SCIENCE_MODIFIER",
+    "MILITARYRESEARCH_SEAPORT_SCIENCE_MODIFIER",
+)
+
+
+class TestRelease1BuildingYieldGate(unittest.TestCase):
+    """Phase 3G: the player-cities carrier of the same engine effect.
+
+    MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE dispatches
+    EFFECT_ADJUST_BUILDING_YIELD_CHANGE, so these 21 live-validated
+    Release-1 entries receive the identical integral gate.
+    """
+
+    def _gated(self):
+        entries, _ = registry_or_skip()
+        gated = {e["modifier_id"]: e for e in entries
+                 if e["cert_source"].startswith(
+                     "curated-effect:engine-integral")
+                 and not e["modifier_id"].startswith("X10_")}
+        return entries, gated
+
+    def test_exactly_21_ids_gated(self):
+        _, gated = self._gated()
+        self.assertEqual(set(gated), set(RELEASE1_CARRIER_IDS))
+        self.assertEqual(len(gated), 21)
+
+    def test_prefix_partition_and_official_domain(self):
+        _, gated = self._gated()
+        self.assertEqual(sum(1 for k in gated
+                             if k.startswith("TRAIT_IKANDA_")), 8)
+        self.assertEqual(sum(1 for k in gated
+                             if k.startswith("THIRDALTERNATIVE_")), 10)
+        self.assertEqual(sum(1 for k in gated
+                             if k.startswith("MILITARYRESEARCH_")), 3)
+        self.assertEqual({e["official"] for e in gated.values()},
+                         {"1", "2", "4"})
+
+    def test_kind_additive_and_gate_set(self):
+        _, gated = self._gated()
+        for mid, e in gated.items():
+            self.assertEqual(e["kind"], "ADDITIVE", mid)
+            self.assertTrue(e["count_like"], mid)
+
+    def test_no_other_release1_rows_change(self):
+        # Closed world: with the Phase-3G rule entry removed, the only
+        # classification differences are count_like + cert_source on
+        # exactly these 21 rows. Nothing else in Release 1 moves.
+        import copy
+        from civ6x10 import certification as C
+        from civ6x10 import production as P
+        rows = load_rows()
+        full = C.load_rules()
+        pre = copy.deepcopy(full)
+        pre["engine_integral_effects"] = [
+            e for e in full["engine_integral_effects"]
+            if e["modifier_type"] !=
+            "MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE"]
+        self.assertEqual(len(pre["engine_integral_effects"]), 1)
+        from civ6x10.production import build_production_registry
+        real = P.load_rules
+        P.load_rules = lambda path=None: pre
+        try:
+            pre_entries, _ = build_production_registry(rows)
+        finally:
+            P.load_rules = real
+        post_entries, _ = build_production_registry(rows)
+        pre_map = {(e["modifier_id"], e["argument"]): e for e in pre_entries}
+        post_map = {(e["modifier_id"], e["argument"]): e for e in post_entries}
+        self.assertEqual(set(pre_map), set(post_map))
+        self.assertEqual(len(pre_entries), 870)
+        changed = {k for k, v in post_map.items()
+                   if any(pre_map[k][f] != v[f] for f in
+                          ("official", "kind", "count_like", "owners",
+                           "cert_source", "family"))}
+        self.assertEqual(changed,
+                         {(mid, "Amount") for mid in RELEASE1_CARRIER_IDS})
+        for k in changed:
+            for f in ("official", "kind", "owners", "family"):
+                self.assertEqual(pre_map[k][f], post_map[k][f], (k, f))
+            self.assertFalse(pre_map[k]["count_like"], k)
+            self.assertTrue(post_map[k]["count_like"], k)
+
+    def test_k73_all_21_refuse(self):
+        _, gated = self._gated()
+        for mid, e in gated.items():
+            v = float(e["official"])
+            self.assertFalse(T.count_like_applies(v, K73), mid)
+            requested = v * K73
+            self.assertNotEqual(requested, int(requested), mid)
+
+    def test_k10_all_21_write(self):
+        _, gated = self._gated()
+        kk = T.stored_float32(10.0)
+        for mid, e in gated.items():
+            self.assertTrue(T.count_like_applies(float(e["official"]), kk), mid)
+            self.assertEqual(float(e["official"]) * 10.0,
+                             float(e["official"]) * 10.0)
+
+    def test_k75_amount_24_write_amount_1_refuses(self):
+        _, gated = self._gated()
+        kk = T.stored_float32(7.5)
+        writes = [mid for mid, e in gated.items()
+                  if T.count_like_applies(float(e["official"]), kk)]
+        refuses = [mid for mid, e in gated.items()
+                   if not T.count_like_applies(float(e["official"]), kk)]
+        self.assertEqual(len(writes), 17)
+        self.assertEqual(len(refuses), 4)
+        # only the Amount=1 Ikanda Science rows refuse
+        self.assertEqual(sorted(refuses), [
+            "TRAIT_IKANDA_ARMORY_SCIENCE",
+            "TRAIT_IKANDA_BARRACKS_SCIENCE",
+            "TRAIT_IKANDA_MILITARY_ACADEMY_SCIENCE",
+            "TRAIT_IKANDA_STABLE_SCIENCE"])
+        for mid in writes:
+            v = float(gated[mid]["official"])
+            self.assertIn(v, (2.0, 4.0), mid)
+            self.assertEqual(v * 7.5, round(v * 7.5), mid)
+
+    def test_refusal_keeps_official_value_in_definition(self):
+        # Native refusal skips the write: the definition keeps official V, so
+        # gameplay stays at vanilla V (direct cell already not touched here).
+        _, gated = self._gated()
+        for mid, e in gated.items():
+            v = float(e["official"])
+            self.assertFalse(T.count_like_applies(v, K73), mid)
+            stored = v  # write skipped -> unchanged
+            self.assertEqual(stored, v, mid)
+
+    def test_wonder_bridge_gate_preserved(self):
+        # The 31 Phase-3F bridge helpers stay gated and unaffected.
+        entries, _ = registry_or_skip()
+        by_id = {e["modifier_id"]: e for e in entries}
+        self.assertIn("X10_STONEHENGE_YIELD_FAITH", by_id)
+        self.assertIn("X10_PANAMA_CANAL_YIELD_GOLD", by_id)
+        self.assertTrue(by_id["X10_STONEHENGE_YIELD_FAITH"]["count_like"])
+        self.assertTrue(by_id["X10_PANAMA_CANAL_YIELD_GOLD"]["count_like"])
+        self.assertFalse(T.count_like_applies(
+            float(by_id["X10_STONEHENGE_YIELD_FAITH"]["official"]), K73))
+        self.assertTrue(T.count_like_applies(
+            float(by_id["X10_PANAMA_CANAL_YIELD_GOLD"]["official"]), K73))
+
+    def test_final_production_totals(self):
+        entries, report = registry_or_skip()
+        kf = K73
+        un = [e for e in entries if not e["count_like"]]
+        co = [e for e in entries if e["count_like"]]
+        exact = [e for e in co
+                 if T.count_like_applies(float(e["official"]), kf)]
+        refused = [e for e in co if e not in exact]
+        self.assertEqual(len(entries), 870)
+        self.assertEqual(report["unique_definitions"], 866)
+        self.assertEqual(len(un), 686)
+        self.assertEqual(len(co), 184)
+        self.assertEqual(len(exact), 13)
+        self.assertEqual(len(refused), 171)
+        # writes = unconditional (all apply) + conditional integral successes
+        self.assertEqual(len(un) + len(exact), 699)
 
 
 if __name__ == "__main__":

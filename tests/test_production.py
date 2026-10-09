@@ -97,8 +97,8 @@ class TestProductionRegistry(unittest.TestCase):
         self.assertEqual(report["eligible"], 870)
         self.assertEqual(report["unique_definitions"], 866)
         self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 707)
-        self.assertEqual(report["certified_count_like_conditional"], 163)
+        self.assertEqual(report["certified_unconditional"], 686)
+        self.assertEqual(report["certified_count_like_conditional"], 184)
         self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
         for mid in ("TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
@@ -209,10 +209,10 @@ class TestProductionTransforms(unittest.TestCase):
         # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
         # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
         # live against loaded definitions):
-        #   707 unconditional entries: every one transforms;
-        #   163 conditional entries: 13 exact-integral apply,
-        #   150 fractional refuse safely (never floored).
-        # Static successful transforms: 707 + 13 = 720 < registry size 870
+        #   686 unconditional entries: every one transforms;
+        #   184 conditional entries: 13 exact-integral apply,
+        #   171 fractional refuse safely (never floored).
+        # Static successful transforms: 686 + 13 = 699 < registry size 870
         # (Toqui loyalty pair temporarily excluded pending stored-form
         # re-certification).
         import math
@@ -227,8 +227,8 @@ class TestProductionTransforms(unittest.TestCase):
         self.assertEqual(len(entries), 870)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        self.assertEqual(len(un), 707)
-        self.assertEqual(len(co), 163)
+        self.assertEqual(len(un), 686)
+        self.assertEqual(len(co), 184)
         ok = 0
         for e in un:
             v = float(e["official"])
@@ -243,14 +243,14 @@ class TestProductionTransforms(unittest.TestCase):
                 continue
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 707)
+        self.assertEqual(ok, 686)
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 150)
+        self.assertEqual(len(refused), 171)
         # Static expectation: 750 successful transforms of 870 certified.
-        self.assertEqual(ok + len(exact), 720)
+        self.assertEqual(ok + len(exact), 699)
 
     def test_verifier_key_capacity(self):
         # Exact live fixture: the 66-char Magnificences ID truncated to

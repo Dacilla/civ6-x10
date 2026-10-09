@@ -43,26 +43,30 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
 - **870 entries / 866 unique definitions / 25 shared** (358 traits-only
   incl. Suleiman titles, 284 policies-only, 18 governments-only, 31
   pantheons-only, 154 wonders-only = 97 modifier-backed + 57 generated
-  bridge helpers; 707 unconditional + 163 count-like).
+  bridge helpers; 686 unconditional + 184 count-like).
   Frozen milestones: 684 Release-1 (`release1-684-live-validated`), 715
   Phase-2 (`phase2-715-live-validated`); every earlier line persists
   byte-identical, additions only.
 
-### Engine-representability gate (Phase 3F)
+### Engine-representability gate (Phase 3F + 3G)
 
 `EFFECT_ADJUST_BUILDING_YIELD_CHANGE` applies `Amount` as an **integer** at
 the application layer (live: helper 14.6 stored and MATCH, city Faith applied
 14.0000; static: all 12 official definitions integral while the schema holds
-fractions elsewhere). The 31 bridged building-yield helpers are therefore
-certified ADDITIVE with the mandatory integral gate: `requested = official × k`
-writes when exactly integral, otherwise the transform is refused and the
-definition keeps its official value (gameplay `0 + V` = vanilla, never
-truncated, floored or rounded). Curated rule `engine_integral_effects` in
-`rules/certified_overrides.yml`, scoped by modifier type; evidence, per-row
-inventory and the out-of-scope follow-up list in `docs/WONDER_AUDIT.md`.
-At the live stored-FLOAT32 k=7.3: 707 unconditional + 13 conditional write
-(720), 150 conditional refuse (30 of them building-yield).
-- **599 unconditional** (every one transforms at k=7.3), **85 conditional
+fractions elsewhere). Two carriers dispatch this effect, and both are gated by
+modifier-type-scoped curated entries in `rules/certified_overrides.yml`:
+`MODIFIER_BUILDING_YIELD_CHANGE` (31 bridged Wonder helpers, Phase 3F) and
+`MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE` (21 live-validated
+Release-1 rows, Phase 3G). All 52 certify ADDITIVE with the mandatory integral
+gate: `requested = official × k` writes when exactly integral, otherwise the
+transform is refused and the definition keeps its official value (gameplay
+`0 + V` = vanilla, never truncated, floored or rounded). Evidence, per-row
+inventory and the closed-world affected-set proof live in
+`docs/WONDER_AUDIT.md`.
+At the live stored-FLOAT32 k=7.3: 686 unconditional + 13 conditional write
+(**699**), 171 conditional refuse (30 Wonder helpers + 21 Release-1 entries;
+52 production entries protected in total: 31 bridge helpers + 21
+player-cities entries).- **599 unconditional** (every one transforms at k=7.3), **85 conditional
   count-like** (11 exact-integral apply at live FLOAT32 k=7.3, 74 fractional
   refuse safely). Static successful transforms at k=7.3: **610 of 684** —
   lower than the registry size by design (§10 honesty), and derived from the
