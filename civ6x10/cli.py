@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -125,7 +126,10 @@ def cmd_verify(args) -> int:
 def cmd_audit_governors(args) -> int:
     from .governors import (build_audit, build_manifest, write_manifest,
                             write_inventory_csv, write_graph_json)
-    audit = build_audit(args.db, game_root=args.game_root, root=ROOT)
+    root = args.game_root or os.environ.get("CIV6_GAME_ROOT") or None
+    audit = build_audit(args.db, game_root=root, ruleset=args.ruleset,
+                        conditional_overlays=not args.no_conditional_overlays,
+                        root=ROOT)
     manifest = build_manifest(audit)
     man_out = Path(args.manifest)
     man_out.parent.mkdir(parents=True, exist_ok=True)
@@ -146,6 +150,9 @@ def cmd_audit_governors(args) -> int:
         "family_summary": manifest["family_summary"],
         "engine_integral_rows": len(manifest["engine_integral_rows"]),
         "registry_overlap": manifest["registry_overlap"],
+        "mode_files": [{"file": f["file"], "sha256": f["sha256"],
+                        "action": f["action_id"], "criteria": f["criteria"],
+                        "exists": f["exists"]} for f in manifest["mode_files"]],
     }, indent=1))
     return 0
 
@@ -195,7 +202,13 @@ def main(argv=None) -> int:
     p.add_argument("--db", required=True,
                    help="official Gameplay SQLite COPY (never the live install)")
     p.add_argument("--game-root", default=None,
-                   help="installed Civ VI root (for mode-gated Secret Societies XML)")
+                   help="installed Civ VI root (mode-gated Secret Societies XML); "
+                        "falls back to CIV6_GAME_ROOT")
+    p.add_argument("--ruleset", default="Expansion2",
+                   choices=["Expansion1", "Expansion2"],
+                   help="ruleset whose mode payload should be loaded")
+    p.add_argument("--no-conditional-overlays", action="store_true",
+                   help="exclude the Gran Colombia/Maya conditional overlay")
     p.add_argument("--manifest",
                    default=str(ROOT / "civ6x10" / "rules" / "governor_audit.yml"))
     p.add_argument("--inventory",
