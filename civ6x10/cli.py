@@ -122,6 +122,34 @@ def cmd_verify(args) -> int:
     return 0 if result["verdict"] == "PASS" else 1
 
 
+def cmd_audit_governors(args) -> int:
+    from .governors import (build_audit, build_manifest, write_manifest,
+                            write_inventory_csv, write_graph_json)
+    audit = build_audit(args.db, game_root=args.game_root, root=ROOT)
+    manifest = build_manifest(audit)
+    man_out = Path(args.manifest)
+    man_out.parent.mkdir(parents=True, exist_ok=True)
+    write_manifest(manifest, man_out)
+    write_inventory_csv(audit["rows"], args.inventory)
+    write_graph_json(audit["universe"], audit["rows"], args.graph)
+    c = manifest["counts"]
+    d = manifest["disposition_summary"]
+    print(f"wrote {man_out} (governors={c['governors']} "
+          f"[base {c['governors_base']} / secret-society {c['governors_secret_society']}], "
+          f"promotions={c['promotions']} "
+          f"[base {c['promotions_base']} / secret-society {c['promotions_secret_society']}])")
+    print(f"wrote {args.inventory} ({c['reachable_rows']} reachable rows)")
+    print(json.dumps({
+        "counts": c,
+        "reachable_dispositions": d["reachable_rows"],
+        "direct_cell_dispositions": d["direct_cells"],
+        "family_summary": manifest["family_summary"],
+        "engine_integral_rows": len(manifest["engine_integral_rows"]),
+        "registry_overlap": manifest["registry_overlap"],
+    }, indent=1))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="civ6x10")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -163,6 +191,18 @@ def main(argv=None) -> int:
     p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons", "wonders"])
     p.add_argument("--db", required=True)
     p.set_defaults(fn=cmd_verify)
+    p = sub.add_parser("audit-governors")
+    p.add_argument("--db", required=True,
+                   help="official Gameplay SQLite COPY (never the live install)")
+    p.add_argument("--game-root", default=None,
+                   help="installed Civ VI root (for mode-gated Secret Societies XML)")
+    p.add_argument("--manifest",
+                   default=str(ROOT / "civ6x10" / "rules" / "governor_audit.yml"))
+    p.add_argument("--inventory",
+                   default=str(ROOT / "data" / "local" / "governor_effects.csv"))
+    p.add_argument("--graph",
+                   default=str(ROOT / "data" / "local" / "governor_graph.json"))
+    p.set_defaults(fn=cmd_audit_governors)
     args = ap.parse_args(argv)
     return args.fn(args)
 
