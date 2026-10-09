@@ -239,8 +239,11 @@ local function prepare_plot(pCity, pid, cid)
         local ai = plot_info(p)
         if ai.water ~= true and ai.mountain ~= true and
            (ai.resource == nil or ai.resource == "none") then
+          -- Firaxis plot-index form: CanPlaceResource(plotIndex, resourceIndex)
+          -- (the local GameCore dispatches on argument count: a third arg would
+          --  be parsed as the x/y/resource form). Two args only.
           local can, okcan = call(function()
-            return WorldBuilder.MapManager():CanPlaceResource(ai.index, stoneIdx, true)
+            return WorldBuilder.MapManager():CanPlaceResource(ai.index, stoneIdx)
           end, "CanPlaceResource")
           if okcan and can == true then
             -- NOTE: call() returns (value, pcallOk); use the FIRST value.
@@ -350,10 +353,30 @@ local function prepare_plot(pCity, pid, cid)
     local owned = plot_info(plot)
     local owned_ok = (owned.is_owned == true) and
       (owned.owner == pid)
+    -- Same manager the verified Wonder path uses: GetPlotOwner(plot). The
+    -- returned shape is logged verbatim and, when it exposes both fields,
+    -- PlayerID/CityID are also verified. Structure mismatch alone is NOT a
+    -- rejection (robustness only).
+    local ownerTbl, oko = call(function()
+      return WorldBuilder.CityManager():GetPlotOwner(info.index)
+    end, "GetPlotOwner")
+    local op_pid, op_cid = nil, nil
+    if type(ownerTbl) == "table" then
+      op_pid = ownerTbl.PlayerID
+      op_cid = ownerTbl.CityID
+    end
+    local owners_match = (type(ownerTbl) == "table") and
+      (op_pid == pid) and (op_cid == cid)
+    if type(ownerTbl) ~= "table" then
+      slog(string.format(
+        "[X10StoneDiag] PREP GetPlotOwner returned non-table (%s); not treated as a rejection",
+        tostring(ownerTbl)))
+    end
     slog(string.format(
-      "[X10StoneDiag] PREP owner set x/y=%s/%s pid=%s cid=%s -> set=%s readback_owner=%s owned=%s",
+      "[X10StoneDiag] PREP owner set x/y=%s/%s pid=%s cid=%s -> set=%s readback_owner=%s owned=%s getplotowner_player=%s getplotowner_city=%s owners_match=%s",
       tostring(info.x), tostring(info.y), tostring(pid), tostring(cid), tostring(res3),
-      tostring(owned.owner), tostring(owned.is_owned)))
+      tostring(owned.owner), tostring(owned.is_owned),
+      tostring(op_pid), tostring(op_cid), tostring(owners_match)))
     if not owned_ok then
       slog("[X10StoneDiag] candidate rejected: ownership not verified")
       return nil
@@ -368,8 +391,9 @@ local function prepare_plot(pCity, pid, cid)
     local res_none = (pre.resource == nil or pre.resource == "none")
     local d_ok = (pos.d >= 1 and pos.d <= 3)
     slog(string.format(
-      "[X10StoneDiag] PREFLIGHT plot=%s distance=%s owner=%s owned_by_capital=%s flat=%s land=%s feature=%s improvement=%s resource=%s adjacent_stone=%s",
+      "[X10StoneDiag] PREFLIGHT plot=%s distance=%s owner=%s owned_by_capital=%s getplotowner_player=%s getplotowner_city=%s owners_match=%s flat=%s land=%s feature=%s improvement=%s resource=%s adjacent_stone=%s",
       tostring(pre.index), tostring(pos.d), tostring(pre.owner), tostring(owned_ok),
+      tostring(op_pid), tostring(op_cid), tostring(owners_match),
       tostring(flat), tostring(land), tostring(pre.feature), tostring(pre.improvement),
       tostring(pre.resource), tostring(stone_ok)))
     if owned_ok and flat and land and feature_none and imp_none and res_none
