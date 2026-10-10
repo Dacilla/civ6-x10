@@ -168,7 +168,8 @@ def load_direct_csv(path: str | Path) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
-REGISTRY_MODULES = ("traits", "policies", "governments", "pantheons", "wonders")
+REGISTRY_MODULES = ("traits", "policies", "governments", "pantheons",
+                    "wonders", "governors")
 
 
 def collect_registry_rows(root: str | Path) -> list[dict]:
@@ -180,7 +181,7 @@ def collect_registry_rows(root: str | Path) -> list[dict]:
     import yaml
     root = Path(root)
     rows: list[dict] = []
-    for module in REGISTRY_MODULES:
+    for module in REGISTRY_MODULES:  # 6 supported modules (governors=bit 32)
         man = yaml.safe_load(
             open(root / "manifests" / f"{module}.yml", encoding="utf-8"))
         for r in man[module]:

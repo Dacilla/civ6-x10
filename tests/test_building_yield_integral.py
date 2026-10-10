@@ -163,15 +163,15 @@ class TestBuildingYieldCertification(unittest.TestCase):
 
     def test_registry_totals(self):
         entries, report = registry_or_skip()
-        self.assertEqual(len(entries), 870)
-        self.assertEqual(report["unique_definitions"], 866)
-        self.assertEqual(report["certified_unconditional"], 686)
-        self.assertEqual(report["certified_count_like_conditional"], 184)
+        self.assertEqual(len(entries), 924)
+        self.assertEqual(report["unique_definitions"], 920)
+        self.assertEqual(report["certified_unconditional"], 735)
+        self.assertEqual(report["certified_count_like_conditional"], 189)
         self.assertEqual(report["unresolved_conflicts"], [])
         gated = [e for e in entries
                  if e["cert_source"].startswith(
                      "curated-effect:engine-integral")]
-        self.assertEqual(len(gated), 52)
+        self.assertEqual(len(gated), 57)
         # Scoped to exactly the two carriers that dispatch the effect; the
         # rule is never broadened by EffectType alone.
         row_eff = {(r["modifier_id"], r["argument_name"]):
@@ -179,12 +179,17 @@ class TestBuildingYieldCertification(unittest.TestCase):
                    for r in load_rows()}
         carriers = {row_eff[(e["modifier_id"], e["argument"])][0]
                     for e in gated}
-        self.assertEqual(carriers, {"MODIFIER_BUILDING_YIELD_CHANGE",
-                                    "MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE"})
+        self.assertEqual(carriers, {
+            "MODIFIER_BUILDING_YIELD_CHANGE",
+            "MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE",
+            # Phase 4B: governor appeal ratings are whole appeal levels
+            "MODIFIER_GOVERNOR_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL"})
         self.assertTrue(all(e["count_like"] for e in gated))
         self.assertTrue(all(e["kind"] == "ADDITIVE" for e in gated))
-        bridge = [e for e in gated if e["modifier_id"].startswith("X10_")]
-        release1 = [e for e in gated if not e["modifier_id"].startswith("X10_")]
+        bridge = [e for e in gated if e["modifier_id"].startswith("X10_")
+                  and e["modifier_id"] not in RELEASE1_CARRIER_IDS]
+        release1 = [e for e in gated
+                    if e["modifier_id"] in RELEASE1_CARRIER_IDS]
         self.assertEqual(len(bridge), 31)
         self.assertEqual(len(release1), 21)
 
@@ -288,10 +293,10 @@ class TestIntegralTransformMath(unittest.TestCase):
             ok += 1
         exact = [e for e in co if T.count_like_applies(float(e["official"]), K73)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(ok, 686)
+        self.assertEqual(ok, 735)
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 171)
-        self.assertEqual(ok + len(exact), 699)
+        self.assertEqual(len(refused), 176)
+        self.assertEqual(ok + len(exact), 748)
 
 
 RELEASE1_CARRIER_IDS = (
@@ -328,11 +333,19 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
     """
 
     def _gated(self):
+        """Entries gated through the Phase-3G Release-1 carrier only.
+
+        Phase 4B adds a second carrier (`MODIFIER_BUILDING_YIELD_CHANGE`
+        under governor ownership) and one APPEAL effect; both are asserted in
+        tests/test_governors_production.py, so this class stays scoped to the
+        live-validated Release-1 set it was written for.
+        """
         entries, _ = registry_or_skip()
         gated = {e["modifier_id"]: e for e in entries
                  if e["cert_source"].startswith(
                      "curated-effect:engine-integral")
-                 and not e["modifier_id"].startswith("X10_")}
+                 and not e["modifier_id"].startswith("X10_")
+                 and e["modifier_id"] in RELEASE1_CARRIER_IDS}
         return entries, gated
 
     def test_exactly_21_ids_gated(self):
@@ -370,23 +383,34 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
             self.skipTest("local-only registry inputs unavailable")
         full = C.load_rules()
         pre = copy.deepcopy(full)
+        # Strip ONLY the Phase-3G entry (plus the Phase-4B governor appeal
+        # entry, which does not exist in the pre-4B rule set). The
+        # wonder-bridge entry predates both and must stay, or the 31 X10_
+        # helpers would also change.
         pre["engine_integral_effects"] = [
             e for e in full["engine_integral_effects"]
-            if e["modifier_type"] !=
-            "MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE"]
+            if e["modifier_type"] not in (
+                "MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE",
+                "MODIFIER_GOVERNOR_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL")]
         self.assertEqual(len(pre["engine_integral_effects"]), 1)
         from civ6x10.production import build_production_registry
+        # Phase 4B adds governor rows; compare the pre-4B (non-governor)
+        # subset on both sides.
+        base_rows = [r for r in rows if r.get("module") != "governors"]
         real = P.load_rules
         P.load_rules = lambda path=None: pre
         try:
-            pre_entries, _ = build_production_registry(rows)
+            pre_entries, _ = build_production_registry(base_rows)
         finally:
             P.load_rules = real
+        post_base, _ = build_production_registry(base_rows)
         post_entries, _ = build_production_registry(rows)
         pre_map = {(e["modifier_id"], e["argument"]): e for e in pre_entries}
-        post_map = {(e["modifier_id"], e["argument"]): e for e in post_entries}
+        post_map = {(e["modifier_id"], e["argument"]): e
+                    for e in post_base}
         self.assertEqual(set(pre_map), set(post_map))
         self.assertEqual(len(pre_entries), 870)
+        self.assertEqual(len(post_base), 870)
         changed = {k for k, v in post_map.items()
                    if any(pre_map[k][f] != v[f] for f in
                           ("official", "kind", "count_like", "owners",
@@ -466,14 +490,14 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(len(entries), 870)
-        self.assertEqual(report["unique_definitions"], 866)
-        self.assertEqual(len(un), 686)
-        self.assertEqual(len(co), 184)
+        self.assertEqual(len(entries), 924)
+        self.assertEqual(report["unique_definitions"], 920)
+        self.assertEqual(len(un), 735)
+        self.assertEqual(len(co), 189)
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 171)
+        self.assertEqual(len(refused), 176)
         # writes = unconditional (all apply) + conditional integral successes
-        self.assertEqual(len(un) + len(exact), 699)
+        self.assertEqual(len(un) + len(exact), 748)
 
 
 if __name__ == "__main__":

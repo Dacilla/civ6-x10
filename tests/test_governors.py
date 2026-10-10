@@ -207,10 +207,13 @@ def game_root_or_none():
 
 class TestDesignDecisions(unittest.TestCase):
     def test_proposed_owner_bit(self):
+        # Phase 4A.1 reported bit 32 as the next free value; Phase 4B
+        # implemented it, so it is now present in MODULE_BITS.
         from civ6x10.production import MODULE_BITS
         self.assertEqual(PROPOSED_GOVERNOR_MODULE_BIT, 32)
         self.assertEqual(PROPOSED_NEXT_MODULE_BIT_AFTER_GOVERNORS, 64)
-        self.assertNotIn(32, set(MODULE_BITS.values()))
+        self.assertEqual(MODULE_BITS["governors"], 32)
+        self.assertIn(32, set(MODULE_BITS.values()))
 
     def test_no_production_artifacts_from_audit(self):
         import civ6x10.governors as g
@@ -474,7 +477,24 @@ class TestRealIntegration(unittest.TestCase):
         audit = build_audit(self.db, game_root=self.root, root=ROOT)
         ov = audit["registry_overlap"]
         self.assertTrue(ov["available"])
-        self.assertEqual(ov["shared"], ["SULEIMAN_GOVERNOR_POINTS"])
+        # The overlap check compares governor-reachable modifier IDs against
+        # the FULL production registry, which since Phase 4B also contains
+        # the 54 governor rows themselves. The audit-relevant fact is the
+        # pre-existing overlap: SULEIMAN_GOVERNOR_POINTS stays traits-owned
+        # and is never re-owned by governors.
+        self.assertIn("SULEIMAN_GOVERNOR_POINTS", ov["shared"])
+        from civ6x10.bridge import collect_registry_rows
+        reg = collect_registry_rows(ROOT)
+        sule = {r["module"] for r in reg
+                if r["modifier_id"] == "SULEIMAN_GOVERNOR_POINTS"}
+        self.assertEqual(sule, {"traits"})
+        # every audited governor candidate is governor-owned only
+        gov_mods = {r["modifier_id"] for r in reg if r["module"] == "governors"}
+        owners = {}
+        for r in reg:
+            owners.setdefault(r["modifier_id"], set()).add(r["module"])
+        self.assertEqual(gov_mods, {m for m, ms in owners.items()
+                                   if ms == {"governors"}})
 
 
 if __name__ == "__main__":

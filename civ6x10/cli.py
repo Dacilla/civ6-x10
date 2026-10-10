@@ -123,6 +123,26 @@ def cmd_verify(args) -> int:
     return 0 if result["verdict"] == "PASS" else 1
 
 
+def cmd_generate_governor_manifest(args) -> int:
+    from .governors import build_governor_manifest, write_governor_manifest
+    manifest = build_governor_manifest(args.audit, args.module)
+    rows = manifest[args.module]
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    write_governor_manifest(manifest, out)
+    from collections import Counter
+    fams = Counter(r["semantic_family"] for r in rows)
+    print(f"wrote {out} ({len(rows)} certified rows, "
+          f"{len({r['modifier_id'] for r in rows})} distinct modifier ids)")
+    print(json.dumps({
+        "families": dict(sorted(fams.items())),
+        "combat_rows": sum(1 for r in rows
+                           if r["transformation"] == "canonical_combat_bonus"),
+        "engine_integral_rows": sum(1 for r in rows if r["engine_integral"]),
+    }, indent=1))
+    return 0
+
+
 def cmd_audit_governors(args) -> int:
     from .governors import (build_audit, build_manifest, write_manifest,
                             write_inventory_csv, write_graph_json)
@@ -169,7 +189,8 @@ def main(argv=None) -> int:
     p.add_argument("--audit-data", default=str(ROOT / "data" / "local"))
     p.set_defaults(fn=cmd_review)
     p = sub.add_parser("generate")
-    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons", "wonders"])
+    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons", "wonders",
+                 "governors"])
     p.add_argument("--out", required=True)
     p.set_defaults(fn=cmd_generate)
     p = sub.add_parser("inventory-pantheons")
@@ -191,11 +212,19 @@ def main(argv=None) -> int:
     p.add_argument("--csv", default=str(ROOT / "data" / "local" / "wonder_direct.csv"))
     p.add_argument("--out", default=str(ROOT / "controller" / "X10" / "Config" / "X10WonderBridge.sql"))
     p.set_defaults(fn=cmd_generate_bridge_sql)
+    p = sub.add_parser("generate-governor-manifest")
+    p.add_argument("--audit", default=str(ROOT / "civ6x10" / "rules" /
+                                          "governor_audit.yml"),
+                   help="checked-in Phase-4A.1 governor audit manifest")
+    p.add_argument("--module", default="governors", choices=["governors"])
+    p.add_argument("--out", default=str(ROOT / "manifests" / "governors.yml"))
+    p.set_defaults(fn=cmd_generate_governor_manifest)
     p = sub.add_parser("generate-registry")
     p.add_argument("--out", default=str(ROOT / "build" / "X10ProductionRegistry.inc"))
     p.set_defaults(fn=cmd_generate_registry)
     p = sub.add_parser("verify")
-    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons", "wonders"])
+    p.add_argument("--module", required=True, choices=["traits", "policies", "governments", "pantheons", "wonders",
+                 "governors"])
     p.add_argument("--db", required=True)
     p.set_defaults(fn=cmd_verify)
     p = sub.add_parser("audit-governors")

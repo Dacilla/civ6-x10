@@ -1,9 +1,19 @@
-# Governor Semantic Audit (Phase 4A.1)
+# Governor Semantic Audit (Phase 4A.1 + Phase 4B)
 
-Audit only: **no production registry rows, no module-owner bit, no controller
-or bridge SQL change.** Regenerate with
+Regenerate the audit with
 `python -m civ6x10 audit-governors --db <official-copy>`
 (`--game-root` / `CIV6_GAME_ROOT` for the mode payload).
+
+**Phase 4B (implemented):** the 54 `CERTIFIED_CANDIDATE` rows below are now
+in production. `manifests/governors.yml` is generated mechanically from this
+audit (`python -m civ6x10 generate-governor-manifest`); owner bit
+**32 = governors**; the CE writer now arms six modules
+(`s_modEnabled[6]`, `mask |= 32`) and `X10_MODULE_GOVERNORS` defaults ON.
+No `DECISION_REQUIRED`, `EXCLUDED`, direct/structural, discovery-chance,
+requirement-filter or unit-ability row entered production.
+`SULEIMAN_GOVERNOR_POINTS` stays **traits-owned** and is never re-owned by
+governors, so all 54 governor entries are governor-only (`owners == 32`) and
+the shared-definition count is unchanged at 25.
 
 ## Discovery: schema-driven, not curated
 
@@ -146,15 +156,22 @@ Registry overlap check: 1 shared definition(s): `SULEIMAN_GOVERNOR_POINTS`
 | `GOVERNOR_SANGUINE_PACT` | 4 | 32 | 0/28/4 |
 | `GOVERNOR_VOIDSINGERS` | 4 | 10 | 3/7/0 |
 
-## Ownership design (report only)
+## Ownership bit 32 — implemented in Phase 4B
 
-- `MODULE_BITS` unchanged: traits 1, policies 2, governments 4, pantheons 8,
-  wonders 16. **Next owner bit: 32 = governors** (then 64 = suzerain).
-- Phase 4B needs `MODULE_BITS["governors"]=32`, a governor manifest stream,
-  `s_modEnabled[6]` + `mask|=32` (native change -> DLL rebuild), reusing the
-  existing "transform only when ALL owning modules are enabled" rule.
+- `civ6x10.production.MODULE_BITS` now has `governors: 32`; the emitted C++
+  header comment reads `1=traits 2=policies 4=governments 8=pantheons
+  16=wonders 32=governors`.
+- `civ6x10.bridge.REGISTRY_MODULES` and the scope/inventory code cover six
+  modules.
+- CE native: `s_modEnabled[6]`, `Arm()` copies six flags, the legacy all-on
+  array holds six, `EnabledOwnerMask()` adds `mask |= 32`, and the lifecycle
+  reads `ModuleEnabled("governors", true)` inside `bool mods[6]`; only
+  **suzerain** remains in the unsupported-module warning loop.
+- Controller: `X10_MODULE_GOVERNORS` is supported and defaults ON, describing
+  the actual behaviour (combat ratings via the combat transform; appeal,
+  building yields and great-person lines integral-gated).
 
-## Proposed Phase 4B candidate list
+## Phase 4B production slice
 
 | family | effect | rows | official values |
 |---|---|---|---|
@@ -190,7 +207,28 @@ Registry overlap check: 1 shared definition(s): `SULEIMAN_GOVERNOR_POINTS`
 | PRODUCTION_PERCENT | `EFFECT_ADJUST_PROJECT_PRODUCTION` | 4 | 30 |
 | PRODUCTION_PERCENT | `EFFECT_ADJUST_SPACE_RACE_PROJECTS_PRODUCTION` | 1 | 30 |
 
-Total Phase-4B candidate rows: **54** across 54 distinct modifier IDs.
+Total Phase-4B rows: **54** across 54 distinct modifier IDs, all
+`owners=32`: 48 ADDITIVE (5 of them engine-integral/conditional) +
+6 COMBAT. At stored FLOAT32 k=7.3 that is 49 successful transforms and
+5 safe refusals; at k=10 all 54 apply.
+
+## Unresolved Governor queue (explicitly outside Phase 4B)
+
+**29** reachable modifier-side `DECISION_REQUIRED` rows and **24**
+direct/structural decision cells remain outside production. Phase 4B shipped
+only the conservative candidates — those are NOT solved by this phase:
+
+- both Laying-on-of-Hands healing rows (flat vs percent vs cap unresolved);
+- negative Sanguine Pact combat (transform undefined);
+- requirement filters (`MaxDistance`/`MinDistance` behind Serasker);
+- unit-ability side-path modifiers (direct loyalty damage, relic on death);
+- discovery chances, `MAX_GOVERNOR_APPOINTMENTS`, `GovernorsCannotAssign`,
+  `GreatWorks_MODE.RequiredGovernor`, `GovernorReplaces` (structural);
+- 18 requirement-threshold arguments and the remaining unclassified effects
+  (strategic-resource requirement, target-city spy yield percent, grant-on-
+  completion yield, tourism ScalingFactor, trade-route capacity, project
+  availability, adjacency mirror, advanced pillaging, ley-line per-resource
+  yield).
 
 ## Reproducibility
 

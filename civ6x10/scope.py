@@ -1,4 +1,4 @@
-"""RELEASE_1 scoping: registry rows reachable from traits/policies/governments/pantheons/wonders."""
+"""RELEASE_1 scoping: registry rows reachable from traits/policies/governments/pantheons/wonders/governors."""
 from __future__ import annotations
 
 import csv
@@ -23,7 +23,8 @@ def build_release1_scope(audit_data: Path) -> tuple[list[dict], dict]:
     """Return (scoped_registry_rows, stats).
 
     Scope key is (modifier_type, argument_name) present in any of the
-    official inventories (traits, policies, governments, pantheons).
+    official inventories (traits, policies, governments, pantheons, wonders,
+    governors).
     Deterministic; counts derived, never hard-coded.
     """
     trait_pairs = load_pairs(audit_data / "official_traits.csv", "modifier_type", "argument_name")
@@ -31,7 +32,9 @@ def build_release1_scope(audit_data: Path) -> tuple[list[dict], dict]:
     gov_pairs = load_pairs(audit_data / "government_effects.csv", "modifier_type", "argument_name")
     pan_pairs = load_pairs(audit_data / "pantheon_effects.csv", "modifier_type", "argument_name")
     won_pairs = load_pairs(audit_data / "wonder_effects.csv", "modifier_type", "argument_name")
-    wanted = trait_pairs | pol_pairs | gov_pairs | pan_pairs | won_pairs
+    govp_pairs = load_pairs(audit_data / "governor_effects.csv", "modifier_type", "argument_name")
+    wanted = (trait_pairs | pol_pairs | gov_pairs | pan_pairs | won_pairs
+              | govp_pairs)
 
     scoped: list[dict] = []
     total = needs = 0
@@ -45,7 +48,8 @@ def build_release1_scope(audit_data: Path) -> tuple[list[dict], dict]:
                 r["release1_source"] = "|".join(sorted(
                     s for s, ps in (("trait", trait_pairs), ("policy", pol_pairs),
                                     ("government", gov_pairs), ("pantheon", pan_pairs),
-                                    ("wonder", won_pairs))
+                                    ("wonder", won_pairs),
+                                    ("governor", govp_pairs))
                     if (r["modifier_type"].strip(), r["argument_name"].strip()) in ps))
                 scoped.append(r)
     scoped.sort(key=lambda r: (r["modifier_type"], r.get("effect_type", ""), r["argument_name"]))
@@ -60,5 +64,6 @@ def build_release1_scope(audit_data: Path) -> tuple[list[dict], dict]:
         "government_pairs": len(gov_pairs),
         "pantheon_pairs": len(pan_pairs),
         "wonder_pairs": len(won_pairs),
+        "governor_pairs": len(govp_pairs),
     }
     return scoped, stats

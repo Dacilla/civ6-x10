@@ -185,18 +185,18 @@ class TestWriteProbeRegressions(unittest.TestCase):
 
     def test_pantheon_module_bit_wired(self):
         # Pantheons are a supported module (bit 8): native slots, mask,
-        # config default ON. Wonders covered by the next test; governors /
-        # suzerain stay unsupported.
+        # config default ON. Governors is now also supported (bit 32, covered
+        # by its own test); suzerain remains the only unsupported module.
         w = self._code(self._fork("X10Write.cpp"))
         self.assertIn("s_modEnabled[3]", w)
         self.assertIn("mask |= 8", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("pantheons", true)', lc)
-        self.assertIn("bool mods[5]", lc)
+        self.assertIn("bool mods[6]", lc)
         self.assertNotIn('"pantheons", "governors"',
                          lc.replace(" ", "").replace("\n", ""))
-        self.assertIn('"governors","suzerain"',
-                      lc.replace(" ", "").replace("\n", ""))
+        # governors is supported; only suzerain stays in the warn loop
+        self.assertIn('{"suzerain"}', lc.replace(" ", "").replace("\n", ""))
         h = self._fork("X10Write.h")
         self.assertIn("Arm(double k, const bool* mods, double kErr)", h)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
@@ -205,25 +205,22 @@ class TestWriteProbeRegressions(unittest.TestCase):
                       "'Apply to founded-pantheon belief effects.',\n   'int', '1',",
                       cfg.replace("\r\n", "\n"))
         import re
-        for mod in ("GOVERNORS", "SUZERAIN"):
-            m = re.search(r"X10_MODULE_%s'.*?\n.*?'(int)', '(0|1)'" % mod,
-                          cfg, re.S)
-            self.assertIsNotNone(m, mod)
-            self.assertEqual(m.group(2), "0", mod)
+        m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'", cfg, re.S)
+        self.assertIsNotNone(m)
+        self.assertEqual(m.group(2), "0")
 
     def test_wonder_module_bit_wired(self):
         # Wonders are the fifth supported module (bit 16): native slots,
         # mask, config default ON, and no unsupported warning for wonders.
-        # Governors/Suzerain stay unsupported.
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[5]", w)
+        self.assertIn("s_modEnabled[6]", w)
         self.assertIn("mask |= 16", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("wonders", true)', lc)
-        self.assertIn("bool mods[5]", lc)
+        self.assertIn("bool mods[6]", lc)
         flat = lc.replace(" ", "").replace("\n", "")
         self.assertNotIn('"wonders","suzerain"', flat)
-        self.assertIn('"governors","suzerain"', flat)
+        self.assertIn('{"suzerain"}', flat)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
                ).read_text(encoding="utf-8")
         self.assertIn("X10_MODULE_WONDERS', 'X10: Wonders', ",
@@ -234,6 +231,38 @@ class TestWriteProbeRegressions(unittest.TestCase):
                       cfg, re.S)
         self.assertIsNotNone(m)
         self.assertEqual(m.group(2), "1")
+
+    def test_governor_module_bit_wired(self):
+        # Governors are the sixth supported module (bit 32): native slots,
+        # mask, config default ON, and no unsupported warning for governors.
+        # Suzerain remains the only unsupported module.
+        w = self._code(self._fork("X10Write.cpp"))
+        self.assertIn("s_modEnabled[6]", w)
+        self.assertIn(
+            "static bool s_modEnabled[6] = {true, true, true, true, true, true};",
+            w)
+        self.assertIn("for (int i = 0; i < 6; i++) s_modEnabled[i] = mods[i];",
+                      w)
+        self.assertIn("mask |= 32", w)
+        lc = self._fork("X10Lifecycle.cpp")
+        self.assertIn('ModuleEnabled("governors", true)', lc)
+        self.assertIn("bool mods[6]", lc)
+        flat = lc.replace(" ", "").replace("\n", "")
+        self.assertIn('ModuleEnabled("governors",true)', flat)
+        self.assertIn('{"suzerain"}', flat)
+        cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
+               ).read_text(encoding="utf-8")
+        self.assertIn("X10_MODULE_GOVERNORS', 'X10: Governors', ",
+                      cfg.replace("\r\n", "\n"))
+        self.assertNotIn("X10: Governors (unsupported)", cfg)
+        import re
+        m = re.search(r"X10_MODULE_GOVERNORS'.*?\n.*?'(int)', '(0|1)'",
+                      cfg, re.S)
+        self.assertIsNotNone(m)
+        self.assertEqual(m.group(2), "1")
+        m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'",
+                      cfg, re.S)
+        self.assertEqual(m.group(2), "0")
 
     def test_post_add_mismatch_increments_counter(self):
         # A post-Add MISMATCH must feed the aggregate mismatch counter;

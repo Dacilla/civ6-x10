@@ -13,7 +13,11 @@
   29 partial, 2 unsupported; 154 native rows = 97 modifier-backed + 57
   generated direct-table bridge helpers; see `docs/WONDER_AUDIT.md`).
   Awaiting targeted live validation.
-- Governors / Suzerains: not started (remain unsupported).
+- Governors: **CERTIFIED** (Phase 4B: 54 audited candidate rows from
+  `docs/GOVERNOR_AUDIT.md`, owner bit 32, `X10_MODULE_GOVERNORS` default ON;
+  48 ADDITIVE + 6 COMBAT, 5 engine-integral-conditional). Awaiting targeted
+  live validation.
+- Suzerains / City-states: not started (remain unsupported).
 
 Follow-up (not a blocker): the two excluded Toqui governor-pressure rows
 await stored-form re-certification via the store-lookup witness.
@@ -25,13 +29,15 @@ Status vocabulary (do not conflate):
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **870-entry certified production slice (684 Release-1 + 31 Pantheon + 155
-  Wonder/Suleiman incl. 57 bridge helpers): STATICALLY VERIFIED, awaiting targeted live test.**
+- **924-entry certified production slice (684 Release-1 + 31 Pantheon + 155
+  Wonder/Suleiman incl. 57 bridge helpers + 54 Governors): STATICALLY
+  VERIFIED, awaiting targeted live validation.**
   686 unconditional entries transform at any k; 184 conditional entries
   apply only on integral results under the FLOAT32-aware exactness rule
-  (at live stored-float k=7.3: 699 static successes of 870 — honest
-  fractional refusal, never flooring; 52 of the 184 are engine-integral
-  building-yield entries, see Phase 3F/3G). Full gate in
+  (at live stored-float k=7.3: 748 static successes of 924 — honest
+  fractional refusal, never flooring; 57 of the 189 are engine-integral
+  entries — 31 Wonder bridge helpers, 21 Release-1 player-cities rows and
+  5 Governor rows — see Phase 3F/3G/4B). Full gate in
   `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit in
   `docs/PANTHEON_AUDIT.md`, wonder audit in `docs/WONDER_AUDIT.md`.
   The Toqui loyalty pair (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) is temporarily
@@ -65,9 +71,11 @@ folder only; Workshop paths refused).
 25 modifier definitions are owned by both Policies and Governments
 (registry: 358 traits-only, 284 policies-only, 18 governments-only,
 31 pantheons-only, 154 wonders-only = 97 modifier-backed + 57 generated
-bridge helpers, 25 shared policies+governments;
-866 unique definitions, 870 entries: 686 unconditional + 184
-count-like conditional). A definition-level mutation
+bridge helpers, 54 governors-only, 25 shared policies+governments;
+920 unique definitions, 924 entries: 735 unconditional + 189
+count-like conditional). Governor entries are governor-only: the Suleiman
+governor-title definition stays traits-owned, so Governors adds no new
+shared definitions. A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
 modules are enabled.** Disabling one module never leaves its mutation active
@@ -84,8 +92,8 @@ ownership counts + shared-definition count.
   definitions stay untouched, log line
   `X10 multiplier 0: controller OFF (definitions untouched)`.
   `k=1` is the identity multiplier.
-- Pantheons / Governors / Wonders / Suzerain controls exist in the UI with
-  default OFF for Release 1. Enabling one logs
+- Governors is now a supported module (default ON, bit 32); Suzerain remains
+  the only unsupported module. Enabling an unsupported one logs
   `X10_MODULE_<name> requested ON but unsupported in this build; ignored`
   and applies nothing.
 
@@ -179,7 +187,7 @@ building the Statue of Zeus additionally proves the gameplay effect.
 
 Pass target (one population, no reload required — save/reload determinism
 already proven repeatedly):
-`writes=699 transform_refused=171 official_mismatch=0 post_add_match=699
+`writes=748 transform_refused=176 official_mismatch=0 post_add_match=748
 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`,
 plus `STAUEZEUS_ANTI_CAVALRY_PRODUCTION
 stored_after_add=365 expected=365 MATCH via=store-lookup`
@@ -193,20 +201,23 @@ handle ABSENT (not a failure — the native MATCH line is the proof).
 The Panama helper populates from the database at load (bridge SQL attaches
 it to the wonder), so its MATCH line needs no in-game action.
 
-Phase-3F/3G note (engine-integral building yields): `writes`/`post_add_match`
-must equal each other (699 = 699); `transform_refused` must be
-870 − 699 = **171**. 30 of those refusals are Wonder bridge helpers and 21 are
-Release-1 `MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE` entries — all
-refused at fractional k by design (the engine applies building-yield Amount
-integrally), never floored. `X10_PANAMA_CANAL_YIELD_GOLD` 10 → 73 is the one
-affected bridge helper that still writes.
+Phase-3F/3G/4B note (engine-integral values): `writes`/`post_add_match` must
+equal each other (748 = 748); `transform_refused` must be
+924 − 748 = **176**. 31 of those refusals are Wonder bridge helpers, 21 are
+Release-1 `MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_YIELD_CHANGE` entries and 5
+are Governor rows (appeal 1×7.3 = 7.3 plus four building yields 2×7.3 =
+14.6) — all refused at fractional k by design (the engine applies these
+Amounts integrally), never floored, ceil'd or rounded.
+`X10_PANAMA_CANAL_YIELD_GOLD` 10 → 73 is the affected bridge helper that
+does write, and at k=10 all four governor building yields write 20 and the
+appeal row writes 10.
 
 Phase-3D note (Portugal-pack load order): the 3C live run showed 748+119
 with exactly three helpers unmaterialized — all three source rows arrive
 via Portugal's gameplay update AFTER X10WonderBridge executes (proven from
 the run logs; both DLC packs were enabled). The bridge SQL now carries
 deferred guarded triggers + an `X10BridgeDiag` table; the next run must show
-`definitions_added=3267 writes=699 transform_refused=171 post_add_match=699
+`definitions_added=3267 writes=748 transform_refused=176 post_add_match=748
 mismatch=0 unreadable=0`, both MATCH witnesses (Zeus 365, Panama 73), and
 57 `[X10BridgeDiag]` lines (54 immediate + 3 trigger) with
 `bridge_materialized=57 bridge_unavailable=0`. Native DLL unchanged by 3D.
@@ -243,7 +254,7 @@ Prerequisites: production DLL built, hash matches
 
 Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
 found=true`, up to 750-eligible write sequence at live stored-float k=7.3
-(686 unconditional + 13 exact-integral conditional under the
+(735 unconditional + 13 exact-integral conditional under the
 FLOAT32-quantization-aware rule) with `stored_after_add MATCH
 via=store-lookup`, `post_add_mismatch=0`, `post_add_unreadable=0`, probe PASS
 lines, identical values across save/reload. The exit summary is fully

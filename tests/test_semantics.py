@@ -43,10 +43,30 @@ def load_manifests():
 
 def load_floor():
     import csv
-    with open(ROOT / "data" / "local" / "effect_semantics.csv",
-              encoding="utf-8", newline="") as fh:
-        return {(r["modifier_type"], r["effect_type"], r["argument_name"]): r
-                for r in csv.DictReader(fh)}
+    import yaml
+    floor = {}
+    p = ROOT / "data" / "local" / "effect_semantics.csv"
+    if p.is_file():
+        with open(p, encoding="utf-8", newline="") as fh:
+            floor = {(r["modifier_type"], r["effect_type"],
+                      r["argument_name"]): r
+                     for r in csv.DictReader(fh)}
+    # Supplemental game-mode floor (checked in), so mode-defined tuples the
+    # certification gate accepts are visible to these registry-wide checks.
+    mf = ROOT / "civ6x10" / "rules" / "mode_sem_floor.yml"
+    if mf.is_file():
+        doc = yaml.safe_load(mf.read_text(encoding="utf-8")) or {}
+        for e in doc.get("mode_sem_floor") or []:
+            key = (e["modifier_type"], e["effect_type"], e["argument"])
+            floor.setdefault(key, {
+                "modifier_type": e["modifier_type"],
+                "effect_type": e["effect_type"],
+                "argument_name": e["argument"],
+                "semantic_family": e.get("semantic_family"),
+                "confidence": e.get("confidence"),
+                "evidence": e.get("rationale"),
+            })
+    return floor
 
 
 class TestNoCertifiedHeuristics(unittest.TestCase):

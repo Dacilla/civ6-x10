@@ -1100,6 +1100,105 @@ def build_audit(db_path, game_root=None, ruleset="Expansion2",
     }
 
 
+
+
+# --------------------------------------------------------------------------
+# Phase 4B: production manifest derived from the audited candidate set
+# --------------------------------------------------------------------------
+GOVERNOR_MODULE = "governors"
+GOVERNOR_MODULE_BIT = 32
+
+# Audited families -> production transform. Combat uses the canonical combat
+# formula; everything else is the additive magnitude transform. The audited
+# family is preserved verbatim (never relabelled to satisfy the gate).
+FAMILY_TRANSFORM = {
+    "COMBAT_STRENGTH_BONUS": "canonical_combat_bonus",
+}
+
+
+def _fmt(v) -> str:
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return str(v)
+    if abs(f - round(f)) < 1e-9:
+        return str(int(round(f)))
+    s = f"{f:.2f}".rstrip("0").rstrip(".")
+    return s
+
+
+def audited_governor_candidates(audit_path) -> list[dict]:
+    """Exactly the CERTIFIED_CANDIDATE rows from the checked-in audit."""
+    import yaml
+    doc = yaml.safe_load(Path(audit_path).read_text(encoding="utf-8"))
+    out = []
+    for pt, p in (doc.get("promotions") or {}).items():
+        for r in p.get("rows", []):
+            if r.get("disposition") != "CERTIFIED_CANDIDATE":
+                continue
+            out.append({
+                "root_promotion": pt,
+                "modifier_id": r["modifier_id"],
+                "modifier_type": r.get("modifier_type"),
+                "effect_type": r.get("effect_type"),
+                "argument_name": r.get("argument"),
+                "official_value": str(r.get("value")),
+                "semantic_family": r.get("family"),
+                "engine_integral": bool(r.get("engine_integral")),
+                "root_governor": r.get("root_governor"),
+            })
+    out.sort(key=lambda r: r["modifier_id"])
+    return out
+
+
+def build_governor_manifest(audit_path, module: str = GOVERNOR_MODULE) -> dict:
+    """Production manifest rows for exactly the audited governor candidates.
+
+    Mechanically derived from `civ6x10/rules/governor_audit.yml` so the
+    production input stays reproducible without the gitignored inventory CSV.
+    Nothing is hand-maintained, no DECISION_REQUIRED / EXCLUDED / direct /
+    structural / discovery-chance / requirement-filter / unit-ability row can
+    enter, and the audited semantic family is preserved as-is.
+    """
+    cands = audited_governor_candidates(audit_path)
+    rows = []
+    for r in cands:
+        family = r["semantic_family"]
+        transform = FAMILY_TRANSFORM.get(family, "canonical_x10_multiply")
+        try:
+            gen = float(r["official_value"]) * 10.0
+            generated = _fmt(gen)
+        except (TypeError, ValueError):
+            generated = r["official_value"]
+        rows.append({
+            "object_id": r["root_promotion"],
+            "modifier_id": r["modifier_id"],
+            "modifier_type": r["modifier_type"],
+            "effect_type": r["effect_type"],
+            "argument_name": r["argument_name"],
+            "official_value": r["official_value"],
+            "semantic_family": family,
+            "transformation": transform,
+            "generated_value": generated,
+            "status": "ok",
+            "confidence": "human_certified",
+            "certification_source": "phase4a.1-governor-audit",
+            "engine_integral": r["engine_integral"],
+            "root_governor": r["root_governor"],
+            "multiplier": 10.0,
+        })
+    return {module: rows}
+
+
+def write_governor_manifest(manifest: dict, out) -> None:
+    import yaml
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with open(out, "w", encoding="utf-8") as fh:
+        yaml.safe_dump(manifest, fh, sort_keys=False, allow_unicode=True,
+                       width=120)
+
+
 # --------------------------------------------------------------------------
 # Manifest emission (machine-readable audit decisions)
 # --------------------------------------------------------------------------

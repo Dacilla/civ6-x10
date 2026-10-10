@@ -1,0 +1,79 @@
+# Supplemental semantic floor for game-mode-defined data.
+#
+# WHY THIS EXISTS
+# data/local/effect_semantics.csv is derived from the CLEAN official Gameplay
+# database, so a DynamicModifiers row that only exists inside a game-mode
+# UpdateDatabase payload has no floor tuple there. Without this file those
+# tuples hit `conflict:no-sem-floor-row` and the row fails closed, which is
+# the correct default and is unchanged for anything not listed here.
+#
+# WHAT THIS IS NOT
+# This is not a generic DLC or game-mode exemption. It lists EXACTLY the
+# (modifier_type, effect_type, argument) tuples that Phase 4A.1 certified from
+# the shipped Secret Societies payload, and nothing else. Adding a tuple here
+# is an explicit, reviewed semantic decision with provenance.
+#
+# PROVENANCE
+# Each entry records the Ethiopia modinfo UpdateDatabase action, its criteria,
+# and the SHA-256 of the shipped file that supplies the definition. Those
+# values are cross-checked against `civ6x10/rules/governor_audit.yml`
+# (`mode_files`) by tests/test_governors.py, so the supplemental floor cannot
+# drift from the audited mode payload it claims to describe.
+#
+# Semantics recorded here mirror the audited Phase 4A.1 dispositions. The
+# transform decision still comes from certified_category_families /
+# combat_effects / engine_integral_effects exactly as for base data - this
+# file only supplies the missing floor row, never a certification bypass.
+mode_sem_floor:
+  # Owls of Minerva level-4 treasury interest (Percent=3).
+  # Supplied by DLC/Ethiopia/Data/Ethiopia_SecretSocieties_MODE.xml via
+  # UpdateDatabase id=EthiopiaGameplayXP2_MODE (criteria=Ethiopia_Mode_Expansion2).
+  - modifier_type: MODIFIER_PLAYER_ADJUST_GOLD_INTEREST_PERCENT
+    effect_type: EFFECT_ADJUST_PLAYER_GOLD_INTEREST_PERCENT
+    argument: Percent
+    semantic_family: MAGNITUDE_UNCLASSIFIED
+    confidence: HUMAN_CERTIFIED
+    rationale: >-
+      one-off percent modifier on treasury interest (Owls of Minerva +3%).
+      Percent is a percent-of-balance gain applied per turn, so the additive
+      percent transform (x10 -> +30%) is the semantic equivalent; no
+      compounding of the interest application itself is implied because the
+      modifier scales the interest RATE, not the treasury. Floor family is
+      unclassified because the clean DB has no row; certified through
+      certified_category_families PERCENT_BONUS (Phase 4A.1 audit).
+    provenance:
+      file: DLC/Ethiopia/Data/Ethiopia_SecretSocieties_MODE.xml
+      action: EthiopiaGameplayXP2_MODE
+      criteria: Ethiopia_Mode_Expansion2
+      sha256: 0199ba145c0ad41d777fd1d78e74b9413d761a0d25f4336b6ac868dfbb5124ec
+
+  # Hermetic Order ley-line great-person yields (Amount=1), including the
+  # conditional Gran Colombia/Maya Comandante General overlay row.
+  # Supplied by DLC/Ethiopia/Data/Ethiopia_SecretSocieties_MODE.xml plus the
+  # conditional DLC/Ethiopia/Data/Ethiopia_SecretSocieties_GranColombia_Maya_MODE.xml
+  # (UpdateDatabase id=EthiopiaGranColombiaMayaGameplay_MODE,
+  #  criteria=Ethiopia_Mode_Expansion2_GranColombia_Maya).
+  - modifier_type: MODIFIER_PLAYER_ADJUST_GREAT_PERSON_RESOURCE_YIELD_CHANGE
+    effect_type: EFFECT_ADJUST_PLAYER_YIELD_CHANGE_PER_GREAT_PERSON_CLASS_ON_RESOURCE
+    argument: Amount
+    semantic_family: MAGNITUDE_UNCLASSIFIED
+    confidence: HUMAN_CERTIFIED
+    rationale: >-
+      flat yield added per great person of a class while that class sits on a
+      ley-line resource (Hermetic Order +1 per great work owner). The Amount is
+      a plain per-source additive magnitude - scaling it to k per source is the
+      semantic equivalent of having k times as many contributing great works.
+      The YieldType / GreatPersonClassType / ResourceType arguments are
+      selectors and are never scaled. Floor family is unclassified because the
+      clean DB has no row; certified through certified_category_families
+      FLAT_YIELD (Phase 4A.1 audit).
+    provenance:
+      file: DLC/Ethiopia/Data/Ethiopia_SecretSocieties_MODE.xml
+      action: EthiopiaGameplayXP2_MODE
+      criteria: Ethiopia_Mode_Expansion2
+      sha256: 0199ba145c0ad41d777fd1d78e74b9413d761a0d25f4336b6ac868dfbb5124ec
+    extra_provenance:
+      - file: DLC/Ethiopia/Data/Ethiopia_SecretSocieties_GranColombia_Maya_MODE.xml
+        action: EthiopiaGranColombiaMayaGameplay_MODE
+        criteria: Ethiopia_Mode_Expansion2_GranColombia_Maya
+        sha256: 601c6e524637c1cedee3f7e9121cbb0ad6f836db9a6291ceca5774d42d6287c0

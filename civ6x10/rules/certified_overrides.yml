@@ -33,6 +33,7 @@ certified_category_families:
   RANGE: {kind: ADDITIVE, rationale: "ranges count whole tiles; conditional on integral results (family-implied count-like)"}
   RADIUS: {kind: ADDITIVE, rationale: "radii count whole tiles; conditional on integral results (family-implied count-like)"}
   GOVERNOR_TITLES: {kind: ADDITIVE, rationale: "governor titles are whole titles (narrow Delta-on-GOVERNOR_POINTS rule); conditional on integral results"}
+  APPEAL: {kind: ADDITIVE, rationale: "appeal rating is a whole-level count in the UI; the value scales additively but the engine represents it integrally (pair with an engine_integral_effects entry), so fractional results must refuse rather than round"}
 
 # EffectTypes whose sem-floor family is MIXED_VALUE_DOMAIN (argument takes both
 # scalar numerics and vector values across definitions) but whose SCALAR
@@ -62,6 +63,18 @@ combat_effects:
     rationale: "corps/army strength value (Land Corps/Armies +5); combat-strength points"
   - effect: EFFECT_ADJUST_UNIT_DIPLO_VISIBILITY_COMBAT_MODIFIER
     rationale: "visibility-derived combat-strength modifier (+3); combat-strength points"
+  - effect: EFFECT_ADJUST_CITY_FRIENDLY_COMBAT_BONUS
+    rationale: "friendly-unit combat-strength points inside the city (Head Falconer +5); combat-strength points, canonical b_k transform"
+  - effect: EFFECT_ADJUST_UNIT_AGAINST_DISTRICT_COMBAT_BONUS
+    rationale: "combat-strength points against districts (Serasker +10); the 10-tile requirement is a filter and is not scaled"
+  - effect: EFFECT_ADJUST_CITY_RELIGIOUS_COMBAT_BONUS
+    rationale: "theological-combat strength points (Grand Inquisitor +10); combat-strength points, canonical b_k transform"
+  - effect: EFFECT_ADJUST_CITY_AIR_DEFENSE_BONUS
+    rationale: "city air-defense rating (Air Defense Initiative +25); air defense is a combat-equivalent strength rating"
+  - effect: EFFECT_ADJUST_CITY_COMBAT_BONUS
+    rationale: "city combat-strength points (Garrison Commander +5); combat-strength points, canonical b_k transform"
+  - effect: EFFECT_ADJUST_CITY_INNER_DEFENSE
+    rationale: "city inner-defense rating (Redoubt +5); defense rating is a combat-equivalent strength value"
 
 # Discount-effect audit (one-time effect-level review). Percent-suffixed
 # effects and engine-described percent args are strong candidates, but every
@@ -245,3 +258,7 @@ engine_integral_effects:
     effect: EFFECT_ADJUST_BUILDING_YIELD_CHANGE
     argument: Amount
     rationale: "same engine effect (DynamicModifiers maps this carrier to EFFECT_ADJUST_BUILDING_YIELD_CHANGE, so the integral application applies identically); Phase 3G extends the gate to the 21 live-validated Release-1 rows (8 TRAIT_IKANDA_*, 10 THIRDALTERNATIVE_*, 3 MILITARYRESEARCH_*; official 1/2/4) that were deliberately left ungated in Phase 3F"
+  - modifier_type: MODIFIER_GOVERNOR_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL
+    effect: EFFECT_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL_GOVERNOR
+    argument: Amount
+    rationale: "governor appeal rating (Forestry Management) is a whole appeal level: the engine represents appeal integrally, so 1 x 7.3 must refuse and keep vanilla 1 while 1 x 10 writes 10 (Phase 4B); appeal is a left-anchored whole-level count, not a continuous yield"

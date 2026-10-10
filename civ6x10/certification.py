@@ -57,6 +57,61 @@ def load_rules(path: str | Path = RULES_PATH) -> dict:
     return yaml.safe_load(open(path, encoding="utf-8"))
 
 
+MODE_FLOOR_PATH = (Path(__file__).resolve().parent / "rules"
+                   / "mode_sem_floor.yml")
+
+
+@lru_cache(maxsize=1)
+def load_mode_floor(path: str | Path = MODE_FLOOR_PATH) -> dict:
+    """Supplemental semantic floor for game-mode-defined data.
+
+    `effect_semantics.csv` is derived from the clean official Gameplay
+    database, so DynamicModifiers that only exist inside a game-mode
+    UpdateDatabase payload have no floor row there. Without this file those
+    tuples hit `conflict:no-sem-floor-row` and fail closed (correct).
+
+    This file is deliberately narrow: it lists EXACTLY the audited tuples
+    that Phase 4A.1 certified from the shipped mode payload, each carrying
+    the modinfo action/file/SHA-256 provenance. It is NOT a generic DLC or
+    game-mode exemption - an unlisted tuple still fails closed.
+    """
+    import yaml
+    if not Path(path).is_file():
+        return {}
+    doc = yaml.safe_load(open(path, encoding="utf-8")) or {}
+    out = {}
+    for e in doc.get("mode_sem_floor") or []:
+        key = ((e.get("modifier_type") or "").strip(),
+               (e.get("effect_type") or "").strip(),
+               (e.get("argument") or "").strip())
+        out[key] = e
+    return out
+
+
+def mode_floor_for(modifier_type: str, effect_type: str, argument: str,
+                   path: str | Path = MODE_FLOOR_PATH) -> dict | None:
+    return load_mode_floor(path).get(
+        (modifier_type.strip(), effect_type.strip(), argument.strip()))
+
+
+def _engine_integral_match(modifier_type: str, effect_type: str,
+                           argument_name: str, rules: dict) -> dict | None:
+    """Matching engine-integral override entry, if any.
+
+    Scoped by (modifier_type, effect_type, argument_name) so a curated entry
+    cannot silently widen across every carrier of an effect.
+    """
+    for entry in rules.get("engine_integral_effects") or []:
+        if entry.get("effect") != effect_type:
+            continue
+        if entry.get("modifier_type") and entry["modifier_type"] != modifier_type:
+            continue
+        if entry.get("argument") and entry["argument"] != argument_name:
+            continue
+        return entry
+    return None
+
+
 def _count_like(effect_type: str, argument_name: str, manifest_family: str,
                 rules: dict) -> bool:
     if argument_name in (rules.get("count_like_args") or []):
@@ -114,11 +169,21 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
                 "source": "curated-effect:excluded-effect:" + et}
 
     if sem_row is None:
-        return {**base, "resolution": "conflict:no-sem-floor-row",
-                "source": "none"}
+        # Game-mode-defined data: the clean-DB floor has no row. Consult the
+        # narrow audited supplemental floor (provenance-checked) before
+        # failing closed. Unlisted tuples still fail closed.
+        mode = mode_floor_for(mt, et, arg)
+        if mode is None:
+            return {**base, "resolution": "conflict:no-sem-floor-row",
+                    "source": "none"}
+        sem_row = {"semantic_family": mode.get("semantic_family"),
+                   "confidence": mode.get("confidence"),
+                   "evidence": mode.get("rationale"),
+                   "mode_provenance": mode.get("provenance")}
 
     sf = sem_row["semantic_family"]
     floor_conf = (sem_row.get("confidence") or "").strip()
+    mode_provenance = sem_row.get("mode_provenance")
     proven = floor_conf in ("FORMULA_DERIVED", "HUMAN_CERTIFIED", "CERTIFIED")
     count_like = _count_like(et, arg, proposed, rules)
 
@@ -168,13 +233,28 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
                 "source": "none"}
 
     if sf == "MAGNITUDE_UNCLASSIFIED":
-        # Discount/combat/probability claims need floor agreement, never
-        # heuristics alone.
-        if proposed in ("DISCOUNT", "COMBAT_STRENGTH_BONUS", "PROBABILITY"):
+        # Engine-representability override (Phase 3F/3G/4B): the effect
+        # applies its magnitude integrally, so the runtime integral gate is
+        # mandatory. Semantics stay as allowlisted below.
+        eng = _engine_integral_match(mt, et, arg, rules)
+        if eng is not None:
+            category = (rules.get("certified_category_families") or {})
+            if proposed in category:
+                fam_kind = category[proposed]["kind"]
+                return {**base, "certified": True,
+                        "kind": fam_kind,
+                        "count_like": True,
+                        "source": "curated-effect:engine-integral:" + et,
+                        "resolution": "certified"}
             return {**base,
-                    "resolution": f"conflict:uncertified-{proposed}-claim",
+                    "resolution": "conflict:engine-integral-uncertified-family:"
+                                  + proposed,
                     "source": "none"}
-        # Curated combat-point effects (floor is silent here).
+        # Curated combat-point effects are checked FIRST: an explicitly
+        # curated combat effect is positive evidence, so a proposed
+        # COMBAT_STRENGTH_BONUS family must not be rejected as a heuristic
+        # claim before the curated table is consulted. Uncurated heuristic
+        # combat/discount/probability claims still fail closed below.
         combat = {e["effect"]: e.get("rationale", "")
                   for e in rules.get("combat_effects") or []}
         if et in combat and arg == "Amount":
@@ -182,6 +262,12 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
                     "count_like": False,
                     "source": "curated-effect:combat-points:" + et,
                     "resolution": "certified"}
+        # Discount/combat/probability claims need floor agreement, never
+        # heuristics alone.
+        if proposed in ("DISCOUNT", "COMBAT_STRENGTH_BONUS", "PROBABILITY"):
+            return {**base,
+                    "resolution": f"conflict:uncertified-{proposed}-claim",
+                    "source": "none"}
         # Curated flat-cost effects (floor says discount; audit says flat).
         flat = {e["effect"] for e in rules.get("discount_effects") or []
                 if e.get("semantics") == "FLAT_COST_REDUCTION"}
