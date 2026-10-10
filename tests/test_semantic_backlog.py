@@ -226,16 +226,19 @@ class TestProductionUnchanged(unittest.TestCase):
 
     def test_manifests_unchanged(self):
         import hashlib
+        # text-mode read normalizes CRLF/LF: the digest is platform
+        # independent (raw bytes differ between Windows and CI checkouts)
         for name, want in (
                 ("governors.yml",
-                 "c864361c744ee459aa2e13acb279dc2ff44597acc67d9608bcd1f7ef7428b467"),
+                 "95587a42c7ba849a8ddff79428f32e001a036aaf6c4380fe2cfa59384a74d847"),
                 ("suzerain.yml",
-                 "d4d2e007d8a97793b50b8e4228c8b639bd41b385039de8f6e5bb065ad6234957")):
+                 "5f72f4fcdc739cdcfb9b1cb49e2d3df87d487db4aaabbd2ed7a1ceffc84e8182")):
             p = ROOT / "manifests" / name
             if not p.is_file():
                 self.skipTest(f"local manifest {name} unavailable")
-            self.assertEqual(hashlib.sha256(p.read_bytes()).hexdigest(),
-                             want, name)
+            self.assertEqual(hashlib.sha256(
+                p.read_text(encoding="utf-8").encode("utf-8")).hexdigest(),
+                want, name)
 
     def test_bits_modules_and_dll_untouched(self):
         from civ6x10.production import MODULE_BITS
