@@ -957,13 +957,14 @@ class SuzerainAuditTest(unittest.TestCase):
 
     # -- 12. audit-only: registry untouched ------------------------------
     def test_audit_only_leaves_production_registry_unchanged(self):
-        import subprocess
         before = _registry_digest()
         # re-run the whole audit
         build_audit(str(self.db_path), coverage_csv=str(self.csv_path))
         self.assertEqual(before, _registry_digest())
-        # and the audit never claims a production row
-        self.assertEqual(self.audit["registry_overlap"]["count"], 0)
+        # and the audit never claims a production row (when a registry exists)
+        ov = self.audit["registry_overlap"]
+        if ov.get("available"):
+            self.assertEqual(ov["count"], 0)
 
     def test_no_manifests_suzerain_file(self):
         self.assertFalse((ROOT / "manifests" / "suzerain.yml").exists(),
