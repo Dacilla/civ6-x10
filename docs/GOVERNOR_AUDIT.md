@@ -6,7 +6,11 @@ Regenerate the audit with
 
 **Phase 4B (implemented):** the 54 `CERTIFIED_CANDIDATE` rows below are now
 in production. `manifests/governors.yml` is generated mechanically from this
-audit (`python -m civ6x10 generate-governor-manifest`); owner bit
+audit (`python -m civ6x10 generate-governor-manifest`) and is checked in
+**by explicit request**; note this departs from the earlier decision that
+`manifests/*.yml` are local-only derived data (see `docs/PRODUCTION_RELEASE.md`,
+"Public-data hygiene"), so treat that manifest as a reviewed exception
+rather than a policy change. Owner bit
 **32 = governors**; the CE writer now arms six modules
 (`s_modEnabled[6]`, `mask |= 32`) and `X10_MODULE_GOVERNORS` defaults ON.
 No `DECISION_REQUIRED`, `EXCLUDED`, direct/structural, discovery-chance,
