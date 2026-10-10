@@ -216,12 +216,14 @@ conqueror who never earned suzerainty and the city-state itself. That
 contradicts module ownership (the toggle must scope the benefit), and no
 hybrid subset fixes conquest leakage (attached modifiers are global too).
 
-**Recommendation: A — narrow ownership.** The unlock remains a capability;
-intrinsic improvement data stays vanilla. The Suzerain bonus is the 47
-graph magnitudes. Option B (expanded) would need an explicit human override
-accepting conquest leakage; it is NOT taken here. All 58 cells stay
-`NEEDS_PRODUCT_DECISION` pending that human call — this report recommends
-closing them as excluded-under-A when the decision lands.
+**Recommendation: A — narrow ownership (ADOPTED for Phase-6B planning).**
+The unlock remains a capability; intrinsic improvement data stays vanilla.
+The Suzerain bonus is the 47 graph magnitudes. Option B (expanded) would
+need an explicit human override accepting conquest leakage; it is NOT
+taken here. All 58 cells stay `NEEDS_PRODUCT_DECISION` pending that human
+call — this report recommends closing them as excluded-under-A when the
+decision lands. Captured/pre-existing improvements must not become globally
+stronger merely because the X10 Suzerain module is enabled.
 
 ## 12. TransitionStrength verdict: RESOLVED_EXCLUDED
 
@@ -240,15 +242,21 @@ bonus. Structural; never scaled to maximize coverage.
 - Owls spy `Percent=50` ×4 → `RESOLVED_CANDIDATE` (Wu identical-tuple
   precedent; 365.0 at k=7.3, 500.0 at k=10).
 
-## 14. Proposed Phase-6B candidate list (32 rows)
+## 14. Proposed Phase-6B candidate list (32 occurrences → 31 unique pairs)
 
 10 unconditional (`owls×4` PERCENT_BONUS, Citadel/Ayutthaya PERCENT_BONUS,
-Valletta×3 PERCENT_DISCOUNT, Lahore COMBAT) + 22 count-like (charges ×4,
-Patron Saint, Defense Logistics, Embrasure, Khass, Informants, Industrialist,
-Cardiff ×3, Hattusa ×7, Zanzibar ×2 — all `FLAT_AMOUNT`). Full per-row
-provenance, gate evidence, and k-expectations in `semantic_backlog.yml`
-(`proposed_candidates`). At k=7.3 the 22 count-like rows all refuse (every
-official is 1/2/3); at k=10 all apply (10/20/30/20/10/20/10/20/10 by row).
+Valletta×3 PERCENT_DISCOUNT, Lahore COMBAT) + 22 count-like occurrences
+(charges ×4, Patron Saint, Defense Logistics, Embrasure, Khass, Informants,
+Industrialist, Cardiff ×3, Hattusa ×7, Zanzibar ×2 — all `FLAT_AMOUNT`).
+The vampire +1 build occurs under two promotions but mutates one definition,
+so production sees **31 unique pairs** (14 Governor / 17 Suzerain; 10
+non-count-like / 21 count-like; ADDITIVE 27 / DISCOUNT 3 / COMBAT 1).
+Full per-row provenance, gate evidence, and k-expectations in
+`semantic_backlog.yml` (`proposed_candidates` + `proposed_production_pairs`).
+At k=7.3 the 21 unique count-like pairs all refuse (every official is 1/2/3);
+at k=10 all apply. The three intentional existing reclassifications
+(Corporate Libertarianism, Coal, Iron) move writes→refusals at k=7.3 and
+must be live-validated explicitly in 6B.
 
 ## 15. No production changes (verified by test)
 

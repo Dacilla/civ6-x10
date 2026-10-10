@@ -42,6 +42,16 @@ counts:
   imported_suzerain_main: 21
   imported_suzerain_side: 68
   imported_total: 142
+production_pair_counts:
+  kinds:
+    ADDITIVE: 27
+    COMBAT: 1
+    DISCOUNT: 3
+  unique_count_like: 21
+  unique_governor_pairs: 14
+  unique_non_count_like: 10
+  unique_production_pairs: 31
+  unique_suzerain_pairs: 17
 proposed_candidates:
 - argument: Amount
   count_like: false
@@ -539,6 +549,34 @@ proposed_candidates:
   source: suzerain
   transform: canonical_x10_multiply
   value: '1'
+proposed_existing_reclassifications:
+  note: PROPOSAL ONLY — intentional semantic correction, not a workaround to evade. Completeness is verified mechanically
+    by test (no other current-production row changes).
+  rows:
+  - argument: Amount
+    current_count_like: false
+    effect_type: EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION
+    live_k73_today: 7.3 (stored as float)
+    modifier_id: CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION
+    official: '1'
+    proposed_count_like: true
+    via_pattern: EXTRA_ACCUMULATION
+  - argument: Amount
+    current_count_like: false
+    effect_type: EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE
+    live_k73_today: 14.6 (stored as float)
+    modifier_id: TRAIT_ACCUMULATE_MORE_COAL
+    official: '2'
+    proposed_count_like: true
+    via_pattern: EXTRA_ACCUMULATION
+  - argument: Amount
+    current_count_like: false
+    effect_type: EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE
+    live_k73_today: 14.6 (stored as float)
+    modifier_id: TRAIT_ACCUMULATE_MORE_IRON
+    official: '2'
+    proposed_count_like: true
+    via_pattern: EXTRA_ACCUMULATION
 proposed_gate_evidence:
   count_like_effects_add:
   - blast_radius: EFFECT_ADJUST_CITY_RELIGION_EXTRA_PROMOTIONS only
@@ -573,6 +611,475 @@ proposed_gate_evidence:
       mixed overrides
   note: PROPOSAL ONLY — not applied to certified_overrides.yml. Each addition must land atomically with its rows, or the rows
     would certify with the wrong shape (proven by gate dry run).
+proposed_production_pairs:
+- argument: BuildingProductionPercent
+  count_like: false
+  effect_type: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
+  family: PERCENT_BONUS
+  kind: ADDITIVE
+  modifier_id: CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS
+  modifier_type: MODIFIER_SINGLE_CITY_GRANT_YIELD_PER_BUILDING_COST
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_CARDINAL
+    - GOVERNOR_PROMOTION_CARDINAL_CITADEL_OF_GOD
+  transform: canonical_x10_multiply
+  value: '25'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_CITY_RELIGION_EXTRA_PROMOTIONS
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: CARDINAL_PATRON_SAINT_PROMOTION
+  modifier_type: MODIFIER_SINGLE_CITY_RELIGION_EXTRA_PROMOTIONS
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_CARDINAL
+    - GOVERNOR_PROMOTION_CARDINAL_PATRON_SAINT
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_CITY_ATTACKS_PER_TURN
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: CITY_DEFENDER_ADJUST_ATTACKS_PER_TURN
+  modifier_type: MODIFIER_CITY_ADJUST_ATTACKS_PER_TURN
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_DEFENDER
+    - GOVERNOR_PROMOTION_EMBRASURE
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: DEFENSE_LOGISTICS_BONUS_STRATEGICS
+  modifier_type: MODIFIER_SINGLE_CITY_ADJUST_EXTRA_ACCUMULATION
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_DEFENDER
+    - GOVERNOR_PROMOTION_DEFENSE_LOGISTICS
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Percent
+  count_like: false
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  family: PERCENT_BONUS
+  kind: ADDITIVE
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_CULTURE
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
+  transform: canonical_x10_multiply
+  value: '50'
+- argument: Percent
+  count_like: false
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  family: PERCENT_BONUS
+  kind: ADDITIVE
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_FAITH
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
+  transform: canonical_x10_multiply
+  value: '50'
+- argument: Percent
+  count_like: false
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  family: PERCENT_BONUS
+  kind: ADDITIVE
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_GOLD
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
+  transform: canonical_x10_multiply
+  value: '50'
+- argument: Percent
+  count_like: false
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  family: PERCENT_BONUS
+  kind: ADDITIVE
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_SCIENCE
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
+  transform: canonical_x10_multiply
+  value: '50'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_UNIT_BUILD_CHARGES
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: GUILDMASTER_ADDITIONAL_BUILDER_CHARGES_UNIT_MODIFIER
+  modifier_type: MODIFIER_SINGLE_CITY_BUILDER_CHARGES
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_BUILDER
+    - GOVERNOR_PROMOTION_BUILDER_GUILDMASTER
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_RESOURCE_POWER_PROVIDED_GOVERNOR
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: INDUSTRIALIST_RESOURCE_POWER_PROVIDED
+  modifier_type: MODIFIER_GOVERNOR_ADJUST_RESOURCE_POWER_PROVIDED_GOVERNOR
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_RESOURCE_MANAGER
+    - GOVERNOR_PROMOTION_RESOURCE_MANAGER_INDUSTRIALIST
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_GOVERNOR_ALLIANCE_POINTS
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: KHASS_ODA_BASHI_ADJUST_ALLIANCE_POINTS
+  modifier_type: MODIFIER_GOVERNOR_ADJUST_ALLIANCE_POINTS
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_IBRAHIM
+    - GOVERNOR_PROMOTION_KHASS_ODA_BASHI
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_CITY_SPY_BONUS
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: LOCAL_INFORMANTS_SPY_DEFENSE_BONUS
+  modifier_type: MODIFIER_CITY_ADJUST_SPY_BONUS
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_AMBASSADOR
+    - GOVERNOR_PROMOTION_LOCAL_INFORMANTS
+  transform: canonical_x10_multiply
+  value: '3'
+- argument: BuildingProductionPercent
+  count_like: false
+  effect_type: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
+  family: PERCENT_BONUS
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING
+  modifier_type: MODIFIER_PLAYER_CITIES_GRANT_YIELD_PER_BUILDING_COST
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_AYUTTHAYA
+    - MINOR_CIV_AYUTTHAYA_TRAIT via MINOR_CIV_AYUTTHAYA_UNIQUE_INFLUENCE_BONUS
+  transform: canonical_x10_multiply
+  value: '10'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_CITY_FREE_POWER
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_CARDIFF_POWER_LIGHTHOUSE
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_FREE_POWER
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_CARDIFF
+    - MINOR_CIV_CARDIFF_TRAIT via MINOR_CIV_CARDIFF_UNIQUE_INFLUENCE_POWER_LIGHTHOUSE
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_CITY_FREE_POWER
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_CARDIFF_POWER_SEAPORT
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_FREE_POWER
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_CARDIFF
+    - MINOR_CIV_CARDIFF_TRAIT via MINOR_CIV_CARDIFF_UNIQUE_INFLUENCE_POWER_SEAPORT
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_CITY_FREE_POWER
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_CARDIFF_POWER_SHIPYARD
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_FREE_POWER
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_CARDIFF
+    - MINOR_CIV_CARDIFF_TRAIT via MINOR_CIV_CARDIFF_UNIQUE_INFLUENCE_POWER_SHIPYARD
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_HATTUSA_ALUMINUM_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_ALUMINUM_RESOURCE_XP2
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_HATTUSA_COAL_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_COAL_RESOURCE_XP2
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_HATTUSA_HORSES_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_HORSES_RESOURCE_XP2
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_HATTUSA_IRON_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_IRON_RESOURCE_XP2
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_HATTUSA_NITER_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_NITER_RESOURCE_XP2
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_HATTUSA_OIL_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_OIL_RESOURCE_XP2
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_HATTUSA_URANIUM_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_URANIUM_RESOURCE_XP2
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
+  family: PERCENT_DISCOUNT
+  kind: DISCOUNT
+  modifier_id: MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_CASTLE_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_PURCHASE_COST
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_VALLETTA
+    - MINOR_CIV_VALLETTA_TRAIT via MINOR_CIV_VALLETTA_UNIQUE_INFLUENCE_PURCHASE_CHEAPER_CASTLE_BONUS
+  transform: compound_discount
+  value: '50'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
+  family: PERCENT_DISCOUNT
+  kind: DISCOUNT
+  modifier_id: MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_STAR_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_PURCHASE_COST
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_VALLETTA
+    - MINOR_CIV_VALLETTA_TRAIT via MINOR_CIV_VALLETTA_UNIQUE_INFLUENCE_PURCHASE_CHEAPER_STAR_BONUS
+  transform: compound_discount
+  value: '50'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
+  family: PERCENT_DISCOUNT
+  kind: DISCOUNT
+  modifier_id: MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_WALLS_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_PURCHASE_COST
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_VALLETTA
+    - MINOR_CIV_VALLETTA_TRAIT via MINOR_CIV_VALLETTA_UNIQUE_INFLUENCE_PURCHASE_CHEAPER_WALLS_BONUS
+  transform: compound_discount
+  value: '50'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_ZANZIBAR_CINNAMON_RESOURCE_BONUS
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_ZANZIBAR
+    - MINOR_CIV_ZANZIBAR_TRAIT via MINOR_CIV_ZANZIBAR_UNIQUE_INFLUENCE_CINNAMON_RESOURCE_BONUS
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_ZANZIBAR_CLOVES_RESOURCE_BONUS
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_ZANZIBAR
+    - MINOR_CIV_ZANZIBAR_TRAIT via MINOR_CIV_ZANZIBAR_UNIQUE_INFLUENCE_CLOVES_RESOURCE_BONUS
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER
+  family: COMBAT_STRENGTH_BONUS
+  kind: COMBAT
+  modifier_id: NIHANG_SUZERAIN_COMBAT_BONUS
+  modifier_type: MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - UNIT_LAHORE_NIHANG
+    - PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS
+  transform: canonical_combat_bonus
+  value: '10'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_UNIT_BUILD_CHARGES
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD
+  modifier_type: MODIFIER_PLAYER_UNITS_ADJUST_BUILDER_CHARGES
+  occurrences: 2
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_SANGUINE_PACT
+    - GOVERNOR_PROMOTION_SANGUINE_PACT_3
+  - - governors
+    - GOVERNOR_SANGUINE_PACT
+    - GOVERNOR_PROMOTION_SANGUINE_PACT_4
+  transform: canonical_x10_multiply
+  value: '1'
+- argument: Amount
+  count_like: true
+  effect_type: EFFECT_ADJUST_UNIT_BUILD_CHARGES
+  family: FLAT_AMOUNT
+  kind: ADDITIVE
+  modifier_id: SECRET_SOCIETY_GRANT_TWO_VAMPIRE_BUILDS
+  modifier_type: MODIFIER_PLAYER_UNITS_ADJUST_BUILDER_CHARGES
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_SANGUINE_PACT
+    - GOVERNOR_PROMOTION_SANGUINE_PACT_2
+  transform: canonical_x10_multiply
+  value: '2'
 rows:
 - argument: Amount
   audit_disposition: DECISION_REQUIRED

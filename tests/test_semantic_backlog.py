@@ -257,5 +257,277 @@ class TestProductionUnchanged(unittest.TestCase):
                              "b6862b28d86aa67d20cd6ffecd1588cfc2e528dbb75d484cb8c4e52a387fb20d")
 
 
+
+
+def _production_pairs(backlog):
+    return backlog["proposed_production_pairs"]
+
+
+class TestProductionProjection(unittest.TestCase):
+    """6A.2 normalization: occurrences vs unique production pairs."""
+
+    def test_no_duplicate_production_pair(self):
+        b = backlog_or_skip()
+        pairs = _production_pairs(b)
+        keys = [(p["modifier_id"], p["argument"]) for p in pairs]
+        self.assertEqual(len(keys), len(set(keys)))
+        self.assertEqual(len(keys), 31)
+
+    def test_projection_counts(self):
+        b = backlog_or_skip()
+        c = b["production_pair_counts"]
+        self.assertEqual(c["unique_production_pairs"], 31)
+        self.assertEqual(c["unique_governor_pairs"], 14)
+        self.assertEqual(c["unique_suzerain_pairs"], 17)
+        self.assertEqual(c["unique_non_count_like"], 10)
+        self.assertEqual(c["unique_count_like"], 21)
+        self.assertEqual(c["kinds"], {"ADDITIVE": 27, "COMBAT": 1,
+                                      "DISCOUNT": 3})
+
+    def test_vampire_duplicate_provenance_retained(self):
+        b = backlog_or_skip()
+        pairs = {(p["modifier_id"], p["argument"]): p
+                 for p in _production_pairs(b)}
+        key = ("SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD", "Amount")
+        self.assertIn(key, pairs)
+        p = pairs[key]
+        # one production pair, both promotion provenances aggregated
+        self.assertEqual(p["occurrences"], 2)
+        promos = {s[2] for s in p["sources"]}
+        self.assertIn("GOVERNOR_PROMOTION_SANGUINE_PACT_3", promos)
+        self.assertIn("GOVERNOR_PROMOTION_SANGUINE_PACT_4", promos)
+        self.assertEqual(p["count_like"], True)
+        # source occurrences are NOT collapsed: the audit trail keeps both
+        occ = [r for r in b["rows"]
+               if (r["modifier_id"], r["argument"]) == key]
+        self.assertEqual(len(occ), 2)
+        self.assertEqual(
+            {r["resolution"] for r in occ},
+            {RESOLVED_CANDIDATE_COUNT_LIKE})
+
+    def test_count_like_occurrences_stay_22(self):
+        # the imported-resolution count is not edited to match the unique
+        # production count; the distinction is documented, not erased
+        b = backlog_or_skip()
+        self.assertEqual(b["by_resolution"][RESOLVED_CANDIDATE_COUNT_LIKE],
+                         22)
+
+
+def _registry_entries_or_skip():
+    import re
+    p = ROOT / "build" / "X10ProductionRegistry.inc"
+    if not p.is_file():
+        raise unittest.SkipTest("local production registry unavailable")
+    out = []
+    for m in re.finditer(
+            r'\{"([^"]+)", "([^"]+)", "([^"]+)", (\d), (\d), (\d+)\},',
+            p.read_text(encoding="utf-8")):
+        out.append({"modifier_id": m.group(1), "argument": m.group(2),
+                    "official": m.group(3), "kind": int(m.group(4)),
+                    "count_like": bool(int(m.group(5))),
+                    "owners": int(m.group(6))})
+    return out
+
+
+def _manifest_effect_types():
+    from civ6x10.bridge import collect_registry_rows
+    try:
+        rows = collect_registry_rows(ROOT)
+    except FileNotFoundError:
+        raise unittest.SkipTest("local-only registry inputs unavailable")
+    return {(r["modifier_id"], r["argument_name"]): r.get("effect_type")
+            for r in rows}
+
+
+class TestBlastRadius(unittest.TestCase):
+    """EXTRA_ACCUMULATION pattern applied to the CURRENT registry."""
+
+    def test_complete_blast_radius(self):
+        entries = _registry_entries_or_skip()
+        effects = _manifest_effect_types()
+        patterns = ["RELIGION_EXTRA_PROMOTIONS", "EXTRA_ACCUMULATION",
+                    "ATTACKS_PER_TURN", "RESOURCE_POWER_PROVIDED",
+                    "FREE_RESOURCE_IMPORT"]
+        changed = []
+        for e in entries:
+            et = effects.get((e["modifier_id"], e["argument"]), "")
+            if any(p in (et or "") for p in patterns) and not e["count_like"]:
+                changed.append((e["modifier_id"], e["argument"], et))
+        # mechanically derived complete set: exactly the three recorded rows
+        self.assertEqual(
+            sorted(m for m, _, _ in changed),
+            ["CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION",
+             "TRAIT_ACCUMULATE_MORE_COAL",
+             "TRAIT_ACCUMULATE_MORE_IRON"])
+        b = backlog_or_skip()
+        recorded = {(r["modifier_id"], r["argument"]) for r in
+                    b["proposed_existing_reclassifications"]["rows"]}
+        self.assertEqual(recorded,
+                         {(m, a) for m, a, _ in changed})
+
+
+class TestNoPressureBaseline(unittest.TestCase):
+    """Hypothetical 6B baseline derived mechanically, not pinned."""
+
+    def test_hypothetical_totals(self):
+        import math
+        from civ6x10 import transforms as T
+        entries = _registry_entries_or_skip()
+        self.assertEqual(len(entries), 971)
+        b = backlog_or_skip()
+        pairs = _production_pairs(b)
+        self.assertEqual(len(pairs), 31)
+        # no collision: every pair is a new definition (shared stays 25)
+        reg_keys = {(e["modifier_id"], e["argument"]) for e in entries}
+        new_keys = {(p["modifier_id"], p["argument"]) for p in pairs}
+        self.assertEqual(reg_keys & new_keys, set())
+        self.assertEqual(967 + 31, 998)
+        self.assertEqual(971 + 31, 1002)
+        # split the new pairs by conditional state
+        kf = T.stored_float32(7.3)
+        self.assertEqual(kf, 7.300000190734863)
+        new_writes = new_refusals = 0
+        for p in pairs:
+            v = float(p["value"])
+            if p["count_like"]:
+                if T.count_like_applies(v, kf):
+                    new_writes += 1
+                else:
+                    new_refusals += 1
+                self.assertTrue(T.count_like_applies(v, 10.0),
+                                p["modifier_id"])
+                continue
+            if p["kind"] == "ADDITIVE":
+                r = v * kf
+            elif p["kind"] == "DISCOUNT":
+                d = abs(v) / 100.0
+                r = (1.0 - (1.0 - d) ** kf) * 100.0
+            elif p["kind"] == "COMBAT":
+                r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
+            else:
+                self.fail(p)
+            self.assertTrue(math.isfinite(r), p["modifier_id"])
+            new_writes += 1
+        self.assertEqual((new_writes, new_refusals), (10, 21))
+        # the three reclassifications move writes -> refusals
+        reclass = b["proposed_existing_reclassifications"]["rows"]
+        self.assertEqual(len(reclass), 3)
+        moved = 0
+        for r in reclass:
+            v = float(r["official"])
+            self.assertFalse(T.count_like_applies(v, kf), r["modifier_id"])
+            moved += 1
+        self.assertEqual(moved, 3)
+        # full hypothetical simulation over 971 + 31 with 3 flipped
+        flipped = {(r["modifier_id"], r["argument"]) for r in reclass}
+        hypo = [dict(e, count_like=True)
+                if (e["modifier_id"], e["argument"]) in flipped else e
+                for e in entries]
+        for p in pairs:
+            hypo.append({"modifier_id": p["modifier_id"],
+                         "argument": p["argument"],
+                         "official": p["value"],
+                         "kind": {"ADDITIVE": 0, "COMBAT": 1,
+                                  "PROBABILITY": 2,
+                                  "DISCOUNT": 3}[p["kind"]],
+                         "count_like": p["count_like"], "owners": 64})
+        self.assertEqual(len(hypo), 1002)
+        writes = refusals = 0
+        for e in hypo:
+            v = float(e["official"])
+            if e["count_like"]:
+                if T.count_like_applies(v, kf):
+                    writes += 1
+                else:
+                    refusals += 1
+                continue
+            if e["kind"] == 0:
+                r = v * kf
+            elif e["kind"] == 1:
+                r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
+            elif e["kind"] == 3:
+                d = abs(v) / 100.0
+                r = (1.0 - (1.0 - d) ** kf) * 100.0
+            else:
+                continue
+            if math.isfinite(r) and abs(r) <= 1e6:
+                writes += 1
+            else:
+                refusals += 1
+        self.assertEqual((writes, refusals), (793, 209))
+        self.assertEqual(writes + refusals, 1002)
+        un = sum(1 for e in hypo if not e["count_like"])
+        co = sum(1 for e in hypo if e["count_like"])
+        self.assertEqual((un, co), (780, 222))
+
+
+class TestToquiProbePreflight(unittest.TestCase):
+    """The prepared pressure probe is exactly as specified (files only)."""
+
+    def _parse_inc(self):
+        import re
+        p = ROOT / "spike" / "toqui-probe" / "ToquiTestRegistry.inc"
+        if not p.is_file():
+            self.skipTest("toqui probe scratch registry unavailable")
+        return re.findall(
+            r'\{"([^"]+)", "([^"]+)", "([^"]+)", (\d), (\d), (\d+)\},',
+            p.read_text(encoding="utf-8"))
+
+    def test_scratch_registry_has_exactly_eight_pairs(self):
+        import re
+        rows = self._parse_inc()
+        self.assertEqual(len(rows), 8)
+        by_id = {m[0]: m for m in rows}
+        expected = {
+            "TOQUI_DOMESTIC_LOYALTY": ("Amount", "4", 32),
+            "TOQUI_FOREIGN_LOYALTY": ("Amount", "4", 32),
+            "CARDINAL_BISHOP_PRESSURE": ("Amount", "100", 32),
+            "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY":
+                ("Amount", "4", 32),
+            "MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS": ("Amount", "2", 64),
+            "MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS":
+                ("Amount", "2", 64),
+            "MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS":
+                ("Amount", "2", 64),
+            "MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE":
+                ("Amount", "400", 64),
+        }
+        self.assertEqual(set(by_id), set(expected))
+        for mid, (arg, official, owners) in expected.items():
+            m = by_id[mid]
+            self.assertEqual((m[1], m[2], int(m[5])), (arg, official, owners),
+                             mid)
+            self.assertEqual((m[3], m[4]), ("0", "0"), mid)  # no count-like
+
+    def test_expected_k73_values(self):
+        from civ6x10 import transforms as T
+        kf = T.stored_float32(7.3)
+        for official, want in (("4", 29.2), ("100", 730.0), ("2", 14.6),
+                               ("400", 2920.0)):
+            self.assertAlmostEqual(float(official) * kf, want, delta=0.05)
+
+    def test_probe_lua_covers_all_eight(self):
+        p = ROOT / "spike" / "toqui-probe" / "toqui_probe.lua"
+        if not p.is_file():
+            self.skipTest("toqui probe lua unavailable")
+        text = p.read_text(encoding="utf-8")
+        for mid in ("TOQUI_DOMESTIC_LOYALTY", "TOQUI_FOREIGN_LOYALTY",
+                    "CARDINAL_BISHOP_PRESSURE",
+                    "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY",
+                    "MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS",
+                    "MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS",
+                    "MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS",
+                    "MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE"):
+            self.assertIn(mid, text)
+        self.assertIn("X10ToquiProbe", text)
+
+    def test_probe_readme_exists_with_restore_path(self):
+        p = ROOT / "spike" / "toqui-probe" / "README.md"
+        if not p.is_file():
+            self.skipTest("toqui probe readme unavailable")
+        text = p.read_text(encoding="utf-8")
+        self.assertIn("b6862b28", text)
+        self.assertIn("Restore", text)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -44,12 +44,15 @@ All commands in PowerShell. `<mods>` =
    SHA-256 differs from production. Immediately `git checkout --
    X10/X10ProductionRegistry.inc` in the fork and confirm `git status` is
    clean again (the fork must never commit the scratch registry).
-2. **Swap the installed DLL.** Back up
-   `<mods>\CE-X10\Binaries\Win64\GameCore_XP2_CE_FinalRelease.dll` outside
-   the Mods tree. Copy the scratch DLL into that path. Back up
-   `<mods>\X10_Probe_Test\probe.lua`; copy `spike/toqui-probe/toqui_probe.lua`
-   over it **under the name `probe.lua`** (the modinfo references that
-   name; do not edit the modinfo).
+2. **Swap the installed DLL.** Run
+   `pwsh -NoProfile -File spike/toqui-probe/swap-to-scratch.ps1` from the
+   civ6-x10 root. It aborts unless the installed DLL is the pinned
+   production build, backs both files up under `%TEMP%\x10-toqui-backup`
+   (with a JSON manifest), installs the scratch pair, and re-verifies.
+   (Manual equivalent: back up both files outside the Mods tree, copy the
+   scratch DLL over, copy `toqui_probe.lua` over `probe.lua` **under the
+   name `probe.lua`** — the modinfo references that name; do not edit the
+   modinfo.)
 3. **Game setup.** Gathering Storm, ROME (Trajan), Small, 2 AI, multiplier
    **7.3**, Workshop CE disabled, X10 CE Engine + X10 + X10 Production Probe
    enabled, Secret Societies ON, all modules ON. No Toqui/city-state needed.
@@ -57,11 +60,13 @@ All commands in PowerShell. `<mods>` =
    reload once → exit (the original hold appeared on BOTH load and reload,
    so both are required).
 5. **Collect.** `%TEMP%\X10Lifecycle.log` + `%TEMP%\X10Probe.log`.
-6. **Restore FIRST, before any analysis.** Copy the backed-up production DLL
-   back, verify its SHA-256 equals `spike/EXPECTED_DLL_SHA256.txt`;
-   restore the backed-up `probe.lua`; confirm `git status` clean in both
-   repos (the only allowed deltas are the two returned log files, archived
-   later under `spike/validation-evidence/`).
+6. **Restore FIRST, before any analysis.** Run
+   `pwsh -NoProfile -File spike/toqui-probe/restore-production.ps1`: it
+   copies the backups back and verifies the installed DLL SHA-256 equals
+   `spike/EXPECTED_DLL_SHA256.txt` plus `probe.lua` against the repo file,
+   failing loudly otherwise. Confirm `git status` clean in both repos (the
+   only allowed deltas are the two returned log files, archived later under
+   `spike/validation-evidence/`).
 
 ## Verdict criteria
 

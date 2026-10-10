@@ -746,6 +746,25 @@ def build_backlog(governor_audit_path, suzerain_audit_path) -> dict:
          "k73": r["k73_expectation"], "k10": r["k10_expectation"]}
         for r in rows if r["resolution"] in (RESOLVED_CANDIDATE,
                                              RESOLVED_CANDIDATE_COUNT_LIKE)]
+    # Production projection: source occurrences deduplicated to unique
+    # (ModifierId, argument) pairs, because the native writer mutates the
+    # definition once. Provenance from every occurrence is aggregated, never
+    # dropped: e.g. SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD/Amount occurs
+    # under both SANGUINE_PACT_3 and SANGUINE_PACT_4 but ships once.
+    production_pairs = build_production_projection(rows)
+    pair_counts = {
+        "unique_production_pairs": len(production_pairs),
+        "unique_governor_pairs": sum(
+            1 for p in production_pairs if p["owner"] == "governors"),
+        "unique_suzerain_pairs": sum(
+            1 for p in production_pairs if p["owner"] == "suzerain"),
+        "unique_non_count_like": sum(
+            1 for p in production_pairs if not p["count_like"]),
+        "unique_count_like": sum(
+            1 for p in production_pairs if p["count_like"]),
+        "kinds": dict(sorted(Counter(p["kind"] for p in production_pairs
+                                     ).items())),
+    }
     return {
         "audit": ("Phase 6A unified unresolved-semantic backlog (research "
                   "only; nothing here is production)"),
@@ -767,8 +786,83 @@ def build_backlog(governor_audit_path, suzerain_audit_path) -> dict:
         "by_resolution": by_resolution,
         "by_group_resolution": by_group_resolution,
         "proposed_candidates": candidates,
+        "proposed_production_pairs": production_pairs,
+        "production_pair_counts": pair_counts,
+        "proposed_existing_reclassifications":
+            proposed_existing_reclassifications(),
         "proposed_gate_evidence": proposed_gate_evidence(),
         "rows": rows,
+    }
+
+
+def build_production_projection(rows: list[dict]) -> list[dict]:
+    """Unique (ModifierId, argument) projection of candidate occurrences."""
+    grouped: dict[tuple[str, str], list[dict]] = {}
+    for r in rows:
+        if r["resolution"] not in (RESOLVED_CANDIDATE,
+                                   RESOLVED_CANDIDATE_COUNT_LIKE):
+            continue
+        grouped.setdefault((r["modifier_id"], r["argument"]), []).append(r)
+    pairs = []
+    for (mid, arg), occ in sorted(grouped.items()):
+        first = occ[0]
+        for o in occ[1:]:
+            for field in ("value", "resolved_family", "production_kind",
+                          "transform", "count_like", "proposed_owner",
+                          "effect_type", "modifier_type"):
+                if o[field] != first[field]:
+                    raise ValueError(
+                        f"occurrences of {(mid, arg)} disagree on {field}: "
+                        f"{first[field]!r} vs {o[field]!r} (fail closed)")
+        pairs.append({
+            "modifier_id": mid, "argument": arg,
+            "value": first["value"], "family": first["resolved_family"],
+            "kind": first["production_kind"],
+            "transform": first["transform"],
+            "count_like": first["count_like"], "owner": first["proposed_owner"],
+            "effect_type": first["effect_type"],
+            "modifier_type": first["modifier_type"],
+            "occurrences": len(occ),
+            "sources": sorted({(o["source"], str(o["root"]),
+                                str(o["root_detail"])) for o in occ}),
+        })
+    return pairs
+
+
+def proposed_existing_reclassifications() -> dict:
+    """Already-shipped rows the 6A patterns would intentionally reclassify.
+
+    Recorded for Phase-6B review: if the whole-unit semantic rule applies to
+    Defense Logistics, it applies to the same mechanic's live rows. These
+    change pre-6B `count_like` state and must be live-validated explicitly.
+    """
+    return {
+        "note": ("PROPOSAL ONLY — intentional semantic correction, not a "
+                 "workaround to evade. Completeness is verified mechanically "
+                 "by test (no other current-production row changes)."),
+        "rows": [
+            {"modifier_id": "CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION",
+             "argument": "Amount", "effect_type":
+                 "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION",
+             "official": "1", "current_count_like": False,
+             "proposed_count_like": True,
+             "via_pattern": "EXTRA_ACCUMULATION",
+             "live_k73_today": "7.3 (stored as float)"},
+            {"modifier_id": "TRAIT_ACCUMULATE_MORE_COAL",
+             "argument": "Amount", "effect_type":
+                 "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE",
+             "official": "2", "current_count_like": False,
+             "proposed_count_like": True,
+             "via_pattern": "EXTRA_ACCUMULATION",
+             "live_k73_today": "14.6 (stored as float)"},
+            {"modifier_id": "TRAIT_ACCUMULATE_MORE_IRON",
+             "argument": "Amount", "effect_type":
+                 "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE",
+             "official": "2", "current_count_like": False,
+             "proposed_count_like": True,
+             "via_pattern": "EXTRA_ACCUMULATION",
+             "live_k73_today": "14.6 (stored as float)"},
+        ],
     }
 
 
