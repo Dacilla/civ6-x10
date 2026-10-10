@@ -93,6 +93,8 @@ SCHEMA = {
     "UnitAbilityModifiers": ["UnitAbilityType", "ModifierId"],
     "UnitAbilities": ["UnitAbilityType", "Name", "Description", "Inactive",
                       "ShowFloatTextWhenEarned", "Permanent"],
+    "TypeTags": ["Type", "Tag"],
+    "BuildingModifiers": ["BuildingType", "ModifierId"],
 }
 
 REQ_SETS = {
@@ -122,6 +124,14 @@ REQ_SETS = {
     # a set that is NOT Suzerain-gated (envoy tier bonus)
     "PLAYER_IS_MAJOR": [("REQUIRES_PLAYER_IS_MAJOR",
                          "REQUIREMENT_PLAYER_IS_MAJOR", None, None)],
+    # alliance level ALONE proves an alliance, never Suzerain status
+    "ALLIANCE_ONLY": [("REQUIRES_ALLY_LEVEL_2",
+                       "REQUIREMENT_PLAYER_HAS_ACTIVE_ALLIANCE_OF_AT_LEAST_LEVEL",
+                       "Level", "2")],
+    # a global/config enable check alone is not player-state proof
+    "BONUS_ENABLED_ONLY": [("REQUIRES_BONUS_ENABLED",
+                            "REQUIREMENT_PLAYER_IS_SUZERAIN_BONUS_ENABLED",
+                            None, None)],
     # a filter on the subject, never a magnitude
     "BUILDING_IS_LIBRARY": [("REQUIRES_CITY_HAS_LIBRARY",
                              "REQUIREMENT_CITY_HAS_BUILDING",
@@ -229,6 +239,14 @@ def build_fixture_db(path) -> None:
             ModifierType="MODIFIER_PLAYER_UNIT_ADJUST_TRADE_ROUTE_PLUNDER_IMMUNITY",
             CollectionType="COLLECTION_PLAYER_UNITS",
             EffectType="EFFECT_ADJUST_UNIT_TRADE_ROUTE_PLUNDER_IMMUNITY")
+        ins("DynamicModifiers",
+            ModifierType="MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH",
+            CollectionType="COLLECTION_OWNER",
+            EffectType="EFFECT_ADJUST_UNIT_COMBAT_STRENGTH")
+        ins("DynamicModifiers",
+            ModifierType="MODIFIER_UNIT_ADJUST_POST_COMBAT_YIELD",
+            CollectionType="COLLECTION_PLAYER_UNITS",
+            EffectType="EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD")
 
         # --- bonuses (only for the localized-name lookup) ---------------
         for b in ("MINOR_CIV_BONUS_MILITARISTIC", "MINOR_CIV_BONUS_SCIENCE",
@@ -481,6 +499,8 @@ def build_fixture_db(path) -> None:
         ins("UnitPromotionClasses", PromotionClassType="PROMOTION_CLASS_NIHANG",
             Name="LOC_NIHANG_CLASS")
         for promo, level, col in (("PROMOTION_NIHANG_FLANKED_BONUS", 1, 1),
+                                   ("PROMOTION_NIHANG_FAITH_FOR_VICTORIES",
+                                    1, 3),
                                    ("PROMOTION_NIHANG_MOVEMENT_BONUS", 2, 1),
                                    ("PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS",
                                     3, 2)):
@@ -496,14 +516,72 @@ def build_fixture_db(path) -> None:
             "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
             subj="PLAYER_HAS_LAHORE_SUZERAIN_REQUIREMENTS")
         arg("NIHANG_SUZERAIN_COMBAT_BONUS", "Amount", "10")
+        mod("NIHANG_FAITH_FOR_VICTORIES",
+            "MODIFIER_UNIT_ADJUST_POST_COMBAT_YIELD")
+        arg("NIHANG_FAITH_FOR_VICTORIES", "PercentDefeatedStrength", "50")
+        arg("NIHANG_FAITH_FOR_VICTORIES", "YieldType", "YIELD_FAITH")
         for promo, mid in (("PROMOTION_NIHANG_FLANKED_BONUS",
                             "NIHANG_FLANKED_BONUS"),
+                           ("PROMOTION_NIHANG_FAITH_FOR_VICTORIES",
+                            "NIHANG_FAITH_FOR_VICTORIES"),
                            ("PROMOTION_NIHANG_MOVEMENT_BONUS",
                             "NIHANG_MOVEMENT_BONUS"),
                            ("PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS",
                             "NIHANG_SUZERAIN_COMBAT_BONUS")):
             ins("UnitPromotionModifiers", UnitPromotionType=promo,
                 ModifierId=mid)
+
+        # --- unit-ability progression through shared class tags -----------
+        # The Nihang's barracks/armory/academy strength is discovered as
+        # Unit TypeTags -> matching UnitAbility TypeTags ->
+        # UnitAbilityModifiers, with BuildingModifiers grant provenance.
+        # The fixture deliberately uses ability names that share NO common
+        # prefix with the unit, so a name-prefix filter cannot pass.
+        for tag in ("CLASS_LAHORE_NIHANG", "CLASS_MELEE"):
+            ins("TypeTags", Type="UNIT_LAHORE_NIHANG", Tag=tag)
+        # a second unit shares the generic tag, proving the traversal
+        # narrows to the unit's OWN tag instead of pulling the world in
+        ins("Units", UnitType="UNIT_OTHER_MELEE", Name="LOC_OTHER",
+            Combat=20, Cost=90, BaseMoves=2, BaseSightRange=2,
+            Domain="DOMAIN_LAND", FormationClass="FORMATION_CLASS_LAND_COMBAT",
+            CostProgressionParam1=400, PromotionClass="PROMOTION_CLASS_MELEE",
+            CanTrain=1, TraitType="MINOR_CIV_LAHORE_TRAIT",
+            Description="LOC_OTHER_DESC", PopulationCost=None,
+            RangedCombat=0, Range=0)
+        ins("TypeTags", Type="UNIT_OTHER_MELEE", Tag="CLASS_MELEE")
+        for ability, building, grant in (
+                ("ABILITY_BARRACKS_DISCIPLINE", "BUILDING_BARRACKS",
+                 "LAHORE_NIHANG_BARRACKS_ABILITY"),
+                ("ABILITY_ARMORY_DRILL", "BUILDING_ARMORY",
+                 "LAHORE_NIHANG_ARMORY_ABILITY"),
+                ("ABILITY_ACADEMY_TACTICS", "BUILDING_MILITARY_ACADEMY",
+                 "LAHORE_NIHANG_ACADEMY_ABILITY")):
+            ins("UnitAbilities", UnitAbilityType=ability, Name="LOC_ABX",
+                Description="LOC_ABXD", Inactive=1, ShowFloatTextWhenEarned=0,
+                Permanent=1)
+            ins("TypeTags", Type=ability, Tag="CLASS_LAHORE_NIHANG")
+        # a decoy ability carrying ONLY the generic tag: must NOT be pulled in
+        ins("UnitAbilities", UnitAbilityType="ABILITY_GENERIC_MELEE",
+            Name="LOC_ABG", Description="LOC_ABGD", Inactive=1,
+            ShowFloatTextWhenEarned=0, Permanent=1)
+        ins("TypeTags", Type="ABILITY_GENERIC_MELEE", Tag="CLASS_MELEE")
+        for ability, strength, building, grant in (
+                ("ABILITY_BARRACKS_DISCIPLINE", "NIHANG_BARRACKS_STRENGTH",
+                 "BUILDING_BARRACKS", "LAHORE_NIHANG_BARRACKS_ABILITY"),
+                ("ABILITY_ARMORY_DRILL", "NIHANG_ARMORY_STRENGTH",
+                 "BUILDING_ARMORY", "LAHORE_NIHANG_ARMORY_ABILITY"),
+                ("ABILITY_ACADEMY_TACTICS", "NIHANG_ACADEMY_STRENGTH",
+                 "BUILDING_MILITARY_ACADEMY", "LAHORE_NIHANG_ACADEMY_ABILITY")):
+            mod(strength, "MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH")
+            arg(strength, "Amount", "15")
+            ins("UnitAbilityModifiers", UnitAbilityType=ability,
+                ModifierId=strength)
+            mod(grant, "MODIFIER_PLAYER_UNITS_GRANT_ABILITY")
+            arg(grant, "AbilityType", ability)
+            ins("BuildingModifiers", BuildingType=building, ModifierId=grant)
+        # Basilikoi Paides shares the Barracks grant, as in the official DB
+        ins("BuildingModifiers", BuildingType="BUILDING_BASILIKOI_PAIDES",
+            ModifierId="LAHORE_NIHANG_BARRACKS_ABILITY")
 
         # --- granted ability side path ----------------------------------
         ins("UnitAbilities",
@@ -858,6 +936,200 @@ class SuzerainAuditTest(unittest.TestCase):
                  if m["promotion"] == "PROMOTION_NIHANG_FLANKED_BONUS"]
         self.assertEqual(flank[0]["disposition"], "DECISION_REQUIRED")
         self.assertFalse(flank[0]["suzerain_gated"])
+        # families match the existing semantic floor (see the floor
+        # consistency test below for the mechanical cross-check)
+        by_promo = {m["promotion"]: m for m in nihang["promotion_modifiers"]}
+        self.assertEqual(
+            by_promo["PROMOTION_NIHANG_FLANKED_BONUS"]["family"],
+            "COMBAT_STRENGTH_BONUS")
+        self.assertEqual(
+            by_promo["PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS"]["family"],
+            "COMBAT_STRENGTH_BONUS")
+        self.assertEqual(
+            by_promo["PROMOTION_NIHANG_MOVEMENT_BONUS"]["family"],
+            "SPATIAL_BUDGET")
+
+    # -- 5A.1 gate predicate: alliance-only is never proof ----------
+    def test_alliance_only_set_is_not_suzerain_gated(self):
+        from civ6x10.suzerain import is_suzerain_gated
+        import sqlite3
+        con = sqlite3.connect(str(self.db_path))
+        con.row_factory = sqlite3.Row
+        try:
+            gated, reqs = is_suzerain_gated(con, "ALLIANCE_ONLY")
+            self.assertFalse(gated)
+            self.assertTrue(any(
+                r["RequirementType"] ==
+                "REQUIREMENT_PLAYER_HAS_ACTIVE_ALLIANCE_OF_AT_LEAST_LEVEL"
+                for r in reqs))
+        finally:
+            con.close()
+
+    def test_bonus_enabled_only_set_is_not_suzerain_gated(self):
+        from civ6x10.suzerain import is_suzerain_gated
+        import sqlite3
+        con = sqlite3.connect(str(self.db_path))
+        con.row_factory = sqlite3.Row
+        try:
+            gated, _ = is_suzerain_gated(con, "BONUS_ENABLED_ONLY")
+            self.assertFalse(gated)
+        finally:
+            con.close()
+
+    def test_suzerain_plus_alliance_set_is_gated(self):
+        from civ6x10.suzerain import is_suzerain_gated
+        import sqlite3
+        con = sqlite3.connect(str(self.db_path))
+        con.row_factory = sqlite3.Row
+        try:
+            for level in (1, 2, 3):
+                gated, reqs = is_suzerain_gated(
+                    con, f"PLAYER_IS_SUZERAIN_ALLY_LEVEL_{level}")
+                self.assertTrue(gated)
+                types = {r["RequirementType"] for r in reqs}
+                # the alliance condition narrows; the Suzerain requirement
+                # is the proof
+                self.assertIn("REQUIREMENT_PLAYER_IS_SUZERAIN", types)
+                self.assertIn(
+                    "REQUIREMENT_PLAYER_HAS_ACTIVE_ALLIANCE_OF_AT_LEAST_LEVEL",
+                    types)
+        finally:
+            con.close()
+
+    def test_ordinary_suzerain_set_is_gated(self):
+        from civ6x10.suzerain import is_suzerain_gated
+        import sqlite3
+        con = sqlite3.connect(str(self.db_path))
+        con.row_factory = sqlite3.Row
+        try:
+            gated, _ = is_suzerain_gated(con, "PLAYER_IS_SUZERAIN")
+            self.assertTrue(gated)
+        finally:
+            con.close()
+
+    def test_suzerain_of_x_is_gated_where_appropriate(self):
+        from civ6x10.suzerain import is_suzerain_gated
+        import sqlite3
+        con = sqlite3.connect(str(self.db_path))
+        con.row_factory = sqlite3.Row
+        try:
+            gated, reqs = is_suzerain_gated(
+                con, "PLAYER_HAS_LAHORE_SUZERAIN_REQUIREMENTS")
+            self.assertTrue(gated)
+            self.assertEqual(
+                reqs[0]["RequirementType"],
+                "REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X")
+        finally:
+            con.close()
+
+    # -- 5A.1 Nihang ability path: TypeTags, never name prefixes -------
+    def test_nihang_strength_modifiers_machine_accounted(self):
+        nihang = self.audit["side_paths"]["units"]["UNIT_LAHORE_NIHANG"]
+        # discovered through the unit's OWN class tag, not a name filter
+        self.assertEqual(nihang["unit_own_tags"], ["CLASS_LAHORE_NIHANG"])
+        self.assertEqual(len(nihang["tagged_abilities"]), 3)
+        cells = {(c["unit_ability"], c["modifier_id"]): c
+                 for c in nihang["ability_modifiers"]}
+        for ability, strength in (
+                ("ABILITY_BARRACKS_DISCIPLINE", "NIHANG_BARRACKS_STRENGTH"),
+                ("ABILITY_ARMORY_DRILL", "NIHANG_ARMORY_STRENGTH"),
+                ("ABILITY_ACADEMY_TACTICS", "NIHANG_ACADEMY_STRENGTH")):
+            self.assertIn((ability, strength), cells)
+            c = cells[(ability, strength)]
+            self.assertEqual(c["argument_name"], "Amount")
+            self.assertEqual(c["argument_value"], "15")
+            self.assertEqual(c["effect_type"],
+                             "EFFECT_ADJUST_UNIT_COMBAT_STRENGTH")
+            self.assertEqual(c["disposition"], "DECISION_REQUIRED")
+            self.assertEqual(c["family"], "COMBAT_STRENGTH_BONUS")
+        # grant provenance retained: buildings that hand out each ability
+        prov = {c["unit_ability"]: c["provenance"]["grant"]
+                for c in nihang["ability_modifiers"]}
+        barracks_buildings = {b["building"] for b in
+                              prov["ABILITY_BARRACKS_DISCIPLINE"]["buildings"]}
+        self.assertEqual(barracks_buildings,
+                         {"BUILDING_BARRACKS", "BUILDING_BASILIKOI_PAIDES"})
+        self.assertEqual(
+            {b["building"] for b in
+             prov["ABILITY_ARMORY_DRILL"]["buildings"]},
+            {"BUILDING_ARMORY"})
+        self.assertEqual(
+            {b["building"] for b in
+             prov["ABILITY_ACADEMY_TACTICS"]["buildings"]},
+            {"BUILDING_MILITARY_ACADEMY"})
+
+    def test_generic_tag_abilities_not_pulled_in(self):
+        nihang = self.audit["side_paths"]["units"]["UNIT_LAHORE_NIHANG"]
+        abilities = {c["unit_ability"] for c in nihang["ability_modifiers"]}
+        self.assertNotIn("ABILITY_GENERIC_MELEE", abilities)
+        self.assertNotIn("ABILITY_GENERIC_MELEE", nihang["tagged_abilities"])
+
+    def test_no_name_prefix_filter_in_audit_engine(self):
+        import pathlib
+        src = pathlib.Path(suzerain.__file__).read_text(encoding="utf-8")
+        self.assertNotIn('startswith("ABILITY_NIHANG"', src)
+        self.assertNotIn("startswith('ABILITY_NIHANG'", src)
+
+    def test_nihang_post_combat_faith_family(self):
+        nihang = self.audit["side_paths"]["units"]["UNIT_LAHORE_NIHANG"]
+        faith = [m for m in nihang["promotion_modifiers"]
+                 if m["promotion"] == "PROMOTION_NIHANG_FAITH_FOR_VICTORIES"
+                 and m["argument_name"] == "PercentDefeatedStrength"]
+        self.assertEqual(len(faith), 1)
+        self.assertEqual(faith[0]["family"], "DEFEATED_STRENGTH_SCALING")
+        self.assertEqual(faith[0]["disposition"], "DECISION_REQUIRED")
+
+    # -- 5A.1 floor consistency (synthetic floor, CI-safe) --------------
+    def test_side_path_floor_consistency_nihang_wolin(self):
+        from civ6x10.suzerain import (
+            check_side_path_floor_consistency,
+            side_path_cells_with_tuples,
+        )
+        floor = {
+            ("MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+             "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER", "Amount"): {
+                "semantic_family": "COMBAT_STRENGTH_BONUS",
+                "confidence": "FORMULA_DERIVED"},
+            ("MODIFIER_PLAYER_UNIT_ADJUST_MOVEMENT",
+             "EFFECT_ADJUST_UNIT_MOVEMENT", "Amount"): {
+                "semantic_family": "SPATIAL_BUDGET",
+                "confidence": "AUTO_PATTERN"},
+            ("MODIFIER_UNIT_ADJUST_POST_COMBAT_YIELD",
+             "EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD",
+             "PercentDefeatedStrength"): {
+                "semantic_family": "DEFEATED_STRENGTH_SCALING",
+                "confidence": "NEEDS_REVIEW"},
+            ("MODIFIER_PLAYER_ADJUST_UNITS_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH",
+             "EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH",
+             "Amount"): {
+                "semantic_family": "MAGNITUDE_UNCLASSIFIED",
+                "confidence": "NEEDS_REVIEW"},
+        }
+        cells = side_path_cells_with_tuples(self.audit)
+        report = check_side_path_floor_consistency(cells, floor)
+        by_cell = {d["cell"]: d for d in report["details"]}
+        # agreements: the audit matches the floor where one exists
+        flank = by_cell[
+            "UnitPromotionModifiers.NIHANG_FLANKED_BONUS.Amount"]
+        self.assertTrue(flank["agreement"])
+        self.assertEqual(flank["floor_family"], "COMBAT_STRENGTH_BONUS")
+        move = by_cell[
+            "UnitPromotionModifiers.NIHANG_MOVEMENT_BONUS.Amount"]
+        self.assertTrue(move["agreement"])
+        self.assertEqual(move["floor_family"], "SPATIAL_BUDGET")
+        faith = by_cell[
+            "UnitPromotionModifiers.NIHANG_FAITH_FOR_VICTORIES."
+            "PercentDefeatedStrength"]
+        self.assertTrue(faith["agreement"])
+        self.assertEqual(faith["floor_family"], "DEFEATED_STRENGTH_SCALING")
+        # explicit override: Wolin is a rate, never discrete GP points, and
+        # the disagreement is recorded rather than silent
+        wolin = by_cell[
+            "UnitAbilityModifiers.WOLIN_GREAT_GENERAL_POINTS.Amount"]
+        self.assertFalse(wolin["agreement"])
+        self.assertEqual(wolin["floor_family"], "MAGNITUDE_UNCLASSIFIED")
+        self.assertEqual(wolin["audit_family"], "DEFEATED_STRENGTH_SCALING")
+        self.assertIn("explicit", wolin["note"])
 
     # -- 8c. granted abilities -------------------------------------------
     def test_granted_ability_side_path(self):
@@ -868,7 +1140,10 @@ class SuzerainAuditTest(unittest.TestCase):
         amt = [m for m in wolin if m["argument_name"] == "Amount"]
         self.assertEqual(len(amt), 1)
         self.assertEqual(amt[0]["disposition"], "DECISION_REQUIRED")
-        self.assertEqual(amt[0]["family"], "GREAT_PERSON_POINTS")
+        # a coefficient/rate tied to defeated strength, never ordinary
+        # discrete GREAT_PERSON_POINTS (which would wrongly imply the
+        # count-like gate)
+        self.assertEqual(amt[0]["family"], "DEFEATED_STRENGTH_SCALING")
         # the immunity ability is a capability with no magnitude
         immunity = abilities[
             "ABILITY_TRADE_ROUTE_PLUNDER_IMMUNITY_SEA"]["modifiers"]
@@ -1002,6 +1277,59 @@ def _registry_digest():
 # ---------------------------------------------------------------------------
 AUDIT_PATH = ROOT / "civ6x10" / "rules" / "suzerain_audit.yml"
 
+# The Phase-5A accepted conservative slice: exact (ModifierId, argument)
+# pairs. Pinned here so Phase 5A.1 cannot silently alter what Phase 5B may
+# consume; changing this set requires review, not a passing test edit.
+ACCEPTED_47_SLICE = frozenset([
+    ("MINOR_CIV_ANTANANARIVO_CULTURE_FROM_EARNED_GREAT_PEOPLE_BONUS", "Amount"),
+    ("MINOR_CIV_ANTIOCH_LUXURY_TRADE_ROUTE_BONUS", "Amount"),
+    ("MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_BASE", "Amount"),
+    ("MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_INDUSTRIAL", "Amount"),
+    ("MINOR_CIV_BABYLON_GREAT_WORK_ARTIFACT_SCIENCE", "YieldChange"),
+    ("MINOR_CIV_BABYLON_GREAT_WORK_RELIC_SCIENCE", "YieldChange"),
+    ("MINOR_CIV_BABYLON_GREAT_WORK_WRITING_SCIENCE", "YieldChange"),
+    ("MINOR_CIV_BOLOGNA_GREAT_ADMIRAL_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_ARTIST_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_ENGINEER_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_GENERAL_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_MERCHANT_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_MUSICIAN_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_PROPHET_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_SCIENTIST_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BOLOGNA_GREAT_WRITER_POINTS_BONUS", "Amount"),
+    ("MINOR_CIV_BRUSSELS_WONDER_PRODUCTION_BONUS", "Amount"),
+    ("MINOR_CIV_BUENOS_AIRES_BONUS_RESOURCE_AMENITY_BONUS", "Amount"),
+    ("MINOR_CIV_CHINGUETTI_FAITH_FOLLOWERS", "Amount"),
+    ("MINOR_CIV_FEZ_INITIATION_SCIENCE_POPULATION", "Amount"),
+    ("MINOR_CIV_GENEVA_SCIENCE_AT_PEACE_BONUS", "Amount"),
+    ("MINOR_CIV_HONG_KONG_PROJECT_PRODUCTION_BONUS", "Amount"),
+    ("MINOR_CIV_HUNZA_GOLD_FROM_TRADE_ROUTE_LENGTH", "Amount"),
+    ("MINOR_CIV_JAKARTA_TRADING_POST_BONUS", "Amount"),
+    ("MINOR_CIV_JOHANNESBURG_PRODUCTION_RESOURCES", "Amount"),
+    ("MINOR_CIV_JOHANNESBURG_PRODUCTION_RESOURCES_LATE", "Amount"),
+    ("MINOR_CIV_KABUL_UNIT_EXPERIENCE_BONUS", "Amount"),
+    ("MINOR_CIV_KUMASI_CULTURE_TRADE_ROUTE_YIELD_BONUS", "Amount"),
+    ("MINOR_CIV_KUMASI_GOLD_TRADE_ROUTE_YIELD_BONUS", "Amount"),
+    ("MINOR_CIV_MUSCAT_COMMERCIAL_HUB_AMENITY_BONUS", "Amount"),
+    ("MINOR_CIV_NAN_MADOL_DISTRICTS_CULTURE_BONUS", "Amount"),
+    ("MINOR_CIV_NGAZARGAMU_ARMORY_PURCHASE_BONUS", "Amount"),
+    ("MINOR_CIV_NGAZARGAMU_BARRACKS_STABLE_PURCHASE_BONUS", "Amount"),
+    ("MINOR_CIV_NGAZARGAMU_MILITARY_ACADEMY_PURCHASE_BONUS", "Amount"),
+    ("MINOR_CIV_PALENQUE_CAMPUS_GROWTH_BONUS", "Amount"),
+    ("MINOR_CIV_SAMARKAND_TRADE_GOLD_MODIFIER", "Amount"),
+    ("MINOR_CIV_SINGAPORE_PRODUCTION_PER_MAJOR_TRADE_PARTNER", "Amount"),
+    ("MINOR_CIV_TARUGA_ALUMINUM_RESOURCE_SCIENCE", "Amount"),
+    ("MINOR_CIV_TARUGA_COAL_RESOURCE_SCIENCE", "Amount"),
+    ("MINOR_CIV_TARUGA_HORSES_RESOURCE_SCIENCE", "Amount"),
+    ("MINOR_CIV_TARUGA_IRON_RESOURCE_SCIENCE", "Amount"),
+    ("MINOR_CIV_TARUGA_NITER_RESOURCE_SCIENCE", "Amount"),
+    ("MINOR_CIV_TARUGA_OIL_RESOURCE_SCIENCE", "Amount"),
+    ("MINOR_CIV_TARUGA_URANIUM_RESOURCE_SCIENCE", "Amount"),
+    ("MINOR_CIV_VILNIUS_ALLIANCE_LEVEL_1", "Amount"),
+    ("MINOR_CIV_VILNIUS_ALLIANCE_LEVEL_2", "Amount"),
+    ("MINOR_CIV_VILNIUS_ALLIANCE_LEVEL_3", "Amount"),
+])
+
 
 @unittest.skipUnless(AUDIT_PATH.is_file(),
                      "checked-in audit manifest unavailable")
@@ -1051,6 +1379,15 @@ class SuzerainAuditManifestInvariantsTest(unittest.TestCase):
         self.assertEqual(certified, {(c["modifier_id"], c["argument"])
                                      for c in self.audit[
                                          "proposed_candidates"]})
+
+    def test_proposed_slice_is_exactly_the_accepted_47(self):
+        # Phase 5A.1 guard: the accepted conservative main-graph slice must
+        # not change accidentally. Any alteration needs a genuine main-graph
+        # audit error, reported explicitly - never a silent drift.
+        got = {(c["modifier_id"], c["argument"]) for c in
+               self.audit["proposed_candidates"]}
+        self.assertEqual(got, ACCEPTED_47_SLICE)
+        self.assertEqual(len(self.audit["proposed_candidates"]), 47)
 
     def test_manifest_registry_overlap_is_zero(self):
         ov = self.audit["registry_overlap"]
@@ -1152,6 +1489,139 @@ class SuzerainAuditRealIntegrationTest(unittest.TestCase):
         self.assertEqual(dm["total_active_descendants"], 74)
         self.assertEqual(dm["covered_by_legacy_mod"], 68)
         self.assertEqual(dm["uncovered_by_legacy_mod"], 6)
+
+    def test_real_side_path_totals_corrected(self):
+        c = self.audit["counts"]
+        d = self.audit["disposition_summary"]
+        # Phase 5A.1 correction: the three Nihang strength cells join the
+        # side path; the main trait graph is untouched
+        self.assertEqual(c["side_path_cells"], 243)
+        self.assertEqual(d["direct_side_path_cells"],
+                         {"DECISION_REQUIRED": 68, "EXCLUDED": 175})
+        self.assertEqual(d["side_path_unit_ability_cells"],
+                         {"DECISION_REQUIRED": 3})
+        self.assertEqual(c["reachable_arguments"], 246)
+        self.assertEqual(c["numeric_arguments"], 74)
+        self.assertEqual(d["reachable_rows"],
+                         {"CERTIFIED_CANDIDATE": 47, "DECISION_REQUIRED": 21,
+                          "EXCLUDED": 178})
+        units = self.audit["side_paths"]["units"]["UNIT_LAHORE_NIHANG"]
+        strengths = sorted(
+            (m["modifier_id"], m["argument_name"], m["argument_value"])
+            for m in units["ability_modifiers"])
+        self.assertEqual(strengths, [
+            ("NIHANG_ACADEMY_STRENGTH", "Amount", "15"),
+            ("NIHANG_ARMORY_STRENGTH", "Amount", "15"),
+            ("NIHANG_BARRACKS_STRENGTH", "Amount", "15")])
+
+    def test_real_47_slice_unchanged(self):
+        got = {(c["modifier_id"], c["argument"]) for c in
+               self.audit["proposed_candidates"]}
+        self.assertEqual(got, ACCEPTED_47_SLICE)
+
+    def test_real_47_row_dry_run_certification(self):
+        # Non-production dry run: construct the would-be manifest rows for
+        # the accepted 47 and pass every row through the existing production
+        # certification gate. Nothing is added to collect_registry_rows().
+        import struct
+        from civ6x10.certification import certify_row, load_rules
+        try:
+            from civ6x10.production import DEFAULT_SEM_PATH
+            from civ6x10.certification import load_sem_floor
+        except ImportError:
+            self.skipTest("production certification gate unavailable")
+        if not DEFAULT_SEM_PATH.is_file():
+            self.skipTest("effect-semantic floor unavailable (local-only)")
+        floor = load_sem_floor(DEFAULT_SEM_PATH)
+        rules = load_rules()
+        by_row = {(r["modifier_id"], r["argument_name"]): r
+                  for r in self.audit["rows"] if r["numeric"]}
+        defs = {k: v for k, v in self.audit["graph"]["definitions"].items()}
+        certs = []
+        for mid, arg in sorted(ACCEPTED_47_SLICE):
+            r = by_row[(mid, arg)]
+            node = defs.get(mid, {})
+            manifest_row = {
+                "modifier_id": mid,
+                "modifier_type": node.get("modifier_type")
+                or r["modifier_type"],
+                "effect_type": r["effect_type"],
+                "argument_name": arg,
+                "official_value": str(r["argument_value"]),
+                "semantic_family": r["family"],
+                "transformation": ("canonical_combat_bonus"
+                                   if r["family"] == "COMBAT_STRENGTH_BONUS"
+                                   else "canonical_x10_multiply"),
+                "status": "ok",
+                "module": "suzerain",
+            }
+            sem_row = floor.get((manifest_row["modifier_type"],
+                                 manifest_row["effect_type"], arg))
+            cert = certify_row(manifest_row, sem_row, rules)
+            certs.append((mid, arg, r["family"], cert))
+        # all 47 certify through the unmodified production gate
+        failures = [(m, a, c["resolution"]) for m, a, f, c in certs
+                    if not c["certified"]]
+        self.assertEqual(failures, [])
+        self.assertEqual(len(certs), 47)
+        from collections import Counter
+        kinds = Counter((c["kind"], c["count_like"]) for _, _, _, c in certs)
+        # 35 ADDITIVE unconditional, 9 ADDITIVE count-like (Bologna GP
+        # points), 3 DISCOUNT unconditional
+        self.assertEqual(kinds[("ADDITIVE", False)], 35)
+        self.assertEqual(kinds[("ADDITIVE", True)], 9)
+        self.assertEqual(kinds[("DISCOUNT", False)], 3)
+        count_like_ids = sorted(m for m, a, f, c in certs if c["count_like"])
+        self.assertEqual(len(count_like_ids), 9)
+        self.assertTrue(all("BOLOGNA" in m for m in count_like_ids))
+        sources = Counter(c["source"] for _, _, _, c in certs)
+        # derived from the gate, not pinned blindly: these are what the
+        # unmodified certification code resolves to for the 47
+        self.assertEqual(sources["curated-category:FLAT_YIELD"], 12)
+        self.assertEqual(sources["curated-category:GREAT_PERSON_POINTS"], 9)
+        self.assertEqual(
+            sources["curated-effect:mixed:EFFECT_ADJUST_CITY_YIELD_MODIFIER"],
+            8)
+        self.assertEqual(sources["curated-category:PERCENT_BONUS"], 5)
+        self.assertEqual(sources["curated-category:GOLD"], 3)
+        self.assertEqual(
+            sources["curated-effect:discount:"
+                    "EFFECT_ADJUST_ALL_UNITS_PURCHASE_COST"], 3)
+        self.assertEqual(
+            sources["curated-effect:mixed:EFFECT_ADJUST_PLOT_YIELD"], 2)
+        self.assertEqual(sources["curated-category:PRODUCTION_PERCENT"], 2)
+        self.assertEqual(sources["curated-category:AMENITY"], 2)
+        self.assertEqual(sources["curated-category:EXPERIENCE"], 1)
+        # hypothetical registry totals with owner bit 64 (planning only):
+        # overlap is 0, so all 47 are new definitions and none is shared
+        self.assertEqual(self.audit["registry_overlap"]["count"], 0)
+        import json
+        cov_path = ROOT / "build" / "X10ProductionRegistry.inc.coverage.json"
+        if not cov_path.is_file():
+            self.skipTest("production coverage report unavailable")
+        cov = json.loads(cov_path.read_text(encoding="utf-8"))
+        self.assertEqual(cov["eligible"], 924)
+        self.assertEqual(cov["unique_definitions"], 920)
+        self.assertEqual(cov["shared_definitions"], 25)
+        self.assertEqual(cov["eligible"] + 47, 971)
+        self.assertEqual(cov["unique_definitions"] + 47, 967)
+        self.assertEqual(cov["shared_definitions"], 25)
+        self.assertEqual(cov["certified_unconditional"] + 38, 773)
+        self.assertEqual(cov["certified_count_like_conditional"] + 9, 198)
+        # hypothetical k=7.3 writes: the 9 Bologna +1 rows refuse because
+        # stored-FLOAT32 1 x 7.3 is non-integral; the other 38 write
+        k32 = struct.unpack("f", struct.pack("f", 7.3))[0]
+        refusals = 0
+        for mid, arg, fam, c in certs:
+            if not c["count_like"]:
+                continue
+            official = float(by_row[(mid, arg)]["argument_value"])
+            product = official * k32
+            if abs(product - round(product)) > 1e-6:
+                refusals += 1
+        self.assertEqual(refusals, 9)
+        self.assertEqual(748 + (47 - refusals), 786)
+        self.assertEqual(176 + refusals, 185)
 
 
 if __name__ == "__main__":

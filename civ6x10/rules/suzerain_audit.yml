@@ -654,7 +654,7 @@ counts:
   reachable_definitions: 182
   root_definitions: 91
   side_path_abilities: 3
-  side_path_cells: 240
+  side_path_cells: 243
   side_path_improvements: 9
   side_path_units: 1
 db:
@@ -663,7 +663,7 @@ db:
   tables: 428
 disposition_summary:
   direct_side_path_cells:
-    DECISION_REQUIRED: 65
+    DECISION_REQUIRED: 68
     EXCLUDED: 175
   numeric_rows:
     CERTIFIED_CANDIDATE: 47
@@ -679,6 +679,8 @@ disposition_summary:
   side_path_improvement_cells:
     DECISION_REQUIRED: 58
     EXCLUDED: 150
+  side_path_unit_ability_cells:
+    DECISION_REQUIRED: 3
   side_path_unit_cells:
     EXCLUDED: 21
   side_path_unit_modifier_cells:
@@ -16487,6 +16489,333 @@ rows:
   subject_requirement_set_id: PLAYER_IS_SUZERAIN
   subject_requirements: *id577
   trait_type: MINOR_CIV_ZANZIBAR_TRAIT
+side_path_floor_consistency:
+  agreements: 15
+  available: true
+  cells_checked: 32
+  details:
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: FLAT_YIELD
+    cell: ImprovementModifiers.MOAI_COASTADJACENCY_CULTURE.Amount
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_SINGLE_PLOT_ADJUST_PLOT_YIELDS
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: ImprovementModifiers.MOAI_COASTADJACENCY_CULTURE.YieldType
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_SINGLE_PLOT_ADJUST_PLOT_YIELDS
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: FLAT_YIELD
+    cell: ImprovementModifiers.MOAI_VOLCANICADJACENCY_CULTURE.Amount
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_SINGLE_PLOT_ADJUST_PLOT_YIELDS
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: ImprovementModifiers.MOAI_VOLCANICADJACENCY_CULTURE.YieldType
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_SINGLE_PLOT_ADJUST_PLOT_YIELDS
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: HOUSING
+    cell: ImprovementModifiers.MONASTERY_HOUSING.Amount
+    effect_type: EFFECT_ADJUST_IMPROVEMENT_HOUSING
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_IMPROVEMENT_HOUSING
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: AMENITY
+    cell: ImprovementModifiers.MOUND_AMENITY_MAX_ONE.Amount
+    effect_type: EFFECT_ADJUST_IMPROVEMENT_AMENITY
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_CITY_OWNER_ADJUST_IMPROVEMENT_AMENITY
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: AMENITY
+    cell: ImprovementModifiers.MOUND_AMENITY_MAX_TWO.Amount
+    effect_type: EFFECT_ADJUST_IMPROVEMENT_AMENITY
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_CITY_OWNER_ADJUST_IMPROVEMENT_AMENITY
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: HOUSING
+    cell: ImprovementModifiers.MOUND_HOUSING.Amount
+    effect_type: EFFECT_ADJUST_IMPROVEMENT_HOUSING
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_IMPROVEMENT_HOUSING
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: FLAT_YIELD
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH.Amount
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MIXED_VALUE_DOMAIN
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH.YieldType
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: FLAT_YIELD
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH_RESOURCE.Amount
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MIXED_VALUE_DOMAIN
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH_RESOURCE.YieldType
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: FLAT_YIELD
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_CIVIL_SERVICE.Amount
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MIXED_VALUE_DOMAIN
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_CIVIL_SERVICE.YieldType
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: FLAT_YIELD
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_HILLS_CIVIL_SERVICE.Amount
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MIXED_VALUE_DOMAIN
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_HILLS_CIVIL_SERVICE.YieldType
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: FLAT_YIELD
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_PRODUCTION_FLAT_MASS_PRODUCTION.Amount
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MIXED_VALUE_DOMAIN
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: ImprovementModifiers.NAZCA_LINE_ADJACENCY_PRODUCTION_FLAT_MASS_PRODUCTION.YieldType
+    effect_type: EFFECT_ADJUST_PLOT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_ADJUST_PLOT_YIELD
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: COMBAT_STRENGTH_BONUS
+    cell: UnitAbilityModifiers.NIHANG_ACADEMY_STRENGTH.Amount
+    effect_type: EFFECT_ADJUST_UNIT_COMBAT_STRENGTH
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: COMBAT_STRENGTH_BONUS
+    cell: UnitAbilityModifiers.NIHANG_ARMORY_STRENGTH.Amount
+    effect_type: EFFECT_ADJUST_UNIT_COMBAT_STRENGTH
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: COMBAT_STRENGTH_BONUS
+    cell: UnitAbilityModifiers.NIHANG_BARRACKS_STRENGTH.Amount
+    effect_type: EFFECT_ADJUST_UNIT_COMBAT_STRENGTH
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: DomainType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: UnitAbilityModifiers.TRADE_ROUTE_PLUNDER_IMMUNITY_SEA.DomainType
+    effect_type: EFFECT_ADJUST_UNIT_TRADE_ROUTE_PLUNDER_IMMUNITY
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_UNIT_ADJUST_TRADE_ROUTE_PLUNDER_IMMUNITY
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: DEFEATED_STRENGTH_SCALING
+    cell: UnitAbilityModifiers.WOLIN_GREAT_ADMIRAL_POINTS.Amount
+    effect_type: EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_PLAYER_ADJUST_UNITS_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: GreatPersonClassType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: UnitAbilityModifiers.WOLIN_GREAT_ADMIRAL_POINTS.GreatPersonClassType
+    effect_type: EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_ADJUST_UNITS_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    note: agreement
+  - agreement: false
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: DEFEATED_STRENGTH_SCALING
+    cell: UnitAbilityModifiers.WOLIN_GREAT_GENERAL_POINTS.Amount
+    effect_type: EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_PLAYER_ADJUST_UNITS_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: GreatPersonClassType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: UnitAbilityModifiers.WOLIN_GREAT_GENERAL_POINTS.GreatPersonClassType
+    effect_type: EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_PLAYER_ADJUST_UNITS_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
+    note: agreement
+  - agreement: true
+    argument_name: PercentDefeatedStrength
+    audit_disposition: DECISION_REQUIRED
+    audit_family: DEFEATED_STRENGTH_SCALING
+    cell: UnitPromotionModifiers.NIHANG_FAITH_FOR_VICTORIES.PercentDefeatedStrength
+    effect_type: EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD
+    floor_confidence: NEEDS_REVIEW
+    floor_family: DEFEATED_STRENGTH_SCALING
+    modifier_type: MODIFIER_UNIT_ADJUST_POST_COMBAT_YIELD
+    note: agreement
+  - agreement: true
+    argument_name: YieldType
+    audit_disposition: EXCLUDED
+    audit_family: SELECTOR
+    cell: UnitPromotionModifiers.NIHANG_FAITH_FOR_VICTORIES.YieldType
+    effect_type: EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD
+    floor_confidence: AUTO_PATTERN
+    floor_family: SELECTOR
+    modifier_type: MODIFIER_UNIT_ADJUST_POST_COMBAT_YIELD
+    note: agreement
+  - agreement: true
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: COMBAT_STRENGTH_BONUS
+    cell: UnitPromotionModifiers.NIHANG_FLANKED_BONUS.Amount
+    effect_type: EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER
+    floor_confidence: FORMULA_DERIVED
+    floor_family: COMBAT_STRENGTH_BONUS
+    modifier_type: MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH
+    note: agreement
+  - agreement: true
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: SPATIAL_BUDGET
+    cell: UnitPromotionModifiers.NIHANG_MOVEMENT_BONUS.Amount
+    effect_type: EFFECT_ADJUST_UNIT_MOVEMENT
+    floor_confidence: AUTO_PATTERN
+    floor_family: SPATIAL_BUDGET
+    modifier_type: MODIFIER_PLAYER_UNIT_ADJUST_MOVEMENT
+    note: agreement
+  - agreement: false
+    argument_name: NoReduction
+    audit_disposition: DECISION_REQUIRED
+    audit_family: BOOLEAN_UNLOCK
+    cell: UnitPromotionModifiers.NIHANG_NO_WOUNDED_PENALTY.NoReduction
+    effect_type: EFFECT_ADJUST_UNIT_NO_REDUCTION_DAMAGE
+    floor_confidence: NEEDS_REVIEW
+    floor_family: MAGNITUDE_UNCLASSIFIED
+    modifier_type: MODIFIER_PLAYER_UNIT_ADJUST_NO_REDUCTION_DAMAGE
+    note: explicit audit override, justified in SIDE_PATH_EFFECT_RULES
+  - agreement: true
+    argument_name: Amount
+    audit_disposition: DECISION_REQUIRED
+    audit_family: COMBAT_STRENGTH_BONUS
+    cell: UnitPromotionModifiers.NIHANG_SUZERAIN_COMBAT_BONUS.Amount
+    effect_type: EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER
+    floor_confidence: FORMULA_DERIVED
+    floor_family: COMBAT_STRENGTH_BONUS
+    modifier_type: MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH
+    note: agreement
+  disagreements: 17
+  no_floor_row: 0
 side_paths:
   abilities:
     ABILITY_TRADE_ROUTE_PLUNDER_IMMUNITY_SEA:
@@ -16532,7 +16861,7 @@ side_paths:
         argument_value: '25'
         disposition: DECISION_REQUIRED
         effect_type: EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
-        family: GREAT_PERSON_POINTS
+        family: DEFEATED_STRENGTH_SCALING
         modifier_id: WOLIN_GREAT_GENERAL_POINTS
         modifier_type: MODIFIER_PLAYER_ADJUST_UNITS_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
         provenance:
@@ -16540,9 +16869,12 @@ side_paths:
           table: UnitAbilityModifiers
           via: UnitAbilities
         reason: 'reached only through the granted ability, not through the Suzerain modifier graph: ownership decision: this
-          value is semantically part of the GREAT_PERSON_POINTS family but lives OUTSIDE the Suzerain modifier graph, so it
-          is not claimed until its ownership of the Suzerain ability is decided - great-person points per kill scaled by defeated
-          strength (Wolin ability +25); reached only through the granted ability, outside the Suzerain modifier graph'
+          value is semantically part of the DEFEATED_STRENGTH_SCALING family but lives OUTSIDE the Suzerain modifier graph,
+          so it is not claimed until its ownership of the Suzerain ability is decided - great-person points per kill scaled
+          by defeated strength (Wolin ability +25): a coefficient/rate tied to defeated-unit strength, NOT ordinary discrete
+          GREAT_PERSON_POINTS. NOTE: the floor row for this tuple is MAGNITUDE_UNCLASSIFIED / NEEDS_REVIEW, so this family
+          is an explicit audit override. The invariant it protects: a future production implementation must not inherit the
+          GREAT_PERSON_POINTS count-like gate merely because the result is eventually paid as GP points.'
       - argument_name: GreatPersonClassType
         argument_value: GREAT_PERSON_CLASS_GENERAL
         disposition: EXCLUDED
@@ -16573,7 +16905,7 @@ side_paths:
         argument_value: '25'
         disposition: DECISION_REQUIRED
         effect_type: EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
-        family: GREAT_PERSON_POINTS
+        family: DEFEATED_STRENGTH_SCALING
         modifier_id: WOLIN_GREAT_ADMIRAL_POINTS
         modifier_type: MODIFIER_PLAYER_ADJUST_UNITS_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH
         provenance:
@@ -16581,9 +16913,12 @@ side_paths:
           table: UnitAbilityModifiers
           via: UnitAbilities
         reason: 'reached only through the granted ability, not through the Suzerain modifier graph: ownership decision: this
-          value is semantically part of the GREAT_PERSON_POINTS family but lives OUTSIDE the Suzerain modifier graph, so it
-          is not claimed until its ownership of the Suzerain ability is decided - great-person points per kill scaled by defeated
-          strength (Wolin ability +25); reached only through the granted ability, outside the Suzerain modifier graph'
+          value is semantically part of the DEFEATED_STRENGTH_SCALING family but lives OUTSIDE the Suzerain modifier graph,
+          so it is not claimed until its ownership of the Suzerain ability is decided - great-person points per kill scaled
+          by defeated strength (Wolin ability +25): a coefficient/rate tied to defeated-unit strength, NOT ordinary discrete
+          GREAT_PERSON_POINTS. NOTE: the floor row for this tuple is MAGNITUDE_UNCLASSIFIED / NEEDS_REVIEW, so this family
+          is an explicit audit override. The invariant it protects: a future production implementation must not inherit the
+          GREAT_PERSON_POINTS count-like gate merely because the result is eventually paid as GP points.'
       - argument_name: GreatPersonClassType
         argument_value: GREAT_PERSON_CLASS_ADMIRAL
         disposition: EXCLUDED
@@ -20350,7 +20685,106 @@ side_paths:
         value: 1
   units:
     UNIT_LAHORE_NIHANG:
-      ability_modifiers: []
+      ability_grant_provenance:
+        ABILITY_NIHANG_ACADEMY_STRENGTH:
+          buildings: &id578
+          - building: BUILDING_MILITARY_ACADEMY
+            grant_modifier: LAHORE_NIHANG_ACADEMY_ABILITY
+          grant_modifiers: &id579
+          - LAHORE_NIHANG_ACADEMY_ABILITY
+        ABILITY_NIHANG_ARMORY_STRENGTH:
+          buildings: &id580
+          - building: BUILDING_ARMORY
+            grant_modifier: LAHORE_NIHANG_ARMORY_ABILITY
+          grant_modifiers: &id581
+          - LAHORE_NIHANG_ARMORY_ABILITY
+        ABILITY_NIHANG_BARRACKS_STRENGTH:
+          buildings: &id582
+          - building: BUILDING_BARRACKS
+            grant_modifier: LAHORE_NIHANG_BARRACKS_ABILITY
+          - building: BUILDING_BASILIKOI_PAIDES
+            grant_modifier: LAHORE_NIHANG_BARRACKS_ABILITY
+          grant_modifiers: &id583
+          - LAHORE_NIHANG_BARRACKS_ABILITY
+      ability_modifiers:
+      - argument_name: Amount
+        argument_value: '15'
+        disposition: DECISION_REQUIRED
+        effect_type: EFFECT_ADJUST_UNIT_COMBAT_STRENGTH
+        family: COMBAT_STRENGTH_BONUS
+        modifier_id: NIHANG_ACADEMY_STRENGTH
+        modifier_type: MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH
+        provenance:
+          grant:
+            buildings: *id578
+            grant_modifiers: *id579
+          source: official runtime DB
+          table: UnitAbilityModifiers
+          unit_tags:
+          - CLASS_ALL_ERAS
+          - CLASS_LAHORE_NIHANG
+          - CLASS_MELEE
+          via: TypeTags
+        reason: 'ownership decision: this value is semantically part of the COMBAT_STRENGTH_BONUS family but lives OUTSIDE
+          the Suzerain modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - base
+          combat-strength points (Nihang barracks/armory/academy +15): combat-strength points by definition, but intrinsic
+          progression bonuses of the unlocked unit, so ownership stays a decision. NOTE: the floor row for this tuple is MAGNITUDE_UNCLASSIFIED
+          / NEEDS_REVIEW (unreviewed), so this family is an explicit audit override with no production consequence while the
+          row stays DECISION_REQUIRED. (unit-ability progression attached through the shared class tag; intrinsic to the unlocked
+          unit)'
+        unit_ability: ABILITY_NIHANG_ACADEMY_STRENGTH
+      - argument_name: Amount
+        argument_value: '15'
+        disposition: DECISION_REQUIRED
+        effect_type: EFFECT_ADJUST_UNIT_COMBAT_STRENGTH
+        family: COMBAT_STRENGTH_BONUS
+        modifier_id: NIHANG_ARMORY_STRENGTH
+        modifier_type: MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH
+        provenance:
+          grant:
+            buildings: *id580
+            grant_modifiers: *id581
+          source: official runtime DB
+          table: UnitAbilityModifiers
+          unit_tags:
+          - CLASS_ALL_ERAS
+          - CLASS_LAHORE_NIHANG
+          - CLASS_MELEE
+          via: TypeTags
+        reason: 'ownership decision: this value is semantically part of the COMBAT_STRENGTH_BONUS family but lives OUTSIDE
+          the Suzerain modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - base
+          combat-strength points (Nihang barracks/armory/academy +15): combat-strength points by definition, but intrinsic
+          progression bonuses of the unlocked unit, so ownership stays a decision. NOTE: the floor row for this tuple is MAGNITUDE_UNCLASSIFIED
+          / NEEDS_REVIEW (unreviewed), so this family is an explicit audit override with no production consequence while the
+          row stays DECISION_REQUIRED. (unit-ability progression attached through the shared class tag; intrinsic to the unlocked
+          unit)'
+        unit_ability: ABILITY_NIHANG_ARMORY_STRENGTH
+      - argument_name: Amount
+        argument_value: '15'
+        disposition: DECISION_REQUIRED
+        effect_type: EFFECT_ADJUST_UNIT_COMBAT_STRENGTH
+        family: COMBAT_STRENGTH_BONUS
+        modifier_id: NIHANG_BARRACKS_STRENGTH
+        modifier_type: MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH
+        provenance:
+          grant:
+            buildings: *id582
+            grant_modifiers: *id583
+          source: official runtime DB
+          table: UnitAbilityModifiers
+          unit_tags:
+          - CLASS_ALL_ERAS
+          - CLASS_LAHORE_NIHANG
+          - CLASS_MELEE
+          via: TypeTags
+        reason: 'ownership decision: this value is semantically part of the COMBAT_STRENGTH_BONUS family but lives OUTSIDE
+          the Suzerain modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - base
+          combat-strength points (Nihang barracks/armory/academy +15): combat-strength points by definition, but intrinsic
+          progression bonuses of the unlocked unit, so ownership stays a decision. NOTE: the floor row for this tuple is MAGNITUDE_UNCLASSIFIED
+          / NEEDS_REVIEW (unreviewed), so this family is an explicit audit override with no production consequence while the
+          row stays DECISION_REQUIRED. (unit-ability progression attached through the shared class tag; intrinsic to the unlocked
+          unit)'
+        unit_ability: ABILITY_NIHANG_BARRACKS_STRENGTH
       direct_cells:
       - cell: Units.Name
         disposition: EXCLUDED
@@ -20547,7 +20981,7 @@ side_paths:
         argument_value: '50'
         disposition: DECISION_REQUIRED
         effect_type: EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD
-        family: FLAT_YIELD
+        family: DEFEATED_STRENGTH_SCALING
         modifier_id: NIHANG_FAITH_FOR_VICTORIES
         modifier_type: MODIFIER_UNIT_ADJUST_POST_COMBAT_YIELD
         promotion: PROMOTION_NIHANG_FAITH_FOR_VICTORIES
@@ -20558,7 +20992,7 @@ side_paths:
           table: UnitPromotionModifiers
         reason: unit promotion attached to the granted unit; intrinsic to the unit, not claimed by the Suzerain multiplier
         subject_requirement_set_id: null
-        subject_requirements: &id578 []
+        subject_requirements: &id584 []
         suzerain_gated: false
       - argument_name: YieldType
         argument_value: YIELD_FAITH
@@ -20575,13 +21009,13 @@ side_paths:
           table: UnitPromotionModifiers
         reason: unit promotion attached to the granted unit; intrinsic to the unit, not claimed by the Suzerain multiplier
         subject_requirement_set_id: null
-        subject_requirements: *id578
+        subject_requirements: *id584
         suzerain_gated: false
       - argument_name: Amount
         argument_value: '7'
         disposition: DECISION_REQUIRED
         effect_type: EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER
-        family: DECISION_REQUIRED
+        family: COMBAT_STRENGTH_BONUS
         modifier_id: NIHANG_FLANKED_BONUS
         modifier_type: MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH
         promotion: PROMOTION_NIHANG_FLANKED_BONUS
@@ -20602,7 +21036,7 @@ side_paths:
         argument_value: '1'
         disposition: DECISION_REQUIRED
         effect_type: EFFECT_ADJUST_UNIT_MOVEMENT
-        family: MOVEMENT
+        family: SPATIAL_BUDGET
         modifier_id: NIHANG_MOVEMENT_BONUS
         modifier_type: MODIFIER_PLAYER_UNIT_ADJUST_MOVEMENT
         promotion: PROMOTION_NIHANG_MOVEMENT_BONUS
@@ -20636,7 +21070,7 @@ side_paths:
         argument_value: '10'
         disposition: DECISION_REQUIRED
         effect_type: EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER
-        family: DECISION_REQUIRED
+        family: COMBAT_STRENGTH_BONUS
         modifier_id: NIHANG_SUZERAIN_COMBAT_BONUS
         modifier_type: MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH
         promotion: PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS
@@ -20654,4 +21088,14 @@ side_paths:
           RequirementType: REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X
           Value: LEADER_MINOR_CIV_LAHORE
         suzerain_gated: true
+      tagged_abilities:
+      - ABILITY_NIHANG_ACADEMY_STRENGTH
+      - ABILITY_NIHANG_ARMORY_STRENGTH
+      - ABILITY_NIHANG_BARRACKS_STRENGTH
+      unit_own_tags:
+      - CLASS_LAHORE_NIHANG
+      unit_tags:
+      - CLASS_ALL_ERAS
+      - CLASS_LAHORE_NIHANG
+      - CLASS_MELEE
       unit_type: UNIT_LAHORE_NIHANG

@@ -27,11 +27,16 @@ Discovery is derived, never hard-coded:
   wiki/list are explicitly NOT used to decide membership.
 * **Suzerain gating** is proven by resolving each root's
   `SubjectRequirementSetId` to its `RequirementSetRequirements` and testing for
-  `REQUIREMENT_PLAYER_IS_SUZERAIN` (or the alliance-level variants), not from
-  the modifier's name.
+  an actual Suzerain-state requirement (`REQUIREMENT_PLAYER_IS_SUZERAIN` or
+  `REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X`), not from the modifier's name. An
+  alliance-level requirement alone proves an alliance level, never Suzerain
+  status; a bonus-enabled requirement alone is a global/config check.
 * **The graph** follows `ModifierArguments.Name='ModifierId'` values that
   resolve to a real `Modifiers.ModifierId`, recursively, with cycle
   detection.
+* **Unit-ability progression** is discovered mechanically as Unit TypeTags ->
+  matching UnitAbility TypeTags -> UnitAbilityModifiers, with
+  BuildingModifiers grant provenance retained. No name-prefix filter is used.
 """
 from __future__ import annotations
 
@@ -55,13 +60,29 @@ PROPOSED_NEXT_MODULE_BIT_AFTER_SUZERAIN = 128
 
 ACTIVE_CITY_STATE_LEVEL = "CIVILIZATION_LEVEL_CITY_STATE"
 
-# Requirement types that prove Suzerain gating (Phase 5A evidence, not names).
-SUZERAIN_GATE_REQUIREMENT_TYPES = {
+# Requirement types that prove Suzerain state (Phase 5A.1 corrected).
+# Only these two are sufficient proof on their own:
+# - REQUIREMENT_PLAYER_IS_SUZERAIN: the player is a Suzerain (of someone).
+# - REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X: the player is Suzerain of a specific
+#   leader (used by side-path cases such as Lahore).
+# The other two are additional FILTERS, never proof by themselves:
+# - REQUIREMENT_PLAYER_IS_SUZERAIN_BONUS_ENABLED is a global/config enable
+#   check, not player-state proof.
+# - REQUIREMENT_PLAYER_HAS_ACTIVE_ALLIANCE_OF_AT_LEAST_LEVEL proves an
+#   alliance level, NOT Suzerain status. The three Vilnius alliance-level
+#   sets each contain BOTH an IS_SUZERAIN requirement AND an alliance-level
+#   requirement; the alliance condition narrows, it does not prove.
+SUZERAIN_STATE_PROOF_TYPES = {
     "REQUIREMENT_PLAYER_IS_SUZERAIN",
-    "REQUIREMENT_PLAYER_IS_SUZERAIN_BONUS_ENABLED",
-    "REQUIREMENT_PLAYER_HAS_ACTIVE_ALLIANCE_OF_AT_LEAST_LEVEL",
     "REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X",
 }
+SUZERAIN_FILTER_TYPES = {
+    "REQUIREMENT_PLAYER_IS_SUZERAIN_BONUS_ENABLED",
+    "REQUIREMENT_PLAYER_HAS_ACTIVE_ALLIANCE_OF_AT_LEAST_LEVEL",
+}
+# Legacy name kept for compatibility; no longer used as the gate predicate.
+SUZERAIN_GATE_REQUIREMENT_TYPES = (SUZERAIN_STATE_PROOF_TYPES
+                                   | SUZERAIN_FILTER_TYPES)
 
 # Arguments that name a type/target and are therefore never magnitudes.
 SELECTOR_ARG_NAMES = {
@@ -279,24 +300,51 @@ CURATED_EFFECT_RULES = {
 }
 
 # Arguments that are magnitudes on the side paths (unique units).
+# Families here must match the existing effect-semantic floor where one
+# exists; ownership stays DECISION_REQUIRED regardless (see
+# classify_side_path_argument), so the family describes the number while the
+# disposition records that it lives outside the Suzerain graph.
 SIDE_PATH_EFFECT_RULES = {
     "EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD": (
-        "FLAT_YIELD", "DECISION_REQUIRED",
-        "post-combat faith from defeated strength (Nihang); unit-intrinsic "
+        "DEFEATED_STRENGTH_SCALING", "DECISION_REQUIRED",
+        "post-combat yield scaled by defeated strength (Nihang faith 50%): "
+        "the floor classifies PercentDefeatedStrength as "
+        "DEFEATED_STRENGTH_SCALING, not a flat yield; unit-intrinsic "
         "magnitude reached only through the granted unit's promotion"),
+    "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER": (
+        "COMBAT_STRENGTH_BONUS", "DECISION_REQUIRED",
+        "combat-strength points (Nihang flanked +7, Suzerain-gated +10): "
+        "the floor certifies this Amount as COMBAT_STRENGTH_BONUS "
+        "(FORMULA_DERIVED); side-path ownership keeps it a decision"),
+    "EFFECT_ADJUST_UNIT_COMBAT_STRENGTH": (
+        "COMBAT_STRENGTH_BONUS", "DECISION_REQUIRED",
+        "base combat-strength points (Nihang barracks/armory/academy +15): "
+        "combat-strength points by definition, but intrinsic progression "
+        "bonuses of the unlocked unit, so ownership stays a decision. "
+        "NOTE: the floor row for this tuple is MAGNITUDE_UNCLASSIFIED / "
+        "NEEDS_REVIEW (unreviewed), so this family is an explicit audit "
+        "override with no production consequence while the row stays "
+        "DECISION_REQUIRED."),
     "EFFECT_ADJUST_UNIT_MOVEMENT": (
-        "MOVEMENT", "DECISION_REQUIRED",
-        "movement bonus (Nihang); unit-intrinsic magnitude reached only "
-        "through the granted unit's promotion"),
+        "SPATIAL_BUDGET", "DECISION_REQUIRED",
+        "movement points (Nihang +1): the floor treats movement Amount as "
+        "SPATIAL_BUDGET, not an automatically certified magnitude; "
+        "unit-intrinsic magnitude reached only through the granted unit's "
+        "promotion"),
     "EFFECT_ADJUST_UNIT_NO_REDUCTION_DAMAGE": (
         "BOOLEAN_UNLOCK", "DECISION_REQUIRED",
         "no-wounded-penalty capability (Nihang); unit-intrinsic capability "
         "reached only through the granted unit's promotion"),
     "EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH": (
-        "GREAT_PERSON_POINTS", "DECISION_REQUIRED",
+        "DEFEATED_STRENGTH_SCALING", "DECISION_REQUIRED",
         "great-person points per kill scaled by defeated strength (Wolin "
-        "ability +25); reached only through the granted ability, outside the "
-        "Suzerain modifier graph"),
+        "ability +25): a coefficient/rate tied to defeated-unit strength, "
+        "NOT ordinary discrete GREAT_PERSON_POINTS. NOTE: the floor row for "
+        "this tuple is MAGNITUDE_UNCLASSIFIED / NEEDS_REVIEW, so this family "
+        "is an explicit audit override. The invariant it protects: a future "
+        "production implementation must not inherit the GREAT_PERSON_POINTS "
+        "count-like gate merely because the result is eventually paid as GP "
+        "points."),
     "EFFECT_ADJUST_UNIT_TRADE_ROUTE_PLUNDER_IMMUNITY": (
         "BOOLEAN_UNLOCK", "EXCLUDED",
         "trade-route plunder immunity for a domain (Lisbon ability); a "
@@ -371,6 +419,116 @@ def classify_side_path_argument(effect_type: str, argument_name: str,
                        "its ownership of the Suzerain ability is decided - "
                        + reason),
             "engine_integral": False}
+
+
+# --------------------------------------------------------------------------
+# Side-path semantic-floor consistency
+# --------------------------------------------------------------------------
+def side_path_cells_with_tuples(audit: dict) -> list[dict]:
+    """Every side-path cell that carries an ordinary ModifierType/Effect/arg.
+
+    Only these cells can be cross-checked against the effect-semantic floor;
+    direct-table cells (Units/Improvements columns, yields, tourism, ...) have
+    no modifier tuple and are therefore out of scope for this check.
+    """
+    out: list[dict] = []
+    for unit_type, path in (audit.get("side_paths", {}).get("units") or {}).items():
+        for m in path.get("promotion_modifiers", []):
+            out.append({"cell": f"UnitPromotionModifiers.{m['modifier_id']}."
+                                f"{m['argument_name']}",
+                        "modifier_type": m["modifier_type"],
+                        "effect_type": m["effect_type"],
+                        "argument_name": m["argument_name"],
+                        "audit_family": m["family"],
+                        "audit_disposition": m["disposition"]})
+        for m in path.get("ability_modifiers", []):
+            out.append({"cell": f"UnitAbilityModifiers.{m['modifier_id']}."
+                                f"{m['argument_name']}",
+                        "modifier_type": m["modifier_type"],
+                        "effect_type": m["effect_type"],
+                        "argument_name": m["argument_name"],
+                        "audit_family": m["family"],
+                        "audit_disposition": m["disposition"]})
+    for ab, path in (audit.get("side_paths", {}).get("abilities") or {}).items():
+        for m in path.get("modifiers", []):
+            out.append({"cell": f"UnitAbilityModifiers.{m['modifier_id']}."
+                                f"{m['argument_name']}",
+                        "modifier_type": m["modifier_type"],
+                        "effect_type": m["effect_type"],
+                        "argument_name": m["argument_name"],
+                        "audit_family": m["family"],
+                        "audit_disposition": m["disposition"]})
+    for imp, path in (audit.get("side_paths", {}).get("improvements") or {}).items():
+        for am in path.get("attached_modifiers", []):
+            for c in path.get("cells", []):
+                prefix = f"ImprovementModifiers.{am['modifier_id']}."
+                if not c["cell"].startswith(prefix):
+                    continue
+                out.append({"cell": c["cell"],
+                            "modifier_type": am["modifier_type"],
+                            "effect_type": am["effect_type"],
+                            "argument_name": c["cell"][len(prefix):],
+                            "audit_family": c["family"],
+                            "audit_disposition": c["disposition"]})
+    out.sort(key=lambda c: c["cell"])
+    return out
+
+
+def check_side_path_floor_consistency(cells: list[dict],
+                                      floor: dict) -> dict:
+    """Cross-check side-path families against the effect-semantic floor.
+
+    `floor` maps (modifier_type, effect_type, argument_name) -> row with at
+    least `semantic_family` and `confidence`. Every agreement and every
+    explicit override is recorded; nothing is silently re-labelled.
+    """
+    details: list[dict] = []
+    for c in cells:
+        key = (c["modifier_type"], c["effect_type"], c["argument_name"])
+        frow = floor.get(key)
+        if frow is None:
+            details.append({**c, "floor_family": None,
+                            "floor_confidence": None,
+                            "agreement": None,
+                            "note": "no floor row for this tuple"})
+            continue
+        ff = frow.get("semantic_family")
+        agreement = (c["audit_family"] == ff)
+        details.append({**c, "floor_family": ff,
+                        "floor_confidence": frow.get("confidence"),
+                        "agreement": agreement,
+                        "note": ("agreement" if agreement
+                                 else "explicit audit override, justified in "
+                                      "SIDE_PATH_EFFECT_RULES")})
+    return {
+        "cells_checked": len(details),
+        "agreements": sum(1 for d in details if d["agreement"] is True),
+        "disagreements": sum(1 for d in details if d["agreement"] is False),
+        "no_floor_row": sum(1 for d in details if d["agreement"] is None),
+        "details": details,
+    }
+
+
+def load_floor_for_consistency(sem_floor_path: str | Path | None,
+                               root: str | Path | None = None) -> dict | None:
+    """Load the effect-semantic floor when available, else None (CI-safe).
+
+    `sem_floor_path`, when given, wins. Otherwise the conventional
+    `data/local/effect_semantics.csv` next to `root` is used when present.
+    A missing file is not an error: the caller records `available: false`.
+    """
+    if sem_floor_path:
+        p = Path(sem_floor_path)
+        if not p.is_file():
+            return None
+    else:
+        base = Path(root) if root else Path(".")
+        p = base / "data" / "local" / "effect_semantics.csv"
+        if not p.is_file():
+            return None
+    with open(p, encoding="utf-8", newline="") as fh:
+        return {(r["modifier_type"], r["effect_type"], r["argument_name"]): r
+                for r in csv.DictReader(fh)}
 
 # --------------------------------------------------------------------------
 # Active City-State discovery (authoritative, derived from the runtime DB)
@@ -477,9 +635,17 @@ def requirement_set_requirements(db, set_id) -> list[dict]:
 
 
 def is_suzerain_gated(db, requirement_set_id) -> tuple[bool, list[dict]]:
-    """True when the set proves the subject is a Suzerain (or Suzerain+ally)."""
+    """True when the set proves the subject is a Suzerain (or Suzerain+ally).
+
+    Proof requires an actual Suzerain-state requirement
+    (REQUIREMENT_PLAYER_IS_SUZERAIN or REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X).
+    An alliance-level requirement alone proves an alliance level, not Suzerain
+    status; a bonus-enabled requirement alone is a global/config check, not
+    player-state proof. Either may narrow a Suzerain-gated set, but neither
+    gates on its own.
+    """
     reqs = requirement_set_requirements(db, requirement_set_id)
-    gated = any(r["RequirementType"] in SUZERAIN_GATE_REQUIREMENT_TYPES
+    gated = any(r["RequirementType"] in SUZERAIN_STATE_PROOF_TYPES
                 for r in reqs)
     return gated, reqs
 
@@ -1137,46 +1303,104 @@ def unit_side_path(db, unit_type: str, granting: list[dict]) -> dict:
                                    "table": "UnitPromotionModifiers"},
                 })
 
-    # Abilities granted through buildings (Nihang's barracks/armory/academy
-    # strength) - intrinsic unit scaling, not Suzerain-owned.
+    # Unit-ability progression attached through shared class tags
+    # (e.g. the Nihang's barracks/armory/academy strength): discovered
+    # mechanically as Unit TypeTags -> matching UnitAbility TypeTags ->
+    # UnitAbilityModifiers -> Modifiers/ModifierArguments, with the
+    # BuildingModifiers grant provenance retained. No name-prefix filter is
+    # used anywhere: the relationship is the shared Tag. Intrinsic unit
+    # scaling, not Suzerain-owned.
     ability_modifiers: list[dict] = []
-    if not _table_exists(db, "UnitAbilityModifiers"):
-        uams = []
-    else:
-        uams = db.execute(
-            """SELECT UnitAbilityType, ModifierId FROM UnitAbilityModifiers
-               WHERE ModifierId IN (SELECT ModifierId FROM Modifiers)"""
-        ).fetchall()
-    for uam in uams:
-        m = db.execute("SELECT * FROM Modifiers WHERE ModifierId=?",
-                       (uam["ModifierId"],)).fetchone()
-        if m is None:
-            continue
-        m = dict(m)
-        eff = _effect_for(db, m["ModifierType"])
-        # keep only modifiers reachable from the Nihang's own ability graph
-        args = _modifier_arguments(db, uam["ModifierId"])
-        names = {a["Value"] for a in args if a["Name"] == "AbilityType"}
-        if not any(n.startswith("ABILITY_NIHANG") for n in names):
-            continue
-        for a in args:
-            if a["Name"] == "AbilityType":
-                continue
-            ability_modifiers.append({
-                "modifier_id": uam["ModifierId"],
-                "unit_ability": uam["UnitAbilityType"],
-                "modifier_type": m["ModifierType"],
-                "effect_type": eff["EffectType"],
-                "argument_name": a["Name"],
-                "argument_value": a["Value"],
-                "family": classify_side_path_argument(
-                    eff["EffectType"], a["Name"], a["Value"])["family"],
-                "disposition": "DECISION_REQUIRED",
-                "reason": ("building-granted ability attached to the unlocked "
-                           "unit; intrinsic unit scaling, ownership decision "
-                           "required"),
-                "provenance": {"source": "official runtime DB",
-                               "table": "UnitAbilityModifiers"}})
+    unit_tags: set[str] = set()
+    if _table_exists(db, "TypeTags"):
+        unit_tags = {r[0] for r in db.execute(
+            "SELECT Tag FROM TypeTags WHERE Type=?", (unit_type,))}
+    tagged_abilities: list[str] = []
+    own_tags: set[str] = set()
+    if unit_tags and _table_exists(db, "UnitAbilities"):
+        abilities_in_db = {r[0] for r in db.execute(
+            "SELECT UnitAbilityType FROM UnitAbilities")}
+        # Narrow to the unit's OWN class tags: a tag identifies this unit's
+        # progression only when no OTHER unit carries it. Generic tags such
+        # as CLASS_MELEE or CLASS_ALL_ERAS are shared by many units and must
+        # not pull the whole world into the side path.
+        unit_types_in_db: set[str] = set()
+        if _table_exists(db, "Units"):
+            unit_types_in_db = {r[0] for r in db.execute(
+                "SELECT UnitType FROM Units")}
+        for tag in sorted(unit_tags):
+            carriers = {r[0] for r in db.execute(
+                "SELECT Type FROM TypeTags WHERE Tag=?", (tag,))}
+            unit_carriers = carriers & unit_types_in_db
+            if unit_carriers <= {unit_type}:
+                own_tags.add(tag)
+        placeholders = ",".join("?" * len(own_tags)) if own_tags else ""
+        if own_tags:
+            for (t,) in db.execute(
+                    "SELECT DISTINCT Type FROM TypeTags WHERE Tag IN "
+                    f"({placeholders})", tuple(sorted(own_tags))):
+                if t in abilities_in_db and t != unit_type:
+                    tagged_abilities.append(t)
+            tagged_abilities.sort()
+    # Grant provenance: which grant modifiers (and buildings) hand out each
+    # tagged ability. A grant modifier carries AbilityType=<ability>; a
+    # BuildingModifiers row attaches that grant modifier to a building.
+    ability_grant_provenance: dict[str, dict] = {}
+    if tagged_abilities and _table_exists(db, "ModifierArguments"):
+        for ab in tagged_abilities:
+            grants = [dict(r) for r in db.execute(
+                "SELECT ModifierId FROM ModifierArguments "
+                "WHERE Name='AbilityType' AND Value=? "
+                "ORDER BY ModifierId", (ab,))]
+            buildings: list[dict] = []
+            if grants and _table_exists(db, "BuildingModifiers"):
+                for g in grants:
+                    for b in db.execute(
+                            "SELECT BuildingType FROM BuildingModifiers "
+                            "WHERE ModifierId=? ORDER BY BuildingType",
+                            (g["ModifierId"],)):
+                        buildings.append({"building": b[0],
+                                          "grant_modifier": g["ModifierId"]})
+            ability_grant_provenance[ab] = {
+                "grant_modifiers": [g["ModifierId"] for g in grants],
+                "buildings": buildings,
+            }
+    if tagged_abilities and _table_exists(db, "UnitAbilityModifiers"):
+        for ab in tagged_abilities:
+            for uam in db.execute(
+                    "SELECT ModifierId FROM UnitAbilityModifiers "
+                    "WHERE UnitAbilityType=? ORDER BY ModifierId", (ab,)):
+                mid = uam["ModifierId"]
+                m = db.execute("SELECT * FROM Modifiers WHERE ModifierId=?",
+                               (mid,)).fetchone()
+                if m is None:
+                    continue
+                m = dict(m)
+                eff = _effect_for(db, m["ModifierType"])
+                for a in _modifier_arguments(db, mid):
+                    if a["Name"] == "AbilityType":
+                        continue
+                    cls = classify_side_path_argument(
+                        eff["EffectType"], a["Name"], a["Value"])
+                    prov = dict(ability_grant_provenance.get(ab, {}))
+                    ability_modifiers.append({
+                        "modifier_id": mid,
+                        "unit_ability": ab,
+                        "modifier_type": m["ModifierType"],
+                        "effect_type": eff["EffectType"],
+                        "argument_name": a["Name"],
+                        "argument_value": a["Value"],
+                        "family": cls["family"],
+                        "disposition": cls["disposition"],
+                        "reason": (cls["reason"] +
+                                   " (unit-ability progression attached "
+                                   "through the shared class tag; intrinsic "
+                                   "to the unlocked unit)"),
+                        "provenance": {"source": "official runtime DB",
+                                       "table": "UnitAbilityModifiers",
+                                       "via": "TypeTags",
+                                       "unit_tags": sorted(unit_tags),
+                                       "grant": prov}})
 
     other_tables = []
     for table in ("UnitReplaces", "UnitUpgrades", "TypeTags",
@@ -1203,6 +1427,10 @@ def unit_side_path(db, unit_type: str, granting: list[dict]) -> dict:
 
     return {"unit_type": unit_type, "granted_by": granting,
             "promotion_class": promotion_class,
+            "unit_tags": sorted(unit_tags),
+            "unit_own_tags": sorted(own_tags),
+            "tagged_abilities": tagged_abilities,
+            "ability_grant_provenance": ability_grant_provenance,
             "direct_cells": direct, "promotion_modifiers": modifiers,
             "ability_modifiers": ability_modifiers,
             "other_tables": other_tables}
@@ -1451,7 +1679,8 @@ def _file_sha256(path) -> str | None:
 def build_audit(db_path: str | Path,
                 coverage_csv: str | Path | None = None,
                 game_root: str | Path | None = None,
-                root: str | Path | None = None) -> dict:
+                root: str | Path | None = None,
+                sem_floor_path: str | Path | None = None) -> dict:
     """Full Phase 5A audit. Reads the official DB copy read-only."""
     con = sqlite3.connect(f"file:{Path(db_path)}?mode=ro", uri=True)
     con.row_factory = sqlite3.Row
@@ -1546,6 +1775,9 @@ def build_audit(db_path: str | Path,
             "side_path_unit_modifier_cells": dict(sorted(Counter(
                 c["disposition"] for p in unit_paths.values()
                 for c in p["promotion_modifiers"]).items())),
+            "side_path_unit_ability_cells": dict(sorted(Counter(
+                c["disposition"] for p in unit_paths.values()
+                for c in p["ability_modifiers"]).items())),
             "side_path_ability_cells": dict(sorted(Counter(
                 c["disposition"] for p in ability_paths.values()
                 for c in p["modifiers"]).items())),
@@ -1603,6 +1835,24 @@ def build_audit(db_path: str | Path,
         comparison = (legacy_comparison(coverage_csv, graph, rows)
                       if coverage_csv else {"available": False})
 
+        floor = load_floor_for_consistency(sem_floor_path, root=root or ".")
+        if floor is None:
+            floor_consistency: dict = {
+                "available": False,
+                "note": ("effect-semantic floor not present: consistency "
+                         "check skipped (CI-safe); pass sem_floor_path to "
+                         "enable it"),
+            }
+        else:
+            report = check_side_path_floor_consistency(
+                side_path_cells_with_tuples({
+                    "side_paths": {
+                        "improvements": improvement_paths,
+                        "units": unit_paths,
+                        "abilities": ability_paths,
+                    }}), floor)
+            floor_consistency = {"available": True, **report}
+
         return {
             "audit": ("Phase 5A closed-world City-State / Suzerain semantic "
                       "audit (audit only; no production registry rows)"),
@@ -1646,6 +1896,7 @@ def build_audit(db_path: str | Path,
             },
             "registry_overlap": overlap,
             "legacy_comparison": comparison,
+            "side_path_floor_consistency": floor_consistency,
         }
     finally:
         con.close()
@@ -1753,5 +2004,10 @@ def summarize(audit: dict) -> dict:
                     dm.get("covered_audit_decision_required"),
                 "covered_audit_excluded": dm.get("covered_audit_excluded"),
             },
+        },
+        "side_path_floor_consistency": {
+            k: v for k, v in
+            audit.get("side_path_floor_consistency", {}).items()
+            if k != "details"
         },
     }

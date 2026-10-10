@@ -97,7 +97,10 @@ produces **0** such rows.
 The three alliance-level sets are Vilnius's Suzerain **and** alliance-level
 variants (`REQUIREMENT_PLAYER_IS_SUZERAIN` **and**
 `REQUIREMENT_PLAYER_HAS_ACTIVE_ALLIANCE_OF_AT_LEAST_LEVEL`); they remain in
-scope. All 91 roots are `MODIFIER_ALL_PLAYERS_ATTACH_MODIFIER`.
+scope because each set contains actual Suzerain-state proof. The alliance
+condition narrows; it never proves on its own (Phase 5A.1 correction: an
+alliance-level requirement alone, or a bonus-enabled check alone, is not
+Suzerain gating). All 91 roots are `MODIFIER_ALL_PLAYERS_ATTACH_MODIFIER`.
 
 ## 5. Closed modifier graph
 
@@ -135,15 +138,16 @@ magnitudes.
 
 Of the 74 numeric rows: 47 candidates, 21 decision-required, 6 excluded.
 
-### 6.2 Side-path cells (240)
+### 6.2 Side-path cells (243)
 
 | side path | candidate | excluded | decision-required |
 |---|---|---|---|
 | unique improvements (9) | 0 | 150 | 58 |
 | unique unit direct cells | 0 | 21 | 0 |
 | unit promotion modifiers | 0 | 1 | 5 |
+| unit-ability progression (`TypeTags` → `UnitAbilityModifiers`) | 0 | 0 | 3 |
 | granted abilities | 0 | 3 | 2 |
-| **total** | **0** | **175** | **65** |
+| **total** | **0** | **175** | **68** |
 
 No side-path cell is ever an automatic candidate: a value outside the
 Suzerain modifier graph can only join the module after an explicit ownership
@@ -259,20 +263,26 @@ the existing factor-versus-percent decision, not naïve multiplication.
 
 ### 8.2 Unique unit: `UNIT_LAHORE_NIHANG` (Lahore)
 
-53 direct `Units` columns are recorded and **all excluded**: the unlock is a
-capability, so the unit's intrinsic Combat (25), Cost (100), BaseMoves,
-Maintenance, promotion class and so on are not claimed by the Suzerain
-multiplier.
+The `Units` table has 53 non-`UnitType` columns inspected. The audit emits
+**21 `direct_cells`**, all excluded: null-valued columns are skipped, and
+shipped zero-valued numeric cells are intentionally omitted (a zero cannot
+change under any multiplier, so there is nothing to own or decide), except
+`Combat`, `Cost`, `BaseMoves` and `BaseSightRange`, which are always recorded
+even when zero. The unlock itself is a capability, so the unit's intrinsic
+Combat (25), Cost (100), BaseMoves and the other emitted stats are not
+claimed by the Suzerain multiplier.
 
-The unit's promotion graph is inventoried as decisions:
+The unit's promotion graph is inventoried as decisions (families now match
+the effect-semantic floor; ownership stays a decision because the rows live
+outside the Suzerain modifier graph):
 
-| promotion | effect | value | requirement |
-|---|---|---|---|
-| `PROMOTION_NIHANG_FLANKED_BONUS` | `EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER` | 7 | `UNIT_IS_FLANKED_REQUIREMENTS` |
-| `PROMOTION_NIHANG_MOVEMENT_BONUS` | `EFFECT_ADJUST_UNIT_MOVEMENT` | 1 | none |
-| `PROMOTION_NIHANG_NO_WOUNDED_PENALTY` | `EFFECT_ADJUST_UNIT_NO_REDUCTION_DAMAGE` | 1 | none |
-| `PROMOTION_NIHANG_FAITH_FOR_VICTORIES` | `EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD` | 50 | none |
-| `PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS` | `EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER` | 10 | **`PLAYER_HAS_LAHORE_SUZERAIN_REQUIREMENTS`** |
+| promotion | effect | value | family | requirement |
+|---|---|---|---|---|
+| `PROMOTION_NIHANG_FLANKED_BONUS` | `EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER` | 7 | `COMBAT_STRENGTH_BONUS` | `UNIT_IS_FLANKED_REQUIREMENTS` |
+| `PROMOTION_NIHANG_MOVEMENT_BONUS` | `EFFECT_ADJUST_UNIT_MOVEMENT` | 1 | `SPATIAL_BUDGET` | none |
+| `PROMOTION_NIHANG_NO_WOUNDED_PENALTY` | `EFFECT_ADJUST_UNIT_NO_REDUCTION_DAMAGE` | 1 | `BOOLEAN_UNLOCK` | none |
+| `PROMOTION_NIHANG_FAITH_FOR_VICTORIES` | `EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD` | 50 | `DEFEATED_STRENGTH_SCALING` | none |
+| `PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS` | `EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER` | 10 | `COMBAT_STRENGTH_BONUS` | **`PLAYER_HAS_LAHORE_SUZERAIN_REQUIREMENTS`** |
 
 The last row is flagged as the strongest side-path candidate: its own
 requirement (`REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X` →
@@ -280,20 +290,46 @@ requirement (`REQUIREMENT_PLAYER_IS_SUZERAIN_OF_X` →
 is Lahore's Suzerain. It is still a decision, not an automatic claim, because
 it lives in `UnitPromotionModifiers` rather than in the trait graph.
 
-The Nihang's barracks/armory/academy strength bonuses (`NIHANG_*_STRENGTH`
-15, reached through `BuildingModifiers` → `UnitAbilityModifiers`) are
-building-granted, intrinsic to the unit, and therefore not claimed.
+The Nihang's barracks/armory/academy strength bonuses are discovered
+mechanically as `TypeTags` → `UnitAbilityModifiers`, never by name:
+
+`UNIT_LAHORE_NIHANG` carries `CLASS_LAHORE_NIHANG` (its own tag: no other
+unit carries it; the generic `CLASS_MELEE` / `CLASS_ALL_ERAS` tags are
+excluded by that rule) →
+`ABILITY_NIHANG_BARRACKS_STRENGTH`, `ABILITY_NIHANG_ARMORY_STRENGTH`,
+`ABILITY_NIHANG_ACADEMY_STRENGTH` carry the same tag →
+`UnitAbilityModifiers` →
+`NIHANG_BARRACKS_STRENGTH` / `NIHANG_ARMORY_STRENGTH` /
+`NIHANG_ACADEMY_STRENGTH`, each `Amount = 15`
+(`EFFECT_ADJUST_UNIT_COMBAT_STRENGTH`, family `COMBAT_STRENGTH_BONUS`,
+disposition `DECISION_REQUIRED`).
+
+The grant provenance is retained per ability: `BUILDING_BARRACKS` and
+`BUILDING_BASILIKOI_PAIDES` (sharing the Barracks grant),
+`BUILDING_ARMORY`, and `BUILDING_MILITARY_ACADEMY` hand out the three
+abilities through the corresponding `LAHORE_NIHANG_*_ABILITY` grant
+modifiers. All three `Amount = 15` cells are machine-accounted in
+`side_paths.units.UNIT_LAHORE_NIHANG.ability_modifiers` (new
+`side_path_unit_ability_cells` bucket: 3 decision-required). They are
+intrinsic progression bonuses of the unlocked unit, not clearly owned by the
+Suzerain multiplier, so they stay decisions.
 
 ### 8.3 Granted abilities (3)
 
 | ability | granted by | effect reached |
 |---|---|---|
 | `ABILITY_TRADE_ROUTE_PLUNDER_IMMUNITY_SEA` | Lisbon | `EFFECT_ADJUST_UNIT_TRADE_ROUTE_PLUNDER_IMMUNITY` (capability, no magnitude) |
-| `ABILITY_WOLIN_NAVAL_UNITS` | Wolin | `EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH`, Amount 25 |
-| `ABILITY_WOLIN_LAND_UNITS` | Wolin | same effect, Amount 25 |
+| `ABILITY_WOLIN_NAVAL_UNITS` | Wolin | `EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH`, Amount 25 (`DEFEATED_STRENGTH_SCALING`) |
+| `ABILITY_WOLIN_LAND_UNITS` | Wolin | same effect, Amount 25 (`DEFEATED_STRENGTH_SCALING`) |
 
-The Wolin magnitude is reached only through the granted ability, so it is an
-explicit ownership decision rather than a candidate.
+The Wolin magnitude is a coefficient/rate tied to defeated-unit strength,
+not ordinary discrete `GREAT_PERSON_POINTS` (the floor row for the tuple is
+unreviewed `MAGNITUDE_UNCLASSIFIED`; the audit override is explicit and
+recorded in the side-path floor-consistency check). It is reached only
+through the granted ability, so it is an explicit ownership decision rather
+than a candidate — and a future production implementation must not inherit
+the `GREAT_PERSON_POINTS` count-like gate merely because the result is
+eventually paid as GP points.
 
 ### 8.4 Granted objects
 
@@ -431,12 +467,22 @@ ecosystem never reached them.
 - Output is deterministic (sorted rows, stable ordering).
 - Without `--coverage-csv` the legacy comparison records
   `available: false` rather than an empty analysis.
+- Without the effect-semantic floor the side-path floor-consistency check
+  records `available: false` (CI-safe); pass `--sem-floor-path` to enable it.
+  The checked-in manifest was generated with the floor present: 32 side-path
+  modifier-tuple cells checked, 15 agreements, 17 explicit overrides (all
+  justified in `SIDE_PATH_EFFECT_RULES`; the Nihang combat/movement/faith
+  rows agree, the Wolin rate and the Nihang base-strength rows override
+  unreviewed floor rows with no production consequence while they stay
+  decisions).
 
 ## 13. What Phase 5B would have to decide
 
 The audit proposes **47 certified candidates** (the numeric rows the existing
-certification gate already accepts) and holds **21 decision-required numeric
-rows**, plus the **65 decision-required side-path cells**. The full list of
+certification gate already accepts: 35 ADDITIVE unconditional, 9 ADDITIVE
+count-like — the nine Bologna GP-point rows — and 3 DISCOUNT unconditional;
+see the dry-run certification test) and holds **21 decision-required numeric
+rows**, plus the **68 decision-required side-path cells**. The full list of
 candidates and their families is in `suzerain_audit.yml`
 (`proposed_candidates`). No production artifact was created, and the
 production registry, CE fork, controller and packaged DLL are unchanged.

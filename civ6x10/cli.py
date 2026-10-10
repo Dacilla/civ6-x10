@@ -182,7 +182,8 @@ def cmd_audit_suzerains(args) -> int:
         write_graph_json, summarize
     root = args.game_root or os.environ.get("CIV6_GAME_ROOT") or None
     audit = build_audit(args.db, coverage_csv=args.coverage_csv,
-                        game_root=root)
+                        game_root=root,
+                        sem_floor_path=args.sem_floor_path)
     man_out = Path(args.manifest)
     man_out.parent.mkdir(parents=True, exist_ok=True)
     write_manifest(audit, man_out)
@@ -276,6 +277,11 @@ def main(argv=None) -> int:
     p.add_argument("--coverage-csv", default=None,
                    help="legacy x10 trait_coverage.csv (historical evidence "
                         "only, never certification)")
+    p.add_argument("--sem-floor-path", default=None,
+                   help="effect-semantic floor CSV for the side-path "
+                        "consistency check; defaults to "
+                        "data/local/effect_semantics.csv when present "
+                        "(CI-safe when absent)")
     p.add_argument("--manifest",
                    default=str(ROOT / "civ6x10" / "rules" /
                                "suzerain_audit.yml"))
