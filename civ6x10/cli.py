@@ -143,6 +143,21 @@ def cmd_generate_suzerain_manifest(args) -> int:
     return 0
 
 
+def cmd_build_backlog(args) -> int:
+    from .backlog import build_backlog, write_backlog
+    backlog = build_backlog(args.governor_audit, args.suzerain_audit)
+    out = Path(args.out)
+    write_backlog(backlog, out)
+    print(f"wrote {out} ({backlog['counts']['imported_total']} imported rows)")
+    print(json.dumps({
+        "counts": backlog["counts"],
+        "by_resolution": backlog["disposition_summary"]
+        if "disposition_summary" in backlog else backlog["by_resolution"],
+        "proposed_candidates": len(backlog["proposed_candidates"]),
+    }, indent=1))
+    return 0
+
+
 def cmd_generate_governor_manifest(args) -> int:
     from .governors import build_governor_manifest, write_governor_manifest
     manifest = build_governor_manifest(args.audit, args.module)
@@ -267,6 +282,18 @@ def main(argv=None) -> int:
     p.add_argument("--module", default="suzerain", choices=["suzerain"])
     p.add_argument("--out", default=str(ROOT / "manifests" / "suzerain.yml"))
     p.set_defaults(fn=cmd_generate_suzerain_manifest)
+    p = sub.add_parser("build-backlog",
+                       help="Phase 6A unified unresolved-semantic backlog "
+                            "(research only, never production)")
+    p.add_argument("--governor-audit",
+                   default=str(ROOT / "civ6x10" / "rules" /
+                               "governor_audit.yml"))
+    p.add_argument("--suzerain-audit",
+                   default=str(ROOT / "civ6x10" / "rules" /
+                               "suzerain_audit.yml"))
+    p.add_argument("--out", default=str(ROOT / "civ6x10" / "rules" /
+                                        "semantic_backlog.yml"))
+    p.set_defaults(fn=cmd_build_backlog)
     p = sub.add_parser("generate-registry")
     p.add_argument("--out", default=str(ROOT / "build" / "X10ProductionRegistry.inc"))
     p.set_defaults(fn=cmd_generate_registry)

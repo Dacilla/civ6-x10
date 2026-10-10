@@ -13,8 +13,8 @@
 > side-path row entered production. All 47 suzerain entries are suzerain-only
 > (`owners == 64`) and the shared-definition count is unchanged at 25.
 > Registry: **971 entries / 967 unique definitions** (773 unconditional + 198
-> count-like). Suzerain status is **CERTIFIED / awaiting targeted live
-> validation** — NOT `LIVE_VALIDATED` (that is Phase 5C).
+> count-like). Suzerain status is **LIVE_VALIDATED** (Phase 5C, tag
+> `phase5b-971-live-validated`, evidence in `spike/validation-evidence/`).
 
 Regenerate with:
 

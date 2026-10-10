@@ -24,7 +24,7 @@ a direct-table bridge.
 | Semantic certification gate (sem floor + curated overrides) | working |
 | Community Extension dependency | implemented (CE-X10 engine mod) |
 | Arbitrary multiplier (e.g. 7.3×, 0 = Off) | **LIVE_VALIDATED** |
-| Module ownership (bitmask, shared-definition rule) | 7 modules (bit 64 = suzerain, CERTIFIED, not yet live-validated) |
+| Module ownership (bitmask, shared-definition rule) | 7 modules, all LIVE_VALIDATED (bit 64 = suzerain) |
 | Controller packaging | local production candidate assembled (`spike/assemble-prod-test.ps1`) |
 | Steam Workshop release | not ready |
 

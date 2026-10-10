@@ -117,10 +117,9 @@ ownership counts + shared-definition count.
   definitions stay untouched, log line
   `X10 multiplier 0: controller OFF (definitions untouched)`.
   `k=1` is the identity multiplier.
-- Governors is now a supported module (default ON, bit 32); Suzerain remains
-  the only unsupported module. Enabling an unsupported one logs
-  `X10_MODULE_<name> requested ON but unsupported in this build; ignored`
-  and applies nothing.
+- Governors is a supported module (default ON, bit 32), as is Suzerain
+  (default ON, bit 64). All seven current modules are supported; there is no
+  unsupported-module warning path in this build.
 
 ## Native architecture notes
 
@@ -165,9 +164,9 @@ regenerate, rebuild, run once, require `MATCH via=store-lookup` for both.
 ## Public-data hygiene (explicit release decision, no legal claim made)
 
 The CE-X10 tree currently carries the generated registry
-(`X10/X10ProductionRegistry.inc`: 813 certified Firaxis modifier IDs +
-official values). Earlier project policy avoided publishing bulk extracted
-Firaxis data. Decision for Release 1:
+(`X10/X10ProductionRegistry.inc`: 971 entries / 967 unique definitions /
+25 shared — certified ModifierIds + official values). Earlier project policy
+avoided publishing bulk extracted Firaxis data. Decision for Release 1:
 
 - The `.inc` becomes a **build artifact, not a source file**: it is
   generated during developer/release builds from local audited inputs

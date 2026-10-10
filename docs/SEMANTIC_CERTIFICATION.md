@@ -46,7 +46,8 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
   bridge helpers, 54 governors-only, 47 suzerain-only; 773 unconditional +
   198 count-like). Suzerain is CERTIFIED (Phase 5B, `phase5a.1-suzerain-audit`
   source; 44 ADDITIVE — 35 unconditional + 9 count-like Bologna GP-point
-  rows — and 3 DISCOUNT Ngazargamu rows), awaiting targeted live validation.
+  rows — and 3 DISCOUNT Ngazargamu rows), live-validated in Phase 5C (tag
+  `phase5b-971-live-validated`).
   Frozen milestones: 684 Release-1 (`release1-684-live-validated`), 715
   Phase-2 (`phase2-715-live-validated`); every earlier line persists
   byte-identical, additions only.
