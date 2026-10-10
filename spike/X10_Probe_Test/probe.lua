@@ -17,6 +17,22 @@ local TARGETS = {
   -- Phase-3B direct-bridge witness: Panama Canal helper, created by the
   -- generated bridge SQL (guarded on the audited official Gold=10).
   { id = "X10_PANAMA_CANAL_YIELD_GOLD", arg = "Amount", official = "10", kind = "flat" },
+  -- Phase-4C Governor witnesses. Governor promotions need not be active:
+  -- an absent handle is reported, not failed. The authoritative proof is the
+  -- native "stored_after_add ... MATCH via=store-lookup" line in
+  -- X10Lifecycle.log. Do NOT add the five engine-integral Governor rows here —
+  -- they intentionally REFUSE at fractional k and must stay out of the
+  -- ordinary PASS set.
+  -- Base Governor additive (harvest yields 50): native value 365 at k=7.3.
+  { id = "GROUNDBREAKER_BONUS_HARVEST_YIELDS", arg = "Amount", official = "50", kind = "flat" },
+  -- Base Governor combat (city combat bonus 5): combat formula -> ~24.04.
+  { id = "GARRISON_COMMANDER_ADJUST_CITY_COMBAT_BONUS", arg = "Amount", official = "5", kind = "combat" },
+  -- Secret Society + supplemental semantic floor (Owls treasury interest 3%):
+  -- additive percent -> 21.9 at k=7.3.
+  { id = "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_GOLD_INTEREST", arg = "Percent", official = "3", kind = "flat" },
+  -- Secret Society Ley Line (Hermetic great engineer ley line, requires the
+  -- Gathering Storm ruleset mode payload): additive 1 -> 7.3 at k=7.3.
+  { id = "HERMETIC_ORDER_GREAT_ENGINEER_LEY_LINE_PRODUCTION", arg = "Amount", official = "1", kind = "flat" },
 }
 
 local raw = GameConfiguration.GetValue("X10_MULTIPLIER")
