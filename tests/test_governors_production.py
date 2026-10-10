@@ -331,8 +331,12 @@ class TestModeFloorAndCombatGate(unittest.TestCase):
         r = certify_row(row, None, rules)
         self.assertFalse(r["certified"])
         self.assertEqual(r["resolution"], "conflict:no-sem-floor-row")
+        # Pass an explicit (empty) floor so the assertion exercises the
+        # missing-floor path deterministically without needing the local-only
+        # effect_semantics.csv; the checked-in mode floor is still consulted
+        # by certify_row and does not cover this bogus tuple.
         with self.assertRaises(SemanticConflict):
-            build_production_registry([row])
+            build_production_registry([row], sem_floor={})
 
     def test_removing_supplemental_evidence_fails_closed(self):
         from civ6x10 import certification as C
