@@ -2,40 +2,54 @@
 
 One configurable Workshop item, independently tested components.
 
-ARBITRARY NATIVE MULTIPLIER PATH: LIVE_GAME_VERIFIED (7.3 test — native
-FLOAT32 config read, four definition writes with stored_after_add MATCH,
-Rome runtime PASS, identical save/reload recomputation).
+ARBITRARY NATIVE MULTIPLIER PATH: LIVE_VALIDATED. The Community Extension
+(GameCore replacement) reads FLOAT32 configuration at init, walks the
+generated registry and writes each certified definition's argument through a
+native store lookup, then re-verifies every write
+(`stored_after_add ... MATCH via=store-lookup`). Save/reload recomputes
+identically, and the ownership bitmask proves module isolation (Governors OFF
+leaves the non-Governor written set byte-identical to Governors ON).
 
-Proven: numeric definition transforms (ADDITIVE/COMBAT/DISCOUNT/PROBABILITY
-families). Unsupported structurally: slots/UI, booleans, bespoke
-repeat/grant mechanics (stay SQL/generator or pending).
+Current production state: **924 registry entries / 920 unique definitions** -
+traits/policies/governments (684), pantheons (31), wonders (97), governors (54),
+with owner bits `1=traits 2=policies 4=governments 8=pantheons 16=wonders
+32=governors`. Suzerain is reserved (bit 64) but NOT implemented.
+
+Proven numeric definition transforms: ADDITIVE, COMBAT (canonical `b_k`),
+DISCOUNT (percent discount / flat cost reduction), PROBABILITY, plus the
+engine-integral gate for effects the engine applies integrally. Unsupported
+structurally: slots/UI, booleans, selectors, object grants, bespoke
+repeat/grant mechanics (they stay SQL/generator or pending).
 
 ## Pipeline
 
 ```text
-official runtime DB (local, private)
-  → inventory (counts derived, never hard-coded)
-  → RELEASE_1 scope (registry rows reachable from traits/policies/governments)
-  → family review (auto-certify obvious numerics; refuse the rest loudly)
-  → per-object manifests (traits/policies/governments.yml)
-  → generator (deterministic, idempotent absolute-SET SQL only)
-  → validation (8 checks incl. idempotent reapply)
+official runtime DB (local, private, read-only)
+  -> audit per component (governors / wonders / pantheons / suzerain)
+       discovery -> recursive modifier graph -> semantic disposition
+  -> inventory (counts derived, never hard-coded)
+  -> RELEASE scope (registry rows reachable from the component roots)
+  -> family review / certification gate (auto-certify proven numerics;
+     refuse the rest loudly)
+  -> per-object manifests (traits/policies/governments/pantheons/wonders/
+     governors.yml)
+  -> generator (deterministic, idempotent absolute-SET SQL only)
+  -> direct-table bridge for columns no modifier addresses (guarded)
+  -> validation (8 checks incl. idempotent reapply)
+  -> CE registry (.inc) + controller packaging
 ```
 
-Two multiplier paths were evaluated:
+Two multiplier paths are combined:
 
-- **A. Generated preset SQL** (Off/×2/×3/×5/×10/×20/×50/×100): deterministic,
+- **Generated preset SQL** (Off/*2/*3/*5/*10/*20/*50/*100): deterministic,
   audited, works today. Shippable fallback, retained regardless.
-- **B. CE dynamic overrides** (arbitrary k, e.g. 7.3×): four-ID architecture
-  proof is LIVE_GAME_VERIFIED (2026-10-07); the 686-entry certified production
-slice
-  (generated registry + native transforms + controller packaging) is
-  STATICALLY VERIFIED and awaits the production-candidate live test —
-  see `docs/PRODUCTION_RELEASE.md`. The init-phase Lua setter is abandoned.
+- **CE dynamic overrides** (arbitrary k, e.g. 7.3): the engine writes each
+  certified argument at runtime; live-validated for traits, pantheons,
+  wonders and governors.
 
-Current recommendation: **HYBRID** — numeric DB modifiers stay generated;
-CE path for arbitrary multipliers and special mechanics, validated per
-release on the production candidate before any Workshop publish.
+Current architecture: **HYBRID** - numeric DB modifiers stay generated and
+certified; the CE path applies the arbitrary multiplier and module ownership,
+validated per release on the production candidate before any Workshop publish.
 
 ## Clean-room policy
 
@@ -52,10 +66,18 @@ registry — 680 unique definitions; LIVE_VALIDATED at FLOAT32 k=7.3 with
 Phase 2: pantheons (23 audited, +31 registry rows for 715 total;
 LIVE_VALIDATED at k=7.3 with 638 writes + 77 refusals and 638/0/0
 verification, tag `phase2-715-live-validated`; see `docs/PANTHEON_AUDIT.md`).
-Phase 3: wonders (53 audited — 19 complete, 14 partial, 20 unsupported/none;
-+97 registry rows for 813 total; see `docs/WONDER_AUDIT.md`). Later:
-governors, city-states/suzerain; then optional belief/great-people/promotion
-modules.
+Phase 3: wonders (53 audited - 19 complete, 14 partial, 20 unsupported/none;
++97 registry rows plus the guarded direct-table bridge for 813 total;
+LIVE_VALIDATED at k=7.3, tag `phase3-813-live-validated`; see
+`docs/WONDER_AUDIT.md`).
+Phase 4: governors (54 audited candidate rows for 924 total, owner bit 32;
+LIVE_VALIDATED at k=7.3 in both module states, tag
+`phase4b-924-live-validated`; see `docs/GOVERNOR_AUDIT.md`).
+Phase 5A: suzerain / city-states - closed-world semantic audit only
+(`docs/SUZERAIN_AUDIT.md`, `civ6x10/rules/suzerain_audit.yml`); proposed
+owner bit 64, no production rows, no CE/native/controller change. Phase 5B
+is the reviewed production slice.
+Then optional belief/great-people/promotion modules.
 Unrelated global semantics stay NEEDS_REVIEW by design. See
 `docs/PRODUCTION_RELEASE.md` for packaging, shared-ownership rule, and
 UUIDs, and `docs/SEMANTIC_CERTIFICATION.md` for the certification gate.

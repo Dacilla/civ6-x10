@@ -177,6 +177,26 @@ def cmd_audit_governors(args) -> int:
     return 0
 
 
+def cmd_audit_suzerains(args) -> int:
+    from .suzerain import build_audit, write_manifest, write_inventory_csv, \
+        write_graph_json, summarize
+    root = args.game_root or os.environ.get("CIV6_GAME_ROOT") or None
+    audit = build_audit(args.db, coverage_csv=args.coverage_csv,
+                        game_root=root)
+    man_out = Path(args.manifest)
+    man_out.parent.mkdir(parents=True, exist_ok=True)
+    write_manifest(audit, man_out)
+    write_inventory_csv(audit["rows"], args.inventory)
+    write_graph_json(audit, args.graph)
+    s = summarize(audit)
+    print(f"wrote {man_out} (audit only; Phase 5B consumes this)")
+    print(f"wrote {args.inventory} ({s['counts']['reachable_arguments']} "
+          f"reachable argument rows)")
+    print(f"wrote {args.graph}")
+    print(json.dumps(s, indent=1))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="civ6x10")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -245,6 +265,26 @@ def main(argv=None) -> int:
     p.add_argument("--graph",
                    default=str(ROOT / "data" / "local" / "governor_graph.json"))
     p.set_defaults(fn=cmd_audit_governors)
+    p = sub.add_parser("audit-suzerains",
+                       help="Phase 5A closed-world City-State/Suzerain "
+                            "semantic audit (AUDIT ONLY, no production rows)")
+    p.add_argument("--db", required=True,
+                   help="official Gameplay SQLite COPY (never the live install)")
+    p.add_argument("--game-root", default=None,
+                   help="installed Civ VI root (provenance only); "
+                        "falls back to CIV6_GAME_ROOT")
+    p.add_argument("--coverage-csv", default=None,
+                   help="legacy x10 trait_coverage.csv (historical evidence "
+                        "only, never certification)")
+    p.add_argument("--manifest",
+                   default=str(ROOT / "civ6x10" / "rules" /
+                               "suzerain_audit.yml"))
+    p.add_argument("--inventory",
+                   default=str(ROOT / "data" / "local" /
+                               "suzerain_effects.csv"))
+    p.add_argument("--graph",
+                   default=str(ROOT / "data" / "local" / "suzerain_graph.json"))
+    p.set_defaults(fn=cmd_audit_suzerains)
     args = ap.parse_args(argv)
     return args.fn(args)
 

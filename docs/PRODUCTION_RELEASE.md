@@ -6,13 +6,15 @@
   `spike/validation-evidence/`).
 - Policies: **LIVE_VALIDATED** (same tag/evidence).
 - Governments: **LIVE_VALIDATED** (same tag/evidence).
-- Pantheons: **CERTIFIED** (Phase 2: 23 pantheons audited, 31 native rows —
-  28 unconditional + 3 count-like; 3 partial with documented exclusions;
-  see `docs/PANTHEON_AUDIT.md`). Awaiting targeted live validation.
-- Wonders: **CERTIFIED** (Phase 3 + 3B + 3C: 53 wonders audited — 22 complete,
-  29 partial, 2 unsupported; 154 native rows = 97 modifier-backed + 57
-  generated direct-table bridge helpers; see `docs/WONDER_AUDIT.md`).
-  Awaiting targeted live validation.
+- Pantheons: **LIVE_VALIDATED** (Phase 2, tag `phase2-715-live-validated`:
+  23 pantheons audited, 31 native rows — 28 unconditional + 3 count-like;
+  3 partial with documented exclusions; 638 writes + 77 refusals at k=7.3;
+  see `docs/PANTHEON_AUDIT.md`).
+- Wonders: **LIVE_VALIDATED** (Phase 3 + 3B + 3C, tag `phase3-813-live-validated`:
+  53 wonders audited — 22 complete, 29 partial, 2 unsupported; 97
+  modifier-backed rows plus the 57-helper guarded direct-table bridge;
+  bridge diagnostics 57/57/0 and Zeus 365 + Panama 73 witness MATCH;
+  see `docs/WONDER_AUDIT.md`).
 - Governors: **LIVE_VALIDATED** (Phase 4B + 4C, tag
   `phase4b-924-live-validated`: 54 audited candidate rows from
   `docs/GOVERNOR_AUDIT.md`, owner bit 32, `X10_MODULE_GOVERNORS` default ON;
@@ -22,21 +24,29 @@
   transform_refused=171 ... skipped_other=54`, exactly 54
   `owners=0x20 not-all-enabled skipped` lines and zero Governor mutations.
   Evidence: `spike/validation-evidence/X10*924-gov*-live.log`).
-- Suzerains / City-states: not started (remain unsupported).
+- Suzerains / City-states: **Phase 5A audit complete, NOT implemented.**
+  The closed-world audit found **48 active City-States**, 91 Suzerain-root
+  modifiers, 182 reachable definitions, 246 reachable argument rows
+  (74 numeric / 172 non-numeric) and 240 side-path cells, with **47
+  certified candidates**, 21 decision-required numeric rows and 65
+  decision-required side-path cells. No `manifests/suzerain.yml`, no
+  registry rows, no owner bit 64, no CE/native/controller change, no live
+  test. See `docs/SUZERAIN_AUDIT.md` and `civ6x10/rules/suzerain_audit.yml`;
+  Phase 5B is the reviewed production slice.
 
 Follow-up (not a blocker): the two excluded Toqui governor-pressure rows
 await stored-form re-certification via the store-lookup witness.
 
-Status vocabulary (do not conflate):
-
-Status vocabulary (do not conflate):
+## Status vocabulary (do not conflate)
 
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
 - **924-entry certified production slice (684 Release-1 + 31 Pantheon + 155
-  Wonder/Suleiman incl. 57 bridge helpers + 54 Governors): STATICALLY
-  VERIFIED, awaiting targeted live validation.**
+  Wonder/Suleiman incl. 57 bridge helpers + 54 Governors): LIVE_VALIDATED**
+  at stored FLOAT32 k=7.3 for every component module, in both the ON and OFF
+  module states (Governors ON: 748 writes / 176 refusals; OFF: 699 / 171 with
+  54 ownership skips; both `post_add_match` = writes, `post_add_mismatch` = 0).
   686 unconditional entries transform at any k; 184 conditional entries
   apply only on integral results under the FLOAT32-aware exactness rule
   (at live stored-float k=7.3: 748 static successes of 924 — honest

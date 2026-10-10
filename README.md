@@ -10,7 +10,7 @@ a direct-table bridge.
 > are LIVE_VALIDATED** at stored FLOAT32 k=7.3 (see
 > `docs/PRODUCTION_RELEASE.md` for per-module counters and
 > `spike/validation-evidence/` for the archived native logs). City-states /
-> suzerain are not started. Controller packaging is functionally complete
+> suzerain is audited (Phase 5A) but not yet produced.  Controller packaging is functionally complete
 > locally; **Steam Workshop release is not ready** pending the public-data
 > hygiene step.
 
@@ -30,7 +30,7 @@ a direct-table bridge.
 Details: `docs/ARCHITECTURE.md`. Development setup: `docs/DEVELOPMENT.md`.
 Tests: `docs/TESTING.md`. Plan: `docs/ROADMAP.md`. Audits:
 `docs/WONDER_AUDIT.md`, `docs/PANTHEON_AUDIT.md`, `docs/GOVERNOR_AUDIT.md`,
-`docs/SEMANTIC_CERTIFICATION.md`. CE research:
+`docs/SUZERAIN_AUDIT.md`, `docs/SEMANTIC_CERTIFICATION.md`. CE research:
 `docs/COMMUNITY_EXTENSION_EVALUATION.md`, `docs/DYNAMIC_MULTIPLIER_SPIKE.md`,
 `docs/NATIVE_HOOK_VALIDATION.md`.
 
@@ -39,6 +39,8 @@ Tests: `docs/TESTING.md`. Plan: `docs/ROADMAP.md`. Audits:
 ```powershell
 python -m pytest -q            # 223+ tests; DB-backed groups skip
                                # cleanly without private data (CI runs this)
+```
+
 With the sibling audit workspace present (private Firaxis data, gitignored):
 
 ```powershell
