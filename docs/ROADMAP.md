@@ -3,8 +3,7 @@
 ## Live-validated components (stored FLOAT32 k=7.3, per-module counters in
 `docs/PRODUCTION_RELEASE.md`)
 
-1. traits / policies / governments - **LIVE_VALIDATED**
-   (684-entry Release-1 registry, tag `release1-684-live-validated`).
+1. traits / policies / governments - **LIVE_VALIDATED**   (684-entry Release-1 registry, tag `release1-684-live-validated`).
 2. pantheons - **LIVE_VALIDATED** (+31 rows, tag `phase2-715-live-validated`,
    audit `docs/PANTHEON_AUDIT.md`).
 3. wonders - **LIVE_VALIDATED** (+97 modifier-backed rows plus the guarded
@@ -13,16 +12,10 @@
 4. governors - **LIVE_VALIDATED** (Phase 4B + 4C, +54 rows for 924 total,
    owner bit 32, tag `phase4b-924-live-validated`, audit
    `docs/GOVERNOR_AUDIT.md`).
-
-## Certified, awaiting live validation
-
-5. **Suzerain / City-States - CERTIFIED** (Phase 5A.1 audit + Phase 5B
-   production integration, +47 rows for 971 total, owner bit 64,
-   `X10_MODULE_SUZERAIN` default ON; 44 ADDITIVE — 35 unconditional + 9
-   count-like Bologna GP-point rows — and 3 DISCOUNT; audit
-   `docs/SUZERAIN_AUDIT.md`, manifest mechanically derived from
-   `civ6x10/rules/suzerain_audit.yml`). **NOT live-validated**: Phase 5C
-   performs the targeted live validation. The unresolved backlog stays open:
+5. **Suzerain / City-States - LIVE_VALIDATED** (Phase 5A.1 audit + Phase 5B
+   production integration + Phase 5C live validation, +47 rows for 971
+   total, owner bit 64, tag `phase5b-971-live-validated`, audit
+   `docs/SUZERAIN_AUDIT.md`). The unresolved backlog stays open:
    21 main-graph numeric decisions, 68 side-path decisions, 175 side-path
    exclusions, unique-improvement ownership questions and Nihang side-path
    questions (including the Suzerain-gated `NIHANG_SUZERAIN_COMBAT_BONUS`

@@ -24,13 +24,18 @@
   transform_refused=171 ... skipped_other=54`, exactly 54
   `owners=0x20 not-all-enabled skipped` lines and zero Governor mutations.
   Evidence: `spike/validation-evidence/X10*924-gov*-live.log`).
-- Suzerains / City-states: **CERTIFIED / awaiting targeted live validation**
-  (Phase 5A.1 audit + Phase 5B production integration: 47 conservative
-  numeric rows mechanically derived from `civ6x10/rules/suzerain_audit.yml`
+- Suzerains / City-states: **LIVE_VALIDATED** (Phase 5A.1 audit + Phase 5B
+  production integration + Phase 5C live validation, tag
+  `phase5b-971-live-validated`: 47 conservative numeric rows mechanically
+  derived from `civ6x10/rules/suzerain_audit.yml`
   (`phase5a.1-suzerain-audit` source), owner bit 64, `X10_MODULE_SUZERAIN`
   default ON; 44 ADDITIVE — 35 unconditional + 9 count-like Bologna
   GP-point rows — and 3 DISCOUNT Ngazargamu rows with `compound_discount`.
-  NOT live-validated: Phase 5C performs the targeted live validation.
+  Suzerain ON: `writes=786 transform_refused=185 ... post_add_match=786 ...`
+  with 38 of 47 written and 9 Bologna integral refusals. Suzerain OFF:
+  `writes=748 transform_refused=176 ... skipped_other=47`, exactly 47
+  `owners=0x40 not-all-enabled skipped` lines and zero Suzerain mutations.
+  Evidence: `spike/validation-evidence/X10*971-suz*-live.log`).
   Explicitly out of scope: the 21 main-graph numeric decisions, the 68
   side-path decisions, improvement/Nihang intrinsic data, the Wolin
   coefficients, Valletta discounts, Hattusa/Zanzibar quantities, Cardiff
@@ -47,10 +52,10 @@ await stored-form re-certification via the store-lookup witness.
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
 - **971-entry certified production slice (684 Release-1 + 31 Pantheon + 155
   Wonder/Suleiman incl. 57 bridge helpers + 54 Governors + 47 Suzerain):
-  LIVE_VALIDATED** for traits/pantheons/wonders/governors at stored FLOAT32
-  k=7.3 in both the ON and OFF module states; **Suzerain is CERTIFIED
-  (statically verified, 47/47 through the unmodified gate) and awaits its
-  targeted live validation (Phase 5C).**
+  LIVE_VALIDATED** for every component module at stored FLOAT32
+  k=7.3 in both the ON and OFF module states (Suzerain ON: 786 writes / 185
+  refusals; OFF: 748 / 176 with 47 ownership skips; both `post_add_match` =
+  writes, `post_add_mismatch` = 0).
   773 unconditional entries transform at any k; 198 conditional entries
   apply only on integral results under the FLOAT32-aware exactness rule
   (at live stored-float k=7.3: 786 static successes of 971 — honest

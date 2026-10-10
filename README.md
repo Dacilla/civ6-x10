@@ -6,14 +6,14 @@ replacement GameCore performs the arbitrary multiplier at runtime; the
 controller carries configuration plus a generated, guarded SQL fallback and
 a direct-table bridge.
 
-> Status: **traits, policies, governments, pantheons, wonders and governors
-> are LIVE_VALIDATED** at stored FLOAT32 k=7.3 (see
+> Status: **all seven modules — traits, policies, governments, pantheons,
+> wonders, governors and suzerain — are LIVE_VALIDATED** at stored FLOAT32
+> k=7.3 (see
 > `docs/PRODUCTION_RELEASE.md` for per-module counters and
-> `spike/validation-evidence/` for the archived native logs). **Suzerain is
-> CERTIFIED** (47 conservative numeric rows, owner bit 64) and awaits
-> targeted live validation (Phase 5C). Controller packaging is functionally
-> complete locally; **Steam Workshop release is not ready** pending the
-> public-data hygiene step.
+> `spike/validation-evidence/` for the archived native logs). Controller
+> packaging is functionally complete
+> locally; **Steam Workshop release is not ready** pending the public-data
+> hygiene step.
 
 ## Architecture status
 

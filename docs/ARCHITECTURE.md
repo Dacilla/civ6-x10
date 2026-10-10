@@ -14,7 +14,9 @@ Current production state: **971 registry entries / 967 unique definitions** -
 traits/policies/governments (684), pantheons (31), wonders (97), governors (54),
 suzerain (47),
 with owner bits `1=traits 2=policies 4=governments 8=pantheons 16=wonders
-32=governors 64=suzerain`. Suzerain is CERTIFIED (not yet live-validated);
+32=governors 64=suzerain`. All seven modules are LIVE_VALIDATED; suzerain
+was certified in Phase 5B and live-validated in Phase 5C (tag
+`phase5b-971-live-validated`);
 bit 128 is the next free bit.
 
 Proven numeric definition transforms: ADDITIVE, COMBAT (canonical `b_k`),
@@ -47,8 +49,7 @@ Two multiplier paths are combined:
   audited, works today. Shippable fallback, retained regardless.
 - **CE dynamic overrides** (arbitrary k, e.g. 7.3): the engine writes each
   certified argument at runtime; live-validated for traits, pantheons,
-  wonders and governors; suzerain is certified and statically verified,
-  awaiting its targeted live validation.
+  wonders, governors and suzerain (Phase 5C).
 
 Current architecture: **HYBRID** - numeric DB modifiers stay generated and
 certified; the CE path applies the arbitrary multiplier and module ownership,
@@ -81,8 +82,9 @@ Phase 5A: suzerain / city-states - closed-world semantic audit only
 owner bit 64, no production rows, no CE/native/controller change. Phase 5B
 is the reviewed production slice.
 Phase 5B: suzerain production integration (+47 conservative rows for 971
-total, owner bit 64, `X10_MODULE_SUZERAIN` default ON) - CERTIFIED, awaiting
-targeted live validation (Phase 5C).
+total, owner bit 64, `X10_MODULE_SUZERAIN` default ON). Phase 5C: targeted
+live validation passed (tag `phase5b-971-live-validated`); suzerain is now
+LIVE_VALIDATED.
 Then optional belief/great-people/promotion modules.
 Unrelated global semantics stay NEEDS_REVIEW by design. See
 `docs/PRODUCTION_RELEASE.md` for packaging, shared-ownership rule, and

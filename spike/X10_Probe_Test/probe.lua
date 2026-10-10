@@ -33,6 +33,21 @@ local TARGETS = {
   -- Secret Society Ley Line (Hermetic great engineer ley line, requires the
   -- Gathering Storm ruleset mode payload): additive 1 -> 7.3 at k=7.3.
   { id = "HERMETIC_ORDER_GREAT_ENGINEER_LEY_LINE_PRODUCTION", arg = "Amount", official = "1", kind = "flat" },
+  -- Phase-5C Suzerain witnesses. City-states need not spawn and Suzerain
+  -- status is never earned naturally: an absent handle is reported, not
+  -- failed. The authoritative proof is the native "stored_after_add ...
+  -- MATCH via=store-lookup" line in X10Lifecycle.log. Do NOT add the nine
+  -- Bologna GP-point rows here — they intentionally REFUSE at fractional k
+  -- (count-like 1 x 7.3) and must stay out of the ordinary PASS set.
+  -- Auckland flat plot yield (base shallow-water production 1): 1 -> 7.3.
+  { id = "MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_BASE", arg = "Amount", official = "1", kind = "flat" },
+  -- Antananarivo percent magnitude (culture per earned great person 2):
+  -- additive percent -> 14.6 at k=7.3.
+  { id = "MINOR_CIV_ANTANANARIVO_CULTURE_FROM_EARNED_GREAT_PEOPLE_BONUS", arg = "Amount", official = "2", kind = "flat" },
+  -- Ngazargamu compound discount (land unit purchase -20%): the DISCOUNT
+  -- transform d_k = (1-(1-d)^k)*100 -> ~80.3864 at stored FLOAT32 k=7.3,
+  -- never 20 x 7.3 = 146.
+  { id = "MINOR_CIV_NGAZARGAMU_BARRACKS_STABLE_PURCHASE_BONUS", arg = "Amount", official = "20", kind = "discount" },
 }
 
 local raw = GameConfiguration.GetValue("X10_MULTIPLIER")
@@ -50,6 +65,12 @@ end
 local function x10(kind, v, kk)
   if kind == "combat" then
     return 25 * math.log(kk * (math.exp(v / 25) - 1) + 1)
+  elseif kind == "discount" then
+    -- same mathematics as production compound_discount_for_multiplier:
+    -- d_k = (1-(1-d)^k)*100, preserving the official sign
+    local d = math.abs(v) / 100.0
+    local out = (1 - (1 - d) ^ kk) * 100.0
+    return v < 0 and -out or out
   else
     return v * kk
   end

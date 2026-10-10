@@ -157,5 +157,90 @@ class TestGovernorProbeWitnesses(unittest.TestCase):
             self.assertAlmostEqual(got, want, delta=0.02, msg=mid)
 
 
+SUZERAIN_WITNESSES = {
+    "MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_BASE": "flat",
+    "MINOR_CIV_ANTANANARIVO_CULTURE_FROM_EARNED_GREAT_PEOPLE_BONUS": "flat",
+    "MINOR_CIV_NGAZARGAMU_BARRACKS_STABLE_PURCHASE_BONUS": "discount",
+}
+
+# The nine Bologna GP-point rows intentionally refuse at fractional k and
+# must never become ordinary probe PASS targets.
+BOLOGNA_REFUSAL_ROWS = {
+    "MINOR_CIV_BOLOGNA_GREAT_ADMIRAL_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_ARTIST_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_ENGINEER_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_GENERAL_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_MERCHANT_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_MUSICIAN_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_PROPHET_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_SCIENTIST_POINTS_BONUS",
+    "MINOR_CIV_BOLOGNA_GREAT_WRITER_POINTS_BONUS",
+}
+
+
+class TestSuzerainProbeWitnesses(unittest.TestCase):
+    """Phase 5C: the disposable probe carries three Suzerain witnesses.
+
+    Absent runtime handles are reported, not failed: the authoritative proof
+    is the native stored_after_add MATCH line. The nine Bologna count-like
+    rows must stay OUT of the PASS set because they refuse at fractional k
+    by design; the native transform-refused lines are their proof.
+    """
+
+    def test_all_three_witnesses_present(self):
+        targets = probe_targets()
+        for mid, kind in SUZERAIN_WITNESSES.items():
+            self.assertIn(mid, targets)
+            self.assertEqual(targets[mid]["kind"], kind, mid)
+
+    def test_witness_arguments(self):
+        targets = probe_targets()
+        self.assertEqual(
+            targets["MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_BASE"]
+            ["official"], "1")
+        self.assertEqual(
+            targets["MINOR_CIV_ANTANANARIVO_CULTURE_FROM_EARNED_GREAT_PEOPLE_BONUS"]
+            ["official"], "2")
+        self.assertEqual(
+            targets["MINOR_CIV_NGAZARGAMU_BARRACKS_STABLE_PURCHASE_BONUS"]
+            ["official"], "20")
+        for mid in SUZERAIN_WITNESSES:
+            self.assertEqual(targets[mid]["arg"], "Amount", mid)
+
+    def test_bologna_rows_not_probe_targets(self):
+        targets = probe_targets()
+        self.assertEqual(len(BOLOGNA_REFUSAL_ROWS), 9)
+        for mid in BOLOGNA_REFUSAL_ROWS:
+            self.assertNotIn(mid, targets, mid)
+
+    def test_discount_helper_present(self):
+        text = (PROBE_DIR / "probe.lua").read_text(encoding="utf-8")
+        self.assertIn('kind == "discount"', text)
+        self.assertIn("(1 - d) ^ kk", text)
+
+    def test_probe_expectations_match_native_semantics(self):
+        import math
+        from civ6x10 import transforms as T
+        targets = probe_targets()
+        kf = T.stored_float32(7.3)
+        cases = {
+            "MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_BASE": 7.3,
+            "MINOR_CIV_ANTANANARIVO_CULTURE_FROM_EARNED_GREAT_PEOPLE_BONUS":
+                14.6,
+            # compound discount, never 20 x 7.3 = 146
+            "MINOR_CIV_NGAZARGAMU_BARRACKS_STABLE_PURCHASE_BONUS": 80.3864,
+        }
+        for mid, want in cases.items():
+            v = float(targets[mid]["official"])
+            if targets[mid]["kind"] == "discount":
+                d = abs(v) / 100.0
+                got = (1.0 - (1.0 - d) ** kf) * 100.0
+                self.assertAlmostEqual(got, want, delta=0.02, msg=mid)
+                self.assertNotAlmostEqual(got, v * kf, delta=1.0, msg=mid)
+            else:
+                got = v * kf
+            self.assertAlmostEqual(got, want, delta=0.02, msg=mid)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
