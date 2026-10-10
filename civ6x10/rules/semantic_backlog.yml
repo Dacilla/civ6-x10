@@ -16,7 +16,7 @@ by_group_resolution:
   healing semantics:
     RESOLVED_EXCLUDED: 2
   loyalty / identity / religious pressure:
-    NEEDS_LIVE_PROBE: 6
+    RESOLVED_CANDIDATE: 6
     STILL_SEMANTICALLY_UNRESOLVED: 12
   multiplicative / ScalingFactor semantics:
     STILL_SEMANTICALLY_UNRESOLVED: 8
@@ -30,9 +30,8 @@ by_group_resolution:
   whole-unit / count-like magnitudes:
     RESOLVED_CANDIDATE_COUNT_LIKE: 22
 by_resolution:
-  NEEDS_LIVE_PROBE: 6
   NEEDS_PRODUCT_DECISION: 58
-  RESOLVED_CANDIDATE: 10
+  RESOLVED_CANDIDATE: 16
   RESOLVED_CANDIDATE_COUNT_LIKE: 22
   RESOLVED_EXCLUDED: 25
   STILL_SEMANTICALLY_UNRESOLVED: 21
@@ -42,16 +41,45 @@ counts:
   imported_suzerain_main: 21
   imported_suzerain_side: 68
   imported_total: 142
+probe_cleared_addendum:
+  log_evidence: spike/validation-evidence/X10Lifecycle.toqui-probe.log
+  note: storage observability proven live on both sessions for both rows; semantics are plain loyalty pressure. Joins the
+    production projection; the source backlog stays 142 occurrences.
+  pairs:
+  - argument: Amount
+    count_like: false
+    effect_type: EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
+    family: LOYALTY
+    kind: ADDITIVE
+    live_match: 29.2 on load and reload
+    modifier_id: TOQUI_DOMESTIC_LOYALTY
+    modifier_type: MODIFIER_PLAYER_GOVERNORS_ADJUST_GOVERNOR_IDENTITY_PRESSURE
+    owner: traits
+    trait: TRAIT_CIVILIZATION_MAPUCHE_TOQUI
+    transform: canonical_x10_multiply
+    value: '4'
+  - argument: Amount
+    count_like: false
+    effect_type: EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
+    family: LOYALTY
+    kind: ADDITIVE
+    live_match: 29.2 on load and reload
+    modifier_id: TOQUI_FOREIGN_LOYALTY
+    modifier_type: MODIFIER_PLAYER_GOVERNORS_ADJUST_GOVERNOR_IDENTITY_PRESSURE
+    owner: traits
+    trait: TRAIT_CIVILIZATION_MAPUCHE_TOQUI
+    transform: canonical_x10_multiply
+    value: '4'
 production_pair_counts:
   kinds:
-    ADDITIVE: 27
+    ADDITIVE: 33
     COMBAT: 1
     DISCOUNT: 3
   unique_count_like: 21
-  unique_governor_pairs: 14
-  unique_non_count_like: 10
-  unique_production_pairs: 31
-  unique_suzerain_pairs: 17
+  unique_governor_pairs: 16
+  unique_non_count_like: 16
+  unique_production_pairs: 37
+  unique_suzerain_pairs: 21
 proposed_candidates:
 - argument: Amount
   count_like: false
@@ -102,6 +130,98 @@ proposed_candidates:
   source: suzerain
   transform: canonical_x10_multiply
   value: '10'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_RELIGION_PRESSURE
+  family: LOYALTY
+  gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH 730.0 on load+reload)
+  k10: writes 1000.0
+  k73: writes 730.0
+  kind: ADDITIVE
+  modifier_id: CARDINAL_BISHOP_PRESSURE
+  modifier_type: MODIFIER_SINGLE_CITY_RELIGION_PRESSURE
+  owner: governors
+  root: GOVERNOR_THE_CARDINAL
+  source: governors
+  transform: canonical_x10_multiply
+  value: '100'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on load+reload)
+  k10: writes 40.0 / 20.0
+  k73: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  kind: ADDITIVE
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  owner: governors
+  root: GOVERNOR_OWLS_OF_MINERVA
+  source: governors
+  transform: canonical_x10_multiply
+  value: '4'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on load+reload)
+  k10: writes 40.0 / 20.0
+  k73: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  owner: suzerain
+  root: CIVILIZATION_PRESLAV
+  source: suzerain
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on load+reload)
+  k10: writes 40.0 / 20.0
+  k73: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  owner: suzerain
+  root: CIVILIZATION_PRESLAV
+  source: suzerain
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on load+reload)
+  k10: writes 40.0 / 20.0
+  k73: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  owner: suzerain
+  root: CIVILIZATION_PRESLAV
+  source: suzerain
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  family: LOYALTY
+  gate_evidence: '6B must add a mixed_overrides entry for (EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED,
+    Amount) -> ADDITIVE: scalar pressure rate, not an object grant (same shape as the two live mixed overrides); the floor''s
+    GRANT_OBJECT row is AUTO_PATTERN heuristic. Storage observability proven live (MATCH 2920.0 on load+reload)'
+  k10: writes 4000.0
+  k73: writes 2920.0
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE
+  modifier_type: MODIFIER_PLAYER_GRANT_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  owner: suzerain
+  root: CIVILIZATION_VATICAN_CITY
+  source: suzerain
+  transform: canonical_x10_multiply
+  value: '400'
 - argument: Amount
   count_like: false
   effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
@@ -602,6 +722,13 @@ proposed_gate_evidence:
     rationale: positive-means-discount convention proven cross-effect (CHEAPER naming + faith context; FLOWER_POWER -100 is
       the surcharge mirror); boundary +100 is the free fixed point under compound
     semantics: PERCENT_DISCOUNT
+  exclusion_removals:
+  - action: remove from excluded_effects
+    blast_radius: 'exactly the two Toqui carriers (verified: no other Modifiers row dispatches this effect); both join the
+      projection as traits-owned'
+    effect: EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
+    rationale: 'the 2026-10-08 stored-form hold is lifted: both carriers MATCH via=store-lookup on load AND reload with current
+      native code (Phase-6A.2 probe evidence); LOYALTY pressure is float-valued (live-proven 21.9 precedent)'
   mixed_overrides_add:
   - argument: BuildingProductionPercent
     blast_radius: Citadel + Ayutthaya rows (Ramses rows are out of production scope and stay out)
@@ -609,9 +736,30 @@ proposed_gate_evidence:
     kind: ADDITIVE
     rationale: scalar percent of production cost (signed +25/+10/-15/+30 multi-carrier pattern); same shape as the two live
       mixed overrides
+  - argument: Amount
+    blast_radius: Vatican row only (sole carrier of this effect)
+    effect: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+    kind: ADDITIVE
+    rationale: scalar pressure rate per activation, not an object grant; Vatican storage proven live (MATCH 2920.0 on load+reload);
+      same shape as the two live mixed overrides
   note: PROPOSAL ONLY — not applied to certified_overrides.yml. Each addition must land atomically with its rows, or the rows
     would certify with the wrong shape (proven by gate dry run).
 proposed_production_pairs:
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_RELIGION_PRESSURE
+  family: LOYALTY
+  kind: ADDITIVE
+  modifier_id: CARDINAL_BISHOP_PRESSURE
+  modifier_type: MODIFIER_SINGLE_CITY_RELIGION_PRESSURE
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_THE_CARDINAL
+    - GOVERNOR_PROMOTION_CARDINAL_BISHOP
+  transform: canonical_x10_multiply
+  value: '100'
 - argument: BuildingProductionPercent
   count_like: false
   effect_type: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
@@ -672,6 +820,21 @@ proposed_production_pairs:
     - GOVERNOR_PROMOTION_DEFENSE_LOGISTICS
   transform: canonical_x10_multiply
   value: '1'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  kind: ADDITIVE
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  occurrences: 1
+  owner: governors
+  sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3
+  transform: canonical_x10_multiply
+  value: '4'
 - argument: Percent
   count_like: false
   effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
@@ -959,6 +1122,51 @@ proposed_production_pairs:
   value: '2'
 - argument: Amount
   count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_PRESLAV
+    - MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_ARMORY_IDENTITY_BONUS
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_PRESLAV
+    - MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_BARRACKS_STABLE_IDENTITY_BONUS
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_PRESLAV
+    - MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_MILITARY_ACADEMY_IDENTITY_BONUS
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  count_like: false
   effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
   family: PERCENT_DISCOUNT
   kind: DISCOUNT
@@ -1002,6 +1210,21 @@ proposed_production_pairs:
     - MINOR_CIV_VALLETTA_TRAIT via MINOR_CIV_VALLETTA_UNIQUE_INFLUENCE_PURCHASE_CHEAPER_WALLS_BONUS
   transform: compound_discount
   value: '50'
+- argument: Amount
+  count_like: false
+  effect_type: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  family: LOYALTY
+  kind: ADDITIVE
+  modifier_id: MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE
+  modifier_type: MODIFIER_PLAYER_GRANT_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  occurrences: 1
+  owner: suzerain
+  sources:
+  - - suzerain
+    - CIVILIZATION_VATICAN_CITY
+    - MINOR_CIV_VATICAN_CITY_TRAIT via MINOR_CIV_VATICAN_CITY_UNIQUE_INFLUENCE_BONUS
+  transform: canonical_x10_multiply
+  value: '400'
 - argument: Amount
   count_like: true
   effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT
@@ -1081,160 +1304,6 @@ proposed_production_pairs:
   transform: canonical_x10_multiply
   value: '2'
 rows:
-- argument: Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: religious pressure is a pressure rate (Cardinal Bishop); same class as identity pressure - needs review
-  count_like: false
-  effect_type: EFFECT_ADJUST_CITY_RELIGION_PRESSURE
-  family: LOYALTY
-  group: loyalty / identity / religious pressure
-  k10_expectation: pending probe
-  k73_expectation: pending probe
-  modifier_id: CARDINAL_BISHOP_PRESSURE
-  modifier_type: MODIFIER_SINGLE_CITY_RELIGION_PRESSURE
-  native_support: not yet (observability unproven)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: probe must show stored MATCH via=store-lookup before any candidacy
-  resolution: NEEDS_LIVE_PROBE
-  resolution_rationale: 'religious pressure (Cardinal Bishop +100): same observability question as the Toqui hold; rides the
-    same probe run'
-  resolved_family: LOYALTY
-  root: GOVERNOR_THE_CARDINAL
-  root_detail: GOVERNOR_PROMOTION_CARDINAL_BISHOP
-  source: governors
-  source_kind: modifier
-  transform: ''
-  value: '100'
-- argument: Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: identity/loyalty gained per turn (Owls counterspies +4); same pressure class as the Toqui hold
-  count_like: false
-  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
-  family: LOYALTY
-  group: loyalty / identity / religious pressure
-  k10_expectation: pending probe
-  k73_expectation: pending probe
-  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY
-  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
-  native_support: not yet (observability unproven)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: probe must show stored MATCH via=store-lookup before any candidacy
-  resolution: NEEDS_LIVE_PROBE
-  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): same observability question as the
-    Toqui hold; rides the same probe run'
-  resolved_family: LOYALTY
-  root: GOVERNOR_OWLS_OF_MINERVA
-  root_detail: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3
-  source: governors
-  source_kind: modifier
-  transform: ''
-  value: '4'
-- argument: Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: identity/loyalty per turn in a city with the matching building (Preslav +2 x3); same pressure class as the
-    Governor Toqui hold, which is excluded pending store-lookup re-certification
-  count_like: false
-  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
-  family: LOYALTY
-  group: loyalty / identity / religious pressure
-  k10_expectation: pending probe
-  k73_expectation: pending probe
-  modifier_id: MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS
-  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
-  native_support: not yet (observability unproven)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: probe must show stored MATCH via=store-lookup before any candidacy
-  resolution: NEEDS_LIVE_PROBE
-  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): same observability question as the
-    Toqui hold; rides the same probe run'
-  resolved_family: LOYALTY
-  root: CIVILIZATION_PRESLAV
-  root_detail: MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_ARMORY_IDENTITY_BONUS
-  source: suzerain
-  source_kind: modifier
-  transform: ''
-  value: '2'
-- argument: Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: identity/loyalty per turn in a city with the matching building (Preslav +2 x3); same pressure class as the
-    Governor Toqui hold, which is excluded pending store-lookup re-certification
-  count_like: false
-  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
-  family: LOYALTY
-  group: loyalty / identity / religious pressure
-  k10_expectation: pending probe
-  k73_expectation: pending probe
-  modifier_id: MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS
-  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
-  native_support: not yet (observability unproven)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: probe must show stored MATCH via=store-lookup before any candidacy
-  resolution: NEEDS_LIVE_PROBE
-  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): same observability question as the
-    Toqui hold; rides the same probe run'
-  resolved_family: LOYALTY
-  root: CIVILIZATION_PRESLAV
-  root_detail: MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_BARRACKS_STABLE_IDENTITY_BONUS
-  source: suzerain
-  source_kind: modifier
-  transform: ''
-  value: '2'
-- argument: Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: identity/loyalty per turn in a city with the matching building (Preslav +2 x3); same pressure class as the
-    Governor Toqui hold, which is excluded pending store-lookup re-certification
-  count_like: false
-  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
-  family: LOYALTY
-  group: loyalty / identity / religious pressure
-  k10_expectation: pending probe
-  k73_expectation: pending probe
-  modifier_id: MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS
-  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
-  native_support: not yet (observability unproven)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: probe must show stored MATCH via=store-lookup before any candidacy
-  resolution: NEEDS_LIVE_PROBE
-  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): same observability question as the
-    Toqui hold; rides the same probe run'
-  resolved_family: LOYALTY
-  root: CIVILIZATION_PRESLAV
-  root_detail: MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_MILITARY_ACADEMY_IDENTITY_BONUS
-  source: suzerain
-  source_kind: modifier
-  transform: ''
-  value: '2'
-- argument: Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: religious pressure per great person activated (Vatican City 400); a pressure rate, so it shares the loyalty/pressure
-    hold
-  count_like: false
-  effect_type: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
-  family: LOYALTY
-  group: loyalty / identity / religious pressure
-  k10_expectation: pending probe
-  k73_expectation: pending probe
-  modifier_id: MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE
-  modifier_type: MODIFIER_PLAYER_GRANT_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
-  native_support: not yet (observability unproven)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: probe must show stored MATCH via=store-lookup before any candidacy
-  resolution: NEEDS_LIVE_PROBE
-  resolution_rationale: 'religious pressure per great person activated (Vatican City 400): pressure RATE, same observability
-    question; rides the same probe run'
-  resolved_family: LOYALTY
-  root: CIVILIZATION_VATICAN_CITY
-  root_detail: MINOR_CIV_VATICAN_CITY_TRAIT via MINOR_CIV_VATICAN_CITY_UNIQUE_INFLUENCE_BONUS
-  source: suzerain
-  source_kind: modifier
-  transform: ''
-  value: '400'
 - argument: Improvement_Tourism.ScalingFactor
   audit_disposition: DECISION_REQUIRED
   audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
@@ -2899,6 +2968,167 @@ rows:
   source_kind: modifier
   transform: canonical_x10_multiply
   value: '10'
+- argument: Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: religious pressure is a pressure rate (Cardinal Bishop); same class as identity pressure - needs review
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_RELIGION_PRESSURE
+  family: LOYALTY
+  group: loyalty / identity / religious pressure
+  k10_expectation: writes 1000.0
+  k73_expectation: writes 730.0
+  modifier_id: CARDINAL_BISHOP_PRESSURE
+  modifier_type: MODIFIER_SINGLE_CITY_RELIGION_PRESSURE
+  native_support: already supported (ADDITIVE loyalty pressure is float-valued; live store-lookup MATCH on both sessions)
+  production_kind: ADDITIVE
+  proposed_owner: governors
+  required_gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH 730.0
+    on load+reload)
+  resolution: RESOLVED_CANDIDATE
+  resolution_rationale: 'religious pressure (Cardinal Bishop +100): storage observability proven live; semantics are plain
+    loyalty pressure'
+  resolved_family: LOYALTY
+  root: GOVERNOR_THE_CARDINAL
+  root_detail: GOVERNOR_PROMOTION_CARDINAL_BISHOP
+  source: governors
+  source_kind: modifier
+  transform: canonical_x10_multiply
+  value: '100'
+- argument: Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: identity/loyalty gained per turn (Owls counterspies +4); same pressure class as the Toqui hold
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  group: loyalty / identity / religious pressure
+  k10_expectation: writes 40.0 / 20.0
+  k73_expectation: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  native_support: already supported (ADDITIVE loyalty pressure is float-valued; live store-lookup MATCH on both sessions)
+  production_kind: ADDITIVE
+  proposed_owner: governors
+  required_gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on
+    load+reload)
+  resolution: RESOLVED_CANDIDATE
+  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): storage observability proven live;
+    owner follows the row (governors / suzerain)'
+  resolved_family: LOYALTY
+  root: GOVERNOR_OWLS_OF_MINERVA
+  root_detail: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3
+  source: governors
+  source_kind: modifier
+  transform: canonical_x10_multiply
+  value: '4'
+- argument: Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: identity/loyalty per turn in a city with the matching building (Preslav +2 x3); same pressure class as the
+    Governor Toqui hold, which is excluded pending store-lookup re-certification
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  group: loyalty / identity / religious pressure
+  k10_expectation: writes 40.0 / 20.0
+  k73_expectation: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  modifier_id: MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  native_support: already supported (ADDITIVE loyalty pressure is float-valued; live store-lookup MATCH on both sessions)
+  production_kind: ADDITIVE
+  proposed_owner: suzerain
+  required_gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on
+    load+reload)
+  resolution: RESOLVED_CANDIDATE
+  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): storage observability proven live;
+    owner follows the row (governors / suzerain)'
+  resolved_family: LOYALTY
+  root: CIVILIZATION_PRESLAV
+  root_detail: MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_ARMORY_IDENTITY_BONUS
+  source: suzerain
+  source_kind: modifier
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: identity/loyalty per turn in a city with the matching building (Preslav +2 x3); same pressure class as the
+    Governor Toqui hold, which is excluded pending store-lookup re-certification
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  group: loyalty / identity / religious pressure
+  k10_expectation: writes 40.0 / 20.0
+  k73_expectation: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  modifier_id: MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  native_support: already supported (ADDITIVE loyalty pressure is float-valued; live store-lookup MATCH on both sessions)
+  production_kind: ADDITIVE
+  proposed_owner: suzerain
+  required_gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on
+    load+reload)
+  resolution: RESOLVED_CANDIDATE
+  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): storage observability proven live;
+    owner follows the row (governors / suzerain)'
+  resolved_family: LOYALTY
+  root: CIVILIZATION_PRESLAV
+  root_detail: MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_BARRACKS_STABLE_IDENTITY_BONUS
+  source: suzerain
+  source_kind: modifier
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: identity/loyalty per turn in a city with the matching building (Preslav +2 x3); same pressure class as the
+    Governor Toqui hold, which is excluded pending store-lookup re-certification
+  count_like: false
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  family: LOYALTY
+  group: loyalty / identity / religious pressure
+  k10_expectation: writes 40.0 / 20.0
+  k73_expectation: writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)
+  modifier_id: MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  native_support: already supported (ADDITIVE loyalty pressure is float-valued; live store-lookup MATCH on both sessions)
+  production_kind: ADDITIVE
+  proposed_owner: suzerain
+  required_gate_evidence: none (certifies today via curated-category:LOYALTY; verified by gate dry run AND by live MATCH on
+    load+reload)
+  resolution: RESOLVED_CANDIDATE
+  resolution_rationale: 'identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): storage observability proven live;
+    owner follows the row (governors / suzerain)'
+  resolved_family: LOYALTY
+  root: CIVILIZATION_PRESLAV
+  root_detail: MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_MILITARY_ACADEMY_IDENTITY_BONUS
+  source: suzerain
+  source_kind: modifier
+  transform: canonical_x10_multiply
+  value: '2'
+- argument: Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: religious pressure per great person activated (Vatican City 400); a pressure rate, so it shares the loyalty/pressure
+    hold
+  count_like: false
+  effect_type: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  family: LOYALTY
+  group: loyalty / identity / religious pressure
+  k10_expectation: writes 4000.0
+  k73_expectation: writes 2920.0
+  modifier_id: MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE
+  modifier_type: MODIFIER_PLAYER_GRANT_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  native_support: already supported once the mixed entry lands (ADDITIVE pressure)
+  production_kind: ADDITIVE
+  proposed_owner: suzerain
+  required_gate_evidence: '6B must add a mixed_overrides entry for (EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED,
+    Amount) -> ADDITIVE: scalar pressure rate, not an object grant (same shape as the two live mixed overrides); the floor''s
+    GRANT_OBJECT row is AUTO_PATTERN heuristic. Storage observability proven live (MATCH 2920.0 on load+reload)'
+  resolution: RESOLVED_CANDIDATE
+  resolution_rationale: 'religious pressure per great person activated (Vatican City 400): storage observability proven live;
+    semantics are a pressure rate'
+  resolved_family: LOYALTY
+  root: CIVILIZATION_VATICAN_CITY
+  root_detail: MINOR_CIV_VATICAN_CITY_TRAIT via MINOR_CIV_VATICAN_CITY_UNIQUE_INFLUENCE_BONUS
+  source: suzerain
+  source_kind: modifier
+  transform: canonical_x10_multiply
+  value: '400'
 - argument: Amount
   audit_disposition: DECISION_REQUIRED
   audit_reason: 'building purchase cost reduction (Valletta -50 for walls, star fort, castle): the effect is NOT in the project''s

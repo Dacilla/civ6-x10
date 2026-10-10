@@ -370,42 +370,54 @@ RULES[("TransitionStrength", "value", "direct")] = _rule(
     "machinery, not a gameplay magnitude",
 )
 
-# --- loyalty / identity / religious pressure: one observability question ----
-# Five distinct engine EffectTypes (+ Toqui's held effect + direct Governor
-# columns). They are colloquially 'pressure' but must NOT be assumed to
-# share storage semantics. What blocks ALL of them is observability: the
-# Toqui stored-form hold proved EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
-# reads back blank post-Add, and none of the sibling effects has a stored
-# MATCH on record. One disposable probe run can answer all of them at once.
+# --- loyalty / identity / religious pressure: observability PROVEN ---------
+# Phase-6A.2 pressure probe (scratch 8-entry registry, k=7.3, load AND
+# reload): all eight definitions returned
+# `stored_after_add=<expected> expected=<expected> MATCH via=store-lookup`
+# on BOTH sessions (evidence: spike/validation-evidence/X10Lifecycle.
+# toqui-probe.log). The Toqui stored-form hold is therefore lifted per
+# definition — one effect succeeding never auto-clears a sibling, so each
+# row below carries its own gate result. Five distinct engine EffectTypes
+# were tested; direct Governor columns were NOT (no carrier) and stay put.
 RULES[("EFFECT_ADJUST_CITY_RELIGION_PRESSURE", "Amount", "modifier")] = _rule(
-    NEEDS_LIVE_PROBE, GROUP_PRESSURE, "LOYALTY",
-    "", "", False, "",
-    "probe must show stored MATCH via=store-lookup before any candidacy",
-    "pending probe",
-    "pending probe",
-    "not yet (observability unproven)",
-    "religious pressure (Cardinal Bishop +100): same observability question "
-    "as the Toqui hold; rides the same probe run",
+    RESOLVED_CANDIDATE, GROUP_PRESSURE, "LOYALTY",
+    "ADDITIVE", "canonical_x10_multiply", False, "governors",
+    "none (certifies today via curated-category:LOYALTY; verified by gate "
+    "dry run AND by live MATCH 730.0 on load+reload)",
+    "writes 730.0",
+    "writes 1000.0",
+    "already supported (ADDITIVE loyalty pressure is float-valued; live "
+    "store-lookup MATCH on both sessions)",
+    "religious pressure (Cardinal Bishop +100): storage observability "
+    "proven live; semantics are plain loyalty pressure",
 )
 RULES[("EFFECT_ADJUST_CITY_IDENTITY_PER_TURN", "Amount", "modifier")] = _rule(
-    NEEDS_LIVE_PROBE, GROUP_PRESSURE, "LOYALTY",
-    "", "", False, "",
-    "probe must show stored MATCH via=store-lookup before any candidacy",
-    "pending probe",
-    "pending probe",
-    "not yet (observability unproven)",
-    "identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): same "
-    "observability question as the Toqui hold; rides the same probe run",
+    RESOLVED_CANDIDATE, GROUP_PRESSURE, "LOYALTY",
+    "ADDITIVE", "canonical_x10_multiply", False, None,
+    "none (certifies today via curated-category:LOYALTY; verified by gate "
+    "dry run AND by live MATCH on load+reload)",
+    "writes 29.2 (Owls 4) / 14.6 (Preslav 2 x3)",
+    "writes 40.0 / 20.0",
+    "already supported (ADDITIVE loyalty pressure is float-valued; live "
+    "store-lookup MATCH on both sessions)",
+    "identity/loyalty per turn (Owls counterspies +4, Preslav +2 x3): "
+    "storage observability proven live; owner follows the row (governors / "
+    "suzerain)",
 )
 RULES[("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED", "Amount", "modifier")] = _rule(
-    NEEDS_LIVE_PROBE, GROUP_PRESSURE, "LOYALTY",
-    "", "", False, "",
-    "probe must show stored MATCH via=store-lookup before any candidacy",
-    "pending probe",
-    "pending probe",
-    "not yet (observability unproven)",
+    RESOLVED_CANDIDATE, GROUP_PRESSURE, "LOYALTY",
+    "ADDITIVE", "canonical_x10_multiply", False, "suzerain",
+    "6B must add a mixed_overrides entry for "
+    "(EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED, "
+    "Amount) -> ADDITIVE: scalar pressure rate, not an object grant (same "
+    "shape as the two live mixed overrides); the floor's GRANT_OBJECT row "
+    "is AUTO_PATTERN heuristic. Storage observability proven live (MATCH "
+    "2920.0 on load+reload)",
+    "writes 2920.0",
+    "writes 4000.0",
+    "already supported once the mixed entry lands (ADDITIVE pressure)",
     "religious pressure per great person activated (Vatican City 400): "
-    "pressure RATE, same observability question; rides the same probe run",
+    "storage observability proven live; semantics are a pressure rate",
 )
 RULES[("IdentityPressure", "value", "direct")] = _rule(
     STILL_SEMANTICALLY_UNRESOLVED, GROUP_PRESSURE, "LOYALTY",
@@ -788,6 +800,7 @@ def build_backlog(governor_audit_path, suzerain_audit_path) -> dict:
         "proposed_candidates": candidates,
         "proposed_production_pairs": production_pairs,
         "production_pair_counts": pair_counts,
+        "probe_cleared_addendum": probe_cleared_addendum(),
         "proposed_existing_reclassifications":
             proposed_existing_reclassifications(),
         "proposed_gate_evidence": proposed_gate_evidence(),
@@ -823,8 +836,9 @@ def build_production_projection(rows: list[dict]) -> list[dict]:
             "effect_type": first["effect_type"],
             "modifier_type": first["modifier_type"],
             "occurrences": len(occ),
-            "sources": sorted({(o["source"], str(o["root"]),
-                                str(o["root_detail"])) for o in occ}),
+            "sources": sorted([list(s) for s in
+                               {(o["source"], str(o["root"]),
+                                 str(o["root_detail"])) for o in occ}]),
         })
     return pairs
 
@@ -862,6 +876,47 @@ def proposed_existing_reclassifications() -> dict:
              "proposed_count_like": True,
              "via_pattern": "EXTRA_ACCUMULATION",
              "live_k73_today": "14.6 (stored as float)"},
+        ],
+    }
+
+
+def probe_cleared_addendum() -> dict:
+    """Toqui rows cleared by the Phase-6A.2 pressure probe (NOT backlog rows).
+
+    TOQUI_DOMESTIC/FOREIGN_LOYALTY are excluded in production and live in
+    neither audit's decision queue, so they never enter the 142 imported
+    occurrences. Both returned `stored_after_add=29.2 expected=29.2 MATCH
+    via=store-lookup` on load AND reload (evidence:
+    spike/validation-evidence/X10Lifecycle.toqui-probe.log), and both
+    certify LOYALTY/ADDITIVE once the held-out exclusion is removed (gate
+    dry run). They join the production projection as civilization-trait
+    rows (Mapuche TRAIT_CIVILIZATION_MAPUCHE_TOQUI → owner traits).
+    """
+    return {
+        "note": ("storage observability proven live on both sessions for "
+                 "both rows; semantics are plain loyalty pressure. Joins "
+                 "the production projection; the source backlog stays 142 "
+                 "occurrences."),
+        "log_evidence": "spike/validation-evidence/X10Lifecycle.toqui-probe.log",
+        "pairs": [
+            {"modifier_id": "TOQUI_DOMESTIC_LOYALTY", "argument": "Amount",
+             "value": "4", "family": "LOYALTY", "kind": "ADDITIVE",
+             "transform": "canonical_x10_multiply", "count_like": False,
+             "owner": "traits",
+             "effect_type": "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE",
+             "modifier_type":
+                 "MODIFIER_PLAYER_GOVERNORS_ADJUST_GOVERNOR_IDENTITY_PRESSURE",
+             "trait": "TRAIT_CIVILIZATION_MAPUCHE_TOQUI",
+             "live_match": "29.2 on load and reload"},
+            {"modifier_id": "TOQUI_FOREIGN_LOYALTY", "argument": "Amount",
+             "value": "4", "family": "LOYALTY", "kind": "ADDITIVE",
+             "transform": "canonical_x10_multiply", "count_like": False,
+             "owner": "traits",
+             "effect_type": "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE",
+             "modifier_type":
+                 "MODIFIER_PLAYER_GOVERNORS_ADJUST_GOVERNOR_IDENTITY_PRESSURE",
+             "trait": "TRAIT_CIVILIZATION_MAPUCHE_TOQUI",
+             "live_match": "29.2 on load and reload"},
         ],
     }
 
@@ -920,6 +975,25 @@ def proposed_gate_evidence() -> dict:
                           "as the two live mixed overrides",
              "blast_radius": "Citadel + Ayutthaya rows (Ramses rows are out "
                              "of production scope and stay out)"},
+            {"effect": "EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
+             "argument": "Amount", "kind": "ADDITIVE",
+             "rationale": "scalar pressure rate per activation, not an "
+                          "object grant; Vatican storage proven live "
+                          "(MATCH 2920.0 on load+reload); same shape as the "
+                          "two live mixed overrides",
+             "blast_radius": "Vatican row only (sole carrier of this effect)"},
+        ],
+        "exclusion_removals": [
+            {"effect": "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE",
+             "action": "remove from excluded_effects",
+             "rationale": "the 2026-10-08 stored-form hold is lifted: both "
+                          "carriers MATCH via=store-lookup on load AND "
+                          "reload with current native code (Phase-6A.2 "
+                          "probe evidence); LOYALTY pressure is float-valued "
+                          "(live-proven 21.9 precedent)",
+             "blast_radius": "exactly the two Toqui carriers (verified: no "
+                             "other Modifiers row dispatches this effect); "
+                             "both join the projection as traits-owned"},
         ],
     }
 

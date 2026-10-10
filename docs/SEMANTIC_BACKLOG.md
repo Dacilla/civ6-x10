@@ -27,14 +27,14 @@ audited; Toqui's held-out pair is excluded in production and is handled in
 
 | resolution | count |
 |---|---|
-| `RESOLVED_CANDIDATE` | 10 |
+| `RESOLVED_CANDIDATE` | 16 |
 | `RESOLVED_CANDIDATE_COUNT_LIKE` | 22 |
 | `RESOLVED_EXCLUDED` | 25 |
-| `NEEDS_LIVE_PROBE` | 6 (+2 Toqui, §9) |
+| `NEEDS_LIVE_PROBE` | 0 (all six cleared by the probe below) |
 | `NEEDS_PRODUCT_DECISION` | 58 |
 | `STILL_SEMANTICALLY_UNRESOLVED` | 21 |
 
-By problem group:
+By problem group (post-probe):
 
 | group | resolutions |
 |---|---|
@@ -45,7 +45,7 @@ By problem group:
 | combat-strength edge cases | 1 candidate (Lahore +10), 1 excluded (Sanguine −5) |
 | healing semantics | 2 excluded |
 | grievance score / duration | 1 excluded (Turns), 1 unresolved (Score) |
-| loyalty / identity / religious pressure | 6 probe, 12 unresolved (direct columns) |
+| loyalty / identity / religious pressure | 6 cleared to candidates (probe §9), 12 direct columns unresolved |
 | multiplicative / ScalingFactor | 8 unresolved |
 | unique-object ownership | 58 product-decision, 9 excluded (intrinsic) |
 | direct structural/internal Governor fields | 12 excluded (TransitionStrength) |
@@ -120,28 +120,26 @@ entry (same shape as the two live ones; the floor's `GRANT_OBJECT` row is
 run). `IncludeWonder` stays a structural boolean. Ramses rows corroborate
 only; Ramses is out of production scope and stays out.
 
-## 6. Loyalty / identity / religious pressure verdict: NEEDS_LIVE_PROBE
+## 6. Loyalty / identity / religious pressure verdict: CLEARED BY LIVE PROBE
 
-Five distinct engine EffectTypes — **not** assumed to share storage:
+Five distinct engine EffectTypes were never assumed to share storage. The
+Phase-6A.2 scratch probe (8-entry registry, k=7.3, load AND reload;
+evidence `spike/validation-evidence/X10Lifecycle.toqui-probe.log`) returned
+`stored_after_add=<expected> expected=<expected> MATCH via=store-lookup`
+for **all eight rows on both sessions**: Toqui 29.2 ×2, Bishop 730.0, Owls
+loyalty 29.2, Preslav 14.6 ×3, Vatican 2920.0. Zero refusals, zero
+mismatches, zero unreadables.
 
-| effect | rows | official |
+Per-row gate results (each verified independently — no sibling auto-clear):
+
+| row | gate | outcome |
 |---|---|---|
-| `EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE` (Toqui, held) | 2 | 4 |
-| `EFFECT_ADJUST_CITY_RELIGION_PRESSURE` | 1 (Bishop) | 100 |
-| `EFFECT_ADJUST_CITY_IDENTITY_PER_TURN` | 4 (Owls 4, Preslav 2×3) | 4 / 2 |
-| `EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED` | 1 (Vatican) | 400 |
-| direct Governor `IdentityPressure` columns | 12 | 8 / 10 |
+| Bishop 100, Owls 4, Preslav 2 ×3 | `curated-category:LOYALTY`, no rule change | 5 candidates |
+| Vatican 400 | floor `GRANT_OBJECT` (heuristic) → needs 6B mixed override (recorded) | candidate contingent on that entry |
+| Toqui 4 ×2 | excluded ONLY by the held-out effect entry; removal is surgical (2 carriers total) → `curated-category:LOYALTY` | 2 candidates (owner traits) + proposed exclusion removal |
 
-What blocks the four modifier effects is **observability, not semantics**:
-the Toqui hold proved one pressure effect reads back blank post-Add, and no
-sibling has a stored MATCH on record. The disposable probe in
-`spike/toqui-probe/` (scratch 8-entry registry + readback + exact
-build/swap/run/restore instructions) answers all eight at once. **A live
-probe is genuinely required** — definitions only populate inside Civ VI —
-so Phase 6A stops at preparation; the probe is not built, installed, or run
-here, and the validated 971 build is untouched. Direct `IdentityPressure`
-columns stay `STILL_SEMANTICALLY_UNRESOLVED` (magnitude confirmed as loyalty
-class, but no modifier carrier path exists and the family hold is open).
+Direct `IdentityPressure` columns (12) were NOT probed (no carrier) and stay
+`STILL_SEMANTICALLY_UNRESOLVED`.
 
 ## 7. Healing verdict: RESOLVED_EXCLUDED (both rows)
 
@@ -242,21 +240,36 @@ bonus. Structural; never scaled to maximize coverage.
 - Owls spy `Percent=50` ×4 → `RESOLVED_CANDIDATE` (Wu identical-tuple
   precedent; 365.0 at k=7.3, 500.0 at k=10).
 
-## 14. Proposed Phase-6B candidate list (32 occurrences → 31 unique pairs)
+## 14. Proposed Phase-6B candidate list (32 occurrences → 31 unique pairs,
++ 8 probe-cleared = 39 final)
+
+Pre-probe: 10 unconditional + 22 count-like occurrences → 31 unique pairs
+(14 Governor / 17 Suzerain; ADDITIVE 27 / DISCOUNT 3 / COMBAT 1).
 
 10 unconditional (`owls×4` PERCENT_BONUS, Citadel/Ayutthaya PERCENT_BONUS,
 Valletta×3 PERCENT_DISCOUNT, Lahore COMBAT) + 22 count-like occurrences
 (charges ×4, Patron Saint, Defense Logistics, Embrasure, Khass, Informants,
 Industrialist, Cardiff ×3, Hattusa ×7, Zanzibar ×2 — all `FLAT_AMOUNT`).
 The vampire +1 build occurs under two promotions but mutates one definition,
-so production sees **31 unique pairs** (14 Governor / 17 Suzerain; 10
-non-count-like / 21 count-like; ADDITIVE 27 / DISCOUNT 3 / COMBAT 1).
+so the pre-probe projection is **31 unique pairs** (14 Governor / 17
+Suzerain; 10 non-count-like / 21 count-like; ADDITIVE 27 / DISCOUNT 3 /
+COMBAT 1).
+
+Post-probe final: the 6 cleared pressure rows (Bishop, Owls loyalty,
+Preslav ×3, Vatican — all LOYALTY/ADDITIVE unconditional) plus the 2 Toqui
+addendum pairs (LOYALTY/ADDITIVE, owner traits) join the projection:
+**39 unique pairs** (16 Governor / 21 Suzerain / 2 traits-owner Toqui;
+18 non-count-like / 21 count-like; ADDITIVE 35 / DISCOUNT 3 / COMBAT 1).
 Full per-row provenance, gate evidence, and k-expectations in
 `semantic_backlog.yml` (`proposed_candidates` + `proposed_production_pairs`).
-At k=7.3 the 21 unique count-like pairs all refuse (every official is 1/2/3);
-at k=10 all apply. The three intentional existing reclassifications
+At k=7.3 the 21 unique count-like pairs all refuse (every official is 1/2/3)
+while all 18 non-count-like write; at k=10 everything applies.
+The three intentional existing reclassifications
 (Corporate Libertarianism, Coal, Iron) move writes→refusals at k=7.3 and
 must be live-validated explicitly in 6B.
+Final hypothetical: **1010 entries / 1006 unique / 25 shared; 788
+unconditional + 222 count-like; 801 writes / 209 refusals at k=7.3**
+(derived mechanically in test, not pinned).
 
 ## 15. No production changes (verified by test)
 

@@ -58,10 +58,12 @@ class TestBacklogImport(unittest.TestCase):
     def test_resolution_totals(self):
         b = backlog_or_skip()
         d = b["by_resolution"]
-        self.assertEqual(d[RESOLVED_CANDIDATE], 10)
+        self.assertEqual(d[RESOLVED_CANDIDATE], 16)
         self.assertEqual(d[RESOLVED_CANDIDATE_COUNT_LIKE], 22)
         self.assertEqual(d[RESOLVED_EXCLUDED], 25)
-        self.assertEqual(d[NEEDS_LIVE_PROBE], 6)
+        # all six pressure rows cleared by the live probe (Toqui pair handled
+        # as an addendum below, never in the 142)
+        self.assertNotIn(NEEDS_LIVE_PROBE, d)
         self.assertEqual(d[NEEDS_PRODUCT_DECISION], 58)
         self.assertEqual(d[STILL_SEMANTICALLY_UNRESOLVED], 21)
 
@@ -75,6 +77,12 @@ class TestBacklogImport(unittest.TestCase):
         self.assertEqual(fresh["by_resolution"], on_disk["by_resolution"])
         self.assertEqual(fresh["proposed_candidates"],
                          on_disk["proposed_candidates"])
+        self.assertEqual(fresh["proposed_production_pairs"],
+                         on_disk["proposed_production_pairs"])
+        self.assertEqual(fresh["production_pair_counts"],
+                         on_disk["production_pair_counts"])
+        self.assertEqual(fresh["probe_cleared_addendum"],
+                         on_disk["probe_cleared_addendum"])
 
 
 class TestCrossModuleCountLike(unittest.TestCase):
@@ -271,17 +279,17 @@ class TestProductionProjection(unittest.TestCase):
         pairs = _production_pairs(b)
         keys = [(p["modifier_id"], p["argument"]) for p in pairs]
         self.assertEqual(len(keys), len(set(keys)))
-        self.assertEqual(len(keys), 31)
+        self.assertEqual(len(keys), 37)
 
     def test_projection_counts(self):
         b = backlog_or_skip()
         c = b["production_pair_counts"]
-        self.assertEqual(c["unique_production_pairs"], 31)
-        self.assertEqual(c["unique_governor_pairs"], 14)
-        self.assertEqual(c["unique_suzerain_pairs"], 17)
-        self.assertEqual(c["unique_non_count_like"], 10)
+        self.assertEqual(c["unique_production_pairs"], 37)
+        self.assertEqual(c["unique_governor_pairs"], 16)
+        self.assertEqual(c["unique_suzerain_pairs"], 21)
+        self.assertEqual(c["unique_non_count_like"], 16)
         self.assertEqual(c["unique_count_like"], 21)
-        self.assertEqual(c["kinds"], {"ADDITIVE": 27, "COMBAT": 1,
+        self.assertEqual(c["kinds"], {"ADDITIVE": 33, "COMBAT": 1,
                                       "DISCOUNT": 3})
 
     def test_vampire_duplicate_provenance_retained(self):
@@ -370,24 +378,38 @@ class TestNoPressureBaseline(unittest.TestCase):
     """Hypothetical 6B baseline derived mechanically, not pinned."""
 
     def test_hypothetical_totals(self):
+        # FINAL Phase-6B hypothetical: 37 projection pairs + 2 Toqui
+        # addendum pairs (probe-cleared) + 3 intentional reclassifications.
         import math
         from civ6x10 import transforms as T
         entries = _registry_entries_or_skip()
         self.assertEqual(len(entries), 971)
         b = backlog_or_skip()
         pairs = _production_pairs(b)
-        self.assertEqual(len(pairs), 31)
+        self.assertEqual(len(pairs), 37)
+        addendum = b["probe_cleared_addendum"]["pairs"]
+        self.assertEqual(len(addendum), 2)
+        new_pairs = [
+            {"modifier_id": p["modifier_id"], "argument": p["argument"],
+             "value": p["value"], "kind": p["kind"],
+             "count_like": p["count_like"], "owner": p["owner"]}
+            for p in pairs] + [
+            {"modifier_id": p["modifier_id"], "argument": p["argument"],
+             "value": p["value"], "kind": p["kind"],
+             "count_like": p["count_like"], "owner": p["owner"]}
+            for p in addendum]
+        self.assertEqual(len(new_pairs), 39)
         # no collision: every pair is a new definition (shared stays 25)
         reg_keys = {(e["modifier_id"], e["argument"]) for e in entries}
-        new_keys = {(p["modifier_id"], p["argument"]) for p in pairs}
+        new_keys = {(p["modifier_id"], p["argument"]) for p in new_pairs}
         self.assertEqual(reg_keys & new_keys, set())
-        self.assertEqual(967 + 31, 998)
-        self.assertEqual(971 + 31, 1002)
+        self.assertEqual(967 + 39, 1006)
+        self.assertEqual(971 + 39, 1010)
         # split the new pairs by conditional state
         kf = T.stored_float32(7.3)
         self.assertEqual(kf, 7.300000190734863)
         new_writes = new_refusals = 0
-        for p in pairs:
+        for p in new_pairs:
             v = float(p["value"])
             if p["count_like"]:
                 if T.count_like_applies(v, kf):
@@ -408,7 +430,7 @@ class TestNoPressureBaseline(unittest.TestCase):
                 self.fail(p)
             self.assertTrue(math.isfinite(r), p["modifier_id"])
             new_writes += 1
-        self.assertEqual((new_writes, new_refusals), (10, 21))
+        self.assertEqual((new_writes, new_refusals), (18, 21))
         # the three reclassifications move writes -> refusals
         reclass = b["proposed_existing_reclassifications"]["rows"]
         self.assertEqual(len(reclass), 3)
@@ -418,20 +440,22 @@ class TestNoPressureBaseline(unittest.TestCase):
             self.assertFalse(T.count_like_applies(v, kf), r["modifier_id"])
             moved += 1
         self.assertEqual(moved, 3)
-        # full hypothetical simulation over 971 + 31 with 3 flipped
+        # full hypothetical simulation over 971 + 39 with 3 flipped
         flipped = {(r["modifier_id"], r["argument"]) for r in reclass}
         hypo = [dict(e, count_like=True)
                 if (e["modifier_id"], e["argument"]) in flipped else e
                 for e in entries]
-        for p in pairs:
+        for p in new_pairs:
             hypo.append({"modifier_id": p["modifier_id"],
                          "argument": p["argument"],
                          "official": p["value"],
                          "kind": {"ADDITIVE": 0, "COMBAT": 1,
                                   "PROBABILITY": 2,
                                   "DISCOUNT": 3}[p["kind"]],
-                         "count_like": p["count_like"], "owners": 64})
-        self.assertEqual(len(hypo), 1002)
+                         "count_like": p["count_like"],
+                         "owners": {"governors": 32, "suzerain": 64,
+                                    "traits": 1}[p["owner"]]})
+        self.assertEqual(len(hypo), 1010)
         writes = refusals = 0
         for e in hypo:
             v = float(e["official"])
@@ -454,11 +478,84 @@ class TestNoPressureBaseline(unittest.TestCase):
                 writes += 1
             else:
                 refusals += 1
-        self.assertEqual((writes, refusals), (793, 209))
-        self.assertEqual(writes + refusals, 1002)
+        self.assertEqual((writes, refusals), (801, 209))
+        self.assertEqual(writes + refusals, 1010)
         un = sum(1 for e in hypo if not e["count_like"])
         co = sum(1 for e in hypo if e["count_like"])
-        self.assertEqual((un, co), (780, 222))
+        self.assertEqual((un, co), (788, 222))
+
+
+class TestPressureProbeResults(unittest.TestCase):
+    """Phase-6A.2 live evidence: all eight probe rows MATCH on both sessions.
+
+    Anchored to the archived scratch log (checked in as evidence). One
+    effect succeeding never auto-clears a sibling: each row below was
+    verified independently.
+    """
+
+    EXPECTED = {
+        "TOQUI_DOMESTIC_LOYALTY": 29.2,
+        "TOQUI_FOREIGN_LOYALTY": 29.2,
+        "CARDINAL_BISHOP_PRESSURE": 730.0,
+        "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY": 29.2,
+        "MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS": 14.6,
+        "MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS": 14.6,
+        "MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS": 14.6,
+        "MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE": 2920.0,
+    }
+
+    def _sessions(self):
+        import re
+        p = (ROOT / "spike" / "validation-evidence" /
+             "X10Lifecycle.toqui-probe.log")
+        if not p.is_file():
+            self.skipTest("toqui probe log unavailable")
+        txt = p.read_text(encoding="utf-8", errors="replace").splitlines()
+        sess, cur = [], []
+        for line in txt:
+            if "===== X10 native session =====" in line:
+                if cur:
+                    sess.append(cur)
+                cur = [line]
+            else:
+                cur.append(line)
+        sess.append(cur)
+        return [[re.sub(r"^\d+ ", "", l).strip() for l in s] for s in sess]
+
+    def test_all_eight_match_on_both_sessions(self):
+        import re
+        sess = self._sessions()
+        self.assertEqual(len(sess), 2)
+        for s in sess:
+            for mid, want in self.EXPECTED.items():
+                hits = [l for l in s if f"id={mid}" in l
+                        and "stored_after_add" in l]
+                self.assertEqual(len(hits), 1, (mid, len(hits)))
+                self.assertIn("MATCH via=store-lookup", hits[0], mid)
+                v = float(re.search(r"stored_after_add=([\d.]+)",
+                                    hits[0]).group(1))
+                self.assertAlmostEqual(v, want, delta=max(0.05, want * 0.001),
+                                       msg=mid)
+                ref = [l for l in s if f"modifier={mid}" in l
+                       and "transform-refused" in l]
+                self.assertEqual(ref, [], mid)
+
+    def test_addendum_joins_projection(self):
+        b = backlog_or_skip()
+        add = b["probe_cleared_addendum"]["pairs"]
+        self.assertEqual(len(add), 2)
+        self.assertEqual({(p["modifier_id"], p["argument"]) for p in add},
+                         {("TOQUI_DOMESTIC_LOYALTY", "Amount"),
+                          ("TOQUI_FOREIGN_LOYALTY", "Amount")})
+        for p in add:
+            self.assertEqual(p["owner"], "traits")
+            self.assertEqual((p["family"], p["kind"]), ("LOYALTY", "ADDITIVE"))
+            self.assertFalse(p["count_like"])
+        gate = b["proposed_gate_evidence"]
+        removals = gate.get("exclusion_removals", [])
+        self.assertEqual(len(removals), 1)
+        self.assertEqual(
+            removals[0]["effect"], "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE")
 
 
 class TestToquiProbePreflight(unittest.TestCase):

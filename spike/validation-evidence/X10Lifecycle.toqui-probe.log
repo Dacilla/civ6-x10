@@ -1,0 +1,120 @@
+000001 ===== X10 native session =====
+000002 X10 CE native write test x10-write-test 2 (definition overrides, 2026-10-07)
+000003 GameCore:
+000004   module = GameCore_XP2_FinalRelease.dll
+000005   image size = 0xc60000
+000006   timestamp = 0x667c6f5b
+000007   .text = [0x000000019A811000, 0x000000019B1C6627)
+000008 compatibility profile: user-validated-15038592
+000009 Hook validation:
+000010   PopulateModifierDefinitions PASS (in.text=1 prologue=1)
+000011   AddModifierDefinition PASS (in.text=1 prologue=1)
+000012   DynamicModifier_ctor_A PASS (in.text=1 prologue=1)
+000013   DynamicModifier_ctor_B PASS (in.text=1 prologue=1)
+000014 ALL_REQUIRED_SIGNATURES_VALID
+000015   GetModifierDefinition PASS (in.text=1 prologue=1)
+000016 4 lifecycle hooks installed (Populate/Add/InstanceA/InstanceB)
+000017 PopulateModifierDefinitions ENTER depth=1
+000018 CONFIG key=X10_MULTIPLIER found=true type=FLOAT32 id=4 flags=0x0 numeric=7.30000019073486 kerr=2.38e-07
+000019 CONFIG key=X10_MODULE_TRAITS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000020 CONFIG module traits ON
+000021 CONFIG key=X10_MODULE_POLICIES found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000022 CONFIG module policies ON
+000023 CONFIG key=X10_MODULE_GOVERNMENTS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000024 CONFIG module governments ON
+000025 CONFIG key=X10_MODULE_PANTHEONS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000026 CONFIG module pantheons ON
+000027 CONFIG key=X10_MODULE_WONDERS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000028 CONFIG module wonders ON
+000029 CONFIG key=X10_MODULE_GOVERNORS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000030 CONFIG module governors ON
+000031 CONFIG key=X10_MODULE_SUZERAIN found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000032 CONFIG module suzerain ON
+000033 AddModifierDefinition #1
+000034 AddModifierDefinition #2
+000035 AddModifierDefinition #3
+000036 AddModifierDefinition #1000
+000037 [X10WRITE] modifier=MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE arg=Amount official=400 k=7.3 transform=ADDITIVE requested=2920 before=400 after=2920 phase=definition-population
+000038 [X10WRITE] id=MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE arg=Amount stored_after_add=2920 expected=2920 MATCH via=store-lookup
+000039 [X10WRITE] modifier=MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS arg=Amount official=2 k=7.3 transform=ADDITIVE requested=14.6 before=2 after=14.6 phase=definition-population
+000040 [X10WRITE] id=MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS arg=Amount stored_after_add=14.6 expected=14.6 MATCH via=store-lookup
+000041 [X10WRITE] modifier=MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS arg=Amount official=2 k=7.3 transform=ADDITIVE requested=14.6 before=2 after=14.6 phase=definition-population
+000042 [X10WRITE] id=MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS arg=Amount stored_after_add=14.6 expected=14.6 MATCH via=store-lookup
+000043 [X10WRITE] modifier=MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS arg=Amount official=2 k=7.3 transform=ADDITIVE requested=14.6 before=2 after=14.6 phase=definition-population
+000044 [X10WRITE] id=MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS arg=Amount stored_after_add=14.6 expected=14.6 MATCH via=store-lookup
+000045 [X10WRITE] modifier=GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY arg=Amount official=4 k=7.3 transform=ADDITIVE requested=29.2 before=4 after=29.2 phase=definition-population
+000046 [X10WRITE] id=GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY arg=Amount stored_after_add=29.2 expected=29.2 MATCH via=store-lookup
+000047 [X10WRITE] modifier=TOQUI_DOMESTIC_LOYALTY arg=Amount official=4 k=7.3 transform=ADDITIVE requested=29.2 before=4 after=29.2 phase=definition-population
+000048 [X10WRITE] id=TOQUI_DOMESTIC_LOYALTY arg=Amount stored_after_add=29.2 expected=29.2 MATCH via=store-lookup
+000049 [X10WRITE] modifier=TOQUI_FOREIGN_LOYALTY arg=Amount official=4 k=7.3 transform=ADDITIVE requested=29.2 before=4 after=29.2 phase=definition-population
+000050 [X10WRITE] id=TOQUI_FOREIGN_LOYALTY arg=Amount stored_after_add=29.2 expected=29.2 MATCH via=store-lookup
+000051 AddModifierDefinition #2000
+000052 AddModifierDefinition #3000
+000053 [X10WRITE] modifier=CARDINAL_BISHOP_PRESSURE arg=Amount official=100 k=7.3 transform=ADDITIVE requested=730 before=100 after=730 phase=definition-population
+000054 [X10WRITE] id=CARDINAL_BISHOP_PRESSURE arg=Amount stored_after_add=730 expected=730 MATCH via=store-lookup
+000055 PopulateModifierDefinitions EXIT depth=1 definitions_added=3336 writes=8 transform_refused=0 official_mismatch=0 post_add_match=8 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0
+000056 FIRST DynamicModifier instance #1 (attach underway)
+000057 FIRST DynamicModifier instance #2 (attach underway)
+000058 FIRST DynamicModifier instance #3 (attach underway)
+000059 X10 gameplay Lua initialized (RegisterScriptData)
+000060 X10 probe gameplay script alive (Ping)
+000001 ===== X10 native session =====
+000002 X10 CE native write test x10-write-test 2 (definition overrides, 2026-10-07)
+000003 GameCore:
+000004   module = GameCore_XP2_FinalRelease.dll
+000005   image size = 0xc60000
+000006   timestamp = 0x667c6f5b
+000007   .text = [0x0000000169E81000, 0x000000016A836627)
+000008 compatibility profile: user-validated-15038592
+000009 Hook validation:
+000010   PopulateModifierDefinitions PASS (in.text=1 prologue=1)
+000011   AddModifierDefinition PASS (in.text=1 prologue=1)
+000012   DynamicModifier_ctor_A PASS (in.text=1 prologue=1)
+000013   DynamicModifier_ctor_B PASS (in.text=1 prologue=1)
+000014 ALL_REQUIRED_SIGNATURES_VALID
+000015   GetModifierDefinition PASS (in.text=1 prologue=1)
+000016 4 lifecycle hooks installed (Populate/Add/InstanceA/InstanceB)
+000017 PopulateModifierDefinitions ENTER depth=1
+000018 CONFIG key=X10_MULTIPLIER found=true type=FLOAT32 id=4 flags=0x0 numeric=7.30000019073486 kerr=2.38e-07
+000019 CONFIG key=X10_MODULE_TRAITS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000020 CONFIG module traits ON
+000021 CONFIG key=X10_MODULE_POLICIES found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000022 CONFIG module policies ON
+000023 CONFIG key=X10_MODULE_GOVERNMENTS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000024 CONFIG module governments ON
+000025 CONFIG key=X10_MODULE_PANTHEONS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000026 CONFIG module pantheons ON
+000027 CONFIG key=X10_MODULE_WONDERS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000028 CONFIG module wonders ON
+000029 CONFIG key=X10_MODULE_GOVERNORS found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000030 CONFIG module governors ON
+000031 CONFIG key=X10_MODULE_SUZERAIN found=true type=INT32 id=2 flags=0x0 numeric=1 kerr=0
+000032 CONFIG module suzerain ON
+000033 AddModifierDefinition #1
+000034 AddModifierDefinition #2
+000035 AddModifierDefinition #3
+000036 AddModifierDefinition #1000
+000037 [X10WRITE] modifier=MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE arg=Amount official=400 k=7.3 transform=ADDITIVE requested=2920 before=400 after=2920 phase=definition-population
+000038 [X10WRITE] id=MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE arg=Amount stored_after_add=2920 expected=2920 MATCH via=store-lookup
+000039 [X10WRITE] modifier=MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS arg=Amount official=2 k=7.3 transform=ADDITIVE requested=14.6 before=2 after=14.6 phase=definition-population
+000040 [X10WRITE] id=MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS arg=Amount stored_after_add=14.6 expected=14.6 MATCH via=store-lookup
+000041 [X10WRITE] modifier=MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS arg=Amount official=2 k=7.3 transform=ADDITIVE requested=14.6 before=2 after=14.6 phase=definition-population
+000042 [X10WRITE] id=MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS arg=Amount stored_after_add=14.6 expected=14.6 MATCH via=store-lookup
+000043 [X10WRITE] modifier=MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS arg=Amount official=2 k=7.3 transform=ADDITIVE requested=14.6 before=2 after=14.6 phase=definition-population
+000044 [X10WRITE] id=MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS arg=Amount stored_after_add=14.6 expected=14.6 MATCH via=store-lookup
+000045 [X10WRITE] modifier=GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY arg=Amount official=4 k=7.3 transform=ADDITIVE requested=29.2 before=4 after=29.2 phase=definition-population
+000046 [X10WRITE] id=GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY arg=Amount stored_after_add=29.2 expected=29.2 MATCH via=store-lookup
+000047 [X10WRITE] modifier=TOQUI_DOMESTIC_LOYALTY arg=Amount official=4 k=7.3 transform=ADDITIVE requested=29.2 before=4 after=29.2 phase=definition-population
+000048 [X10WRITE] id=TOQUI_DOMESTIC_LOYALTY arg=Amount stored_after_add=29.2 expected=29.2 MATCH via=store-lookup
+000049 [X10WRITE] modifier=TOQUI_FOREIGN_LOYALTY arg=Amount official=4 k=7.3 transform=ADDITIVE requested=29.2 before=4 after=29.2 phase=definition-population
+000050 [X10WRITE] id=TOQUI_FOREIGN_LOYALTY arg=Amount stored_after_add=29.2 expected=29.2 MATCH via=store-lookup
+000051 AddModifierDefinition #2000
+000052 AddModifierDefinition #3000
+000053 [X10WRITE] modifier=CARDINAL_BISHOP_PRESSURE arg=Amount official=100 k=7.3 transform=ADDITIVE requested=730 before=100 after=730 phase=definition-population
+000054 [X10WRITE] id=CARDINAL_BISHOP_PRESSURE arg=Amount stored_after_add=730 expected=730 MATCH via=store-lookup
+000055 PopulateModifierDefinitions EXIT depth=1 definitions_added=3336 writes=8 transform_refused=0 official_mismatch=0 post_add_match=8 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0
+000056 FIRST DynamicModifier instance #1 (attach underway)
+000057 FIRST DynamicModifier instance #2 (attach underway)
+000058 FIRST DynamicModifier instance #3 (attach underway)
+000059 X10 gameplay Lua initialized (RegisterScriptData)
+000060 X10 probe gameplay script alive (Ping)
