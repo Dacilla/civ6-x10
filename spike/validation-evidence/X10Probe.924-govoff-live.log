@@ -1,0 +1,213 @@
+[X10Probe] configuration X10_MULTIPLIER=7.3000001907349
+[X10Probe] TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS handle=287 Amount=7.3 expected=7.30 PASS
+[X10Probe] TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] AGOGE_ANCIENT_MELEE_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] STAUEZEUS_ANTI_CAVALRY_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] X10_PANAMA_CANAL_YIELD_GOLD: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GROUNDBREAKER_BONUS_HARVEST_YIELDS: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GARRISON_COMMANDER_ADJUST_CITY_COMBAT_BONUS: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_GOLD_INTEREST: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] HERMETIC_ORDER_GREAT_ENGINEER_LEY_LINE_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] done
+[X10BridgeDiag] X10_ALHAMBRA_ENTERTAINMENT src=Buildings|- exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ALHAMBRA_GPP_GENERAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ANGKOR_WAT_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BIG_BEN_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BIG_BEN_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=6 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BOLSHOI_THEATRE_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BOLSHOI_THEATRE_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BROADWAY_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BROADWAY_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_CASA_DE_CONTRATACION_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSEUM_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSUS_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSUS_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_CRISTO_REDENTOR_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ESTADIO_DO_MARACANA_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=6 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ETEMENANKI_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_FORBIDDEN_CITY_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_BATH_ENTERTAINMENT src=Buildings|- exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_BATH_HOUSING src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIGHTHOUSE_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_ZIMBABWE_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_ZIMBABWE_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HAGIA_SOPHIA_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HANGING_GARDENS_HOUSING src=Buildings|- exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HERMITAGE_GPP_ARTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ARTIST exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_JEBEL_BARKAL_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MACHU_PICCHU_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MAHABODHI_TEMPLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MEENAKSHI_TEMPLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MONT_ST_MICHEL_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORACLE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORACLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORSZAGHAZ_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_OXFORD_UNIVERSITY_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_PANAMA_CANAL_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=10 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_POTALA_PALACE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_POTALA_PALACE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_PYRAMIDS_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_STATUE_OF_ZEUS_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_STONEHENGE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=8 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TEMPLE_ARTEMIS_HOUSING src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TEMPLE_ARTEMIS_YIELD_FOOD src=Building_YieldChanges|YieldType=YIELD_FOOD exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TERRACOTTA_ARMY_GPP_GENERAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TORRE_DE_BELEM_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_TORRE_DE_BELEM_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_VENETIAN_ARSENAL_GPP_ENGINEER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ENGINEER exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] bridge_expected=57 bridge_materialized=57 bridge_unavailable=0
+[X10Probe] configuration X10_MULTIPLIER=7.3000001907349
+[X10Probe] TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS handle=287 Amount=7.3 expected=7.30 PASS
+[X10Probe] TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] AGOGE_ANCIENT_MELEE_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] STAUEZEUS_ANTI_CAVALRY_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] X10_PANAMA_CANAL_YIELD_GOLD: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GROUNDBREAKER_BONUS_HARVEST_YIELDS: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GARRISON_COMMANDER_ADJUST_CITY_COMBAT_BONUS: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_GOLD_INTEREST: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] HERMETIC_ORDER_GREAT_ENGINEER_LEY_LINE_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] done
+[X10BridgeDiag] X10_ALHAMBRA_ENTERTAINMENT src=Buildings|- exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ALHAMBRA_GPP_GENERAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ANGKOR_WAT_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BIG_BEN_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BIG_BEN_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=6 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BOLSHOI_THEATRE_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BOLSHOI_THEATRE_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BROADWAY_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BROADWAY_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_CASA_DE_CONTRATACION_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSEUM_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSUS_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSUS_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_CRISTO_REDENTOR_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ESTADIO_DO_MARACANA_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=6 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ETEMENANKI_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_FORBIDDEN_CITY_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_BATH_ENTERTAINMENT src=Buildings|- exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_BATH_HOUSING src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIGHTHOUSE_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_ZIMBABWE_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_ZIMBABWE_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HAGIA_SOPHIA_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HANGING_GARDENS_HOUSING src=Buildings|- exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HERMITAGE_GPP_ARTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ARTIST exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_JEBEL_BARKAL_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MACHU_PICCHU_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MAHABODHI_TEMPLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MEENAKSHI_TEMPLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MONT_ST_MICHEL_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORACLE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORACLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORSZAGHAZ_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_OXFORD_UNIVERSITY_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_PANAMA_CANAL_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=10 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_POTALA_PALACE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_POTALA_PALACE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_PYRAMIDS_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_STATUE_OF_ZEUS_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_STONEHENGE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=8 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TEMPLE_ARTEMIS_HOUSING src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TEMPLE_ARTEMIS_YIELD_FOOD src=Building_YieldChanges|YieldType=YIELD_FOOD exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TERRACOTTA_ARMY_GPP_GENERAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TORRE_DE_BELEM_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_TORRE_DE_BELEM_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_VENETIAN_ARSENAL_GPP_ENGINEER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ENGINEER exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] bridge_expected=57 bridge_materialized=57 bridge_unavailable=0
+[X10Probe] configuration X10_MULTIPLIER=7.3000001907349
+[X10Probe] TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS handle=287 Amount=7.3 expected=7.30 PASS
+[X10Probe] TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] AGOGE_ANCIENT_MELEE_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] STAUEZEUS_ANTI_CAVALRY_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] X10_PANAMA_CANAL_YIELD_GOLD: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GROUNDBREAKER_BONUS_HARVEST_YIELDS: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GARRISON_COMMANDER_ADJUST_CITY_COMBAT_BONUS: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_GOLD_INTEREST: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] HERMETIC_ORDER_GREAT_ENGINEER_LEY_LINE_PRODUCTION: runtime handle ABSENT (definition write verified natively via stored_after_add)
+[X10Probe] done
+[X10BridgeDiag] X10_ALHAMBRA_ENTERTAINMENT src=Buildings|- exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ALHAMBRA_GPP_GENERAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ANGKOR_WAT_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BIG_BEN_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BIG_BEN_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=6 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BOLSHOI_THEATRE_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BOLSHOI_THEATRE_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BROADWAY_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_BROADWAY_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_CASA_DE_CONTRATACION_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSEUM_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSUS_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_COLOSSUS_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_CRISTO_REDENTOR_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ESTADIO_DO_MARACANA_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=6 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ETEMENANKI_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_FORBIDDEN_CITY_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_BATH_ENTERTAINMENT src=Buildings|- exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_BATH_HOUSING src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_GPP_WRITER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_WRITER exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIBRARY_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_LIGHTHOUSE_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_ZIMBABWE_GPP_MERCHANT src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MERCHANT exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_GREAT_ZIMBABWE_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HAGIA_SOPHIA_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HANGING_GARDENS_HOUSING src=Buildings|- exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_HERMITAGE_GPP_ARTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ARTIST exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_JEBEL_BARKAL_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MACHU_PICCHU_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MAHABODHI_TEMPLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MEENAKSHI_TEMPLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_MONT_ST_MICHEL_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORACLE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORACLE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_ORSZAGHAZ_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_OXFORD_UNIVERSITY_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_PANAMA_CANAL_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=10 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_POTALA_PALACE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_POTALA_PALACE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_PYRAMIDS_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_STATUE_OF_ZEUS_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_STONEHENGE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_MUSICIAN exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE src=Building_YieldChanges|YieldType=YIELD_CULTURE exp=8 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TEMPLE_ARTEMIS_HOUSING src=Buildings|- exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TEMPLE_ARTEMIS_YIELD_FOOD src=Building_YieldChanges|YieldType=YIELD_FOOD exp=4 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TERRACOTTA_ARMY_GPP_GENERAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_GENERAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_TORRE_DE_BELEM_GPP_ADMIRAL src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ADMIRAL exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_TORRE_DE_BELEM_YIELD_GOLD src=Building_YieldChanges|YieldType=YIELD_GOLD exp=5 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=trigger
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_GPP_SCIENTIST src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_SCIENTIST exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_YIELD_FAITH src=Building_YieldChanges|YieldType=YIELD_FAITH exp=1 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_UNIVERSITY_SANKORE_YIELD_SCIENCE src=Building_YieldChanges|YieldType=YIELD_SCIENCE exp=3 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] X10_VENETIAN_ARSENAL_GPP_ENGINEER src=Building_GreatPersonPoints|GreatPersonClassType=GREAT_PERSON_CLASS_ENGINEER exp=2 obs=0 helper=1 attach=1 amount=1 zeroed=1 origin=immediate
+[X10BridgeDiag] bridge_expected=57 bridge_materialized=57 bridge_unavailable=0

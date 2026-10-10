@@ -13,10 +13,15 @@
   29 partial, 2 unsupported; 154 native rows = 97 modifier-backed + 57
   generated direct-table bridge helpers; see `docs/WONDER_AUDIT.md`).
   Awaiting targeted live validation.
-- Governors: **CERTIFIED** (Phase 4B: 54 audited candidate rows from
+- Governors: **LIVE_VALIDATED** (Phase 4B + 4C, tag
+  `phase4b-924-live-validated`: 54 audited candidate rows from
   `docs/GOVERNOR_AUDIT.md`, owner bit 32, `X10_MODULE_GOVERNORS` default ON;
-  48 ADDITIVE + 6 COMBAT, 5 engine-integral-conditional). Awaiting targeted
-  live validation.
+  48 ADDITIVE + 6 COMBAT, 5 engine-integral-conditional. Governors ON:
+  `writes=748 transform_refused=176 ... post_add_match=748 ...` with 49 of
+  54 written and 5 integral refusals. Governors OFF: `writes=699
+  transform_refused=171 ... skipped_other=54`, exactly 54
+  `owners=0x20 not-all-enabled skipped` lines and zero Governor mutations.
+  Evidence: `spike/validation-evidence/X10*924-gov*-live.log`).
 - Suzerains / City-states: not started (remain unsupported).
 
 Follow-up (not a blocker): the two excluded Toqui governor-pressure rows

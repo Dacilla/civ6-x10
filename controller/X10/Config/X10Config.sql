@@ -11,7 +11,8 @@
 -- is transformed ONLY if ALL owning supported modules are enabled.
 -- Disabling Policies (or Governments) therefore never leaves an X10 mutation
 -- active through the other owner. Per-entry owners bitmask lives in the
--- generated registry (1=traits 2=policies 4=governments 8=pantheons).
+-- generated registry (1=traits 2=policies 4=governments 8=pantheons
+-- 16=wonders 32=governors).
 INSERT OR IGNORE INTO Parameters
   (ParameterId, Name, Description, Domain, DefaultValue,
    ConfigurationGroup, ConfigurationId, GroupId, Visible, SupportsSinglePlayer)

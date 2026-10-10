@@ -173,7 +173,8 @@ REGISTRY_MODULES = ("traits", "policies", "governments", "pantheons",
 
 
 def collect_registry_rows(root: str | Path) -> list[dict]:
-    """All production input rows: 5 manifests + generated bridge helpers.
+    """All production input rows: 6 manifests (traits, policies, governments,
+pantheons, wonders, governors) + generated bridge helpers.
 
     Single source shared by the CLI and the test-suite so the shipped
     registry can never silently diverge from what tests certify.
