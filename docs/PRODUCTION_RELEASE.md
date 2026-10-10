@@ -24,15 +24,18 @@
   transform_refused=171 ... skipped_other=54`, exactly 54
   `owners=0x20 not-all-enabled skipped` lines and zero Governor mutations.
   Evidence: `spike/validation-evidence/X10*924-gov*-live.log`).
-- Suzerains / City-states: **Phase 5A audit complete, NOT implemented.**
-  The closed-world audit found **48 active City-States**, 91 Suzerain-root
-  modifiers, 182 reachable definitions, 246 reachable argument rows
-  (74 numeric / 172 non-numeric) and 240 side-path cells, with **47
-  certified candidates**, 21 decision-required numeric rows and 65
-  decision-required side-path cells. No `manifests/suzerain.yml`, no
-  registry rows, no owner bit 64, no CE/native/controller change, no live
-  test. See `docs/SUZERAIN_AUDIT.md` and `civ6x10/rules/suzerain_audit.yml`;
-  Phase 5B is the reviewed production slice.
+- Suzerains / City-states: **CERTIFIED / awaiting targeted live validation**
+  (Phase 5A.1 audit + Phase 5B production integration: 47 conservative
+  numeric rows mechanically derived from `civ6x10/rules/suzerain_audit.yml`
+  (`phase5a.1-suzerain-audit` source), owner bit 64, `X10_MODULE_SUZERAIN`
+  default ON; 44 ADDITIVE — 35 unconditional + 9 count-like Bologna
+  GP-point rows — and 3 DISCOUNT Ngazargamu rows with `compound_discount`.
+  NOT live-validated: Phase 5C performs the targeted live validation.
+  Explicitly out of scope: the 21 main-graph numeric decisions, the 68
+  side-path decisions, improvement/Nihang intrinsic data, the Wolin
+  coefficients, Valletta discounts, Hattusa/Zanzibar quantities, Cardiff
+  power, loyalty/pressure rows, Kandy `ScalingFactor` and the Ayutthaya
+  percentage. See `docs/SUZERAIN_AUDIT.md`).
 
 Follow-up (not a blocker): the two excluded Toqui governor-pressure rows
 await stored-form re-certification via the store-lookup witness.
@@ -42,17 +45,19 @@ await stored-form re-certification via the store-lookup witness.
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **924-entry certified production slice (684 Release-1 + 31 Pantheon + 155
-  Wonder/Suleiman incl. 57 bridge helpers + 54 Governors): LIVE_VALIDATED**
-  at stored FLOAT32 k=7.3 for every component module, in both the ON and OFF
-  module states (Governors ON: 748 writes / 176 refusals; OFF: 699 / 171 with
-  54 ownership skips; both `post_add_match` = writes, `post_add_mismatch` = 0).
-  686 unconditional entries transform at any k; 184 conditional entries
+- **971-entry certified production slice (684 Release-1 + 31 Pantheon + 155
+  Wonder/Suleiman incl. 57 bridge helpers + 54 Governors + 47 Suzerain):
+  LIVE_VALIDATED** for traits/pantheons/wonders/governors at stored FLOAT32
+  k=7.3 in both the ON and OFF module states; **Suzerain is CERTIFIED
+  (statically verified, 47/47 through the unmodified gate) and awaits its
+  targeted live validation (Phase 5C).**
+  773 unconditional entries transform at any k; 198 conditional entries
   apply only on integral results under the FLOAT32-aware exactness rule
-  (at live stored-float k=7.3: 748 static successes of 924 — honest
-  fractional refusal, never flooring; 57 of the 189 are engine-integral
+  (at live stored-float k=7.3: 786 static successes of 971 — honest
+  fractional refusal, never flooring; 66 of the 198 are engine-integral
   entries — 31 Wonder bridge helpers, 21 Release-1 player-cities rows and
-  5 Governor rows — see Phase 3F/3G/4B). Full gate in
+  5 Governor rows — plus 9 Bologna suzerain GP-point rows under the existing
+  GREAT_PERSON_POINTS count-like policy; see Phase 3F/3G/4B/5B). Full gate in
   `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit in
   `docs/PANTHEON_AUDIT.md`, wonder audit in `docs/WONDER_AUDIT.md`.
   The Toqui loyalty pair (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) is temporarily

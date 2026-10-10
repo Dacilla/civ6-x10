@@ -185,18 +185,18 @@ class TestWriteProbeRegressions(unittest.TestCase):
 
     def test_pantheon_module_bit_wired(self):
         # Pantheons are a supported module (bit 8): native slots, mask,
-        # config default ON. Governors is now also supported (bit 32, covered
-        # by its own test); suzerain remains the only unsupported module.
+        # config default ON. Governors (bit 32) and suzerain (bit 64) are
+        # covered by their own tests; every module is now supported.
         w = self._code(self._fork("X10Write.cpp"))
         self.assertIn("s_modEnabled[3]", w)
         self.assertIn("mask |= 8", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("pantheons", true)', lc)
-        self.assertIn("bool mods[6]", lc)
+        self.assertIn("bool mods[7]", lc)
         self.assertNotIn('"pantheons", "governors"',
                          lc.replace(" ", "").replace("\n", ""))
-        # governors is supported; only suzerain stays in the warn loop
-        self.assertIn('{"suzerain"}', lc.replace(" ", "").replace("\n", ""))
+        # every module is supported: no unsupported-module warn loop remains
+        self.assertNotIn('{"suzerain"}', lc.replace(" ", "").replace("\n", ""))
         h = self._fork("X10Write.h")
         self.assertIn("Arm(double k, const bool* mods, double kErr)", h)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
@@ -207,20 +207,20 @@ class TestWriteProbeRegressions(unittest.TestCase):
         import re
         m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'", cfg, re.S)
         self.assertIsNotNone(m)
-        self.assertEqual(m.group(2), "0")
+        self.assertEqual(m.group(2), "1")
 
     def test_wonder_module_bit_wired(self):
         # Wonders are the fifth supported module (bit 16): native slots,
         # mask, config default ON, and no unsupported warning for wonders.
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[6]", w)
+        self.assertIn("s_modEnabled[7]", w)
         self.assertIn("mask |= 16", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("wonders", true)', lc)
-        self.assertIn("bool mods[6]", lc)
+        self.assertIn("bool mods[7]", lc)
         flat = lc.replace(" ", "").replace("\n", "")
         self.assertNotIn('"wonders","suzerain"', flat)
-        self.assertIn('{"suzerain"}', flat)
+        self.assertNotIn('{"suzerain"}', flat)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
                ).read_text(encoding="utf-8")
         self.assertIn("X10_MODULE_WONDERS', 'X10: Wonders', ",
@@ -235,21 +235,22 @@ class TestWriteProbeRegressions(unittest.TestCase):
     def test_governor_module_bit_wired(self):
         # Governors are the sixth supported module (bit 32): native slots,
         # mask, config default ON, and no unsupported warning for governors.
-        # Suzerain remains the only unsupported module.
+        # Suzerain (bit 64) is covered by its own test.
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[6]", w)
+        self.assertIn("s_modEnabled[7]", w)
         self.assertIn(
-            "static bool s_modEnabled[6] = {true, true, true, true, true, true};",
+            "static bool s_modEnabled[7] = {true, true, true, true, true, "
+            "true, true};",
             w)
-        self.assertIn("for (int i = 0; i < 6; i++) s_modEnabled[i] = mods[i];",
+        self.assertIn("for (int i = 0; i < 7; i++) s_modEnabled[i] = mods[i];",
                       w)
         self.assertIn("mask |= 32", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("governors", true)', lc)
-        self.assertIn("bool mods[6]", lc)
+        self.assertIn("bool mods[7]", lc)
         flat = lc.replace(" ", "").replace("\n", "")
         self.assertIn('ModuleEnabled("governors",true)', flat)
-        self.assertIn('{"suzerain"}', flat)
+        self.assertNotIn('{"suzerain"}', flat)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
                ).read_text(encoding="utf-8")
         self.assertIn("X10_MODULE_GOVERNORS', 'X10: Governors', ",
@@ -262,7 +263,35 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertEqual(m.group(2), "1")
         m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'",
                       cfg, re.S)
-        self.assertEqual(m.group(2), "0")
+        self.assertEqual(m.group(2), "1")
+
+    def test_suzerain_module_bit_wired(self):
+        # Suzerain is the seventh supported module (bit 64): native slots,
+        # mask, config default ON, and no unsupported warning. The slice is
+        # the conservative 47 certified numeric effects; improvement yields,
+        # Nihang stats, resource quantities and other granted mechanics stay
+        # unscaled by explicit audit decision.
+        w = self._code(self._fork("X10Write.cpp"))
+        self.assertIn("s_modEnabled[7]", w)
+        self.assertIn("mask |= 64", w)
+        lc = self._fork("X10Lifecycle.cpp")
+        self.assertIn('ModuleEnabled("suzerain", true)', lc)
+        self.assertIn("bool mods[7]", lc)
+        flat = lc.replace(" ", "").replace("\n", "")
+        self.assertNotIn("unsupported", flat.lower())
+        self.assertNotIn("ignored", flat)
+        cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
+               ).read_text(encoding="utf-8")
+        self.assertIn("X10_MODULE_SUZERAIN', 'X10: Suzerain', ",
+                      cfg.replace("\r\n", "\n"))
+        self.assertNotIn("(unsupported)", cfg)
+        import re
+        m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'",
+                      cfg, re.S)
+        self.assertIsNotNone(m)
+        self.assertEqual(m.group(2), "1")
+        # owners-bit documentation covers all seven modules
+        self.assertIn("64=suzerain", cfg)
 
     def test_post_add_mismatch_increments_counter(self):
         # A post-Add MISMATCH must feed the aggregate mismatch counter;

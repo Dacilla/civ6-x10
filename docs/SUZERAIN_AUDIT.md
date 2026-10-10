@@ -1,5 +1,21 @@
 # City-State / Suzerain Semantic Audit (Phase 5A)
 
+> **Phase 5B (implemented):** the 47 `CERTIFIED_CANDIDATE` rows below are now
+> in production. `manifests/suzerain.yml` is generated mechanically from this
+> audit (`python -m civ6x10 generate-suzerain-manifest`) and is checked in
+> **by explicit request**; note this departs from the standing decision that
+> `manifests/*.yml` are local-only derived data (see
+> `docs/PRODUCTION_RELEASE.md`, "Public-data hygiene"), so treat that manifest
+> as a reviewed exception rather than a policy change — exactly as
+> `manifests/governors.yml` was in Phase 4B. Owner bit **64 = suzerain**; the
+> CE writer now arms seven modules (`s_modEnabled[7]`, `mask |= 64`) and
+> `X10_MODULE_SUZERAIN` defaults ON. No `DECISION_REQUIRED`, `EXCLUDED` or
+> side-path row entered production. All 47 suzerain entries are suzerain-only
+> (`owners == 64`) and the shared-definition count is unchanged at 25.
+> Registry: **971 entries / 967 unique definitions** (773 unconditional + 198
+> count-like). Suzerain status is **CERTIFIED / awaiting targeted live
+> validation** — NOT `LIVE_VALIDATED` (that is Phase 5C).
+
 Regenerate with:
 
 ```powershell

@@ -2011,3 +2011,132 @@ def summarize(audit: dict) -> dict:
             if k != "details"
         },
     }
+
+# --------------------------------------------------------------------------
+# Phase 5B: production manifest derived from the audited candidate set
+# --------------------------------------------------------------------------
+SUZERAIN_MODULE = "suzerain"
+SUZERAIN_MODULE_BIT = 64
+
+# Audited families -> production transform. Percent discounts compound;
+# everything else in the conservative slice is the additive magnitude
+# transform. The audited family is preserved verbatim (never relabelled to
+# satisfy the gate). There are no COMBAT rows in the 47-row slice.
+FAMILY_TRANSFORM = {
+    "PERCENT_DISCOUNT": "compound_discount",
+}
+
+
+def _fmt(v) -> str:
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return str(v)
+    if abs(f - round(f)) < 1e-9:
+        return str(int(round(f)))
+    s = f"{f:.2f}".rstrip("0").rstrip(".")
+    return s
+
+
+def _generated_value(family: str, official_value: str) -> str:
+    """Classic-k=10 generated value via the existing transform helpers."""
+    from .transforms import (canonical_x10_multiply,
+                             compound_discount_percent)
+    v = float(official_value)
+    if FAMILY_TRANSFORM.get(family) == "compound_discount":
+        return _fmt(compound_discount_percent(v))
+    return _fmt(canonical_x10_multiply(v))
+
+
+def audited_suzerain_candidates(audit_path) -> list[dict]:
+    """Exactly the CERTIFIED_CANDIDATE rows from the checked-in audit."""
+    import yaml
+    doc = yaml.safe_load(Path(audit_path).read_text(encoding="utf-8"))
+    by_pair: dict[tuple[str, str], list[dict]] = {}
+    for r in doc.get("rows") or []:
+        by_pair.setdefault((r["modifier_id"], r["argument_name"]), []).append(r)
+    out = []
+    for c in doc.get("proposed_candidates") or []:
+        key = (c["modifier_id"], c["argument"])
+        matches = by_pair.get(key, [])
+        if len(matches) != 1:
+            raise ValueError(
+                f"proposed candidate {key} resolves to {len(matches)} "
+                "audited rows (fail closed: expected exactly one)")
+        r = matches[0]
+        if not r.get("numeric"):
+            raise ValueError(f"candidate {key} is not numeric (fail closed)")
+        if r.get("disposition") != "CERTIFIED_CANDIDATE":
+            raise ValueError(f"candidate {key} is not CERTIFIED_CANDIDATE "
+                             f"(fail closed: {r.get('disposition')})")
+        for row_field, cand_field in (("effect_type", "effect_type"),
+                                      ("argument_value", "value"),
+                                      ("family", "family"),
+                                      ("city_state", "city_state")):
+            if str(r.get(row_field)) != str(c.get(cand_field)):
+                raise ValueError(
+                    f"candidate {key} metadata disagrees: audit row "
+                    f"{row_field}={r.get(row_field)!r} vs proposed "
+                    f"{cand_field}={c.get(cand_field)!r} (fail closed)")
+        out.append({
+            "city_state": r["city_state"],
+            "leader": r.get("leader"),
+            "trait_type": r["trait_type"],
+            "root_modifier_id": r["root_modifier_id"],
+            "root_gate_set": r.get("root_gate_set"),
+            "modifier_id": r["modifier_id"],
+            "modifier_type": r["modifier_type"],
+            "effect_type": r["effect_type"],
+            "argument_name": r["argument_name"],
+            "official_value": str(r["argument_value"]),
+            "semantic_family": r["family"],
+            "engine_integral": bool(r.get("engine_integral")),
+        })
+    out.sort(key=lambda r: (r["modifier_id"], r["argument_name"]))
+    return out
+
+
+def build_suzerain_manifest(audit_path,
+                            module: str = SUZERAIN_MODULE) -> dict:
+    """Production manifest rows for exactly the audited suzerain candidates.
+
+    Mechanically derived from `civ6x10/rules/suzerain_audit.yml` so the
+    production input stays reproducible without the gitignored inventory CSV.
+    Nothing is hand-maintained, no DECISION_REQUIRED / EXCLUDED / side-path
+    row can enter, and the audited semantic family is preserved as-is.
+    """
+    cands = audited_suzerain_candidates(audit_path)
+    rows = []
+    for r in cands:
+        family = r["semantic_family"]
+        transform = FAMILY_TRANSFORM.get(family, "canonical_x10_multiply")
+        generated = _generated_value(family, r["official_value"])
+        rows.append({
+            "object_id": r["city_state"],
+            "modifier_id": r["modifier_id"],
+            "modifier_type": r["modifier_type"],
+            "effect_type": r["effect_type"],
+            "argument_name": r["argument_name"],
+            "official_value": r["official_value"],
+            "semantic_family": family,
+            "transformation": transform,
+            "generated_value": generated,
+            "status": "ok",
+            "confidence": "human_certified",
+            "certification_source": "phase5a.1-suzerain-audit",
+            "engine_integral": r["engine_integral"],
+            "root_city_state": r["city_state"],
+            "root_trait": r["trait_type"],
+            "root_modifier_id": r["root_modifier_id"],
+            "multiplier": 10.0,
+        })
+    return {module: rows}
+
+
+def write_suzerain_manifest(manifest: dict, out) -> None:
+    import yaml
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with open(out, "w", encoding="utf-8") as fh:
+        yaml.safe_dump(manifest, fh, sort_keys=False, allow_unicode=True,
+                       width=120)

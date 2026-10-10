@@ -40,10 +40,13 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
 
 ## New certified registry
 
-- **924 entries / 920 unique definitions / 25 shared** (358 traits-only
+- **971 entries / 967 unique definitions / 25 shared** (358 traits-only
   incl. Suleiman titles, 284 policies-only, 18 governments-only, 31
   pantheons-only, 154 wonders-only = 97 modifier-backed + 57 generated
-  bridge helpers, 54 governors-only; 735 unconditional + 189 count-like).
+  bridge helpers, 54 governors-only, 47 suzerain-only; 773 unconditional +
+  198 count-like). Suzerain is CERTIFIED (Phase 5B, `phase5a.1-suzerain-audit`
+  source; 44 ADDITIVE — 35 unconditional + 9 count-like Bologna GP-point
+  rows — and 3 DISCOUNT Ngazargamu rows), awaiting targeted live validation.
   Frozen milestones: 684 Release-1 (`release1-684-live-validated`), 715
   Phase-2 (`phase2-715-live-validated`); every earlier line persists
   byte-identical, additions only.
@@ -63,11 +66,12 @@ transform is refused and the definition keeps its official value (gameplay
 `0 + V` = vanilla, never truncated, floored or rounded). Evidence, per-row
 inventory and the closed-world affected-set proof live in
 `docs/WONDER_AUDIT.md`.
-At the live stored-FLOAT32 k=7.3: 735 unconditional + 13 conditional write
-(**748**), 176 conditional refuse (31 Wonder bridge helpers + 21 Release-1
-player-cities entries + 5 Governor rows; 57 production entries protected in
-total). At k=10 all five governor integral rows apply (appeal 1→10, four
-building yields 2→20).- **599 unconditional** (every one transforms at k=7.3), **85 conditional
+At the live stored-FLOAT32 k=7.3: 773 unconditional + 13 conditional write
+(**786**), 185 conditional refuse (31 Wonder bridge helpers + 21 Release-1
+player-cities entries + 5 Governor rows + 9 Bologna suzerain GP-point rows;
+66 production entries protected in total). At k=10 all five governor integral
+rows apply (appeal 1→10, four building yields 2→20), and all nine Bologna
+rows apply as 10.- **599 unconditional** (every one transforms at k=7.3), **85 conditional
   count-like** (11 exact-integral apply at live FLOAT32 k=7.3, 74 fractional
   refuse safely). Static successful transforms at k=7.3: **610 of 684** —
   lower than the registry size by design (§10 honesty), and derived from the

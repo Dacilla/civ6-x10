@@ -9,10 +9,11 @@ a direct-table bridge.
 > Status: **traits, policies, governments, pantheons, wonders and governors
 > are LIVE_VALIDATED** at stored FLOAT32 k=7.3 (see
 > `docs/PRODUCTION_RELEASE.md` for per-module counters and
-> `spike/validation-evidence/` for the archived native logs). City-states /
-> suzerain is audited (Phase 5A) but not yet produced.  Controller packaging is functionally complete
-> locally; **Steam Workshop release is not ready** pending the public-data
-> hygiene step.
+> `spike/validation-evidence/` for the archived native logs). **Suzerain is
+> CERTIFIED** (47 conservative numeric rows, owner bit 64) and awaits
+> targeted live validation (Phase 5C). Controller packaging is functionally
+> complete locally; **Steam Workshop release is not ready** pending the
+> public-data hygiene step.
 
 ## Architecture status
 
@@ -23,7 +24,7 @@ a direct-table bridge.
 | Semantic certification gate (sem floor + curated overrides) | working |
 | Community Extension dependency | implemented (CE-X10 engine mod) |
 | Arbitrary multiplier (e.g. 7.3×, 0 = Off) | **LIVE_VALIDATED** |
-| Module ownership (bitmask, shared-definition rule) | **LIVE_VALIDATED** (6 modules, bit 32 = governors) |
+| Module ownership (bitmask, shared-definition rule) | 7 modules (bit 64 = suzerain, CERTIFIED, not yet live-validated) |
 | Controller packaging | local production candidate assembled (`spike/assemble-prod-test.ps1`) |
 | Steam Workshop release | not ready |
 

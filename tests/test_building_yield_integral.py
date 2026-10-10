@@ -163,10 +163,10 @@ class TestBuildingYieldCertification(unittest.TestCase):
 
     def test_registry_totals(self):
         entries, report = registry_or_skip()
-        self.assertEqual(len(entries), 924)
-        self.assertEqual(report["unique_definitions"], 920)
-        self.assertEqual(report["certified_unconditional"], 735)
-        self.assertEqual(report["certified_count_like_conditional"], 189)
+        self.assertEqual(len(entries), 971)
+        self.assertEqual(report["unique_definitions"], 967)
+        self.assertEqual(report["certified_unconditional"], 773)
+        self.assertEqual(report["certified_count_like_conditional"], 198)
         self.assertEqual(report["unresolved_conflicts"], [])
         gated = [e for e in entries
                  if e["cert_source"].startswith(
@@ -293,10 +293,10 @@ class TestIntegralTransformMath(unittest.TestCase):
             ok += 1
         exact = [e for e in co if T.count_like_applies(float(e["official"]), K73)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(ok, 735)
+        self.assertEqual(ok, 773)
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 176)
-        self.assertEqual(ok + len(exact), 748)
+        self.assertEqual(len(refused), 185)
+        self.assertEqual(ok + len(exact), 786)
 
 
 RELEASE1_CARRIER_IDS = (
@@ -394,8 +394,8 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
                 "MODIFIER_GOVERNOR_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL")]
         self.assertEqual(len(pre["engine_integral_effects"]), 1)
         from civ6x10.production import build_production_registry
-        # Phase 4B adds governor rows; compare the pre-4B (non-governor)
-        # subset on both sides.
+        # Phase 4B adds governor rows (and Phase 5B suzerain rows); compare
+        # the non-governor subset on both sides.
         base_rows = [r for r in rows if r.get("module") != "governors"]
         real = P.load_rules
         P.load_rules = lambda path=None: pre
@@ -409,8 +409,8 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
         post_map = {(e["modifier_id"], e["argument"]): e
                     for e in post_base}
         self.assertEqual(set(pre_map), set(post_map))
-        self.assertEqual(len(pre_entries), 870)
-        self.assertEqual(len(post_base), 870)
+        self.assertEqual(len(pre_entries), 917)
+        self.assertEqual(len(post_base), 917)
         changed = {k for k, v in post_map.items()
                    if any(pre_map[k][f] != v[f] for f in
                           ("official", "kind", "count_like", "owners",
@@ -490,14 +490,14 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(len(entries), 924)
-        self.assertEqual(report["unique_definitions"], 920)
-        self.assertEqual(len(un), 735)
-        self.assertEqual(len(co), 189)
+        self.assertEqual(len(entries), 971)
+        self.assertEqual(report["unique_definitions"], 967)
+        self.assertEqual(len(un), 773)
+        self.assertEqual(len(co), 198)
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 176)
+        self.assertEqual(len(refused), 185)
         # writes = unconditional (all apply) + conditional integral successes
-        self.assertEqual(len(un) + len(exact), 748)
+        self.assertEqual(len(un) + len(exact), 786)
 
 
 if __name__ == "__main__":

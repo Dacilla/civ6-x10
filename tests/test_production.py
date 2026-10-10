@@ -93,12 +93,12 @@ class TestProductionRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         entries, report = build_production_registry(rows)
-        self.assertEqual(len(entries), 924)
-        self.assertEqual(report["eligible"], 924)
-        self.assertEqual(report["unique_definitions"], 920)
+        self.assertEqual(len(entries), 971)
+        self.assertEqual(report["eligible"], 971)
+        self.assertEqual(report["unique_definitions"], 967)
         self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 735)
-        self.assertEqual(report["certified_count_like_conditional"], 189)
+        self.assertEqual(report["certified_unconditional"], 773)
+        self.assertEqual(report["certified_count_like_conditional"], 198)
         self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
         for mid in ("TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
@@ -187,7 +187,7 @@ class TestProductionTransforms(unittest.TestCase):
                     T.compound_discount_for_multiplier(v, 7.3),
                     (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1))
         discs = [e for e in entries if e["kind"] == "DISCOUNT"]
-        self.assertEqual(len(discs), 17)
+        self.assertEqual(len(discs), 20)
         # Flat gold-per-unit maintenance is ADDITIVE, not a percent discount:
         # 1 -> 7.3, 2 -> 14.6, -2 -> -14.6 at k=7.3.
         by_id = {}
@@ -209,10 +209,10 @@ class TestProductionTransforms(unittest.TestCase):
         # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
         # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
         # live against loaded definitions):
-        #   735 unconditional entries: every one transforms;
-        #   189 conditional entries: 13 exact-integral apply,
-        #   176 fractional refuse safely (never floored).
-        # Static successful transforms: 735 + 13 = 748 < registry size 924
+        #   773 unconditional entries: every one transforms;
+        #   198 conditional entries: 13 exact-integral apply,
+        #   185 fractional refuse safely (never floored).
+        # Static successful transforms: 773 + 13 = 786 < registry size 971
         # (Toqui loyalty pair temporarily excluded pending stored-form
         # re-certification).
         import math
@@ -224,11 +224,11 @@ class TestProductionTransforms(unittest.TestCase):
         entries, report = build_production_registry(rows)
         kf = T.stored_float32(7.3)
         self.assertEqual(kf, 7.300000190734863)  # live representation
-        self.assertEqual(len(entries), 924)
+        self.assertEqual(len(entries), 971)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        self.assertEqual(len(un), 735)
-        self.assertEqual(len(co), 189)
+        self.assertEqual(len(un), 773)
+        self.assertEqual(len(co), 198)
         ok = 0
         for e in un:
             v = float(e["official"])
@@ -243,14 +243,14 @@ class TestProductionTransforms(unittest.TestCase):
                 continue
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 735)
+        self.assertEqual(ok, 773)
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 176)
-        # Static expectation: 735 unconditional + 13 conditional = 748 of 924 certified.
-        self.assertEqual(ok + len(exact), 748)
+        self.assertEqual(len(refused), 185)
+        # Static expectation: 773 unconditional + 13 conditional = 786 of 971 certified.
+        self.assertEqual(ok + len(exact), 786)
 
     def test_verifier_key_capacity(self):
         # Exact live fixture: the 66-char Magnificences ID truncated to

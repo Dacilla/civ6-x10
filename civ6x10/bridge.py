@@ -169,12 +169,12 @@ def load_direct_csv(path: str | Path) -> list[dict]:
 
 
 REGISTRY_MODULES = ("traits", "policies", "governments", "pantheons",
-                    "wonders", "governors")
+                    "wonders", "governors", "suzerain")
 
 
 def collect_registry_rows(root: str | Path) -> list[dict]:
-    """All production input rows: 6 manifests (traits, policies, governments,
-pantheons, wonders, governors) + generated bridge helpers.
+    """All production input rows: 7 manifests (traits, policies, governments,
+pantheons, wonders, governors, suzerain) + generated bridge helpers.
 
     Single source shared by the CLI and the test-suite so the shipped
     registry can never silently diverge from what tests certify.
@@ -182,7 +182,7 @@ pantheons, wonders, governors) + generated bridge helpers.
     import yaml
     root = Path(root)
     rows: list[dict] = []
-    for module in REGISTRY_MODULES:  # 6 supported modules (governors=bit 32)
+    for module in REGISTRY_MODULES:  # 7 supported modules (suzerain=bit 64)
         man = yaml.safe_load(
             open(root / "manifests" / f"{module}.yml", encoding="utf-8"))
         for r in man[module]:

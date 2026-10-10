@@ -72,11 +72,13 @@ class TestModuleOwnership(unittest.TestCase):
         self.assertEqual(MODULE_BITS["governors"], GOV_BIT)
         self.assertEqual(MODULE_BITS, {"traits": 1, "policies": 2,
                                        "governments": 4, "pantheons": 8,
-                                       "wonders": 16, "governors": 32})
+                                       "wonders": 16, "governors": 32,
+                                       "suzerain": 64})
 
     def test_registry_modules_include_governors(self):
         self.assertIn("governors", REGISTRY_MODULES)
-        self.assertEqual(len(REGISTRY_MODULES), 6)
+        self.assertIn("suzerain", REGISTRY_MODULES)
+        self.assertEqual(len(REGISTRY_MODULES), 7)
 
     def test_manifest_shape(self):
         audit = ROOT / "civ6x10" / "rules" / "governor_audit.yml"
@@ -104,11 +106,11 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         self.entries, self.report = registry_or_skip()
 
     def test_totals(self):
-        self.assertEqual(len(self.entries), 924)
-        self.assertEqual(self.report["unique_definitions"], 920)
+        self.assertEqual(len(self.entries), 971)
+        self.assertEqual(self.report["unique_definitions"], 967)
         self.assertEqual(self.report["shared_definitions"], 25)
-        self.assertEqual(self.report["certified_unconditional"], 735)
-        self.assertEqual(self.report["certified_count_like_conditional"], 189)
+        self.assertEqual(self.report["certified_unconditional"], 773)
+        self.assertEqual(self.report["certified_count_like_conditional"], 198)
         self.assertEqual(self.report["unresolved_conflicts"], [])
         self.assertEqual(self.report["ownership_counts"]["governors"], 54)
 
@@ -206,14 +208,15 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         self.assertEqual(self.report["eligible"], r2["eligible"])
 
     def test_pre_4b_subset_unchanged(self):
-        # Every non-governor entry must match the pre-4B registry exactly on
-        # the semantic fields the task pins.
+        # Every non-governor entry must match the pre-5B registry exactly on
+        # the semantic fields the task pins (the pre-4B 870 plus the 47
+        # suzerain rows, which Phase 5B added without touching anything).
         rows = manifests_or_skip()
         base_rows = [r for r in rows if r.get("module") != "governors"]
         base_entries, base_report = registry_or_skip(base_rows)
-        self.assertEqual(len(base_entries), 870)
-        self.assertEqual(base_report["certified_unconditional"], 686)
-        self.assertEqual(base_report["certified_count_like_conditional"], 184)
+        self.assertEqual(len(base_entries), 917)
+        self.assertEqual(base_report["certified_unconditional"], 724)
+        self.assertEqual(base_report["certified_count_like_conditional"], 193)
         by_key = {(e["modifier_id"], e["argument"]): e for e in base_entries}
         for e in self.entries:
             if e["owners"] == GOV_BIT:
@@ -500,9 +503,9 @@ class TestModeFloorAndCombatGate(unittest.TestCase):
                 ok += 1
         refused = sum(1 for e in entries if e["count_like"]
                       and not T.count_like_applies(float(e["official"]), kf))
-        self.assertEqual(ok + ex, 748)
-        self.assertEqual(refused, 176)
-        self.assertEqual(len(entries), 924)
+        self.assertEqual(ok + ex, 786)
+        self.assertEqual(refused, 185)
+        self.assertEqual(len(entries), 971)
 
 
 if __name__ == "__main__":

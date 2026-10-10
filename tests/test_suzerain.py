@@ -1210,14 +1210,16 @@ class SuzerainAuditTest(unittest.TestCase):
         self.assertEqual(expected, got)
         self.assertTrue(got)
 
-    # -- ownership design (report only) ----------------------------------
-    def test_proposed_owner_bit_is_reported_not_implemented(self):
+    # -- ownership design (implemented in Phase 5B) ----------------------
+    def test_proposed_owner_bit_is_implemented(self):
         self.assertEqual(self.audit["proposed_owner_bit"], 64)
         self.assertEqual(PROPOSED_SUZERAIN_MODULE_BIT, 64)
         self.assertEqual(PROPOSED_NEXT_MODULE_BIT_AFTER_SUZERAIN, 128)
         from civ6x10 import production
-        self.assertNotIn("suzerain", production.MODULE_BITS)
-        self.assertNotIn(64, set(production.MODULE_BITS.values()))
+        from civ6x10.suzerain import SUZERAIN_MODULE_BIT
+        self.assertEqual(production.MODULE_BITS["suzerain"], 64)
+        self.assertEqual(SUZERAIN_MODULE_BIT, 64)
+        self.assertIn(64, set(production.MODULE_BITS.values()))
         from civ6x10.governors import PROPOSED_GOVERNOR_MODULE_BIT
         self.assertEqual(production.MODULE_BITS.get("governors"), 32)
         self.assertEqual(PROPOSED_GOVERNOR_MODULE_BIT, 32)
@@ -1242,21 +1244,30 @@ class SuzerainAuditTest(unittest.TestCase):
             self.assertEqual(ov["count"], 0)
 
     def test_no_manifests_suzerain_file(self):
-        self.assertFalse((ROOT / "manifests" / "suzerain.yml").exists(),
-                         "Phase 5A must not create a production manifest")
+        # Phase 5B supersedes the 5A ban: manifests/suzerain.yml now exists
+        # BY EXPLICIT POLICY as a deterministic derivative of the checked-in
+        # Phase-5A.1 audit (same exception as manifests/governors.yml).
+        man = ROOT / "manifests" / "suzerain.yml"
+        self.assertTrue(man.is_file())
+        from civ6x10.suzerain import build_suzerain_manifest
+        import yaml
+        audit = ROOT / "civ6x10" / "rules" / "suzerain_audit.yml"
+        fresh = build_suzerain_manifest(audit)
+        on_disk = yaml.safe_load(man.read_text(encoding="utf-8"))
+        self.assertEqual(fresh, on_disk)
 
-    # -- 13. no CE/native/controller modification -------------------------
+    # -- 13. audit engine stays native-free; controller now supports bit 64
     def test_no_ce_native_or_controller_modification(self):
         # the audit module must not import or touch native sources
         src = Path(suzerain.__file__).read_text(encoding="utf-8")
         for banned in ("GameCore", "s_modEnabled", "X10_MODULE_SUZERAIN",
                        "Mods\\\\X10"):
             self.assertNotIn(banned, src)
-        # the controller config must not carry a suzerain bit yet
+        # Phase 5B: the controller config carries suzerain bit 64, ON
         cfg = ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
         text = cfg.read_text(encoding="utf-8")
         self.assertIn("32=governors", text)
-        self.assertNotIn("64", text)
+        self.assertIn("64=suzerain", text)
 
 
 def _stable(obj):
@@ -1470,7 +1481,15 @@ class SuzerainAuditRealIntegrationTest(unittest.TestCase):
             self.assertIn(r, objs)
 
     def test_real_registry_overlap_is_zero(self):
-        self.assertEqual(self.audit["registry_overlap"]["count"], 0)
+        # Phase 5B: the live registry now contains the slice itself, so a
+        # fresh audit recomputation overlaps by construction. The invariant
+        # is that the ONLY overlap is exactly the accepted 47
+        # suzerain-owned pairs (no decision/excluded/side-path row leaks
+        # into production under another owner).
+        ov = self.audit["registry_overlap"]
+        self.assertEqual(ov["count"], 47)
+        self.assertEqual(set(ov["overlapping_modifier_ids"]),
+                         {m for m, a in ACCEPTED_47_SLICE})
 
     def test_real_legacy_comparison(self):
         lc = self.audit["legacy_comparison"]
@@ -1592,23 +1611,25 @@ class SuzerainAuditRealIntegrationTest(unittest.TestCase):
         self.assertEqual(sources["curated-category:PRODUCTION_PERCENT"], 2)
         self.assertEqual(sources["curated-category:AMENITY"], 2)
         self.assertEqual(sources["curated-category:EXPERIENCE"], 1)
-        # hypothetical registry totals with owner bit 64 (planning only):
-        # overlap is 0, so all 47 are new definitions and none is shared
-        self.assertEqual(self.audit["registry_overlap"]["count"], 0)
+        # post-5B production state (planning arithmetic now realized):
+        # the live registry contains the slice itself, so the fresh
+        # recomputation overlaps by construction; the invariant is that the
+        # ONLY overlap is exactly the accepted suzerain-owned slice
+        self.assertEqual(self.audit["registry_overlap"]["count"], 47)
+        self.assertEqual(set(self.audit["registry_overlap"]
+                             ["overlapping_modifier_ids"]),
+                         {m for m, a in ACCEPTED_47_SLICE})
         import json
         cov_path = ROOT / "build" / "X10ProductionRegistry.inc.coverage.json"
         if not cov_path.is_file():
             self.skipTest("production coverage report unavailable")
         cov = json.loads(cov_path.read_text(encoding="utf-8"))
-        self.assertEqual(cov["eligible"], 924)
-        self.assertEqual(cov["unique_definitions"], 920)
+        self.assertEqual(cov["eligible"], 971)
+        self.assertEqual(cov["unique_definitions"], 967)
         self.assertEqual(cov["shared_definitions"], 25)
-        self.assertEqual(cov["eligible"] + 47, 971)
-        self.assertEqual(cov["unique_definitions"] + 47, 967)
-        self.assertEqual(cov["shared_definitions"], 25)
-        self.assertEqual(cov["certified_unconditional"] + 38, 773)
-        self.assertEqual(cov["certified_count_like_conditional"] + 9, 198)
-        # hypothetical k=7.3 writes: the 9 Bologna +1 rows refuse because
+        self.assertEqual(cov["certified_unconditional"], 773)
+        self.assertEqual(cov["certified_count_like_conditional"], 198)
+        # k=7.3 writes: the 9 Bologna +1 rows refuse because
         # stored-FLOAT32 1 x 7.3 is non-integral; the other 38 write
         k32 = struct.unpack("f", struct.pack("f", 7.3))[0]
         refusals = 0

@@ -45,7 +45,7 @@ CERTIFIED_KINDS = frozenset({"ADDITIVE", "COMBAT", "PROBABILITY", "DISCOUNT"})
 # modules; duplicates must agree on official/transform/family/count-like or
 # generation fails instead of silently choosing one.
 MODULE_BITS = {"traits": 1, "policies": 2, "governments": 4, "pantheons": 8,
-               "wonders": 16, "governors": 32}
+               "wonders": 16, "governors": 32, "suzerain": 64}
 
 
 # Indivisible-count families: native may apply them only for exact integer
@@ -201,7 +201,7 @@ def emit_cxx(entries: list[dict]) -> str:
         "// admitted only via sem-floor agreement or curated override",
         "// (see civ6x10/rules/certified_overrides.yml + conflict ledger).",
         "// owners bitmask: 1=traits 2=policies 4=governments 8=pantheons"
-        " 16=wonders 32=governors.",
+        " 16=wonders 32=governors 64=suzerain.",
         "// A shared entry applies only when ALL owning modules are enabled.",
         "#pragma once",
         "struct X10RegistryEntry {",

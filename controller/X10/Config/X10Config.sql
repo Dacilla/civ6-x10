@@ -12,7 +12,7 @@
 -- Disabling Policies (or Governments) therefore never leaves an X10 mutation
 -- active through the other owner. Per-entry owners bitmask lives in the
 -- generated registry (1=traits 2=policies 4=governments 8=pantheons
--- 16=wonders 32=governors).
+-- 16=wonders 32=governors 64=suzerain).
 INSERT OR IGNORE INTO Parameters
   (ParameterId, Name, Description, Domain, DefaultValue,
    ConfigurationGroup, ConfigurationId, GroupId, Visible, SupportsSinglePlayer)
@@ -38,6 +38,6 @@ VALUES
   ('X10_MODULE_WONDERS', 'X10: Wonders', 'Apply to wonder belief-style building effects (structural slots/grants stay excluded).',
    'int', '1',
    'Game', 'X10_MODULE_WONDERS', 'GameOptions', 1, 1),
-  ('X10_MODULE_SUZERAIN', 'X10: City-states (unsupported)', 'Not yet implemented; ignored.',
-   'int', '0',
+  ('X10_MODULE_SUZERAIN', 'X10: Suzerain', 'Apply to certified numeric effects of active City-State Suzerain bonuses (unique-improvement yields, Nihang stats, resource quantities and other granted mechanics stay unscaled).',
+   'int', '1',
    'Game', 'X10_MODULE_SUZERAIN', 'GameOptions', 1, 1);

@@ -14,17 +14,22 @@
    owner bit 32, tag `phase4b-924-live-validated`, audit
    `docs/GOVERNOR_AUDIT.md`).
 
-## In progress
+## Certified, awaiting live validation
 
-5. **Suzerain / City-States (Phase 5)** - Phase 5A is a closed-world semantic
-   audit only: authoritative active City-State discovery from the official
-   runtime DB, recursive modifier-graph traversal, per-argument disposition,
-   unique-improvement / unique-unit side-path inventory, legacy x10 coverage
-   comparison, and a proposed owner bit (`64 = suzerain`, next free `128`).
-   No production rows, no bit 64, no native change, no live test until the
-   audit is reviewed - see `docs/SUZERAIN_AUDIT.md` and
-   `civ6x10/rules/suzerain_audit.yml`. Phase 5B is the reviewed production
-   slice.
+5. **Suzerain / City-States - CERTIFIED** (Phase 5A.1 audit + Phase 5B
+   production integration, +47 rows for 971 total, owner bit 64,
+   `X10_MODULE_SUZERAIN` default ON; 44 ADDITIVE — 35 unconditional + 9
+   count-like Bologna GP-point rows — and 3 DISCOUNT; audit
+   `docs/SUZERAIN_AUDIT.md`, manifest mechanically derived from
+   `civ6x10/rules/suzerain_audit.yml`). **NOT live-validated**: Phase 5C
+   performs the targeted live validation. The unresolved backlog stays open:
+   21 main-graph numeric decisions, 68 side-path decisions, 175 side-path
+   exclusions, unique-improvement ownership questions and Nihang side-path
+   questions (including the Suzerain-gated `NIHANG_SUZERAIN_COMBAT_BONUS`
+   +10, the Wolin defeated-strength coefficients, Valletta building
+   discounts, Hattusa/Zanzibar resource quantities, Cardiff free power,
+   loyalty/pressure rows, Kandy `ScalingFactor` and the Ayutthaya
+   completion-grant percentage).
 
 ## Remaining work
 

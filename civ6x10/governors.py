@@ -43,7 +43,9 @@ from pathlib import Path
 # Ownership design (report only - NOT implemented anywhere in Phase 4A).
 # civ6x10.production.MODULE_BITS: traits 1, policies 2, governments 4,
 # pantheons 8, wonders 16; Phase 4B implemented the next value (32 =
-# governors) and the CE writer now arms s_modEnabled[6] with six flags,
+# governors) and (since Phase 5B) the CE writer arms s_modEnabled[7] with
+# seven flags (traits, policies, governments, pantheons, wonders, governors,
+# suzerain=bit 64),
 # reading X10_MODULE_GOVERNORS as a supported module (default ON).
 # --------------------------------------------------------------------------
 PROPOSED_GOVERNOR_MODULE_BIT = 32

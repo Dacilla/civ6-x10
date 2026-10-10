@@ -10,10 +10,12 @@ native store lookup, then re-verifies every write
 identically, and the ownership bitmask proves module isolation (Governors OFF
 leaves the non-Governor written set byte-identical to Governors ON).
 
-Current production state: **924 registry entries / 920 unique definitions** -
+Current production state: **971 registry entries / 967 unique definitions** -
 traits/policies/governments (684), pantheons (31), wonders (97), governors (54),
+suzerain (47),
 with owner bits `1=traits 2=policies 4=governments 8=pantheons 16=wonders
-32=governors`. Suzerain is reserved (bit 64) but NOT implemented.
+32=governors 64=suzerain`. Suzerain is CERTIFIED (not yet live-validated);
+bit 128 is the next free bit.
 
 Proven numeric definition transforms: ADDITIVE, COMBAT (canonical `b_k`),
 DISCOUNT (percent discount / flat cost reduction), PROBABILITY, plus the
@@ -32,7 +34,7 @@ official runtime DB (local, private, read-only)
   -> family review / certification gate (auto-certify proven numerics;
      refuse the rest loudly)
   -> per-object manifests (traits/policies/governments/pantheons/wonders/
-     governors.yml)
+     governors/suzerain.yml)
   -> generator (deterministic, idempotent absolute-SET SQL only)
   -> direct-table bridge for columns no modifier addresses (guarded)
   -> validation (8 checks incl. idempotent reapply)
@@ -45,7 +47,8 @@ Two multiplier paths are combined:
   audited, works today. Shippable fallback, retained regardless.
 - **CE dynamic overrides** (arbitrary k, e.g. 7.3): the engine writes each
   certified argument at runtime; live-validated for traits, pantheons,
-  wonders and governors.
+  wonders and governors; suzerain is certified and statically verified,
+  awaiting its targeted live validation.
 
 Current architecture: **HYBRID** - numeric DB modifiers stay generated and
 certified; the CE path applies the arbitrary multiplier and module ownership,
@@ -77,6 +80,9 @@ Phase 5A: suzerain / city-states - closed-world semantic audit only
 (`docs/SUZERAIN_AUDIT.md`, `civ6x10/rules/suzerain_audit.yml`); proposed
 owner bit 64, no production rows, no CE/native/controller change. Phase 5B
 is the reviewed production slice.
+Phase 5B: suzerain production integration (+47 conservative rows for 971
+total, owner bit 64, `X10_MODULE_SUZERAIN` default ON) - CERTIFIED, awaiting
+targeted live validation (Phase 5C).
 Then optional belief/great-people/promotion modules.
 Unrelated global semantics stay NEEDS_REVIEW by design. See
 `docs/PRODUCTION_RELEASE.md` for packaging, shared-ownership rule, and
