@@ -48,6 +48,32 @@ local TARGETS = {
   -- transform d_k = (1-(1-d)^k)*100 -> ~80.3864 at stored FLOAT32 k=7.3,
   -- never 20 x 7.3 = 146.
   { id = "MINOR_CIV_NGAZARGAMU_BARRACKS_STABLE_PURCHASE_BONUS", arg = "Amount", official = "20", kind = "discount" },
+  -- Phase-6C witnesses (1010-entry build). Same absent-handle policy: the
+  -- authoritative proof is the native "stored_after_add ... MATCH
+  -- via=store-lookup" line in X10Lifecycle.log. Do NOT add count-like rows
+  -- here — the 21 new count-like pairs and the 3 reclassified accumulation
+  -- rows intentionally REFUSE at fractional k and must stay out of the
+  -- ordinary PASS set (their proof is native transform-refused lines).
+  -- Toqui loyalty (traits-owned, previously held): additive 4 -> ~29.2.
+  { id = "TOQUI_DOMESTIC_LOYALTY", arg = "Amount", official = "4", kind = "flat" },
+  { id = "TOQUI_FOREIGN_LOYALTY", arg = "Amount", official = "4", kind = "flat" },
+  -- Bishop pressure (governors-owned loyalty pressure 100): -> ~730.
+  { id = "CARDINAL_BISHOP_PRESSURE", arg = "Amount", official = "100", kind = "flat" },
+  -- Owls loyalty-from-counterspy (governors-owned 4): -> ~29.2.
+  { id = "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY", arg = "Amount", official = "4", kind = "flat" },
+  -- Preslav armory identity (suzerain-owned 2, representative of 3): -> ~14.6.
+  { id = "MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS", arg = "Amount", official = "2", kind = "flat" },
+  -- Vatican religious pressure (suzerain-owned 400, strong-family override): -> ~2920.
+  { id = "MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE", arg = "Amount", official = "400", kind = "flat" },
+  -- Citadel completion percent (governors-owned 25, strong-family override): -> ~182.5.
+  { id = "CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS", arg = "BuildingProductionPercent", official = "25", kind = "flat" },
+  -- Ayutthaya completion percent (suzerain-owned 10, strong-family override): -> ~73.
+  { id = "MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING", arg = "BuildingProductionPercent", official = "10", kind = "flat" },
+  -- Lahore combat (suzerain-owned 10): combat formula -> ~38.09875.
+  { id = "NIHANG_SUZERAIN_COMBAT_BONUS", arg = "Amount", official = "10", kind = "combat" },
+  -- Valletta walls discount (suzerain-owned 50, representative of 3):
+  -- compound d_k = (1-0.5^k)*100 -> ~99.36543, never 365 or 500.
+  { id = "MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_WALLS_BONUS", arg = "Amount", official = "50", kind = "discount" },
 }
 
 local raw = GameConfiguration.GetValue("X10_MULTIPLIER")
