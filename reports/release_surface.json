@@ -658,6 +658,20 @@
    "disposition": "ship (modinfo/config sources are the controller)"
   },
   {
+   "path": "controller/X10/Config/X10Text.sql",
+   "tracked": true,
+   "bytes": 3433,
+   "size_normalization": "LF",
+   "surface": "workshop_runtime",
+   "kind": "authored_source",
+   "generated": false,
+   "runtime_required": true,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored",
+   "disposition": "ship (modinfo/config sources are the controller)"
+  },
+  {
    "path": "controller/X10/Config/X10WonderBridge.sql",
    "tracked": true,
    "bytes": 434198,
@@ -2520,6 +2534,20 @@
    "disposition": "publish; scrub bulk inventories if any found (see footprint)"
   },
   {
+   "path": "tests/test_production_config.py",
+   "tracked": true,
+   "bytes": 12238,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "test_fixture",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored tests + small regression constants",
+   "disposition": "publish; scrub bulk inventories if any found (see footprint)"
+  },
+  {
    "path": "tests/test_release_candidate.py",
    "tracked": true,
    "bytes": 22216,
@@ -2690,8 +2718,8 @@
  ],
  "surface_summary": {
   "corresponding_source": {
-   "files": 107,
-   "bytes": 1171323
+   "files": 108,
+   "bytes": 1183561
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -2702,8 +2730,8 @@
    "bytes": 7219853
   },
   "workshop_runtime": {
-   "files": 7,
-   "bytes": 442386
+   "files": 8,
+   "bytes": 445819
   }
  },
  "firaxis_footprint": {
