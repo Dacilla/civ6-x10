@@ -1262,6 +1262,20 @@
    "disposition": "publish (single source of truth for 7B assembly)"
   },
   {
+   "path": "release/PREVIEW_ART_BRIEF.md",
+   "tracked": true,
+   "bytes": 2096,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "release_metadata",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored release descriptor",
+   "disposition": "publish (single source of truth for 7B assembly)"
+  },
+  {
    "path": "release/PUBLISH_CHECKLIST.md",
    "tracked": true,
    "bytes": 1879,
@@ -3112,8 +3126,8 @@
  ],
  "surface_summary": {
   "corresponding_source": {
-   "files": 110,
-   "bytes": 1236916
+   "files": 111,
+   "bytes": 1239012
   },
   "corresponding_build_artifact": {
    "files": 1,
