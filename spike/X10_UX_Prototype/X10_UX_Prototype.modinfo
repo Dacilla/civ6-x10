@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="880f3337-49a9-4ba1-8946-368aa8ea6aa9" version="1">
+  <Properties>
+    <Name>X10 UX Prototype (DISPOSABLE)</Name>
+    <Teaser>Disposable front-end layout probe for the X10 setup redesign. Not gameplay.</Teaser>
+    <Description>Phase-7C.1 disposable prototype: native SetupParameters layout (preset dropdown, custom value, bool module checkboxes) with X10_UX_* keys only. No gameplay SQL, no DLL, no production keys.</Description>
+    <AffectsSavedGames>0</AffectsSavedGames>
+    <CompatibleVersions>2.0</CompatibleVersions>
+  </Properties>
+  <Dependencies>
+    <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />
+  </Dependencies>
+  <FrontEndActions>
+    <UpdateDatabase id="X10UxConfig">
+      <File>Config/X10UxConfig.sql</File>
+    </UpdateDatabase>
+    <UpdateText id="X10UxText">
+      <File>Config/X10UxText.sql</File>
+    </UpdateText>
+  </FrontEndActions>
+  <Files>
+    <File>Config/X10UxConfig.sql</File>
+    <File>Config/X10UxText.sql</File>
+  </Files>
+</Mod>
+<!-- DISPOSABLE Phase-7C.1 probe. Own Mod ID (880f3337-...) and X10_UX_* config
+     keys: cannot collide with production (55d7b934-... / X10_MULTIPLIER /
+     X10_MODULE_*). Front-end only: no InGameActions, no gameplay writes. -->
