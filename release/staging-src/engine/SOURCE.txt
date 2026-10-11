@@ -1,4 +1,4 @@
-X10 CE Engine - source reference (1.0.0-rc2, RC PLACEHOLDER)
+Overpowered Bonuses CE Engine - source reference (1.0.0-rc2, RC PLACEHOLDER)
 ============================================================
 
 STATUS: PLANNED-PLACEHOLDER - release-source repository does not exist yet.

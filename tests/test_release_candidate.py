@@ -54,7 +54,7 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
         self.assertEqual(deps, [
             ("4873eb62-8ccc-4574-b784-dda455e74e68",
              "Expansion: Gathering Storm"),
-            (ENGINE_ID, "X10 CE Engine"),
+            (ENGINE_ID, "Overpowered Bonuses CE Engine"),
         ])
         fe = [(a.tag, a.get("id"),
                [f.text for f in a.find("File") or [a.find("File")]]
@@ -237,6 +237,19 @@ class TestAssembleDynamic(unittest.TestCase):
         walked = [p for p in (self.outdir / "workshop").rglob("*")
                   if p.is_file() and p.name != "CHECKSUMS-item.sha256"]
         self.assertEqual(sorted(map(str, walked)), sorted(map(str, staged)))
+
+    def test_staged_names_match_manifest(self):
+        import xml.etree.ElementTree as ET
+        man = manifest()
+        for key, modinfo in (("engine", "CE-X10.modinfo"),
+                             ("controller", "X10.modinfo")):
+            item = man["workshop_items"][key]
+            staged = (self.outdir / "workshop" / item["stage_dir"]
+                      / modinfo)
+            self.assertTrue(staged.is_file(), str(staged))
+            name = (ET.parse(str(staged)).getroot()
+                    .find("Properties/Name").text)
+            self.assertEqual(name, item["name"], key)
 
     def test_no_probe_in_staging(self):
         for bad in ("X10_Probe_Test", "probe.lua", "stonediag.lua"):

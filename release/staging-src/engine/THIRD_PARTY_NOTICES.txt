@@ -1,4 +1,4 @@
-X10 CE Engine - third-party notices
+Overpowered Bonuses CE Engine - third-party notices
 =======================================
 
 Upstream foundation:

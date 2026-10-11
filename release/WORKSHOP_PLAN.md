@@ -5,9 +5,9 @@ No upload tooling is automated here; uploads use the Civ VI/Steam
 Workshop uploader against the exact `release/out/1.0.0-rc2`-style
 staging folders (regenerated final, not RC, at publication time).
 
-## Item 1 — X10 CE Engine (upload first)
+## Item 1 — Overpowered Bonuses CE Engine (upload first)
 
-- Title: `X10 CE Engine`
+- Title: `Overpowered Bonuses CE Engine`
 - Description: `release/workshop-engine.md` (dependency-focused)
 - Staging folder: `workshop/X10-CE-Engine`
 - Modinfo version integer: 1
@@ -19,9 +19,9 @@ staging folders (regenerated final, not RC, at publication time).
   publication state; verify subscribe/install yields exactly the
   staged file set.
 
-## Item 2 - X10: Configurable Bonus Multiplier (upload second)
+## Item 2 - Overpowered Bonuses (upload second)
 
-- Title: `X10 - Configurable Bonus Multiplier`
+- Title: `Overpowered Bonuses`
 - Description: `release/workshop-controller.md`
 - Staging folder: `workshop/X10`
 - Modinfo version integer: 1

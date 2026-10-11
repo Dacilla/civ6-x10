@@ -189,12 +189,12 @@ class TestDisplayCopyLint(unittest.TestCase):
 
     def test_final_labels(self):
         text = TEXT.read_text(encoding="utf-8")
-        for label in ("X10: Multiplier", "X10: Custom Multiplier",
-                      "X10: Civilization & Leader Traits",
-                      "X10: Policy Cards", "X10: Governments",
-                      "X10: Pantheons", "X10: Wonders",
-                      "X10: Governors & Secret Societies",
-                      "X10: City-State Suzerain Bonuses",
+        for label in ("Bonus Multiplier", "Custom Multiplier",
+                      "Affects: Civilization & Leader Traits",
+                      "Affects: Policy Cards", "Affects: Governments",
+                      "Affects: Pantheons", "Affects: Wonders",
+                      "Affects: Governors & Secret Societies",
+                      "Affects: City-State Suzerain Bonuses",
                       "×10 Classic", "Custom..."):
             self.assertIn(label, text, label)
 
@@ -248,8 +248,152 @@ class TestDisplayCopyLint(unittest.TestCase):
                      "Sets the multiplier to ×50.",
                      "Sets the multiplier to ×100.",
                      "Uses the custom multiplier below.",
-                     "Disables X10."):
+                     "Disables the multiplier."):
             self.assertIn(desc, text, desc)
+
+
+class TestPublicBranding(unittest.TestCase):
+    """Phase 7C.2a.2: public product is Overpowered Bonuses; X10 is the
+    internal/historical namespace. Player surfaces must not use X10 as
+    the product name; internal identifiers must NOT be renamed."""
+
+    def _display_texts(self):
+        text = TEXT.read_text(encoding="utf-8")
+        return re.findall(r"\('en_US', 'LOC_[^']+', '(.*?)'\)\);?\s*$",
+                          text, re.M)
+
+    CONTROLLER_NAME = "Overpowered Bonuses"
+    ENGINE_NAME = "Overpowered Bonuses CE Engine"    # ordinary-player files where bare "X10" (as product name) is stale
+    PLAYER_FILES = ["release/staging-src/controller/README.txt",
+                    "release/staging-src/engine/README.txt",
+                    "release/workshop-controller.md",
+                    "release/workshop-engine.md",
+                    "release/KNOWN_ISSUES.md",
+                    "release/README-public.md"]
+    STALE_BRANDS = ["Configurable Bonus Multiplier",
+                    "Configurable Semantic Multiplier",
+                    "Bonus Overdrive",
+                    "the X10 multiplier",
+                    "X10 multiplier",
+                    "X10 bonuses",
+                    "X10 CE Engine"]
+
+    def _mod_name(self, rel):
+        import xml.etree.ElementTree as ET
+        m = ET.parse(str(ROOT / rel)).getroot()
+        return m.find("Properties/Name").text
+
+    def test_manifest_matches_source_modinfo_names(self):
+        import yaml
+        man = yaml.safe_load(
+            (ROOT / "release" / "release-manifest.yml").read_text(
+                encoding="utf-8"))
+        items = man["workshop_items"]
+        self.assertEqual(items["controller"]["name"], self.CONTROLLER_NAME)
+        self.assertEqual(items["engine"]["name"], self.ENGINE_NAME)
+        self.assertEqual(
+            self._mod_name("controller/X10/X10.modinfo"),
+            items["controller"]["name"])
+        self.assertEqual(
+            self._mod_name("dependencies/CE-X10/CE-X10.modinfo"),
+            items["engine"]["name"])
+
+    def test_modinfo_teasers_descriptions(self):
+        import xml.etree.ElementTree as ET
+        m = ET.parse(
+            str(ROOT / "controller/X10/X10.modinfo")).getroot()
+        props = m.find("Properties")
+        self.assertEqual(
+            props.find("Teaser").text,
+            "Multiply Civilization VI bonuses from ×2 to ×100 and "
+            "choose which categories are affected.")
+        self.assertEqual(
+            props.find("Description").text,
+            "Choose a multiplier and the bonus categories it affects "
+            "in Advanced Setup. ×10 is the default. "
+            "Requires Overpowered Bonuses CE Engine.")
+        e = ET.parse(
+            str(ROOT / "dependencies/CE-X10/CE-X10.modinfo")).getroot()
+        eprops = e.find("Properties")
+        self.assertEqual(
+            eprops.find("Teaser").text,
+            "Required engine for Overpowered Bonuses. "
+            "It has no settings of its own.")
+        self.assertEqual(
+            eprops.find("Description").text,
+            "Required engine for Overpowered Bonuses. "
+            "Configure all settings in the main mod. Do not enable "
+            "another mod that replaces the game's GameCore at the "
+            "same time.")
+
+    def test_setup_labels_have_no_product_prefix(self):
+        text = TEXT.read_text(encoding="utf-8")
+        names = re.findall(r"\('en_US', 'LOC_X10_\w+_NAME', '(.*?)'\)",
+                           text)
+        self.assertEqual(len(names), 9)
+        for label in names:
+            self.assertNotIn("X10", label, label)
+            self.assertFalse(label.startswith("Overpowered Bonuses"),
+                             label)
+
+    def test_setup_tooltips_never_say_x10_multiplier(self):
+        for value in self._display_texts():
+            self.assertNotIn("X10", value, value[:70])
+
+    def test_workshop_copy_uses_current_brand(self):
+        for rel in ("release/workshop-controller.md",
+                    "release/workshop-engine.md"):
+            text = (ROOT / rel).read_text(encoding="utf-8")
+            self.assertIn("Overpowered Bonuses", text, rel)
+            scrubbed = text.replace("X10Lifecycle.log", "")
+            self.assertNotIn("X10", scrubbed, rel)
+            for stale in self.STALE_BRANDS:
+                self.assertNotIn(stale, text, f"{rel}: {stale}")
+
+    def test_readme_known_issues_branding(self):
+        rels = list(self.PLAYER_FILES)
+        if (ROOT / "release" / "staging-src").is_dir():
+            missing = [r for r in rels if not (ROOT / r).is_file()]
+            self.assertEqual(missing, [])
+        for rel in rels:
+            p = ROOT / rel
+            if not p.is_file():
+                continue
+            text = p.read_text(encoding="utf-8")
+            self.assertIn("Overpowered Bonuses", text, rel)
+            scrubbed = text.replace("X10Lifecycle.log", "")
+            scrubbed = re.sub(
+                r"The log\s+keeps its internal X10 filename\.", "",
+                scrubbed)
+            self.assertNotIn("X10", scrubbed, rel)
+            for stale in self.STALE_BRANDS:
+                self.assertNotIn(stale, text, f"{rel}: {stale}")
+
+    def test_x10_classic_and_log_filename_allowed(self):
+        text = TEXT.read_text(encoding="utf-8")
+        self.assertIn("×10 Classic", text)
+        self.assertNotIn("X10 Classic", text)
+        for rel in ("release/staging-src/controller/README.txt",
+                    "release/KNOWN_ISSUES.md"):
+            p = ROOT / rel
+            if not p.is_file():
+                continue  # absent from the clean export subset
+            self.assertIn("X10Lifecycle.log",
+                          p.read_text(encoding="utf-8"), rel)
+
+    def test_internal_ids_not_renamed(self):
+        cfg = CONFIG.read_text(encoding="utf-8")
+        for needle in ("X10_MULTIPLIER_PRESET", "X10_MULTIPLIER",
+                       "X10_MODULE_TRAITS", "X10_MODULE_SUZERAIN"):
+            self.assertIn(needle, cfg, needle)
+        self.assertTrue(
+            (ROOT / "controller" / "X10" / "Config" / "X10Text.sql"
+             ).is_file())
+        p = (ROOT / "release" / "staging-src" / "controller"
+             / "README.txt")
+        if p.is_file():  # absent from the clean export subset
+            self.assertIn("X10Lifecycle.log",
+                          p.read_text(encoding="utf-8"))
 
 
 class TestProductionModinfo7C2(unittest.TestCase):
@@ -263,7 +407,7 @@ class TestProductionModinfo7C2(unittest.TestCase):
                          "55d7b934-62f9-46fb-a771-badf3d1a1538")
         props = m.find("Properties")
         self.assertEqual(props.find("Name").text,
-                         "X10: Configurable Bonus Multiplier")
+                         "Overpowered Bonuses")
         self.assertTrue(props.find("Teaser").text)
         self.assertEqual(props.find("CompatibleVersions").text, "2.0")
         self.assertEqual(props.find("SupportsSinglePlayer").text, "1")
@@ -279,7 +423,8 @@ class TestProductionModinfo7C2(unittest.TestCase):
         self.assertEqual(m.get("id"),
                          "397f2070-dfde-4124-88ce-e34249fc8190")
         props = m.find("Properties")
-        self.assertEqual(props.find("Name").text, "X10 CE Engine")
+        self.assertEqual(props.find("Name").text,
+                         "Overpowered Bonuses CE Engine")
         self.assertTrue(props.find("Teaser").text)
         self.assertNotIn("branch", props.find("Description").text or "")
         self.assertEqual(props.find("SupportsSinglePlayer").text, "1")

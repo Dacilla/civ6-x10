@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Mod id="55d7b934-62f9-46fb-a771-badf3d1a1538" version="1">
   <Properties>
-    <Name>X10: Configurable Bonus Multiplier</Name>
-    <Teaser>Choose a multiplier for Civilization VI bonuses. Requires X10 CE Engine.</Teaser>
-    <Description>Choose a multiplier and the bonus categories it affects in Advanced Setup. ×10 is the default.</Description>
+    <Name>Overpowered Bonuses</Name>
+    <Teaser>Multiply Civilization VI bonuses from ×2 to ×100 and choose which categories are affected.</Teaser>
+    <Description>Choose a multiplier and the bonus categories it affects in Advanced Setup. ×10 is the default. Requires Overpowered Bonuses CE Engine.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
     <CompatibleVersions>2.0</CompatibleVersions>
     <SupportsSinglePlayer>1</SupportsSinglePlayer>
@@ -11,7 +11,7 @@
   </Properties>
   <Dependencies>
     <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />
-    <Mod id="397f2070-dfde-4124-88ce-e34249fc8190" title="X10 CE Engine" />
+    <Mod id="397f2070-dfde-4124-88ce-e34249fc8190" title="Overpowered Bonuses CE Engine" />
   </Dependencies>
   <FrontEndActions>
     <UpdateDatabase id="X10Config">

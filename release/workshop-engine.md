@@ -1,16 +1,15 @@
-# Workshop page draft: X10 CE Engine (dependency item, NOT YET UPLOADED)
+# Workshop page draft: Overpowered Bonuses CE Engine (dependency item, NOT YET UPLOADED)
 
-Name: `X10 CE Engine`
-Teaser: `Required engine for X10. Configure all settings in the main X10 mod.`
+Name: `Overpowered Bonuses CE Engine`
+Teaser: `Required engine for Overpowered Bonuses. It has no settings of its own.`
 
 Description:
 
-> X10 CE Engine is the native engine required by X10: Configurable
-> Bonus Multiplier. It has no settings of its own.
+> Required engine for Overpowered Bonuses. This item has no settings
+> of its own and is normally installed automatically with the main mod.
 >
 > Windows x64 and Gathering Storm. Do not run another GameCore
-> replacement at the same time. Normally installed automatically
-> through the main X10 item.
+> replacement at the same time.
 >
-> Source and license: see SOURCE.txt in this item and the X10 release
-> source.
+> Source and license: see SOURCE.txt in this item and the Overpowered
+> Bonuses release source.

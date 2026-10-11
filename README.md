@@ -1,10 +1,15 @@
-# Civ VI X10: Configurable Bonus Multiplier
+# Civ VI Overpowered Bonuses
 
-Civilization VI X10 scales supported numeric bonuses by the multiplier
-you choose, with per-module category controls. Install two Workshop
-items: **X10: Configurable Bonus Multiplier** plus its required
-**X10 CE Engine** dependency, and configure everything in Advanced
-Setup (Windows x64 + Gathering Storm, single-player).
+Civilization VI Overpowered Bonuses creates deliberately overpowered
+builds by multiplying Civilization VI bonuses, with per-module
+category controls. Install two Workshop items:
+**Overpowered Bonuses** plus its required
+**Overpowered Bonuses CE Engine** dependency, and configure everything
+in Advanced Setup (Windows x64 + Gathering Storm, single-player).
+
+> Note: `X10` is the project's historical/internal namespace (config
+> keys, source symbols, log/registry filenames). The public v1.0
+> product is **Overpowered Bonuses**.
 
 > Status: **all seven modules (traits, policies, governments, pantheons,
 > wonders, governors, suzerain) are LIVE_VALIDATED in the 1010-entry

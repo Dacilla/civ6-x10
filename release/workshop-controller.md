@@ -1,23 +1,27 @@
-# Workshop page draft: X10: Configurable Bonus Multiplier (NOT YET UPLOADED)
+# Workshop page draft: Overpowered Bonuses (NOT YET UPLOADED)
 
-Name: `X10: Configurable Bonus Multiplier`
-Teaser: `Choose a multiplier for Civilization VI bonuses. Requires X10 CE Engine.`
+Name: `Overpowered Bonuses`
+Teaser: `Multiply Civilization VI bonuses from ×2 to ×100 and choose which categories are affected.`
 
 Description:
 
-> X10 scales bonuses by the multiplier you choose, across
-> seven categories: Traits, Policies, Governments, Pantheons, Wonders,
-> Governors, and City-State Suzerain bonuses.
+> Turn Civilization VI bonuses up until balance stops mattering.
+> Overpowered Bonuses lets you multiply bonuses across Traits, Policy
+> Cards, Governments, Pantheons, Wonders, Governors, and City-State
+> Suzerain bonuses.
+>
+> Choose presets from ×2 to ×100, or enter a custom multiplier. Each
+> category can be enabled or disabled separately in Advanced Setup.
 >
 > SETUP
-> 1. Subscribe to X10: Configurable Bonus Multiplier. Steam also
-> installs the required X10 CE Engine.
+> 1. Subscribe to Overpowered Bonuses. Steam also installs the required
+> Overpowered Bonuses CE Engine.
 > 2. Make sure no other Community Extension/GameCore replacement is
 > enabled.
 > 3. Create a new single-player Gathering Storm game.
 > 4. Open Advanced Setup.
-> 5. Choose X10: Multiplier (×10 Classic is the default) and the
-> categories you want scaled.
+> 5. Choose Bonus Multiplier (×10 Classic is the default) and the
+> categories you want affected.
 > 6. Start the game.
 >
 > OPTIONS
@@ -26,7 +30,7 @@ Description:
 > KNOWN_ISSUES in the release source for the full list.
 >
 > HOW SCALING WORKS
-> X10 handles different bonuses according to how Civilization VI uses
+> Different bonuses are handled according to how Civilization VI uses
 > them. Bonuses that require whole numbers are never rounded. Effects
 > that cannot be multiplied reliably are left unchanged.
 >
@@ -40,6 +44,7 @@ Description:
 > source (KNOWN_ISSUES).
 >
 > TROUBLESHOOTING
-> Check both X10 items are enabled, Multiplier is not Off, and Secret
-> Societies mode is on if you expect Society bonuses. If you need
-> support, include `%TEMP%\X10Lifecycle.log` after reaching the map.
+> Check both Overpowered Bonuses items are enabled, Multiplier is not
+> Off, and Secret Societies mode is on if you expect Society bonuses.
+> If you need support, include `%TEMP%\X10Lifecycle.log` after reaching
+> the map.

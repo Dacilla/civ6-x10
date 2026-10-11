@@ -85,3 +85,20 @@ README-public, CHANGELOG current entry.
   'supported bonuses', 'content populates', 'floating-point noise',
   'discount maths', 'combat scaling', 'Anything left over',
   'Apply the X10 multiplier'. Zero hits expected in player surfaces.
+
+## 7C.2a.2 public brand (Overpowered Bonuses)
+
+- Public product: **Overpowered Bonuses**; engine: **Overpowered
+  Bonuses CE Engine**. X10 is the historical/internal namespace only
+  (LOC_X10_* keys, X10_* config IDs, X10Lifecycle.log,
+  X10ProductionRegistry.inc, source symbols, Mod IDs, folder names,
+  validation tags). Internal identifiers were NOT renamed.
+- Setup labels are product-name neutral: no product prefix. Categories
+  use the 'Affects: ...' pattern so the block reads as one scoped list
+  under 'Bonus Multiplier'. Preset names ('x10 Classic' notation) are
+  not branding and are unchanged.
+- Tooltips say 'the selected multiplier', never 'the X10 multiplier'.
+- Preset Off description is 'Disables the multiplier.'
+- Controller teaser is mechanical (range + categories) under the
+  expressive product name; the Workshop opening positions the mod as
+  deliberately-overpowered builds, not a balance utility.

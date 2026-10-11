@@ -23,9 +23,10 @@ logs, research directories, development Git history, local paths,
 disposable probes, `release/out/` staging output.
 
 ## Description draft
-`X10 — configurable Civilization VI semantic multiplier (v1.0.0 source):
-certified numeric scaling with per-module controls. Requires the X10 CE
-Engine Workshop item. Windows x64 + Gathering Storm. AGPL-3.0.`
+`Overpowered Bonuses (v1.0.0 source): multiply Civilization VI bonuses
+from ×2 to ×100 with per-category controls. Requires the Overpowered
+Bonuses CE Engine Workshop item. Windows x64 + Gathering Storm.
+AGPL-3.0.`
 
 ## Topics draft (do not apply yet)
 `civilization-vi`, `civ6`, `modding`, `x10`, `community-extension`

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Mod id="397f2070-dfde-4124-88ce-e34249fc8190" version="1">
   <Properties>
-    <Name>X10 CE Engine</Name>
-    <Teaser>Required engine for X10. Configure all settings in the main X10 mod.</Teaser>
-    <Description>Required engine for X10: Configurable Bonus Multiplier. It has no settings of its own. Do not enable another mod that replaces the game's GameCore at the same time.</Description>
+    <Name>Overpowered Bonuses CE Engine</Name>
+    <Teaser>Required engine for Overpowered Bonuses. It has no settings of its own.</Teaser>
+    <Description>Required engine for Overpowered Bonuses. Configure all settings in the main mod. Do not enable another mod that replaces the game's GameCore at the same time.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
     <CompatibleVersions>2.0</CompatibleVersions>
     <SupportsSinglePlayer>1</SupportsSinglePlayer>

@@ -1,25 +1,27 @@
-# X10: Configurable Bonus Multiplier (v1.0.0-rc2 clean snapshot)
+# Overpowered Bonuses (v1.0.0-rc2 clean snapshot)
 
-X10 scales Civilization VI bonuses by the multiplier
-you choose instead of fixed hand-tuned numbers.
+Overpowered Bonuses creates deliberately overpowered builds by
+multiplying Civilization VI bonuses. Choose presets from ×2 to ×100,
+or enter a custom multiplier. Each category can be enabled or disabled
+separately in Advanced Setup.
 
 ## What you install (two Workshop items)
 
-- **X10: Configurable Bonus Multiplier** (controller): setup,
+- **Overpowered Bonuses** (controller): setup,
   configuration, guarded SQL bridge, user documentation.
-- **X10 CE Engine** (required dependency): the GameCore replacement that
-  performs the scaling at runtime. Subscribe to both; configure
-  only the controller.
+- **Overpowered Bonuses CE Engine** (required dependency): the GameCore
+  replacement that performs the scaling at runtime. Subscribe to both;
+  configure only the controller.
 
 ## Using it (single-player Gathering Storm)
 
 1. Subscribe to the controller item; Steam also installs the required
-   X10 CE Engine.
+   Overpowered Bonuses CE Engine.
 2. Make sure no other Community Extension/GameCore replacement is
    enabled.
 3. Create a new single-player Gathering Storm game.
 4. Open Advanced Setup.
-5. Choose **X10: Multiplier** (×10 Classic is the default); choose
+5. Choose **Bonus Multiplier** (×10 Classic is the default); choose
    **Custom** for values from 0 to 100 (decimals use a period).
 6. Leave all seven category checkboxes on, or uncheck anything you
    want to keep unchanged.
@@ -32,8 +34,9 @@ multiplying them would not give a reliable result. Leaving Custom
 blank enters 0 (Off-equivalent).
 
 Requirements: Windows x64, Gathering Storm. Incompatible with any
-other active Community Extension / GameCore replacement. X10 affects
-saved games: choose settings when creating the campaign.
+other active Community Extension / GameCore replacement.
+Overpowered Bonuses affects saved games: choose settings when creating
+the campaign.
 
 ## Source/build architecture
 

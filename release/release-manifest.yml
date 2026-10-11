@@ -61,14 +61,14 @@ modules:
 
 workshop_items:
   engine:
-    name: X10 CE Engine
+    name: Overpowered Bonuses CE Engine
     mod_id: 397f2070-dfde-4124-88ce-e34249fc8190
     primary: false
     stage_dir: X10-CE-Engine
     runtime_files:
       - stage_path: CE-X10.modinfo
         source: dependencies/CE-X10/CE-X10.modinfo
-        sha256: 5ad7d4fdc8b415dfc669f4175005e99d9cf55e376a4d2939f20bc01364ac733b
+        sha256: d6fab98698576f28b27ba31df811a7ef60a502672c32812ed186a8ce7833b2d7
       - stage_path: Config/EngineRedirect.sql
         source: dependencies/CE-X10/Config/EngineRedirect.sql
         sha256: 3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3
@@ -81,19 +81,19 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/engine/README.txt
-        sha256: a37283c840e765c4b7f6975ef26bc1f5922cc350816dbf7125a118f4a720ca71
+        sha256: e80369540b0ab0d839acbb880263e2461de2e80643ba962a19acd8d4f636dc5a
       - stage_path: LICENSE.txt
         source: release/staging-src/engine/LICENSE.txt
         sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/engine/THIRD_PARTY_NOTICES.txt
-        sha256: 16499653fd0971c28f3755d5ab12fffa6b5960d37cb1138c30addff4933c63dd
+        sha256: cdbf1a1b53cef36c2d4e7ec896562f4337c0ad2e881649a8d5b98c930a70ec4a
       - stage_path: SOURCE.txt
         source: release/staging-src/engine/SOURCE.txt
-        sha256: 566ea894cf37428930a26cf19fbae41413a0012b12042cecd2876baa03f41c86
+        sha256: 476bdebd39f23c77d9349c539640628709b49cb717ef886018a49b488ec9cab7
         has_planned_placeholder: true
   controller:
-    name: X10 — Configurable Bonus Multiplier
+    name: Overpowered Bonuses
     mod_id: 55d7b934-62f9-46fb-a771-badf3d1a1538
     primary: true
     stage_dir: X10
@@ -101,13 +101,13 @@ workshop_items:
     runtime_files:
       - stage_path: X10.modinfo
         source: controller/X10/X10.modinfo
-        sha256: ec89ab2e8474708f3b0751a69018d09666444d14c7cf4e2e68b1dd05691b68be
+        sha256: 9a03f7b0c933c432883f714de67cb5caf6818eaf8fd496a992163b290ba8b88e
       - stage_path: Config/X10Config.sql
         source: controller/X10/Config/X10Config.sql
         sha256: b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464
       - stage_path: Config/X10Text.sql
         source: controller/X10/Config/X10Text.sql
-        sha256: 478cdad41f8514851100568563a0ff4782d52f9c12b1d1ce1a65e3145d0be6da
+        sha256: 4ed72d7a30ace3a60e9bcc7e932c92f8d4c1220c83517197dc9fca887bcd964a
       - stage_path: Config/Dummy.sql
         source: controller/X10/Config/Dummy.sql
         sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
@@ -117,16 +117,16 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt
-        sha256: c437acc906a6b580e6505caccbfdedbe4ec710838dd7d5930369eb8e14ac2447
+        sha256: b35ceaa852bfb9655ff895394eea9cacb6afdefbd8c4349d0f49e776c54a1f31
       - stage_path: LICENSE.txt
         source: release/staging-src/controller/LICENSE.txt
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/controller/THIRD_PARTY_NOTICES.txt
-        sha256: c8b195e16a2c89ef71a987d2b3da10ba9c2540ebffecbfd205829131974a07a9
+        sha256: 6088ac7073d1c4efacf1d9e2a6ad0d198ca754b6f39a738849aa59b2315c6004
       - stage_path: SOURCE.txt
         source: release/staging-src/controller/SOURCE.txt
-        sha256: 7859e3a62104aa6b05b7aa0bfe5b4c2249348a49e5fca528a07a86f9e698b470
+        sha256: 4807470d01b828d48cb50bc695886e8072aa891bc31a276767c02404d511def5
         has_planned_placeholder: true
 
 source_release:

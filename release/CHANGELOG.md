@@ -9,6 +9,11 @@
   semantic change vs the validated `2cf953e` state.
 - Controller/engine display names, teasers, and single/multiplayer
   metadata polished; `CompatibleVersions=2.0` retained.
+- Public product identity: **Overpowered Bonuses** + **Overpowered
+  Bonuses CE Engine**; setup labels are product-name neutral
+  (`Bonus Multiplier`, `Affects: ...`). `X10` remains the
+  internal/historical namespace only (config keys, log/registry
+  filenames, source symbols).
 
 ## v1.0.0-rc1 (release candidate, not published)
 

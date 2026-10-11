@@ -1,8 +1,8 @@
-X10 CE Engine (dependency mod for X10)
-==========================================
+Overpowered Bonuses CE Engine (dependency mod)
+==================================================
 
-This item is the engine X10 needs in order to run. Subscribe to it
-together with the main X10 mod. It has no settings.
+This item is the engine Overpowered Bonuses needs in order to run.
+Subscribe to it together with the main mod. It has no settings.
 
 Requirements: Windows x64, Civilization VI: Gathering Storm.
 Do NOT enable another Community Extension GameCore replacement at the

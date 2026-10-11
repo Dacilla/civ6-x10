@@ -1,4 +1,4 @@
-X10 controller - source reference (1.0.0-rc2, RC PLACEHOLDER)
+Overpowered Bonuses - source reference (1.0.0-rc2, RC PLACEHOLDER)
 ============================================================
 
 STATUS: PLANNED-PLACEHOLDER - release-source repository does not exist yet.
