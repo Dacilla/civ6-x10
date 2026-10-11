@@ -1,0 +1,2679 @@
+{
+ "baseline_db": {
+  "path": "data/local/DebugGameplay_official.sqlite",
+  "bytes": 10207232,
+  "sha256": "8d8149338398195dda727318ab168ce420419d60e04ea9ad9ad4c133786c27a1",
+  "tables": 428,
+  "modifiers_rows": 3210,
+  "modifier_arguments_rows": 5931,
+  "dynamic_modifiers_rows": 968
+ },
+ "numeric_rule": "strict-value-float: a ModifierArguments.Value counts as numeric iff str.strip(value) parses with Python float() (integers, signed numbers, decimals, exponents). Rejected as non-numeric/structural: empty strings, comma-separated lists (e.g. '2,2,1'), text IDs/selectors (yield/unit/ability type refs), localization keys, nested modifier references. No argument-name allow/deny list: every text-valued argument name in this snapshot is 100% non-numeric and the only mixed name is Amount (2010/2021 numeric; 11 comma-list/text values excluded). A (ModifierId, argument) pair is numeric if ANY row parses (audit: zero pairs mix numeric/non-numeric rows, so ANY == ALL; zero pairs have >1 distinct value).",
+ "nesting": {
+  "edge": "ModifierArguments row with Name='ModifierId' whose Value exists in Modifiers.ModifierId (304 edges from 304 parent modifiers; each parent has exactly 1 outgoing edge)",
+  "cycles_found": 0,
+  "cycles": [],
+  "dangling_references": [
+   {
+    "modifier": "GREATPERSON_MOVEMENT_AOE_INFORMATION_SEA",
+    "value": "ABILITY_GREAT_ADMIRAL_MOVEMENT"
+   }
+  ],
+  "note": "closure(seeds) follows these edges transitively per root table; 8 of 21 sanity tables need nesting to reproduce figures (Belief +49, Trait +118, Resolution +18, Policy +4, GPIAction +3, UnitAbility +3, Building +2, Commemoration/EmergencyRewards/GoodyHut/UnitPromotion +1 each)"
+ },
+ "modifier_tables": [
+  {
+   "table": "AllianceEffects",
+   "role": "association",
+   "ref_column": "ModifierID",
+   "rows": 24,
+   "distinct_modifiers": 24,
+   "closure_modifiers": 24,
+   "direct_pairs": 37,
+   "direct_numeric_pairs": 28,
+   "numeric_pairs": 28,
+   "in_registry": 0,
+   "uncovered": 28,
+   "non_numeric_direct_pairs": 9,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "ALLIANCE_ADD_CULTURE_TO_DESTINATION_TRADE_ROUTE",
+     "argument": "AffectDestination",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    },
+    {
+     "modifier": "ALLIANCE_ADD_CULTURE_TO_DESTINATION_TRADE_ROUTE",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    },
+    {
+     "modifier": "ALLIANCE_ADD_CULTURE_TO_ORIGIN_TRADE_ROUTE",
+     "argument": "AffectOrigin",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    },
+    {
+     "modifier": "ALLIANCE_ADD_CULTURE_TO_ORIGIN_TRADE_ROUTE",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    },
+    {
+     "modifier": "ALLIANCE_ADD_FAITH_TO_DESTINATION_TRADE_ROUTE",
+     "argument": "AffectDestination",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    },
+    {
+     "modifier": "ALLIANCE_ADD_FAITH_TO_DESTINATION_TRADE_ROUTE",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    },
+    {
+     "modifier": "ALLIANCE_ADD_FAITH_TO_ORIGIN_TRADE_ROUTE",
+     "argument": "AffectOrigin",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    },
+    {
+     "modifier": "ALLIANCE_ADD_FAITH_TO_ORIGIN_TRADE_ROUTE",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_ALLIANCE_TRADE_ROUTE_ADJUST_YIELD",
+     "collection": "COLLECTION_ALLIANCE_TRADEROUTES"
+    }
+   ]
+  },
+  {
+   "table": "BeliefModifiers",
+   "role": "association",
+   "ref_column": "ModifierID",
+   "rows": 86,
+   "distinct_modifiers": 86,
+   "closure_modifiers": 148,
+   "direct_pairs": 109,
+   "direct_numeric_pairs": 14,
+   "numeric_pairs": 87,
+   "in_registry": 31,
+   "uncovered": 56,
+   "non_numeric_direct_pairs": 95,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "CHORAL_MUSIC_SHRINE_CULTURE_MODIFIER",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_BUILDING_YIELD_CHANGE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CHORAL_MUSIC_TEMPLE_CULTURE_MODIFIER",
+     "argument": "Amount",
+     "value": "4",
+     "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_BUILDING_YIELD_CHANGE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CROSS_CULTURAL_DIALOGUE_SCIENCE_FOLLOWER_MODIFIER",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADD_RELIGIOUS_BELIEF_YIELD",
+     "modifier_type": "MODIFIER_PLAYER_RELIGION_ADD_RELIGIOUS_BELIEF_YIELD",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CROSS_CULTURAL_DIALOGUE_SCIENCE_FOLLOWER_MODIFIER",
+     "argument": "PerXItems",
+     "value": "4",
+     "effect": "EFFECT_ADD_RELIGIOUS_BELIEF_YIELD",
+     "modifier_type": "MODIFIER_PLAYER_RELIGION_ADD_RELIGIOUS_BELIEF_YIELD",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "DEFENDER_OF_FAITH_COMBAT_BONUS_MODIFIER",
+     "argument": "Amount",
+     "value": "5",
+     "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+     "collection": "COLLECTION_UNIT_COMBAT"
+    },
+    {
+     "modifier": "DIVINE_INSPIRATION_WONDER_FAITH_MODIFIER",
+     "argument": "Amount",
+     "value": "4",
+     "effect": "EFFECT_ADJUST_WONDER_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_WONDER_YIELD_CHANGE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "FEED_THE_WORLD_SHRINE_FOOD3_MODIFIER",
+     "argument": "Amount",
+     "value": "3",
+     "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_BUILDING_YIELD_CHANGE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "FEED_THE_WORLD_SHRINE_HOUSING_MODIFIER",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_BUILDING_HOUSING",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_BUILDING_HOUSING",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "BuildingModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 250,
+   "distinct_modifiers": 248,
+   "closure_modifiers": 257,
+   "direct_pairs": 428,
+   "direct_numeric_pairs": 203,
+   "numeric_pairs": 212,
+   "in_registry": 97,
+   "uncovered": 115,
+   "non_numeric_direct_pairs": 225,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "AIRPORT_BONUS_AIR_SLOTS",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_DISTRICT_AIR_SLOTS",
+     "modifier_type": "MODIFIER_PLAYER_DISTRICT_GRANT_AIR_SLOTS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "APADANA_AWARD_TWO_INFLUENCE_TOKEN_MODIFIER",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_GRANT_CITY_OWNER_INFLUENCE_TOKEN_WONDER",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_INFLUENCE_TOKEN_FROM_CITY_WONDER",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AQUARIUM_REEF_SCIENCE",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLOT_YIELD",
+     "modifier_type": "MODIFIER_CITY_PLOT_YIELDS_ADJUST_PLOT_YIELD",
+     "collection": "COLLECTION_CITY_PLOT_YIELDS"
+    },
+    {
+     "modifier": "AQUARIUM_SEARESOURCE_SCIENCE",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLOT_YIELD",
+     "modifier_type": "MODIFIER_CITY_PLOT_YIELDS_ADJUST_PLOT_YIELD",
+     "collection": "COLLECTION_CITY_PLOT_YIELDS"
+    },
+    {
+     "modifier": "AQUATICS_CENTER_WONDER_TOURISM",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_DISTRICT_TOURISM_CHANGE",
+     "modifier_type": "MODIFIER_CITY_DISTRICTS_ADJUST_TOURISM_CHANGE",
+     "collection": "COLLECTION_CITY_DISTRICTS"
+    },
+    {
+     "modifier": "ARMORY_ADJUST_RESOURCE_STOCKPILE_CAP",
+     "argument": "Amount",
+     "value": "10",
+     "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_STOCKPILE_CAP",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_RESOURCE_STOCKPILE_CAP",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "BARRACKS_ADJUST_RESOURCE_STOCKPILE_CAP",
+     "argument": "Amount",
+     "value": "10",
+     "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_STOCKPILE_CAP",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_RESOURCE_STOCKPILE_CAP",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "BASILIKOI_PAIDES_ADJUST_RESOURCE_STOCKPILE_CAP",
+     "argument": "Amount",
+     "value": "10",
+     "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_STOCKPILE_CAP",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_RESOURCE_STOCKPILE_CAP",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "CivicModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 46,
+   "distinct_modifiers": 20,
+   "closure_modifiers": 20,
+   "direct_pairs": 21,
+   "direct_numeric_pairs": 18,
+   "numeric_pairs": 18,
+   "in_registry": 0,
+   "uncovered": 18,
+   "non_numeric_direct_pairs": 3,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "CIVIC_AWARD_ONE_INFLUENCE_TOKEN",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_INFLUENCE_TOKEN",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_INFLUENCE_TOKEN",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CIVIC_AWARD_THREE_INFLUENCE_TOKENS",
+     "argument": "Amount",
+     "value": "3",
+     "effect": "EFFECT_GRANT_INFLUENCE_TOKEN",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_INFLUENCE_TOKEN",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CIVIC_AWARD_TWO_INFLUENCE_TOKENS",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_GRANT_INFLUENCE_TOKEN",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_INFLUENCE_TOKEN",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CIVIC_ENFORCE_BORDERS",
+     "argument": "Enable",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_ENFORCE_BORDERS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_ENFORCE_BORDERS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CIVIC_EXTRACT_SEA_ARTIFACTS",
+     "argument": "Extract",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_EXTRACT_SEA_ARTIFACTS",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_EXTRACT_SEA_ARTIFACTS",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    },
+    {
+     "modifier": "CIVIC_GRANT_COMBAT_ADJACENCY_BONUS",
+     "argument": "Enable",
+     "value": "1",
+     "effect": "EFFECT_GRANT_COMBAT_ADJACENCY",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_COMBAT_ADJACENCY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CIVIC_GRANT_FAVOR",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_ADD_PLAYER_FAVOR",
+     "modifier_type": "MODIFIER_PLAYER_ADD_FAVOR",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CIVIC_GRANT_ONE_TRADE_ROUTE",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_TRADE_ROUTE_CAPACITY",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "CommemorationModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 54,
+   "distinct_modifiers": 54,
+   "closure_modifiers": 58,
+   "direct_pairs": 68,
+   "direct_numeric_pairs": 45,
+   "numeric_pairs": 46,
+   "in_registry": 0,
+   "uncovered": 46,
+   "non_numeric_direct_pairs": 23,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "COMMEMORATION_AERONAUTICAL_BUILDING_QUEST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_AERODROME_BUILDING_CONSTRUCTED",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_PLAYER_ERA_SCORE_PER_AERODROME_BUILDING_CONSTRUCTED",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "COMMEMORATION_AERONAUTICAL_GA_AIR",
+     "argument": "Amount",
+     "value": "100",
+     "effect": "EFFECT_ADJUST_UNIT_EXPERIENCE_MODIFIER",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_UNIT_EXPERIENCE_MODIFIER",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    },
+    {
+     "modifier": "COMMEMORATION_AERONAUTICAL_GA_ALUMINUM",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE",
+     "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE",
+     "collection": "COLLECTION_PLAYER_CITIES"
+    },
+    {
+     "modifier": "COMMEMORATION_AERONAUTICAL_GREAT_PERSON_QUEST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_GREAT_PERSON_EARNED",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_PLAYER_ERA_SCORE_PER_GREAT_PERSON_EARNED",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "COMMEMORATION_AUTOMATON_GA_FREE_GDR",
+     "argument": "AllowUniqueOverride",
+     "value": "0",
+     "effect": "EFFECT_GRANT_UNIT_IN_CITY",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_UNIT_IN_CAPITAL",
+     "collection": "COLLECTION_PLAYER_CAPITAL_CITY"
+    },
+    {
+     "modifier": "COMMEMORATION_AUTOMATON_GA_FREE_GDR",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_UNIT_IN_CITY",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_UNIT_IN_CAPITAL",
+     "collection": "COLLECTION_PLAYER_CAPITAL_CITY"
+    },
+    {
+     "modifier": "COMMEMORATION_AUTOMATON_GA_FREE_URANIUM",
+     "argument": "Amount",
+     "value": "3",
+     "effect": "EFFECT_GRANT_PLAYER_FREE_RESOURCE_EXTRACTED",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_EXTRACTION",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "COMMEMORATION_AUTOMATON_GA_URANIUM_MINES",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE",
+     "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE",
+     "collection": "COLLECTION_PLAYER_CITIES"
+    }
+   ]
+  },
+  {
+   "table": "ComplimentModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 0,
+   "distinct_modifiers": 0,
+   "closure_modifiers": 0,
+   "direct_pairs": 0,
+   "direct_numeric_pairs": 0,
+   "numeric_pairs": 0,
+   "in_registry": 0,
+   "uncovered": 0,
+   "non_numeric_direct_pairs": 0,
+   "cycles": "none",
+   "arguments_sample": []
+  },
+  {
+   "table": "DistrictModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 22,
+   "distinct_modifiers": 22,
+   "closure_modifiers": 22,
+   "direct_pairs": 31,
+   "direct_numeric_pairs": 21,
+   "numeric_pairs": 21,
+   "in_registry": 0,
+   "uncovered": 21,
+   "non_numeric_direct_pairs": 10,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "AQUEDUCT_ADDAMENITIES",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_DISTRICT_AMENITY",
+     "modifier_type": "MODIFIER_PLAYER_DISTRICT_ADJUST_DISTRICT_AMENITY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "BATH_ADDAMENITIES",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_DISTRICT_AMENITY",
+     "modifier_type": "MODIFIER_PLAYER_DISTRICT_ADJUST_DISTRICT_AMENITY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CIVIC_AWARD_ONE_INFLUENCE_TOKEN",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_INFLUENCE_TOKEN",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_INFLUENCE_TOKEN",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "COTHON_HEALFRIENDLY",
+     "argument": "Amount",
+     "value": "100",
+     "effect": "EFFECT_ADJUST_UNIT_HEALING_MODIFIERS",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_HEAL_PER_TURN",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    },
+    {
+     "modifier": "COTHON_NAVAL_UNIT_PRODUCTION",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_ADJUST_UNIT_DOMAIN_PRODUCTION",
+     "modifier_type": "MODIFIER_CITY_ADJUST_UNIT_DOMAIN_PRODUCTION",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "COTHON_SETTLER_PRODUCTION",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_ADJUST_UNIT_PRODUCTION",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_UNIT_PRODUCTION",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "DIPLOMATIC_QUARTER_AWARD_ONE_INFLUENCE_TOKEN",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_INFLUENCE_TOKEN",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_INFLUENCE_TOKEN",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "DIPLOMATIC_QUARTER_DELEGATION_FAVOR",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_PLAYER_ADJUST_FAVOR_FROM_DELEGATIONS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_FAVOR_FROM_DELEGATIONS",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "EmergencyBuffs",
+   "role": "association",
+   "ref_column": "ModifierID",
+   "rows": 23,
+   "distinct_modifiers": 19,
+   "closure_modifiers": 19,
+   "direct_pairs": 22,
+   "direct_numeric_pairs": 15,
+   "numeric_pairs": 15,
+   "in_registry": 0,
+   "uncovered": 15,
+   "non_numeric_direct_pairs": 7,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_COMBAT_STRENGTH_ATTACK",
+     "argument": "Amount",
+     "value": "-3",
+     "effect": "EFFECT_ADJUST_DEFENDER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_EMERGENCY_COMBATS_ADJUST_DEFENDER_STRENGTH",
+     "collection": "COLLECTION_EMERGENCY_COMBATS"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_COMBAT_STRENGTH_DEFEND",
+     "argument": "Amount",
+     "value": "-3",
+     "effect": "EFFECT_ADJUST_ATTACKER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_EMERGENCY_COMBATS_ADJUST_ATTACKER_STRENGTH",
+     "collection": "COLLECTION_EMERGENCY_COMBATS"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_MOVEMENT_BUFF",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_MOVEMENT",
+     "modifier_type": "MODIFIER_EMERGENCY_UNITS_ADJUST_MOVEMENT",
+     "collection": "COLLECTION_EMERGENCY_UNITS"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_TRADING_BUFF",
+     "argument": "AffectDestination",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_EMERGENCY_TRADE_ROUTES_ADJUST_YIELDS",
+     "collection": "COLLECTION_EMERGENCY_TRADE_ROUTES"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_TRADING_BUFF",
+     "argument": "AffectOrigin",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_EMERGENCY_TRADE_ROUTES_ADJUST_YIELDS",
+     "collection": "COLLECTION_EMERGENCY_TRADE_ROUTES"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_TRADING_BUFF",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_CHANGE",
+     "modifier_type": "MODIFIER_EMERGENCY_TRADE_ROUTES_ADJUST_YIELDS",
+     "collection": "COLLECTION_EMERGENCY_TRADE_ROUTES"
+    },
+    {
+     "modifier": "EMERGENCY_PREVENT_FREE_CITY_BUFF",
+     "argument": "Amount",
+     "value": "20",
+     "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN",
+     "modifier_type": "MODIFIER_EMERGENCY_TARGET_CITY_GRANT_LOYALTY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "MILITARY_EMERGENCY_MEMBER_COMBAT_STRENGTH_ATTACK",
+     "argument": "Amount",
+     "value": "-2",
+     "effect": "EFFECT_ADJUST_DEFENDER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_EMERGENCY_COMBATS_ADJUST_DEFENDER_STRENGTH",
+     "collection": "COLLECTION_EMERGENCY_COMBATS"
+    }
+   ]
+  },
+  {
+   "table": "EmergencyRewards",
+   "role": "association",
+   "ref_column": "ModifierID",
+   "rows": 65,
+   "distinct_modifiers": 51,
+   "closure_modifiers": 52,
+   "direct_pairs": 78,
+   "direct_numeric_pairs": 53,
+   "numeric_pairs": 54,
+   "in_registry": 0,
+   "uncovered": 54,
+   "non_numeric_direct_pairs": 25,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "AID_REQUEST_BOTTOM_TIER_FAVOR",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_ADD_PLAYER_FAVOR",
+     "modifier_type": "MODIFIER_EMERGENCY_PLAYERS_ADD_FAVOR",
+     "collection": "COLLECTION_EMERGENCY_PLAYERS"
+    },
+    {
+     "modifier": "AID_REQUEST_FIRST_PLACE_VICTORY_POINT",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS",
+     "modifier_type": "MODIFIER_EMERGENCY_PLAYERS_ADJUST_DIPLOMATIC_VICTORY_POINTS",
+     "collection": "COLLECTION_EMERGENCY_PLAYERS"
+    },
+    {
+     "modifier": "AID_REQUEST_TOP_TIER_FAVOR",
+     "argument": "Amount",
+     "value": "100",
+     "effect": "EFFECT_ADD_PLAYER_FAVOR",
+     "modifier_type": "MODIFIER_EMERGENCY_PLAYERS_ADD_FAVOR",
+     "collection": "COLLECTION_EMERGENCY_PLAYERS"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_COMBAT_STRENGTH_ATTACK_REWARD",
+     "argument": "Amount",
+     "value": "-3",
+     "effect": "EFFECT_ADJUST_DEFENDER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_EMERGENCY_COMBATS_ADJUST_DEFENDER_STRENGTH",
+     "collection": "COLLECTION_EMERGENCY_COMBATS"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_MEMBER_COMBAT_STRENGTH_DEFEND_REWARD",
+     "argument": "Amount",
+     "value": "-3",
+     "effect": "EFFECT_ADJUST_ATTACKER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_EMERGENCY_COMBATS_ADJUST_ATTACKER_STRENGTH",
+     "collection": "COLLECTION_EMERGENCY_COMBATS"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_TARGET_WAR_WEARINESS_REWARD",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_ADJUST_WAR_WEARINESS",
+     "modifier_type": "MODIFIER_EMERGENCY_PLAYERS_ADJUST_WAR_WEARINESS",
+     "collection": "COLLECTION_EMERGENCY_PLAYERS"
+    },
+    {
+     "modifier": "BACKSTAB_EMERGENCY_TARGET_WAR_WEARINESS_REWARD",
+     "argument": "Overall",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_WAR_WEARINESS",
+     "modifier_type": "MODIFIER_EMERGENCY_PLAYERS_ADJUST_WAR_WEARINESS",
+     "collection": "COLLECTION_EMERGENCY_PLAYERS"
+    },
+    {
+     "modifier": "CITY_STATE_EMERGENCY_MEMBER_ENVOY_GOLD_REWARD",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE_PER_USED_INFLUENCE_TOKEN",
+     "modifier_type": "MODIFIER_EMERGENCY_PLAYERS_YIELDS_PER_ENVOY",
+     "collection": "COLLECTION_EMERGENCY_PLAYERS"
+    }
+   ]
+  },
+  {
+   "table": "GameModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 29,
+   "distinct_modifiers": 29,
+   "closure_modifiers": 29,
+   "direct_pairs": 37,
+   "direct_numeric_pairs": 23,
+   "numeric_pairs": 23,
+   "in_registry": 0,
+   "uncovered": 23,
+   "non_numeric_direct_pairs": 14,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "DEAD_SEA_ADJACENT_UNITS_ADJUST_HEAL_PER_TURN",
+     "argument": "Amount",
+     "value": "100",
+     "effect": "EFFECT_ADJUST_UNIT_HEALING_MODIFIERS",
+     "modifier_type": "MODIFIER_ALL_UNITS_ADJUST_HEAL_PER_TURN",
+     "collection": "COLLECTION_ALL_UNITS"
+    },
+    {
+     "modifier": "DISTRICT_GRANT_PLAYER_GOVERNOR_POINTS",
+     "argument": "Delta",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS",
+     "modifier_type": "MODIFIER_ALL_PLAYERS_ADJUST_GOVERNOR_POINTS",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "EYESAHARA_PRODUCTION_ATOMIC",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLOT_YIELD",
+     "modifier_type": "MODIFIER_GAME_ADJUST_PLOT_YIELD",
+     "collection": "COLLECTION_ALL_PLOT_YIELDS"
+    },
+    {
+     "modifier": "EYESAHARA_SCIENCE_ATOMIC",
+     "argument": "Amount",
+     "value": "3",
+     "effect": "EFFECT_ADJUST_PLOT_YIELD",
+     "modifier_type": "MODIFIER_GAME_ADJUST_PLOT_YIELD",
+     "collection": "COLLECTION_ALL_PLOT_YIELDS"
+    },
+    {
+     "modifier": "GOV_BUILDING_CITYSTATES_GRANT_GOVERNOR_POINTS",
+     "argument": "Delta",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS",
+     "modifier_type": "MODIFIER_ALL_PLAYERS_ADJUST_GOVERNOR_POINTS",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "GOV_BUILDING_CONQUEST_GRANT_GOVERNOR_POINTS",
+     "argument": "Delta",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS",
+     "modifier_type": "MODIFIER_ALL_PLAYERS_ADJUST_GOVERNOR_POINTS",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "GOV_BUILDING_CULTURE_GRANT_GOVERNOR_POINTS",
+     "argument": "Delta",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS",
+     "modifier_type": "MODIFIER_ALL_PLAYERS_ADJUST_GOVERNOR_POINTS",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "GOV_BUILDING_FAITH_GRANT_GOVERNOR_POINTS",
+     "argument": "Delta",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS",
+     "modifier_type": "MODIFIER_ALL_PLAYERS_ADJUST_GOVERNOR_POINTS",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    }
+   ]
+  },
+  {
+   "table": "GoodyHutSubTypes",
+   "role": "association",
+   "ref_column": "ModifierID",
+   "rows": 25,
+   "distinct_modifiers": 25,
+   "closure_modifiers": 26,
+   "direct_pairs": 42,
+   "direct_numeric_pairs": 29,
+   "numeric_pairs": 30,
+   "in_registry": 0,
+   "uncovered": 30,
+   "non_numeric_direct_pairs": 13,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "GOODY_CULTURE_GRANT_ONE_CIVIC_BOOST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_RANDOM_CIVIC_BOOST_GOODY_HUT",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_CIVIC_BOOST_GOODY_HUT",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOODY_CULTURE_GRANT_ONE_RELIC",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_RELIC",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RELIC",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOODY_CULTURE_GRANT_TWO_CIVIC_BOOSTS",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_PLAYER_RANDOM_CIVIC_BOOST_GOODY_HUT",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_CIVIC_BOOST_GOODY_HUT",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOODY_DIPLOMACY_GRANT_ENVOY",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_INFLUENCE_TOKEN",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_INFLUENCE_TOKEN",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOODY_DIPLOMACY_GRANT_FAVOR",
+     "argument": "Amount",
+     "value": "20",
+     "effect": "EFFECT_ADD_PLAYER_FAVOR",
+     "modifier_type": "MODIFIER_PLAYER_ADD_FAVOR",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOODY_DIPLOMACY_GRANT_GOVERNOR_TITLE",
+     "argument": "Delta",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_GOVERNOR_POINTS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOODY_FAITH_LARGE_MODIFIER",
+     "argument": "Amount",
+     "value": "100",
+     "effect": "EFFECT_GRANT_YIELD",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_YIELD",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOODY_FAITH_LARGE_MODIFIER",
+     "argument": "Scale",
+     "value": "1",
+     "effect": "EFFECT_GRANT_YIELD",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_YIELD",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "GovernmentModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 47,
+   "distinct_modifiers": 47,
+   "closure_modifiers": 47,
+   "direct_pairs": 73,
+   "direct_numeric_pairs": 44,
+   "numeric_pairs": 44,
+   "in_registry": 43,
+   "uncovered": 1,
+   "non_numeric_direct_pairs": 29,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "FASCISM_WAR_WEARINESS",
+     "argument": "Overall",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_WAR_WEARINESS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_WAR_WEARINESS",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "GovernorModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 0,
+   "distinct_modifiers": 0,
+   "closure_modifiers": 0,
+   "direct_pairs": 0,
+   "direct_numeric_pairs": 0,
+   "numeric_pairs": 0,
+   "in_registry": 0,
+   "uncovered": 0,
+   "non_numeric_direct_pairs": 0,
+   "cycles": "none",
+   "arguments_sample": []
+  },
+  {
+   "table": "GovernorPromotionModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 75,
+   "distinct_modifiers": 75,
+   "closure_modifiers": 76,
+   "direct_pairs": 108,
+   "direct_numeric_pairs": 74,
+   "numeric_pairs": 75,
+   "in_registry": 48,
+   "uncovered": 27,
+   "non_numeric_direct_pairs": 34,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "BLACK_MARKETEER_STRATEGIC_RESOURCE_COST_DISCOUNT",
+     "argument": "Amount",
+     "value": "80",
+     "effect": "EFFECT_ADJUST_CITY_STRATEGIC_RESOURCE_REQUIREMENT_MODIFIER",
+     "modifier_type": "MODIFIER_CITY_ADJUST_STRATEGIC_RESOURCE_REQUIREMENT_MODIFIER",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CAPOU_AGHA_ADJUST_GRIEVANCES",
+     "argument": "Score",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_GOVERNOR_GRIEVENCE_SCORE",
+     "modifier_type": "MODIFIER_GOVERNOR_ADJUST_GRIEVENCE_SCORE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CAPOU_AGHA_ADJUST_GRIEVANCES",
+     "argument": "Turns",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_GOVERNOR_GRIEVENCE_SCORE",
+     "modifier_type": "MODIFIER_GOVERNOR_ADJUST_GRIEVENCE_SCORE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CARDINAL_CITADEL_OF_GOD_COMBAT",
+     "argument": "Enable",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_CITY_RELIGION_IGNORE_COMBAT",
+     "modifier_type": "MODIFIER_SINGLE_CITY_RELIGION_IGNORE_COMBAT",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS",
+     "argument": "IncludeWonder",
+     "value": "0",
+     "effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
+     "modifier_type": "MODIFIER_SINGLE_CITY_GRANT_YIELD_PER_BUILDING_COST",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CARDINAL_CITADEL_OF_GOD_PRESSURE",
+     "argument": "Enable",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_CITY_RELIGION_IGNORE_PRESSURE",
+     "modifier_type": "MODIFIER_SINGLE_CITY_RELIGION_IGNORE_PRESSURE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CARDINAL_FAITH_PURCHASE_DISTRICT",
+     "argument": "CanPurchase",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_CAN_FAITH_PURCHASE_DISTRICTS",
+     "modifier_type": "MODIFIER_GOVERNOR_ADJUST_CAN_FAITH_PURCHASE_DISTRICTS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CARDINAL_LAYING_ON_OF_HANDS_HEAL",
+     "argument": "Amount",
+     "value": "100",
+     "effect": "EFFECT_ADJUST_EXTRA_HEAL_GOVERNOR",
+     "modifier_type": "MODIFIER_GOVERNOR_ADJUST_HEAL",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "GreatPersonIndividualActionModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 226,
+   "distinct_modifiers": 198,
+   "closure_modifiers": 201,
+   "direct_pairs": 345,
+   "direct_numeric_pairs": 173,
+   "numeric_pairs": 176,
+   "in_registry": 0,
+   "uncovered": 176,
+   "non_numeric_direct_pairs": 172,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "COMMANDANTE_HEAL_LLANERO_ON_RETIRE",
+     "argument": "Amount",
+     "value": "-100",
+     "effect": "EFFECT_ADJUST_UNIT_DAMAGE",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_DAMAGE",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    },
+    {
+     "modifier": "GREATPERSON_1INDUSTRIALTECHBOOST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GREATPERSON_1MEDIEVALRENAISSANCECIVICBOOST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_RANDOM_CIVIC_BOOST_BY_ERA",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_CIVIC_BOOST_BY_ERA",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GREATPERSON_1MEDIEVALRENAISSANCETECHBOOST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GREATPERSON_1MEDIEVALTECHBOOST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GREATPERSON_1MODERNATOMICTECHBOOST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GREATPERSON_1MODERNTECHBOOST",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GREATPERSON_2INDUSTRIALMODERNTECHBOOSTS",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_RANDOM_TECHNOLOGY_BOOST_BY_ERA",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "GreatPersonIndividualBirthModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 107,
+   "distinct_modifiers": 31,
+   "closure_modifiers": 31,
+   "direct_pairs": 32,
+   "direct_numeric_pairs": 2,
+   "numeric_pairs": 2,
+   "in_registry": 0,
+   "uncovered": 2,
+   "non_numeric_direct_pairs": 30,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "GREAT_PERSON_ENTER_FOREIGN_LANDS",
+     "argument": "Enter",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_ENTER_FOREIGN_LANDS",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_ENTER_FOREIGN_LANDS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "MEDIC_INCREASE_HEAL_RATE",
+     "argument": "Amount",
+     "value": "20",
+     "effect": "EFFECT_ADJUST_UNIT_HEALING_MODIFIERS",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_HEAL_PER_TURN",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    }
+   ]
+  },
+  {
+   "table": "GreatWorkModifiers",
+   "role": "association",
+   "ref_column": "ModifierID",
+   "rows": 0,
+   "distinct_modifiers": 0,
+   "closure_modifiers": 0,
+   "direct_pairs": 0,
+   "direct_numeric_pairs": 0,
+   "numeric_pairs": 0,
+   "in_registry": 0,
+   "uncovered": 0,
+   "non_numeric_direct_pairs": 0,
+   "cycles": "none",
+   "arguments_sample": []
+  },
+  {
+   "table": "ImprovementModifiers",
+   "role": "association",
+   "ref_column": "ModifierID",
+   "rows": 50,
+   "distinct_modifiers": 49,
+   "closure_modifiers": 49,
+   "direct_pairs": 78,
+   "direct_numeric_pairs": 48,
+   "numeric_pairs": 48,
+   "in_registry": 0,
+   "uncovered": 48,
+   "non_numeric_direct_pairs": 30,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "CITY_PARK_GOVERNOR_CULTURE",
+     "argument": "Amount",
+     "value": "3",
+     "effect": "EFFECT_ADJUST_PLOT_YIELD",
+     "modifier_type": "MODIFIER_SINGLE_PLOT_ADJUST_PLOT_YIELDS",
+     "collection": "COLLECTION_SINGLE_PLOT_YIELDS"
+    },
+    {
+     "modifier": "CITY_PARK_WATER_AMENITY",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_IMPROVEMENT_AMENITY",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_IMPROVEMENT_AMENITY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "FARM_HOUSING_WITH_MAYAB_TRAIT",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_IMPROVEMENT_HOUSING",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_IMPROVEMENT_HOUSING_GRANCOLOMBIA_MAYA",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "FISHERY_GOVERNOR_PRODUCTION",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLOT_YIELD",
+     "modifier_type": "MODIFIER_SINGLE_PLOT_ADJUST_PLOT_YIELDS",
+     "collection": "COLLECTION_SINGLE_PLOT_YIELDS"
+    },
+    {
+     "modifier": "GEOTHERMAL_GENERATE_POWER",
+     "argument": "Amount",
+     "value": "4",
+     "effect": "EFFECT_ADJUST_CITY_FREE_POWER",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_FREE_POWER",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOLFCOURSE_AMENITIES",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_IMPROVEMENT_AMENITY",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_IMPROVEMENT_AMENITY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOLFCOURSE_AMENITY",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_IMPROVEMENT_AMENITY",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_IMPROVEMENT_AMENITY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "GOLFCOURSE_HOUSING_WITHGLOBLIZATION",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_IMPROVEMENT_HOUSING",
+     "modifier_type": "MODIFIER_SINGLE_CITY_ADJUST_IMPROVEMENT_HOUSING",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "PolicyModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 420,
+   "distinct_modifiers": 350,
+   "closure_modifiers": 354,
+   "direct_pairs": 728,
+   "direct_numeric_pairs": 361,
+   "numeric_pairs": 365,
+   "in_registry": 309,
+   "uncovered": 56,
+   "non_numeric_direct_pairs": 367,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "BASTIONS_RANGEDSTRIKE",
+     "argument": "Amount",
+     "value": "5",
+     "effect": "EFFECT_ADJUST_CITY_RANGED_STRIKE",
+     "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_RANGED_STRIKE",
+     "collection": "COLLECTION_PLAYER_CITIES"
+    },
+    {
+     "modifier": "COLLECTIVISM_FARM_FOOD_MODIFIER",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLOT_YIELD",
+     "modifier_type": "MODIFIER_CITY_PLOT_YIELDS_ADJUST_PLOT_YIELD",
+     "collection": "COLLECTION_CITY_PLOT_YIELDS"
+    },
+    {
+     "modifier": "CONTAINMENT_DUPLICATETOKENWHENRIVALGOVERNMENT",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_DUPLICATE_INFLUENCE_TOKEN_WHEN_RIVAL_GOVERNMENT",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_DUPLICATE_INFLUENCE_TOKEN_WHEN_RIVAL_GOVERNMENT",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CORVEE_ANCIENTCLASSICALWONDER",
+     "argument": "IsWonder",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_WONDER_ERA_PRODUCTION",
+     "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_WONDER_ERA_PRODUCTION",
+     "collection": "COLLECTION_PLAYER_CITIES"
+    },
+    {
+     "modifier": "CRYPTOGRAPHY_DEFENSE",
+     "argument": "Offense",
+     "value": "0",
+     "effect": "EFFECT_ADJUST_PLAYER_SPY_BONUS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_SPY_BONUS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CRYPTOGRAPHY_OFFENSE",
+     "argument": "Offense",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_SPY_BONUS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_SPY_BONUS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "CYBER_WARFARE_DISABLE_GRIEVANCE_DECAY",
+     "argument": "Disable",
+     "value": "1",
+     "effect": "EFFECT_DISABLE_PLAYER_GRIEVANCE_DECAY",
+     "modifier_type": "MODIFIER_PLAYER_DISABLE_GRIEVANCE_DECAY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "DEFENSEOFMOTHERLAND_DOMESTICWARWEARINESS",
+     "argument": "Domestic",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_WAR_WEARINESS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_WAR_WEARINESS",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "ProjectCompletionModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 17,
+   "distinct_modifiers": 16,
+   "closure_modifiers": 16,
+   "direct_pairs": 21,
+   "direct_numeric_pairs": 14,
+   "numeric_pairs": 14,
+   "in_registry": 0,
+   "uncovered": 14,
+   "non_numeric_direct_pairs": 7,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "PROJECT_COMPLETION_CARBON_SEQUESTRATION",
+     "argument": "Amount",
+     "value": "50000",
+     "effect": "EFFECT_ADD_PLAYER_SEQUESTERED_CARBON",
+     "modifier_type": "MODIFIER_PLAYER_ADD_SEQUESTERED_CARBON",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PROJECT_COMPLETION_EXOPLANET_SCIENCE_VP",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_SCIENCE_VICTORY_POINTS_PER_TURN",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_SCIENCE_VICTORY_POINTS_PER_TURN",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PROJECT_COMPLETION_FAVOR_SEQUESTRATION",
+     "argument": "Amount",
+     "value": "30",
+     "effect": "EFFECT_ADD_PLAYER_FAVOR",
+     "modifier_type": "MODIFIER_PLAYER_ADD_FAVOR",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PROJECT_COMPLETION_GRANT_CULTURE_BASED_ON_EXCESS_LUXURIES",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_GRANT_YIELD_PER_EXCESS_LUXURIES",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_YIELD_PER_EXCESS_LUXURIES",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PROJECT_COMPLETION_GRANT_CULTURE_BASED_ON_SCIENCE_RATE",
+     "argument": "Multiplier",
+     "value": "10",
+     "effect": "EFFECT_GRANT_YIELD_BASED_ON_CURRENT_YIELD_RATE",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_YIELD_BASED_ON_CURRENT_YIELD_RATE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PROJECT_COMPLETION_GRANT_TOURISM_BASED_ON_EXCESS_LUXURIES",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_GRANT_TOURISM_PER_EXCESS_LUXURIES",
+     "modifier_type": "MODIFIER_PLAYER_GRANT_TOURISM_PER_EXCESS_LUXURIES",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PROJECT_COMPLETION_LOYALTY",
+     "argument": "Amount",
+     "value": "20",
+     "effect": "EFFECT_GRANT_CITY_LOYALTY",
+     "modifier_type": "MODIFIER_SINGLE_CITY_GRANT_LOYALTY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PROJECT_COMPLETION_MODIFIER_CREATE_NUCLEAR_DEVICE",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_WMD_COUNT",
+     "modifier_type": "MODIFIER_PLAYER_CREATE_WMD",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "ResolutionEffects",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 41,
+   "distinct_modifiers": 41,
+   "closure_modifiers": 58,
+   "direct_pairs": 39,
+   "direct_numeric_pairs": 18,
+   "numeric_pairs": 36,
+   "in_registry": 0,
+   "uncovered": 36,
+   "non_numeric_direct_pairs": 21,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "ADD_DIPLOMATIC_VICTORY_POINTS",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_DIPLOMATIC_VICTORY_POINTS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "ADD_DIPLOMATIC_VICTORY_POINTS",
+     "argument": "VictoryResolution",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_DIPLOMATIC_VICTORY_POINTS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "ADD_TOURISM_FROM_GREAT_WORK_OBJECT",
+     "argument": "Amount",
+     "value": "100",
+     "effect": "EFFECT_ADJUST_GREAT_WORK_OBJECT_TOURISM_MODIFIER",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_GREAT_WORK_OBJECT_TOURISM",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "ANYONE_CONDEMNS_FOR_FAVOR",
+     "argument": "Amount",
+     "value": "25",
+     "effect": "EFFECT_ADJUST_RELIGION_ANYONE_CONDEMNS_FAVOR",
+     "modifier_type": "MODIFIER_RELIGION_ADJUST_ANYONE_CONDEMNS_FAVOR",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "BAN_DISTRICT_BUILDING",
+     "argument": "BanDistrictBuildings",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_BAN_CITY_PRODUCTION",
+     "modifier_type": "MODIFIER_MAJOR_PLAYERS_ADJUST_BANNED_CITY_PRODUCTION",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "DECREASE_PROJECT_PRODUCTION",
+     "argument": "Amount",
+     "value": "-50",
+     "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION",
+     "modifier_type": "MODIFIER_ALL_CITIES_ADJUST_PROJECT_PRODUCTION",
+     "collection": "COLLECTION_ALL_CITIES"
+    },
+    {
+     "modifier": "GOVT_ADD_WILDCARD_SLOT",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_GOVERNMENT_SLOTS",
+     "modifier_type": "MODIFIER_GOVERNMENT_ADJUST_SLOTS",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "GOVT_LOSE_WILDCARD_SLOT",
+     "argument": "Amount",
+     "value": "-1",
+     "effect": "EFFECT_ADJUST_GOVERNMENT_SLOTS",
+     "modifier_type": "MODIFIER_GOVERNMENT_ADJUST_SLOTS",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    }
+   ]
+  },
+  {
+   "table": "TechnologyModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 17,
+   "distinct_modifiers": 17,
+   "closure_modifiers": 17,
+   "direct_pairs": 23,
+   "direct_numeric_pairs": 13,
+   "numeric_pairs": 13,
+   "in_registry": 0,
+   "uncovered": 13,
+   "non_numeric_direct_pairs": 10,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "CARTOGRAPHY_GRANT_OCEAN_NAVIGATION",
+     "argument": "Valid",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_VALID_TERRAIN",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_VALID_TERRAIN",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    },
+    {
+     "modifier": "COMBUSTION_ADJUST_EMBARKED_MOVEMENT",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_EMBARKED_UNIT_MOVEMENT",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_EMBARKED_MOVEMENT",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "COMPUTERS_BOOST_ALL_TOURISM",
+     "argument": "Amount",
+     "value": "25",
+     "effect": "EFFECT_ADJUST_PLAYER_TOURISM",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_TOURISM",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "FUTURE_TECH_PROJECT_PRODUCTION",
+     "argument": "Amount",
+     "value": "5",
+     "effect": "EFFECT_ADJUST_ALL_PROJECTS_PRODUCTION",
+     "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_ALL_PROJECTS_PRODUCTION",
+     "collection": "COLLECTION_PLAYER_CITIES"
+    },
+    {
+     "modifier": "MATHEMATICS_ADJUST_SEA_MOVEMENT",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_SEA_MOVEMENT",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_SEA_MOVEMENT",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    },
+    {
+     "modifier": "PRINTING_ADD_DIPLO_VISIBILITY",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADD_DIPLO_VISIBILITY",
+     "modifier_type": "MODIFIER_PLAYER_ADD_DIPLO_VISIBILITY",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "PRINTING_BOOST_WRITING_TOURISM",
+     "argument": "ScalingFactor",
+     "value": "200",
+     "effect": "EFFECT_ADJUST_CITY_TOURISM",
+     "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_TOURISM",
+     "collection": "COLLECTION_PLAYER_CITIES"
+    },
+    {
+     "modifier": "SQUARE_RIGGING_ADJUST_EMBARKED_MOVEMENT",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_PLAYER_EMBARKED_UNIT_MOVEMENT",
+     "modifier_type": "MODIFIER_PLAYER_ADJUST_EMBARKED_MOVEMENT",
+     "collection": "COLLECTION_OWNER"
+    }
+   ]
+  },
+  {
+   "table": "TraitModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 992,
+   "distinct_modifiers": 991,
+   "closure_modifiers": 1164,
+   "direct_pairs": 2284,
+   "direct_numeric_pairs": 1057,
+   "numeric_pairs": 1242,
+   "in_registry": 427,
+   "uncovered": 815,
+   "non_numeric_direct_pairs": 1227,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "AGENDA_ADJUST_GOVERNMENT_INTOLERANCE",
+     "argument": "IntoleranceMultiplier",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_PLAYER_OTHER_GOVERNMENT_INTOLERANCE",
+     "modifier_type": "MODIFIER_PLAYER_GOVERNMENT_ADJUST_OTHER_GOVERNMENT_INTOLERANCE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AGENDA_ADJUST_GOVERNMENT_INTOLERANCE",
+     "argument": "SameEraIntoleranceFlatBonus",
+     "value": "-6",
+     "effect": "EFFECT_ADJUST_PLAYER_OTHER_GOVERNMENT_INTOLERANCE",
+     "modifier_type": "MODIFIER_PLAYER_GOVERNMENT_ADJUST_OTHER_GOVERNMENT_INTOLERANCE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AGENDA_ADJUST_GOVERNMENT_INTOLERANCE_LINCOLN",
+     "argument": "IntoleranceMultiplier",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_PLAYER_OTHER_GOVERNMENT_INTOLERANCE",
+     "modifier_type": "MODIFIER_PLAYER_GOVERNMENT_ADJUST_OTHER_GOVERNMENT_INTOLERANCE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AGENDA_ADJUST_GOVERNMENT_INTOLERANCE_LINCOLN",
+     "argument": "SameEraIntoleranceFlatBonus",
+     "value": "-6",
+     "effect": "EFFECT_ADJUST_PLAYER_OTHER_GOVERNMENT_INTOLERANCE",
+     "modifier_type": "MODIFIER_PLAYER_GOVERNMENT_ADJUST_OTHER_GOVERNMENT_INTOLERANCE",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AGENDA_ALLY_OF_ENKIDU_DENOUNCED_FRIEND",
+     "argument": "InitialValue",
+     "value": "-12",
+     "effect": "EFFECT_DIPLOMACY_SIMPLE_EFFECT",
+     "modifier_type": "MODIFIER_PLAYER_DIPLOMACY_SIMPLE_MODIFIER",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "AGENDA_ALLY_OF_ENKIDU_DENOUNCED_FRIEND",
+     "argument": "MessageThrottle",
+     "value": "20",
+     "effect": "EFFECT_DIPLOMACY_SIMPLE_EFFECT",
+     "modifier_type": "MODIFIER_PLAYER_DIPLOMACY_SIMPLE_MODIFIER",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "AGENDA_ALLY_OF_ENKIDU_DENOUNCED_FRIEND",
+     "argument": "ReductionTurns",
+     "value": "10",
+     "effect": "EFFECT_DIPLOMACY_SIMPLE_EFFECT",
+     "modifier_type": "MODIFIER_PLAYER_DIPLOMACY_SIMPLE_MODIFIER",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    },
+    {
+     "modifier": "AGENDA_ALLY_OF_ENKIDU_DENOUNCED_FRIEND",
+     "argument": "ReductionValue",
+     "value": "-1",
+     "effect": "EFFECT_DIPLOMACY_SIMPLE_EFFECT",
+     "modifier_type": "MODIFIER_PLAYER_DIPLOMACY_SIMPLE_MODIFIER",
+     "collection": "COLLECTION_MAJOR_PLAYERS"
+    }
+   ]
+  },
+  {
+   "table": "UnitAbilityModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 233,
+   "distinct_modifiers": 226,
+   "closure_modifiers": 229,
+   "direct_pairs": 246,
+   "direct_numeric_pairs": 207,
+   "numeric_pairs": 210,
+   "in_registry": 0,
+   "uncovered": 210,
+   "non_numeric_direct_pairs": 39,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "AIRPORT_TRAINED_AIRCRAFT_XP",
+     "argument": "Amount",
+     "value": "50",
+     "effect": "EFFECT_ADJUST_UNIT_EXPERIENCE_MODIFIER",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_UNIT_EXPERIENCE_MODIFIER",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "ALL_PARK_COMBAT_BONUS",
+     "argument": "Amount",
+     "value": "5",
+     "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+     "collection": "COLLECTION_UNIT_COMBAT"
+    },
+    {
+     "modifier": "ALPINE_TRAINING_COMBAT_HILLS",
+     "argument": "Amount",
+     "value": "3",
+     "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+     "collection": "COLLECTION_UNIT_COMBAT"
+    },
+    {
+     "modifier": "ALPINE_TRAINING_IGNORE_HILLS",
+     "argument": "Ignore",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_IGNORE_TERRAIN_COST",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_IGNORE_TERRAIN_COST",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "ALTITUDE_TRAINING_IGNORE_HILLS",
+     "argument": "Ignore",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_IGNORE_TERRAIN_COST",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_IGNORE_TERRAIN_COST",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AMBIORIX_NEIGHBOR_COMBAT",
+     "argument": "Amount",
+     "value": "2",
+     "effect": "EFFECT_ADJUST_UNIT_NEIGHBOR_COMBAT_MODIFIER",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_COMBAT_FOR_NUMBER_NEIGHBORS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "ANTI_CAVALRY_COMBAT_BONUS",
+     "argument": "Amount",
+     "value": "10",
+     "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+     "collection": "COLLECTION_UNIT_COMBAT"
+    },
+    {
+     "modifier": "ANTI_FIGHTER_AIRCRAFT_COMBAT_BONUS",
+     "argument": "Amount",
+     "value": "5",
+     "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+     "collection": "COLLECTION_UNIT_COMBAT"
+    }
+   ]
+  },
+  {
+   "table": "UnitPromotionModifiers",
+   "role": "association",
+   "ref_column": "ModifierId",
+   "rows": 188,
+   "distinct_modifiers": 184,
+   "closure_modifiers": 185,
+   "direct_pairs": 260,
+   "direct_numeric_pairs": 198,
+   "numeric_pairs": 199,
+   "in_registry": 1,
+   "uncovered": 198,
+   "non_numeric_direct_pairs": 62,
+   "cycles": "none",
+   "arguments_sample": [
+    {
+     "modifier": "ADVANCED_ENGINES_BONUS_MOVEMENT",
+     "argument": "Amount",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_MOVEMENT",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_MOVEMENT",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "ADVANCED_RANGEFINDING_BONUS_VS_NAVAL",
+     "argument": "Amount",
+     "value": "10",
+     "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+     "collection": "COLLECTION_UNIT_COMBAT"
+    },
+    {
+     "modifier": "ALPINE_IGNORE_HILLS_MOVEMENT_PENALTY",
+     "argument": "Ignore",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_IGNORE_TERRAIN_COST",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_IGNORE_TERRAIN_COST",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AMBUSH_INCREASED_COMBAT_STRENGTH",
+     "argument": "Amount",
+     "value": "20",
+     "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+     "modifier_type": "MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH",
+     "collection": "COLLECTION_UNIT_COMBAT"
+    },
+    {
+     "modifier": "AMPHIBIOUS_BONUS_IGNORE_RIVERS",
+     "argument": "Ignore",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_IGNORE_RIVERS",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_IGNORE_RIVERS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "AMPHIBIOUS_BONUS_IGNORE_SHORES",
+     "argument": "Ignore",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_IGNORE_SHORES",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_IGNORE_SHORES",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "APOSTLE_BARBARIAN_CONVERSION",
+     "argument": "Converts",
+     "value": "1",
+     "effect": "EFFECT_ADJUST_UNIT_CONVERTS_BARBARIANS",
+     "modifier_type": "MODIFIER_PLAYER_UNIT_ADJUST_CONVERTS_BARBARIANS",
+     "collection": "COLLECTION_OWNER"
+    },
+    {
+     "modifier": "APOSTLE_CHAPLAIN",
+     "argument": "Amount",
+     "value": "20",
+     "effect": "EFFECT_ADJUST_UNIT_HEALING_MODIFIERS",
+     "modifier_type": "MODIFIER_PLAYER_UNITS_ADJUST_HEAL_PER_TURN",
+     "collection": "COLLECTION_PLAYER_UNITS"
+    }
+   ]
+  },
+  {
+   "table": "Modifiers",
+   "role": "definition",
+   "rows": 3210,
+   "distinct_modifiers": 3210,
+   "numeric_pairs": null,
+   "in_registry": null,
+   "uncovered": null,
+   "cycles": "n/a",
+   "arguments_sample": []
+  },
+  {
+   "table": "ModifierArguments",
+   "role": "argument_store",
+   "rows": 5931,
+   "distinct_modifiers": 3164,
+   "numeric_pairs": null,
+   "in_registry": null,
+   "uncovered": null,
+   "cycles": "n/a",
+   "arguments_sample": []
+  },
+  {
+   "table": "ModifierStrings",
+   "role": "localization",
+   "rows": 604,
+   "distinct_modifiers": 600,
+   "numeric_pairs": null,
+   "in_registry": null,
+   "uncovered": null,
+   "cycles": "n/a",
+   "arguments_sample": []
+  }
+ ],
+ "non_root_modif_columns": [
+  {
+   "table": "Buildings",
+   "modif_substring_columns": [
+    [
+     "DefenseModifier",
+     "INTEGER"
+    ]
+   ]
+  },
+  {
+   "table": "DeforestationEffects",
+   "modif_substring_columns": [
+    [
+     "CO2PercentModifier",
+     "INTEGER"
+    ]
+   ]
+  },
+  {
+   "table": "Districts",
+   "modif_substring_columns": [
+    [
+     "CityStrengthModifier",
+     "INTEGER"
+    ]
+   ]
+  },
+  {
+   "table": "DynamicModifiers",
+   "modif_substring_columns": [
+    [
+     "ModifierType",
+     "TEXT"
+    ]
+   ]
+  },
+  {
+   "table": "Features",
+   "modif_substring_columns": [
+    [
+     "SightThroughModifier",
+     "INTEGER"
+    ],
+    [
+     "DefenseModifier",
+     "INTEGER"
+    ]
+   ]
+  },
+  {
+   "table": "Happinesses",
+   "modif_substring_columns": [
+    [
+     "GrowthModifier",
+     "REAL"
+    ],
+    [
+     "NonFoodYieldModifier",
+     "REAL"
+    ]
+   ]
+  },
+  {
+   "table": "Improvements",
+   "modif_substring_columns": [
+    [
+     "DefenseModifier",
+     "INTEGER"
+    ]
+   ]
+  },
+  {
+   "table": "Maps",
+   "modif_substring_columns": [
+    [
+     "UnitNameModifier",
+     "INTEGER"
+    ]
+   ]
+  },
+  {
+   "table": "NodeDataDefinitions",
+   "modif_substring_columns": [
+    [
+     "Modified",
+     "BOOLEAN"
+    ]
+   ]
+  },
+  {
+   "table": "Projects_XP2",
+   "modif_substring_columns": [
+    [
+     "ReligiousPressureModifier",
+     "INTEGER"
+    ]
+   ]
+  },
+  {
+   "table": "Terrains",
+   "modif_substring_columns": [
+    [
+     "SightModifier",
+     "INTEGER"
+    ],
+    [
+     "SightThroughModifier",
+     "INTEGER"
+    ],
+    [
+     "DefenseModifier",
+     "INTEGER"
+    ]
+   ]
+  }
+ ],
+ "pair_overlap": {
+  "production_pairs_total": 1010,
+  "production_pairs_found_in_db": 931,
+  "production_pairs_missing": [
+   {
+    "modifier": "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_AMENITY_FROM_COUNTERSPY",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_GOLD_INTEREST",
+    "argument": "Percent",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_CULTURE",
+    "argument": "Percent",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_FAITH",
+    "argument": "Percent",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_GOLD",
+    "argument": "Percent",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_SCIENCE",
+    "argument": "Percent",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_VOIDSINGERS_2_CULTURE_FROM_FAITH",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_VOIDSINGERS_2_GOLD_FROM_FAITH",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "GOVERNOR_PROMOTION_VOIDSINGERS_2_SCIENCE_FROM_FAITH",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_COMANDANTE_GENERAL_LEY_LINE_SCIENCE",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_ADMIRAL_LEY_LINE_SCIENCE",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_ARTIST_LEY_LINE_CULTURE",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_ENGINEER_LEY_LINE_PRODUCTION",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_GENERAL_LEY_LINE_SCIENCE",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_MERCHANT_LEY_LINE_GOLD",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_MUSICIAN_LEY_LINE_CULTURE",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_PROPHET_LEY_LINE_FAITH",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_SCIENTIST_LEY_LINE_SCIENCE",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "HERMETIC_ORDER_GREAT_WRITER_LEY_LINE_CULTURE",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "SECRET_SOCIETY_GRANT_TWO_VAMPIRE_BUILDS",
+    "argument": "Amount",
+    "explanation": "official secret-society (game-mode overlay) modifier: present in governors manifests but the modifier id is absent even from the Modifiers table of this standard-game-without-overlays snapshot"
+   },
+   {
+    "modifier": "X10_ALHAMBRA_ENTERTAINMENT",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_ALHAMBRA_GPP_GENERAL",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_AMUNDSEN_SCOTT_RESEARCH_STATION_GPP_SCIENTIST",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_ANGKOR_WAT_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_BIG_BEN_GPP_MERCHANT",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_BIG_BEN_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_BOLSHOI_THEATRE_GPP_MUSICIAN",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_BOLSHOI_THEATRE_GPP_WRITER",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_BROADWAY_GPP_MUSICIAN",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_BROADWAY_GPP_WRITER",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_CASA_DE_CONTRATACION_GPP_MERCHANT",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_COLOSSEUM_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_COLOSSUS_GPP_ADMIRAL",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_COLOSSUS_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_CRISTO_REDENTOR_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_ESTADIO_DO_MARACANA_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_ETEMENANKI_YIELD_SCIENCE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_FORBIDDEN_CITY_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GOLDEN_GATE_BRIDGE_ENTERTAINMENT",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_BATH_ENTERTAINMENT",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_BATH_HOUSING",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_LIBRARY_GPP_SCIENTIST",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_LIBRARY_GPP_WRITER",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_LIBRARY_YIELD_SCIENCE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_LIGHTHOUSE_GPP_ADMIRAL",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_LIGHTHOUSE_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_ZIMBABWE_GPP_MERCHANT",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_GREAT_ZIMBABWE_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_HAGIA_SOPHIA_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_HANGING_GARDENS_HOUSING",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_HERMITAGE_GPP_ARTIST",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_JEBEL_BARKAL_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_MACHU_PICCHU_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_MAHABODHI_TEMPLE_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_MEENAKSHI_TEMPLE_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_MONT_ST_MICHEL_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_ORACLE_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_ORACLE_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_ORSZAGHAZ_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_OXFORD_UNIVERSITY_GPP_SCIENTIST",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_PANAMA_CANAL_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_POTALA_PALACE_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_POTALA_PALACE_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_PYRAMIDS_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_STATUE_OF_ZEUS_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_STONEHENGE_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_SYDNEY_OPERA_HOUSE_GPP_MUSICIAN",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_SYDNEY_OPERA_HOUSE_YIELD_CULTURE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_TEMPLE_ARTEMIS_HOUSING",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_TEMPLE_ARTEMIS_YIELD_FOOD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_TERRACOTTA_ARMY_GPP_GENERAL",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_TORRE_DE_BELEM_GPP_ADMIRAL",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_TORRE_DE_BELEM_YIELD_GOLD",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_UNIVERSITY_SANKORE_GPP_SCIENTIST",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_UNIVERSITY_SANKORE_YIELD_FAITH",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_UNIVERSITY_SANKORE_YIELD_SCIENCE",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   },
+   {
+    "modifier": "X10_VENETIAN_ARSENAL_GPP_ENGINEER",
+    "argument": "Amount",
+    "explanation": "synthetic X10_ wonder-direct bridge helper generated from data/local/wonder_direct.csv via the bridge layer; absent from official DB by design"
+   }
+  ],
+  "per_table": [
+   {
+    "table": "AllianceEffects",
+    "numeric_pairs": 28,
+    "in_registry": 0,
+    "uncovered": 28,
+    "direct_numeric_pairs": 28,
+    "nested_added": 0
+   },
+   {
+    "table": "BeliefModifiers",
+    "numeric_pairs": 87,
+    "in_registry": 31,
+    "uncovered": 56,
+    "direct_numeric_pairs": 14,
+    "nested_added": 73
+   },
+   {
+    "table": "BuildingModifiers",
+    "numeric_pairs": 212,
+    "in_registry": 97,
+    "uncovered": 115,
+    "direct_numeric_pairs": 203,
+    "nested_added": 9
+   },
+   {
+    "table": "CivicModifiers",
+    "numeric_pairs": 18,
+    "in_registry": 0,
+    "uncovered": 18,
+    "direct_numeric_pairs": 18,
+    "nested_added": 0
+   },
+   {
+    "table": "CommemorationModifiers",
+    "numeric_pairs": 46,
+    "in_registry": 0,
+    "uncovered": 46,
+    "direct_numeric_pairs": 45,
+    "nested_added": 1
+   },
+   {
+    "table": "ComplimentModifiers",
+    "numeric_pairs": 0,
+    "in_registry": 0,
+    "uncovered": 0,
+    "direct_numeric_pairs": 0,
+    "nested_added": 0
+   },
+   {
+    "table": "DistrictModifiers",
+    "numeric_pairs": 21,
+    "in_registry": 0,
+    "uncovered": 21,
+    "direct_numeric_pairs": 21,
+    "nested_added": 0
+   },
+   {
+    "table": "EmergencyBuffs",
+    "numeric_pairs": 15,
+    "in_registry": 0,
+    "uncovered": 15,
+    "direct_numeric_pairs": 15,
+    "nested_added": 0
+   },
+   {
+    "table": "EmergencyRewards",
+    "numeric_pairs": 54,
+    "in_registry": 0,
+    "uncovered": 54,
+    "direct_numeric_pairs": 53,
+    "nested_added": 1
+   },
+   {
+    "table": "GameModifiers",
+    "numeric_pairs": 23,
+    "in_registry": 0,
+    "uncovered": 23,
+    "direct_numeric_pairs": 23,
+    "nested_added": 0
+   },
+   {
+    "table": "GoodyHutSubTypes",
+    "numeric_pairs": 30,
+    "in_registry": 0,
+    "uncovered": 30,
+    "direct_numeric_pairs": 29,
+    "nested_added": 1
+   },
+   {
+    "table": "GovernmentModifiers",
+    "numeric_pairs": 44,
+    "in_registry": 43,
+    "uncovered": 1,
+    "direct_numeric_pairs": 44,
+    "nested_added": 0
+   },
+   {
+    "table": "GovernorModifiers",
+    "numeric_pairs": 0,
+    "in_registry": 0,
+    "uncovered": 0,
+    "direct_numeric_pairs": 0,
+    "nested_added": 0
+   },
+   {
+    "table": "GovernorPromotionModifiers",
+    "numeric_pairs": 75,
+    "in_registry": 48,
+    "uncovered": 27,
+    "direct_numeric_pairs": 74,
+    "nested_added": 1
+   },
+   {
+    "table": "GreatPersonIndividualActionModifiers",
+    "numeric_pairs": 176,
+    "in_registry": 0,
+    "uncovered": 176,
+    "direct_numeric_pairs": 173,
+    "nested_added": 3
+   },
+   {
+    "table": "GreatPersonIndividualBirthModifiers",
+    "numeric_pairs": 2,
+    "in_registry": 0,
+    "uncovered": 2,
+    "direct_numeric_pairs": 2,
+    "nested_added": 0
+   },
+   {
+    "table": "GreatWorkModifiers",
+    "numeric_pairs": 0,
+    "in_registry": 0,
+    "uncovered": 0,
+    "direct_numeric_pairs": 0,
+    "nested_added": 0
+   },
+   {
+    "table": "ImprovementModifiers",
+    "numeric_pairs": 48,
+    "in_registry": 0,
+    "uncovered": 48,
+    "direct_numeric_pairs": 48,
+    "nested_added": 0
+   },
+   {
+    "table": "PolicyModifiers",
+    "numeric_pairs": 365,
+    "in_registry": 309,
+    "uncovered": 56,
+    "direct_numeric_pairs": 361,
+    "nested_added": 4
+   },
+   {
+    "table": "ProjectCompletionModifiers",
+    "numeric_pairs": 14,
+    "in_registry": 0,
+    "uncovered": 14,
+    "direct_numeric_pairs": 14,
+    "nested_added": 0
+   },
+   {
+    "table": "ResolutionEffects",
+    "numeric_pairs": 36,
+    "in_registry": 0,
+    "uncovered": 36,
+    "direct_numeric_pairs": 18,
+    "nested_added": 18
+   },
+   {
+    "table": "TechnologyModifiers",
+    "numeric_pairs": 13,
+    "in_registry": 0,
+    "uncovered": 13,
+    "direct_numeric_pairs": 13,
+    "nested_added": 0
+   },
+   {
+    "table": "TraitModifiers",
+    "numeric_pairs": 1242,
+    "in_registry": 427,
+    "uncovered": 815,
+    "direct_numeric_pairs": 1057,
+    "nested_added": 185
+   },
+   {
+    "table": "UnitAbilityModifiers",
+    "numeric_pairs": 210,
+    "in_registry": 0,
+    "uncovered": 210,
+    "direct_numeric_pairs": 207,
+    "nested_added": 3
+   },
+   {
+    "table": "UnitPromotionModifiers",
+    "numeric_pairs": 199,
+    "in_registry": 1,
+    "uncovered": 198,
+    "direct_numeric_pairs": 198,
+    "nested_added": 1
+   }
+  ]
+ },
+ "sanity_check": [
+  {
+   "table": "UnitAbilityModifiers",
+   "expected": 210,
+   "actual": 210,
+   "verdict": "match",
+   "explanation": "nested closure 226 seeds -> 229 (+3 child modifiers via ModifierId edges) adds 3 numeric pairs over direct-only 207; strict-float gives 210 = expected."
+  },
+  {
+   "table": "UnitPromotionModifiers",
+   "expected": 198,
+   "actual": 198,
+   "verdict": "match",
+   "explanation": "closure 184 -> 185 (+1 child) adds 1 over direct-only 197; gives 198 = expected."
+  },
+  {
+   "table": "GreatPersonIndividualActionModifiers",
+   "expected": 176,
+   "actual": 176,
+   "verdict": "match",
+   "explanation": "closure 198 -> 201 (+3 children) adds 3 over direct-only 173; gives 176 = expected."
+  },
+  {
+   "table": "BuildingModifiers",
+   "expected": 115,
+   "actual": 115,
+   "verdict": "match",
+   "explanation": "closure 248 -> 257 (+9 children) adds 2 numeric pairs over direct-only 113; gives 115 = expected. Comma-list-tolerant rule would instead give 117 (+PETRA_YIELD_MODIFIER and HALICARNASSUS_MAUSOLEUM_YIELD_MODIFIER Amount lists '2,2,1'/'1,1,1'), confirming the baseline used the strict rule."
+  },
+  {
+   "table": "BeliefModifiers",
+   "expected": 56,
+   "actual": 56,
+   "verdict": "match",
+   "explanation": "direct-only float gives just 7; closure 86 -> 148 (+62 belief _MODIFIER children, e.g. MONUMENT_TO_THE_GODS_*_MODIFIER) adds 49 numeric pairs; gives 56 = expected. Largest nesting delta of any table."
+  },
+  {
+   "table": "EmergencyRewards",
+   "expected": 54,
+   "actual": 54,
+   "verdict": "match",
+   "explanation": "closure 51 -> 52 (+1 child) adds 1 over direct-only 53; gives 54 = expected."
+  },
+  {
+   "table": "ImprovementModifiers",
+   "expected": 48,
+   "actual": 48,
+   "verdict": "match",
+   "explanation": "closure adds no numeric pairs (49 seeds, no new); direct 48 = expected."
+  },
+  {
+   "table": "CommemorationModifiers",
+   "expected": 46,
+   "actual": 46,
+   "verdict": "match",
+   "explanation": "closure 54 -> 58 (+4 children) adds 1 over direct-only 45; gives 46 = expected."
+  },
+  {
+   "table": "ResolutionEffects",
+   "expected": 37,
+   "actual": 36,
+   "verdict": "explained-diff",
+   "explanation": "MISMATCH BY 1 (see verdict). Nested closure 41 -> 58 (+17 congress attach-target children) adds 18 over direct-only 18, giving 36. The only remaining numeric-named candidate is (APPLY_RES_UNIT_COMBAT_DEBUFF, Amount) whose value in this snapshot is the TEXT string 'WC_RES_UNIT_COMBAT_DEBUFF' (official-data quirk: a modifier-id string in an Amount slot; that id is absent from Modifiers), so no value-based numeric rule can count it. The baseline figure 37 implies either a name-based leniency for that single pair or a one-row snapshot difference. All 36 value-numeric pairs are enumerated in frontier_pairs.json; no coverage is missing."
+  },
+  {
+   "table": "GoodyHutSubTypes",
+   "expected": 30,
+   "actual": 30,
+   "verdict": "match",
+   "explanation": "closure 25 -> 26 (+1 child) adds 1 over direct-only 29; gives 30 = expected."
+  },
+  {
+   "table": "AllianceEffects",
+   "expected": 28,
+   "actual": 28,
+   "verdict": "match",
+   "explanation": "no nesting (24 -> 24); direct 28 = expected."
+  },
+  {
+   "table": "GameModifiers",
+   "expected": 23,
+   "actual": 23,
+   "verdict": "match",
+   "explanation": "no nesting (29 -> 29); direct 23 = expected."
+  },
+  {
+   "table": "DistrictModifiers",
+   "expected": 21,
+   "actual": 21,
+   "verdict": "match",
+   "explanation": "no nesting (22 -> 22); direct 21 = expected."
+  },
+  {
+   "table": "CivicModifiers",
+   "expected": 18,
+   "actual": 18,
+   "verdict": "match",
+   "explanation": "no nesting (20 -> 20); direct 18 = expected."
+  },
+  {
+   "table": "EmergencyBuffs",
+   "expected": 15,
+   "actual": 15,
+   "verdict": "match",
+   "explanation": "no nesting (19 -> 19); direct 15 = expected."
+  },
+  {
+   "table": "ProjectCompletionModifiers",
+   "expected": 14,
+   "actual": 14,
+   "verdict": "match",
+   "explanation": "no nesting (16 -> 16); direct 14 = expected."
+  },
+  {
+   "table": "TechnologyModifiers",
+   "expected": 13,
+   "actual": 13,
+   "verdict": "match",
+   "explanation": "no nesting (17 -> 17); direct 13 = expected."
+  },
+  {
+   "table": "GreatPersonIndividualBirthModifiers",
+   "expected": 2,
+   "actual": 2,
+   "verdict": "match",
+   "explanation": "no nesting (31 distinct seeds -> 31); direct 2 = expected (29 of 31 attached modifiers carry no arguments at all)."
+  },
+  {
+   "table": "TraitModifiers",
+   "expected": 815,
+   "actual": 815,
+   "verdict": "match",
+   "explanation": "closure 991 -> 1164 (+173 attached children) adds 118 over direct-only 697; gives 815 = expected. Comma-list-tolerant rule would instead give 823 (+8 multi-yield Amount lists: TRAIT_FOREIGN/SAME_CONTINENT_YIELD, CLEOPATRA_FLOODPLAINS_RESOURCE_YIELD, TRAIT_LEADER_NEARBY_CITIES_GAIN/LOSE_YIELDS, TOKUGAWA_NEGATIVE_INTERNATIONAL_YIELDS, TRAIT_SULEIMAN_ALT_SCIENCE_CULTURE_GOLDEN_AGE, TRAIT_INTERNATIONAL_TRADE_GAIN_ALL_YIELDS), confirming the strict rule."
+  },
+  {
+   "table": "PolicyModifiers",
+   "expected": 56,
+   "actual": 56,
+   "verdict": "match",
+   "explanation": "closure 350 -> 354 (+4 children) adds 4 over direct-only 52; gives 56 = expected."
+  },
+  {
+   "table": "GovernorPromotionModifiers",
+   "expected": 27,
+   "actual": 27,
+   "verdict": "match",
+   "explanation": "closure 75 -> 76 (+1 child) adds 0 numeric pairs; direct 27 = expected."
+  }
+ ],
+ "audits": {
+  "mixed_numeric_status_pairs": 0,
+  "multi_value_pairs": 0,
+  "amount_name": "2021 Amount rows: 2010 strict-numeric, 11 excluded (10 comma-separated multi-yield lists + APPLY_RES_UNIT_COMBAT_DEBUFF text quirk)"
+ },
+ "beyond_request": [
+  {
+   "finding": "GovernmentModifiers: 47 rows / 47 distinct modifiers / closure 47 (no nesting); 44 nested numeric pairs, 43 in-registry, 1 uncovered (FASCISM_WAR_WEARINESS/Overall=1, scope flag co-argument). 43 in-registry = governments (18) + governments+policies shared (25) ownership in the production registry."
+  },
+  {
+   "finding": "Empty association roots in standard snapshot (schema present, 0 rows): ComplimentModifiers, GovernorModifiers, GreatWorkModifiers."
+  },
+  {
+   "finding": "GreatPersonIndividualIconModifiers examined: columns are (GreatPersonIndividualType, OverrideUnitIcon), 0 rows; it references no ModifierId and is NOT a modifier root."
+  },
+  {
+   "finding": "ModifierStrings is a localization table (modifier text), not a gameplay root; GameEffects (1158 rows) + GameEffectArguments (150 rows) form the effect-definition catalog behind EffectType/argument-type metadata."
+  },
+  {
+   "finding": "Reverse check: 931/1010 production pairs found in baseline ModifierArguments; 79 missing = 57 synthetic X10_ wonder-direct helpers + 22 official secret-society game-mode modifiers (Owls of Minerva/Voidsingers/Hermetic Order/Vampire), all with owners=[governors], all absent even from Modifiers in this snapshot."
+  },
+  {
+   "finding": "Disposition of audited-scope tables: TraitModifiers nested-numeric 1242 = 427 in-registry + 815 frontier (non-numeric direct selectors 1227 dispositioned as structural; uncovered dominated by InitialValue 165, Amount 154, HiddenAgenda 59, CityStatesOnly 31, ReductionTurns 28, ReductionValue 27, IncrementValue 25). PolicyModifiers 365 = 309 + 56 (non-numeric direct 367 structural; uncovered: Amount 11, Destination/Origin/ScalingFactor 6 each, Disable 4). GovernorPromotionModifiers 75 = 48 + 27 (non-numeric direct 34 structural; uncovered: Amount 7, ScalingFactor 6, boolean flags 8)."
+  }
+ ]
+}

@@ -382,7 +382,7 @@
   {
    "path": "civ6x10/release_surface.py",
    "tracked": true,
-   "bytes": 14166,
+   "bytes": 14854,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -2875,7 +2875,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 109,
-   "bytes": 1215933
+   "bytes": 1216621
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -2925,6 +2925,20 @@
    "lines": 1733,
    "uppercase_identifier_tokens": 964,
    "tracked": true
+  },
+  "civ6x10/rules/support_frontier.yml": {
+   "bytes": 1143224,
+   "bytes_normalization": "LF",
+   "lines": 31887,
+   "uppercase_identifier_tokens": 10750,
+   "tracked": false
+  },
+  "docs/SUPPORT_FRONTIER.md": {
+   "bytes": 32925,
+   "bytes_normalization": "LF",
+   "lines": 557,
+   "uppercase_identifier_tokens": 54,
+   "tracked": false
   },
   "manifests/governors.yml": {
    "bytes": 39719,

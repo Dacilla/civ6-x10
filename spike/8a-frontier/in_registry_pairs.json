@@ -1,0 +1,5752 @@
+{
+ "BeliefModifiers": [
+  {
+   "modifier": "DANCE_OF_THE_AURORA_FAITHTUNDRAADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "DANCE_OF_THE_AURORA_FAITHTUNDRAHILLSADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "DESERT_FOLKLORE_FAITHDESERTADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "DESERT_FOLKLORE_FAITHDESERTHILLSADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "SACRED_PATH_FAITHFEATUREADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_FEATURE_ADJACENCY"
+  },
+  {
+   "modifier": "MONUMENT_TO_THE_GODS_ANCIENTCLASSICALWONDER_MODIFIER",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_WONDER_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "DIVINE_SPARK_HOLY_SITE_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "GOD_OF_THE_SEA_FISHINGBOATS_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "GOD_OF_THE_OPEN_SKY_PASTURE_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "GODDESS_OF_THE_HUNT_CAMP_FOOD_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "STONE_CIRCLES_QUARRY_FAITH_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "RELIGIOUS_IDOLS_BONUS_MINE_FAITH_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "RELIGIOUS_IDOLS_LUXURY_MINE_FAITH_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "GOD_OF_THE_FORGE_UNIT_ANCIENT_CLASSICAL_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_CITY_ALL_MILITARY_UNITS_PRODUCTION"
+  },
+  {
+   "modifier": "GOD_OF_HEALING_UNIT_HEALING_MODIFIER",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_HEALING_MODIFIERS"
+  },
+  {
+   "modifier": "INITIATION_RITES_FAITH_DISPERSAL_MODIFIER",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_FAITH_FROM_DISPERSAL"
+  },
+  {
+   "modifier": "FERTILITY_RITES_GROWTH",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_GROWTH"
+  },
+  {
+   "modifier": "RELIGIOUS_SETTLEMENTS_CULTUREBORDER",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_CULTURE_BORDER_EXPANSION"
+  },
+  {
+   "modifier": "CITY_PATRON_GODDESS_DISTRICT_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "LADY_OF_THE_REEDS_PRODUCTION2_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "RIVER_GODDESS_HOLY_SITE_AMENITIES_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_AMENITY"
+  },
+  {
+   "modifier": "RIVER_GODDESS_HOLY_SITE_HOUSING_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_HOUSING"
+  },
+  {
+   "modifier": "GODDESS_OF_FIRE_FEATURES_FAITH_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "DIVINE_SPARK_SCIENTIST_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "DIVINE_SPARK_WRITER_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "GODDESS_OF_FESTIVALS_PLANTATION_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "EARTH_GODDESS_APPEAL_FAITH_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "INITIATION_RITES_HEALING_DISPERSAL_MODIFIER",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_HEALING_FROM_DISPERSAL"
+  },
+  {
+   "modifier": "GODDESS_OF_THE_HUNT_CAMP_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "GOD_OF_CRAFTSMEN_STRATEGIC_IMPROVED_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "GOD_OF_CRAFTSMEN_STRATEGIC_IMPROVED_FAITH_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  }
+ ],
+ "BuildingModifiers": [
+  {
+   "modifier": "PYRAMID_ADJUST_BUILDER_CHARGES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_UNIT_BUILD_CHARGES"
+  },
+  {
+   "modifier": "EIFFEL_TOWER_ADDAPPEAL",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_APPEAL"
+  },
+  {
+   "modifier": "HANGING_GARDEN_ADDGROWTH",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_GROWTH"
+  },
+  {
+   "modifier": "COLOSSUS_ADDTRADEROUTE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "GREAT_ZIMBABWE_ADDTRADEROUTE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "BROADWAY_ADDCULTUREYIELD",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "OXFORD_ADDSCIENCEYIELD",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "RUHRVALLEY_ADDPRODUCTIONYIELD",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "GREAT_ZIMBABWE_DOMESTICBONUSRESOURCEGOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_LOCAL_BONUS_RESOURCE_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "GREAT_ZIMBABWE_INTERNATIONALBONUSRESOURCEGOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_LOCAL_BONUS_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "ORACLE_GREATGENERALPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "ORACLE_GREATADMIRALPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "ORACLE_GREATENGINEERPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "ORACLE_GREATMERCHANTPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "ORACLE_GREATPROPHETPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "ORACLE_GREATSCIENTISTPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "ORACLE_GREATWRITERPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "ORACLE_PATRONAGE_FAITH_DISCOUNT",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_PATRONAGE_DISCOUNT_PERCENT"
+  },
+  {
+   "modifier": "HAGIA_SOPHIA_ADJUST_RELIGIOUS_CHARGES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_UNIT_SPREAD_CHARGES"
+  },
+  {
+   "modifier": "CHICHEN_ITZA_JUNGLE_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "CHICHEN_ITZA_JUNGLE_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "RUHR_VALLEY_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "HUEY_LAKE_FOOD_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "HUEY_LAKE_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ANGKORWAT_ADDPOPULATION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_POPULATION"
+  },
+  {
+   "modifier": "ANGKORWAT_ADDHOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_HOUSING"
+  },
+  {
+   "modifier": "HALICARNASSUS_ADJUST_ENGINEER_CHARGES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_UNIT_GREAT_PERSON_CHARGES"
+  },
+  {
+   "modifier": "AMUNDSEN_ADDSCIENCEYIELD",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "AMUNDSEN_ADDPRODUCTIONYIELD",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "AMUNDSEN_SNOW_ADDSCIENCEYIELD",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "AMUNDSEN_SNOW_ADDPRODUCTIONYIELD",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CONTRATACION_GOVERNOR_POINTS",
+   "argument": "Delta",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS"
+  },
+  {
+   "modifier": "CONTRATACION_FOREIGNFAITH",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CONTRATACION_FOREIGNGOLD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CONTRATACION_FOREIGNPRODUCTION",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_SINGLE_ADDSCIENCEYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_SINGLE_ADDFAITHYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_SINGLE_ADDGOLDYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_SINGLE_ADDCULTUREYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_SINGLE_ADDPRODUCTIONUNITS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ALL_UNIT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_SINGLE_ADDPRODUCTIONBUILDINGS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ALL_BUILDING_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_SINGLE_ADDPRODUCTIONDISTRICTS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_PLAYERCITIES_ADDSCIENCEYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_PLAYERCITIES_ADDFAITHYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_PLAYERCITIES_ADDGOLDYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_PLAYERCITIES_ADDCULTUREYIELD",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_PLAYERCITIES_ADDPRODUCTIONUNITS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ALL_UNIT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_PLAYERCITIES_ADDPRODUCTIONBUILDINGS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ALL_BUILDING_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "KILWA_PLAYERCITIES_ADDPRODUCTIONDISTRICTS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "KOTOKU_ADDFAITHYIELD",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "STBASILS_ADDFOOD_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "STBASILS_ADDPRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "STBASILS_ADDCULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TAJ_MAHAL_EXTRA_ERA_SCORE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_PRIDE_MOMENT"
+  },
+  {
+   "modifier": "COLOSSEUM_IDENTITY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "STATUELIBERTY_DIPLOVP",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS"
+  },
+  {
+   "modifier": "MAHABODHI_DIPLOVP",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS"
+  },
+  {
+   "modifier": "POTALA_DIPLOVP",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_DIPLOMATIC_VICTORY_POINTS"
+  },
+  {
+   "modifier": "GOLDENGATE_CITYAPPEAL",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_APPEAL"
+  },
+  {
+   "modifier": "GOLDENGATE_IMPROVEMENT_TOURISM",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_CITY_IMPROVEMENT_TOURISM"
+  },
+  {
+   "modifier": "GOLDENGATE_NATIONAL_PARK_TOURISM",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_CITY_NATIONAL_PARK_TOURISM"
+  },
+  {
+   "modifier": "GREATBATH_FLOODFAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_FLOOD"
+  },
+  {
+   "modifier": "MACHUPICCHU_COMMERCIALHUB_GRASSMOUNTAIN_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_COMMERCIALHUB_PLAINSMOUNTAIN_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_COMMERCIALHUB_DESERTMOUNTAIN_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_COMMERCIALHUB_TUNDRAMOUNTAIN_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_COMMERCIALHUB_SNOWMOUNTAIN_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_INDUSTRIALZONE_GRASSMOUNTAIN_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_INDUSTRIALZONE_PLAINSMOUNTAIN_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_INDUSTRIALZONE_DESERTMOUNTAIN_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_INDUSTRIALZONE_TUNDRAMOUNTAIN_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_INDUSTRIALZONE_SNOWMOUNTAIN_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_THEATER_GRASSMOUNTAIN_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_THEATER_PLAINSMOUNTAIN_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_THEATER_DESERTMOUNTAIN_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_THEATER_TUNDRAMOUNTAIN_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MACHUPICCHU_THEATER_SNOWMOUNTAIN_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "MEENAKSHITEMPLE_GURU_DISCOUNT",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_PURCHASE_COST"
+  },
+  {
+   "modifier": "SANKORE_TRADE_OFFER_SCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_TO_OTHERS"
+  },
+  {
+   "modifier": "SANKORE_TRADE_OFFER_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_TO_OTHERS"
+  },
+  {
+   "modifier": "SANKORE_TRADE_GAIN_SCIENCE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FROM_OTHERS"
+  },
+  {
+   "modifier": "SANKORE_TRADE_DOMESTIC_SCIENCE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_TO_OTHERS"
+  },
+  {
+   "modifier": "SANKORE_TRADE_DOMESTIC_FAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_TO_OTHERS"
+  },
+  {
+   "modifier": "STAUEZEUS_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "BIOSPHERE_ADJUST_APPEAL_RAINFOREST",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_FEATURE_APPEAL_MODIFIER"
+  },
+  {
+   "modifier": "BIOSPHERE_ADJUST_APPEAL_MARSH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_FEATURE_APPEAL_MODIFIER"
+  },
+  {
+   "modifier": "BIOSPHERE_MODIFIED_FREE_POWER",
+   "argument": "Amount",
+   "value": "200",
+   "effect": "EFFECT_ADJUST_MODIFIED_FREE_POWER_IN_CITY"
+  },
+  {
+   "modifier": "BIOSPHERE_GREEN_ENERGY_TOURISM",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_CITY_GREEN_ENERGY_TOURISM"
+  },
+  {
+   "modifier": "ETEMENANKI_SCIENCE_MARSH",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ETEMENANKI_PRODUCTION_MARSH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ETEMENANKI_SCIENCE_FLOODPLAINS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ETEMENANKI_PRODUCTION_FLOODPLAINS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TORREDEBELEM_TRADE_GOLD_LUXURIES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_DESTINATION_LUXURY_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "ETEMENANKI_SCIENCE_GRASS_FLOODPLAINS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ETEMENANKI_PRODUCTION_GRASS_FLOODPLAINS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ETEMENANKI_SCIENCE_PLAINS_FLOODPLAINS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ETEMENANKI_PRODUCTION_PLAINS_FLOODPLAINS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  }
+ ],
+ "GovernmentModifiers": [
+  {
+   "modifier": "AUTOCRACY_CAPITAL",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "AUTOCRACY_TIER1",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "AUTOCRACY_TIER2",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "AUTOCRACY_TIER3",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "CLASSICAL_REPUBLIC_AMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "CLASSICAL_REPUBLIC_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "MONARCHY_WALLS_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "MONARCHY_CASTLE_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "MONARCHY_STARFORT_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "THEOCRACY_RELIGIOUS_PEOPLE",
+   "argument": "Amount",
+   "value": "0.5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "MERCHANT_REPUBLIC_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "FASCISM_WAR_WEARINESS",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_WAR_WEARINESS"
+  },
+  {
+   "modifier": "COMMUNISM_PRODUCTIVE_PEOPLE",
+   "argument": "Amount",
+   "value": "0.6",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "AUTOCRACY_WONDERS",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "OLIGARCHY_UNIT_EXPERIENCE",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "CLASSICAL_REPUBLIC_GREAT_PEOPLE",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "MONARCHY_ENVOYS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "THEOCRACY_FAITH_PURCHASE",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "MERCHANT_REPUBLIC_DISTRICTS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "FASCISM_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "DEMOCRACY_GOLD_PURCHASE",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_FLAT_BONUS"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODTOALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONTOALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODFROMALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONFROMALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODTOSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONTOSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODFROMSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONFROMSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_ALLIANCEPOINTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_ALLIANCE_POINTS_FOR_MODIFIER"
+  },
+  {
+   "modifier": "COMMUNISM_SCIENCE",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION"
+  },
+  {
+   "modifier": "CORPORATE_LIBERTARIANISM_COMMERCIAL_HUB_PRODUCTION",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CORPORATE_LIBERTARIANISM_ENCAMPMENT_PRODUCTION",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CORPORATE_LIBERTARIANISM_SCIENCE_PENALTY",
+   "argument": "Amount",
+   "value": "-10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "DIGITAL_DEMOCRACY_CITY_AMENITIES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "DIGITAL_DEMOCRACY_DISTRICT_CULTURE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_DISTRICT"
+  },
+  {
+   "modifier": "SYNTHETIC_TECHNOCRACY_CITY_POWER",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_FREE_POWER"
+  },
+  {
+   "modifier": "SYNTHETIC_TECHNOCRACY_CITY_PROJECT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_ALL_PROJECTS_PRODUCTION"
+  },
+  {
+   "modifier": "SYNTHETIC_TECHNOCRACY_TOURISM_PENALTY",
+   "argument": "Amount",
+   "value": "-10",
+   "effect": "EFFECT_ADJUST_PLAYER_TOURISM"
+  },
+  {
+   "modifier": "MONARCHY_STARFORT_FAVOR",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_EXTRA_FAVOR_PER_TURN"
+  },
+  {
+   "modifier": "CONSULATE_TIER1",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "CHANCERY_TIER2",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  }
+ ],
+ "GovernorPromotionModifiers": [
+  {
+   "modifier": "DEFENDER_ADJUST_CITY_DEFENSE_STRENGTH",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_INNER_DEFENSE"
+  },
+  {
+   "modifier": "CITY_DEFENDER_ADJUST_ATTACKS_PER_TURN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ATTACKS_PER_TURN"
+  },
+  {
+   "modifier": "GARRISON_COMMANDER_ADJUST_CITY_COMBAT_BONUS",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_COMBAT_BONUS"
+  },
+  {
+   "modifier": "DEFENSE_LOGISTICS_BONUS_STRATEGICS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION"
+  },
+  {
+   "modifier": "AIR_DEFENSE_INITIATIVE_ANTI_AIR_BONUS",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_CITY_AIR_DEFENSE_BONUS"
+  },
+  {
+   "modifier": "EDUCATOR_FASTER_MANHATTAN_PROJECT_RESEARCH",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "EDUCATOR_FASTER_OPERATION_IVY_RESEARCH",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "EDUCATOR_FASTER_NUCLEAR_DEVICE_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "EDUCATOR_FASTER_THERMONUCLEAR_DEVICE_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "AMBASSADOR_ADJUST_CITY_ENVOY_MODIFIER",
+   "argument": "Percent",
+   "value": "100",
+   "effect": "EFFECT_GOVERNOR_ADJUST_CITY_TOKENS_GRANTED_MODIFIER"
+  },
+  {
+   "modifier": "LOCAL_INFORMANTS_SPY_DEFENSE_BONUS",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_SPY_BONUS"
+  },
+  {
+   "modifier": "CARDINAL_BISHOP_PRESSURE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_CITY_RELIGION_PRESSURE"
+  },
+  {
+   "modifier": "CARDINAL_BISHOP_FAITH_DISTRICT",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_DISTRICT"
+  },
+  {
+   "modifier": "CARDINAL_GRAND_INQUISITOR_COMBAT",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_RELIGIOUS_COMBAT_BONUS"
+  },
+  {
+   "modifier": "CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS",
+   "argument": "BuildingProductionPercent",
+   "value": "25",
+   "effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST"
+  },
+  {
+   "modifier": "CARDINAL_PATRON_SAINT_PROMOTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_RELIGION_EXTRA_PROMOTIONS"
+  },
+  {
+   "modifier": "GROUNDBREAKER_BONUS_HARVEST_YIELDS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_CITY_RESOURCE_HARVEST_BONUS"
+  },
+  {
+   "modifier": "SURPLUS_LOGISTICS_EXTRA_GROWTH",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_GROWTH"
+  },
+  {
+   "modifier": "SURPLUS_LOGISTICS_TRADE_ROUTE_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_TO_OTHERS"
+  },
+  {
+   "modifier": "INDUSTRIALIST_COAL_POWER_PLANT_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "INDUSTRIALIST_OIL_POWER_PLANT_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "INDUSTRIALIST_NUCLEAR_POWER_PLANT_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "INDUSTRIALIST_RESOURCE_POWER_PROVIDED",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_RESOURCE_POWER_PROVIDED_GOVERNOR"
+  },
+  {
+   "modifier": "GUILDMASTER_ADDITIONAL_BUILDER_CHARGES_UNIT_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_UNIT_BUILD_CHARGES"
+  },
+  {
+   "modifier": "ZONING_COMMISSIONER_FASTER_DISTRICT_CONSTRUCTION",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICTS_PRODUCTION"
+  },
+  {
+   "modifier": "WATER_WORKS_NEIGHBORHOOD_HOUSING",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_HOUSING"
+  },
+  {
+   "modifier": "WATER_WORKS_AQUEDUCT_HOUSING",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_HOUSING"
+  },
+  {
+   "modifier": "WATER_WORKS_CANAL_AMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_AMENITY"
+  },
+  {
+   "modifier": "WATER_WORKS_DAM_AMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_AMENITY"
+  },
+  {
+   "modifier": "LIBRARIAN_SCIENCE_YIELD_BONUS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LIBRARIAN_CULTURE_YIELD_BONUS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CONNOISSEUR_CULTURE_CITIZEN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "RESEARCHER_SCIENCE_CITIZEN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "EDUCATOR_INCREASE_CITY_GREAT_PERSON_POINT_BONUS",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_CITY_GREAT_PERSON_POINTS_MODIFIER"
+  },
+  {
+   "modifier": "EDUCATOR_FASTER_SPACE_RACE_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_SPACE_RACE_PROJECTS_PRODUCTION"
+  },
+  {
+   "modifier": "LAND_ACQUISITION_FASTER_PLOT_ANNEXING",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_CULTURE_BORDER_EXPANSION"
+  },
+  {
+   "modifier": "FOREIGN_EXCHANGE_GOLD_FROM_FOREIGN_TRADE_PASSING_THROUGH",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_FROM_FOREIGN_TRADE_ROUTES_PASSING_THROUGH"
+  },
+  {
+   "modifier": "HARBORMASTER_BONUS_COMMERCIAL_HUB_ADJACENCY",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "HARBORMASTER_BONUS_HARBOR_ADJACENCY",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TAX_COLLECTOR_ADJUST_CITIZEN_GPT",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GOLD_FROM_CITIZENS"
+  },
+  {
+   "modifier": "FORESTRY_MANAGEMENT_FEATURE_NO_IMPROVEMENT_APPEAL",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL_GOVERNOR"
+  },
+  {
+   "modifier": "FORESTRY_MANAGEMENT_FEATURE_NO_IMPROVEMENT_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "RENEWABLE_ENERGY_IMPROVEMENT_PLOTS_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "RENEWABLE_ENERGY_IMPROVEMENT_BUILDING_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "PASHA_BONUS_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_CITY_ALL_MILITARY_UNITS_PRODUCTION"
+  },
+  {
+   "modifier": "HEAD_FALCONER_ADJUST_CITY_COMBAT_BONUS",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_FRIENDLY_COMBAT_BONUS"
+  },
+  {
+   "modifier": "SERASKER_ADJUST_GOVERNOR_COMBAT_DISTRICT",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_UNIT_AGAINST_DISTRICT_COMBAT_BONUS"
+  },
+  {
+   "modifier": "KHASS_ODA_BASHI_ADJUST_ALLIANCE_POINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GOVERNOR_ALLIANCE_POINTS"
+  }
+ ],
+ "PolicyModifiers": [
+  {
+   "modifier": "AESTHETICS_DISTRICTCULTURE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "AGOGE_ANCIENT_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "AGOGE_CLASSICAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "AGOGE_ANCIENT_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "AGOGE_CLASSICAL_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "AGOGE_ANCIENT_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "AGOGE_CLASSICAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "BASTIONS_OUTERDEFENSE",
+   "argument": "Amount",
+   "value": "6",
+   "effect": "EFFECT_ADJUST_CITY_OUTER_DEFENSE"
+  },
+  {
+   "modifier": "CARAVANSARIES_TRADEROUTEGOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD"
+  },
+  {
+   "modifier": "CHARISMATICLEADER_INFLUENCEPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_INFLUENCE_POINTS_PER_TURN"
+  },
+  {
+   "modifier": "CHIVALRY_MEDIEVAL_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "CHIVALRY_RENAISSANCE_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "CHIVALRY_INDUSTRIAL_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "CHIVALRY_MEDIEVAL_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "CHIVALRY_RENAISSANCE_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "CHIVALRY_INDUSTRIAL_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MANEUVER_ANCIENT_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MANEUVER_CLASSICAL_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MANEUVER_ANCIENT_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MANEUVER_CLASSICAL_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "COLLECTIVEACTIVISM_CULTUREPERTRIBUTARY",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_MODIFIER_PER_TRIBUTARY"
+  },
+  {
+   "modifier": "COLLECTIVIZATION_INTERNAL_TRADE_FOOD",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "COLONIALOFFICES_FOREIGNGROWTH",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_GROWTH"
+  },
+  {
+   "modifier": "COLONIALTAXES_FOREIGNGOLD",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "COLONIZATION_SETTLERPRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PRODUCTION"
+  },
+  {
+   "modifier": "CONSCRIPTION_UNITMAINTENANCEDISCOUNT",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_UNIT_MAINTENANCE_DISCOUNT"
+  },
+  {
+   "modifier": "CORVEE_ANCIENTCLASSICALWONDER",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_WONDER_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "CRAFTSMEN_DISTRICTPRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "CRYPTOGRAPHY_OFFENSE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_SPY_BONUS"
+  },
+  {
+   "modifier": "CRYPTOGRAPHY_DEFENSE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_SPY_BONUS"
+  },
+  {
+   "modifier": "DEFENSEOFMOTHERLAND_DOMESTICWARWEARINESS",
+   "argument": "Amount",
+   "value": "-100",
+   "effect": "EFFECT_ADJUST_WAR_WEARINESS"
+  },
+  {
+   "modifier": "DISCIPLINE_BARBARIANCOMBAT",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_UNIT_BARBARIAN_COMBAT"
+  },
+  {
+   "modifier": "ECONOMICUNION_HARBORGOLD",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "ECONOMICUNION_COMMERCIALGOLD",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "EXPROPRIATION_SETTLERPRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PRODUCTION"
+  },
+  {
+   "modifier": "EXPROPRIATION_PLOTPURCHASECOST",
+   "argument": "Amount",
+   "value": "-20",
+   "effect": "EFFECT_ADJUST_PLOT_PURCHASE_COST"
+  },
+  {
+   "modifier": "FEUDALCONTRACT_MEDIEVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "FEUDALCONTRACT_RENAISSANCE_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "FEUDALCONTRACT_MEDIEVAL_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "FEUDALCONTRACT_RENAISSANCE_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "FEUDALCONTRACT_MEDIEVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "FEUDALCONTRACT_RENAISSANCE_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "FIVEYEARPLAN_DISTRICTSCIENCE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "FIVEYEARPLAN_DISTRICTPRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "FRESCOES_GREATARTISTPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "GOD_KING_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_CHANGE"
+  },
+  {
+   "modifier": "GOD_KING_FAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_CHANGE"
+  },
+  {
+   "modifier": "GOTHICARCHITECTURE_MEDIEVALRENAISSANCEWONDER",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_WONDER_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "GRANDEARMEE_INDUSTRIAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "GRANDEARMEE_MODERN_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "GRANDEARMEE_INDUSTRIAL_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "GRANDEARMEE_MODERN_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "GRANDEARMEE_INDUSTRIAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "GRANDEARMEE_MODERN_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "GUNBOATDIPLOMACY_INFLUENCEPOINTS",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_INFLUENCE_POINTS_PER_TURN"
+  },
+  {
+   "modifier": "ILKUM_BUILDERPRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_PRODUCTION"
+  },
+  {
+   "modifier": "INSPIRATION_GREATSCIENTISTPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "INSULAE_SPECIALTYHOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "INTEGRATEDSPACECELL_SPACE_RACE_PROJECTS_PRODUCTION",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_SPACE_RACE_PROJECTS_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALSPACEAGENCY_SCIENCEPERTRIBUTARY",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_MODIFIER_PER_TRIBUTARY"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_MODERN_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_ATOMIC_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_INFORMATION_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_MODERN_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_ATOMIC_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_INFORMATION_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_MODERN_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_ATOMIC_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "INTERNATIONALWATERS_INFORMATION_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_RENAISSANCE_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_INDUSTRIAL_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_RENAISSANCE_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_INDUSTRIAL_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_RENAISSANCE_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_INDUSTRIAL_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MARITIMIEINDUSTRIES_ANCIENT_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MARITIMIEINDUSTRIES_CLASSICAL_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MARITIMIEINDUSTRIES_ANCIENT_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MARITIMIEINDUSTRIES_CLASSICAL_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MARITIMIEINDUSTRIES_ANCIENT_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MARITIMIEINDUSTRIES_CLASSICAL_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_MEDIEVAL_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_MEDIEVAL_NAVAL_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "PRESSGANGS_MEDIEVAL_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LANDSURVEYORS_PLOTPURCHASECOST",
+   "argument": "Amount",
+   "value": "-20",
+   "effect": "EFFECT_ADJUST_PLOT_PURCHASE_COST"
+  },
+  {
+   "modifier": "LIBERALISM_SPECIALTYAMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "LIGHTNINGWARFARE_MODERN_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LIGHTNINGWARFARE_ATOMIC_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LIGHTNINGWARFARE_INFORMATION_HEAVY_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LIGHTNINGWARFARE_MODERN_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LIGHTNINGWARFARE_ATOMIC_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LIGHTNINGWARFARE_INFORMATION_LIGHT_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LIMES_CASTLEPRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "LIMES_WALLSPRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "LIMES_STARFORTPRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "LITERARYTRADITION_GREATWRITERPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "LEVEEENMASSE_UNITMAINTENANCEDISCOUNT",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_UNIT_MAINTENANCE_DISCOUNT"
+  },
+  {
+   "modifier": "MACHIAVELLIANISM_SPYPRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PRODUCTION"
+  },
+  {
+   "modifier": "MARKETECONOMY_TRADEROUTECULTURE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "MARKETECONOMY_TRADEROUTESCIENCE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "MARKETECONOMY_TRADEROUTEGOLDPERLUXURY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_DESTINATION_LUXURY_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "MARKETECONOMY_TRADEROUTEGOLDPERSTRATEGIC",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_DESTINATION_STRATEGIC_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "MARTIALLAW_OVERALLWARWEARINESS",
+   "argument": "Amount",
+   "value": "-25",
+   "effect": "EFFECT_ADJUST_WAR_WEARINESS"
+  },
+  {
+   "modifier": "MEDINAQUARTER_SPECIALTYHOUSING",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "MERCHANTCONFEDERATION_INFLUENCETOKENGOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE_PER_USED_INFLUENCE_TOKEN"
+  },
+  {
+   "modifier": "NATURALPHILOSOPHY_DISTRICTSCIENCE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "NAVALINFRASTRUCTURE_HARBORGOLD",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "NAVIGATION_GREATADMIRALPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "NEWDEAL_SPECIALTYAMENITY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "NEWDEAL_SPECIALTYHOUSING",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "NUCLEARESPIONAGE_EXTRABOOSTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_STEAL_TECH_BOOSTS"
+  },
+  {
+   "modifier": "ONLINECOMMUNITIES_TOURISM",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_TOURISM_MODIFIER"
+  },
+  {
+   "modifier": "PROFESSIONAL_ARMY_UNITUPGRADEDISCOUNT",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_UNIT_UPGRADE_DISCOUNT_PERCENT"
+  },
+  {
+   "modifier": "PROPAGANDA_OVERALLWARWEARINESS",
+   "argument": "Amount",
+   "value": "-25",
+   "effect": "EFFECT_ADJUST_WAR_WEARINESS"
+  },
+  {
+   "modifier": "PUBLICWORKS_BUILDERPRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_PRODUCTION"
+  },
+  {
+   "modifier": "PUBLICWORKS_BUILDERCHARGES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_UNIT_BUILD_CHARGES"
+  },
+  {
+   "modifier": "RAID_DOUBLEPILLAGEIMPROVE",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PILLAGE_IMPROVEMENT_MODIFIER"
+  },
+  {
+   "modifier": "RAJ_GOLDPERTRIBUTARY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE_PER_TRIBUTARY"
+  },
+  {
+   "modifier": "RAJ_FAITHPERTRIBUTARY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE_PER_TRIBUTARY"
+  },
+  {
+   "modifier": "RAJ_SCIENCEPERTRIBUTARY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE_PER_TRIBUTARY"
+  },
+  {
+   "modifier": "RAJ_CULTUREPERTRIBUTARY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE_PER_TRIBUTARY"
+  },
+  {
+   "modifier": "RETAINERS_AMENITYBONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "REVELATION_GREATPROPHETPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "SCRIPTURE_DISTRICTFAITH",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "SERFDOM_BUILDERCHARGES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_UNIT_BUILD_CHARGES"
+  },
+  {
+   "modifier": "SKYSCRAPERS_INDUSTRIALINFORMATION",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_WONDER_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MILITARYFIRST_ATOMIC_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MILITARYFIRST_INFORMATION_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MILITARYFIRST_ATOMIC_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MILITARYFIRST_INFORMATION_ANTI_CAVALRY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MILITARYFIRST_ATOMIC_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "MILITARYFIRST_INFORMATION_RANGED_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "SPORTSMEDIA_DISTRICTCULTURE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "SPORTSMEDIA_STADIUMENTERTAINMENT",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "STRATEGICAIRFORCE_INFORMATION_AIRFIGHTER_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "STRATEGICAIRFORCE_INFORMATION_AIRBOMBER_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "STRATEGICAIRFORCE_ATOMIC_NAVALCARRIER_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "STRATEGICAIRFORCE_INFORMATION_NAVALCARRIER_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "STRATEGOS_GREATGENERALPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "SURVEY_RECONUNITEXPERIENCE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_EXPERIENCE_MODIFIER"
+  },
+  {
+   "modifier": "SYMPHONIES_GREATMUSICIANPOINTS",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_MILITARY_ACADEMY_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_RESEARCH_LAB_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_POWER_PLANT_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TOWNCHARTERS_DISTRICTGOLD",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRADECONFEDERATION_TRADEROUTECULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRADECONFEDERATION_TRADEROUTESCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAVELINGMERCHANTS_GREATMERCHANTPOINTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "TRIANGULARTRADE_TRADEROUTEGOLD",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD"
+  },
+  {
+   "modifier": "TRIANGULARTRADE_TRADEROUTEFAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD"
+  },
+  {
+   "modifier": "TOTALWAR_DOUBLEPILLAGEDISTRICT",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PILLAGE_DISTRICT_MODIFIER"
+  },
+  {
+   "modifier": "TOTALWAR_DOUBLEPILLAGEIMPROVE",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PILLAGE_IMPROVEMENT_MODIFIER"
+  },
+  {
+   "modifier": "URBAN_PLANNING_ALLCITYPRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_CHANGE"
+  },
+  {
+   "modifier": "VETERANCY_ENCAMPMENT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "VETERANCY_ENCAMPMENT_BUILDINGS_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "AUTOCRACY_CAPITAL",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "AUTOCRACY_TIER1",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "AUTOCRACY_TIER2",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "AUTOCRACY_TIER3",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "CLASSICAL_REPUBLIC_AMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "CLASSICAL_REPUBLIC_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "MONARCHY_WALLS_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "MONARCHY_CASTLE_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "MONARCHY_STARFORT_HOUSING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "THEOCRACY_RELIGIOUS_PEOPLE",
+   "argument": "Amount",
+   "value": "0.5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "MERCHANT_REPUBLIC_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "FASCISM_WAR_WEARINESS",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_WAR_WEARINESS"
+  },
+  {
+   "modifier": "COMMUNISM_PRODUCTIVE_PEOPLE",
+   "argument": "Amount",
+   "value": "0.6",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODTOALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONTOALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODFROMALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONFROMALLY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODTOSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONTOSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEFOODFROMSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_TRADEROUTEPRODUCTIONFROMSUZERAIN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "DEMOCRACY_ALLIANCEPOINTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_ALLIANCE_POINTS_FOR_MODIFIER"
+  },
+  {
+   "modifier": "AFTERACTIONREPORTS_EXPERIENCE",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_EXPERIENCE_MODIFIER"
+  },
+  {
+   "modifier": "CIVILPRESTIGE_GOVAMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "CIVILPRESTIGE_GOVHOUSING",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "COLONIALOFFICES_FOREIGNIDENTITY",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "COLONIALTAXES_FOREIGNPRODUCTION",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LIMES_TSIKHEPRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "LIMITANEI_GARRISONIDENTITY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "MARTIALLAW_GARRISONIDENTITY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "PRAETORIUM_GOVERNORIDENTITY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEFOODTOALLY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEFOODTOSUZERAIN",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "FREEMARKET_BUILDING_YIELDS_HIGH_ADJACENCY",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "FREEMARKET_BUILDING_YIELDS_HIGH_POP",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "GRANDOPERA_BUILDING_YIELDS_HIGH_ADJACENCY",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "GRANDOPERA_BUILDING_YIELDS_HIGH_POP",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "RATIONALISM_BUILDING_YIELDS_HIGH_ADJACENCY",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "RATIONALISM_BUILDING_YIELDS_HIGH_POP",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "SIMULTANEUM_BUILDING_YIELDS_HIGH_ADJACENCY",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "SIMULTANEUM_BUILDING_YIELDS_HIGH_POP",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_MODIFIERS_FOR_DISTRICT"
+  },
+  {
+   "modifier": "SECONDSTRIKE_MAINTENANCEWMDS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_WMD_MAINTENANCE_MODIFIER"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEPRODUCTIONTOALLY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEFOODFROMALLY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEPRODUCTIONFROMALLY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_ALLY_ROUTE"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEPRODUCTIONTOSUZERAIN",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_DESTINATION_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEFOODFROMSUZERAIN",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "WISSELBANKEN_TRADEROUTEPRODUCTIONFROMSUZERAIN",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_ORIGIN_YIELD_FOR_SUZERAIN_ROUTE"
+  },
+  {
+   "modifier": "WISSELBANKEN_ALLIANCEPOINTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_ALLIANCE_POINTS_FOR_MODIFIER"
+  },
+  {
+   "modifier": "COMMUNICATIONS_OFFICE_GOVERNOR_IDENTITY_PER_TITLE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_GOVERNOR_ADJUST_IDENITITY_PER_TITLE"
+  },
+  {
+   "modifier": "SACK_DOUBLEPILLAGEDISTRICT",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PILLAGE_DISTRICT_MODIFIER"
+  },
+  {
+   "modifier": "MILITARYRESEARCH_MILITARY_ACADEMY_SCIENCE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "MILITARYRESEARCH_SEAPORT_SCIENCE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "MILITARYRESEARCH_RENAISSANCE_WALLS_SCIENCE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "PUBLICTRANSPORT_FARMREPLACEGOLD",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_DISTRICT_CREATE_YIELD"
+  },
+  {
+   "modifier": "ECOMMERCE_TRADEROUTEPRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD"
+  },
+  {
+   "modifier": "ECOMMERCE_TRADEROUTEGOLD",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD"
+  },
+  {
+   "modifier": "TOTAL_WAR_PLUNDER_BONUS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PLUNDER_YIELDS"
+  },
+  {
+   "modifier": "MONASTICISM_HOLYSITE_SCIENCE",
+   "argument": "Amount",
+   "value": "75",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MONASTICISM_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "-25",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "INQUISITION_REDUCE_START_CHARGES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_INQUISITION_START_CHARGES"
+  },
+  {
+   "modifier": "INQUISITION_SCIENCE_MODIFIER",
+   "argument": "Amount",
+   "value": "-25",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "ISOLATIONISM_DOMESTIC_TRADE_ROUTE_FODD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "ISOLATIONISM_DOMESTIC_TRADE_ROUTE_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_ANCIENT_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_CLASSICAL_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_MEDIEVAL_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_RENAISSANCE_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_INDUSTRIAL_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_MODERN_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_ATOMIC_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_INFORMATION_NAVAL_RAIDER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_PLUNDER_BONUS",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_PLUNDER_YIELDS"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_DEST_CULTURE",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_DEST_FAITH",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_DEST_FOOD",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_DEST_GOLD",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_DEST_PRODUCTION",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_DEST_SCIENCE",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_ORIG_CULTURE",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_ORIG_FAITH",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_ORIG_FOOD",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_ORIG_GOLD",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_ORIG_PRODUCTION",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "LETTEROFMARQUE_TRADE_ROUTE_YIELD_DROP_ORIG_SCIENCE",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "ROBBERBARONS_FACTORY_PRODUCTION",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "ROBBERBARONS_STOCKEXCHANGE_GOLD",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "ROBBERBARONS_AMENITIES_LOST",
+   "argument": "Amount",
+   "value": "-2",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "ELITEFORCES_EXPERIENCE_BOOST",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_EXPERIENCE_MODIFIER"
+  },
+  {
+   "modifier": "ELITEFORCES_EXTRA_MAINTENANCE",
+   "argument": "Amount",
+   "value": "-2",
+   "effect": "EFFECT_ADJUST_UNIT_MAINTENANCE_DISCOUNT"
+  },
+  {
+   "modifier": "COLLECTIVISM_ADD_HOUSING",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_POLICY_HOUSING"
+  },
+  {
+   "modifier": "COLLECTIVISM_INDUSTRIAL_ADJACENCY",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "COLLECTIVISM_REDUCE_GPP_RATE",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_CITY_GREAT_PERSON_POINTS_MODIFIER"
+  },
+  {
+   "modifier": "ROGUESTATE_MANHATTANPROJECT_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "ROGUESTATE_PROJECTIVY_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "ROGUESTATE_NUCLEARDEVICE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "ROGUESTATE_THERMONUCLEARDEVICE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PROJECT_PRODUCTION"
+  },
+  {
+   "modifier": "MONARCHY_STARFORT_FAVOR",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_EXTRA_FAVOR_PER_TURN"
+  },
+  {
+   "modifier": "FUTURE_VICTORY_DOMINATION_GDR_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_PRODUCTION"
+  },
+  {
+   "modifier": "FUTURE_COUNTER_DIPLOMATIC_REFUND_VP_RESOLUTION",
+   "argument": "Percent",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_FAVOR_REFUND_FOR_SUCCESSFUL_RESOLUTION"
+  },
+  {
+   "modifier": "FUTURE_COUNTER_DIPLOMATIC_FAVOR_PER_TURN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_EXTRA_FAVOR_PER_TURN"
+  },
+  {
+   "modifier": "FUTURE_VICTORY_DIPLOMATIC_FAVOR_PER_TURN",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_EXTRA_FAVOR_PER_TURN"
+  },
+  {
+   "modifier": "EQUESTRIAN_ORDERS_ADDITIONAL_HORSES_EXTRACTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_ACCUMULATION_MODIFIER"
+  },
+  {
+   "modifier": "EQUESTRIAN_ORDERS_ADDITIONAL_IRON_EXTRACTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_ACCUMULATION_MODIFIER"
+  },
+  {
+   "modifier": "DRILL_MANUALS_ADDITIONAL_NITER_EXTRACTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_ACCUMULATION_MODIFIER"
+  },
+  {
+   "modifier": "DRILL_MANUALS_ADDITIONAL_COAL_EXTRACTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_ACCUMULATION_MODIFIER"
+  },
+  {
+   "modifier": "PROFESSIONAL_ARMY_UPGRADE_RESOURCE_DISCOUNT",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_UNIT_UPGRADE_RESOURCE_COST_DISCOUNT"
+  },
+  {
+   "modifier": "MUSIC_CENSORSHIP_AMENITY_LOSS",
+   "argument": "Amount",
+   "value": "-1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "FLOWER_POWER_ROCKBAND_DISCOUNT",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_PURCHASE_COST"
+  },
+  {
+   "modifier": "FLOWER_POWER_PURCHASE_INCREASE",
+   "argument": "Amount",
+   "value": "-100",
+   "effect": "EFFECT_ADJUST_ALL_UNITS_PURCHASE_COST"
+  },
+  {
+   "modifier": "FLOWER_POWER_PRODUCTION_INCREASE",
+   "argument": "Amount",
+   "value": "-100",
+   "effect": "EFFECT_ADJUST_ALL_UNIT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "FLOWER_POWER_TOURISM_BOMB_CONCERT_VALUE",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_ROCK_BAND_TOURISM_BOMB_VALUE_PEACE"
+  },
+  {
+   "modifier": "AUTOMATED_WORKFORCE_PROJECT_PRODUCTION",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_PROJECTS_PRODUCTION"
+  },
+  {
+   "modifier": "AUTOMATED_WORKFORCE_AMENITY_LOSS",
+   "argument": "Amount",
+   "value": "-1",
+   "effect": "EFFECT_ADJUST_POLICY_AMENITY"
+  },
+  {
+   "modifier": "AUTOMATED_WORKFORCE_LOYALTY_LOSS",
+   "argument": "Amount",
+   "value": "-5",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "DISINFORMATION_CAMPAIGN_SCIENCE_REDUCTION",
+   "argument": "Amount",
+   "value": "-10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "DISINFORMATION_CAMPAIGN_CULTURE_REDUCTION",
+   "argument": "Amount",
+   "value": "-10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "RESOURCE_MANAGEMENT_ADDITIONAL_ALUMINUM_EXTRACTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_ACCUMULATION_MODIFIER"
+  },
+  {
+   "modifier": "RESOURCE_MANAGEMENT_ADDITIONAL_OIL_EXTRACTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_ACCUMULATION_MODIFIER"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_MILITARY_ACADEMY_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_RESEARCH_LAB_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_COAL_POWER_PLANT_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_FOSSIL_FUEL_POWER_PLANT_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_POWER_PLANT_CULTURE_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_COAL_POWER_PLANT_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "THIRDALTERNATIVE_FOSSIL_FUEL_POWER_PLANT_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "COLLECTIVIZATION_INTERNAL_TRADE_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "DEFENSEOFMOTHERLAND_MODERN_SUPPORT_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "DEFENSEOFMOTHERLAND_ATOMIC_SUPPORT_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "DEFENSEOFMOTHERLAND_INFORMATION_SUPPORT_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "VETERANCY_HARBOR_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "VETERANCY_HARBOR_BUILDINGS_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "RAJ_CITY_TRADE_ROUTE_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_STATE_TRADE_ROUTE_FLAT_YIELD"
+  },
+  {
+   "modifier": "PUBLICTRANSPORT_NEIGHBORHOOD_GOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_CHANGE"
+  },
+  {
+   "modifier": "PUBLICTRANSPORT_CHARMING_NEIGHBORHOOD_FOOD",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_CHANGE"
+  },
+  {
+   "modifier": "PUBLICTRANSPORT_CHARMING_NEIGHBORHOOD_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_CHANGE"
+  },
+  {
+   "modifier": "PUBLICTRANSPORT_BREATHTAKING_NEIGHBORHOOD_FOOD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_CHANGE"
+  },
+  {
+   "modifier": "PUBLICTRANSPORT_BREATHTAKING_NEIGHBORHOOD_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_CHANGE"
+  },
+  {
+   "modifier": "FRESCOES_ARTIST_ARTMUSEUM",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "SYMPHONIES_MUSICIAN_BROADCASTCENTER",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "INVENTION_ENGINEER_WORKSHOP",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "INVENTION_GREATENGINEERPOINTS",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "LAISSEZFAIRE_MERCHANT_BANK",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "LAISSEZFAIRE_MERCHANT_STOCKEXCHANGE",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "LAISSEZFAIRE_ADMIRAL_SHIPYARD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "LAISSEZFAIRE_ADMIRAL_SEAPORT",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "SCIENCEFOUNDATION_SCIENTIST_UNIVERSITY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "SCIENCEFOUNDATION_SCIENTIST_RESEARCHLAB",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "SCIENCEFOUNDATION_ENGINEER_FACTORY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "SCIENCEFOUNDATION_ENGINEER_POWERPLANT",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MILITARYORGANIZATION_GREATGENERAL_ARMORY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MILITARYORGANIZATION_GREATGENERAL_MILITARYACADEMY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "CONSULATE_TIER1",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  },
+  {
+   "modifier": "CHANCERY_TIER2",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ALL_YIELDS_CHANGE"
+  }
+ ],
+ "TraitModifiers": [
+  {
+   "modifier": "TRAIT_ADJACENT_DISTRICTS_HOLYSITE_ADJACENCYFAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_DISTRICT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_ADJACENT_DISTRICTS_CAMPUS_ADJACENCYSCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_DISTRICT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_ADJACENT_DISTRICTS_HARBOR_ADJACENCYGOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_DISTRICT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_ADJACENT_DISTRICTS_COMMERCIALHUB_ADJACENCYGOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_DISTRICT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_ADJACENT_DISTRICTS_THEATER_ADJACENCYCULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_DISTRICT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_ADJACENT_DISTRICTS_INDUSTRIALZONE_ADJACENCYPRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_DISTRICT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_AMAZON_RAINFOREST_COMMERCIALHUB_ADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_FEATURE_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_AMAZON_RAINFOREST_HOLYSITE_ADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_FEATURE_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_AMAZON_RAINFOREST_CAMPUS_ADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_FEATURE_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_AMAZON_RAINFOREST_THEATER_ADJACENCY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_FEATURE_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_AMAZON_RAINFOREST_EXTRA_APPEAL",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_FEATURE_APPEAL_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_EXPENDED_GREAT_PERSON_TILES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADD_EXPENDED_GREAT_PERSON_TILES"
+  },
+  {
+   "modifier": "TRAIT_CIVIC_BOOST",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CIVIC_BOOST"
+  },
+  {
+   "modifier": "TRAIT_TECHNOLOGY_BOOST",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_TECHNOLOGY_BOOST"
+  },
+  {
+   "modifier": "TRAIT_LEVY_DISCOUNT",
+   "argument": "Percent",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_LEVY_DISCOUNT_PERCENT"
+  },
+  {
+   "modifier": "TRAIT_EXTRA_DISTRICT_EACH_CITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_EXTRA_DISTRICTS"
+  },
+  {
+   "modifier": "TRAIT_RIVER_FASTER_BUILDTIME_DISTRICT",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_RIVER_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_RIVER_FASTER_BUILDTIME_WONDER",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_RIVER_WONDER_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_SCIENCE_PER_FOREIGN_CITY_FOLLOWING_RELIGION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADD_PLAYER_BELIEF_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_POST_IN_OWN_CITY"
+  },
+  {
+   "modifier": "TRAIT_INCREASED_TUNDRA_FAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_INCREASED_TUNDRA_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_INCREASED_TUNDRA_HILLS_FAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_INCREASED_TUNDRA_HILLS_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_INCREASED_TILES",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_PLAYER_CITY_TILES"
+  },
+  {
+   "modifier": "TRAIT_SHRINE_WRITING_POINTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "TRAIT_TEMPLE_ARTIST_POINTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "TRAIT_TIER3_MUSICIAN_POINTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "TRAIT_DOUBLE_ARTIST_POINTS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS_PERCENT"
+  },
+  {
+   "modifier": "TRAIT_DOUBLE_MUSICIAN_POINTS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS_PERCENT"
+  },
+  {
+   "modifier": "TRAIT_DOUBLE_MERCHANT_POINTS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS_PERCENT"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_FAITH_SCULPTURE",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_FOOD_SCULPTURE",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_PRODUCTION_SCULPTURE",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_GOLD_SCULPTURE",
+   "argument": "YieldChange",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_FAITH_ARTIFACT",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_FOOD_ARTIFACT",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_PRODUCTION_ARTIFACT",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_GOLD_ARTIFACT",
+   "argument": "YieldChange",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_FAITH_RELIC",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_FOOD_RELIC",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_PRODUCTION_RELIC",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_GREAT_WORK_GOLD_RELIC",
+   "argument": "YieldChange",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_EXTRA_PALACE_SLOTS",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_EXTRA_GREAT_WORK_SLOTS"
+  },
+  {
+   "modifier": "TRAIT_INTERNATIONAL_FAITH",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_DOMESTIC_FAITH",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_INTERNATIONAL_GOLD",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_DOMESTIC_GOLD",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_INTERNATIONAL_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_DOMESTIC_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_INTERCONTINENTAL_INTERNATIONAL_FAITH",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_INTERCONTINENTAL_DOMESTIC_FAITH",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_INTERCONTINENTAL_INTERNATIONAL_GOLD",
+   "argument": "Amount",
+   "value": "6",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_INTERCONTINENTAL_DOMESTIC_GOLD",
+   "argument": "Amount",
+   "value": "6",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_INTERCONTINENTAL_INTERNATIONAL_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_INTERCONTINENTAL_DOMESTIC_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_INTERCONTINENTAL_DISTRICT_PRODUCTION",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICTS_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_WONDER_MEDIAVALINDUSTRIAL_PRODUCTION",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_WONDER_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_INTERNATIONAL_TRADE_GAIN_GOLD",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_INCOMING_TRADE_GAIN_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FROM_OTHERS"
+  },
+  {
+   "modifier": "TRAIT_INCOMING_TRADE_OFFER_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_TO_OTHERS"
+  },
+  {
+   "modifier": "TRAIT_BOOST_ENCAMPMENT_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_BOOST_HOLY_SITE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_BOOST_THEATER_DISTRICT_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_INQUISITOR_CHARGES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_UNIT_SPREAD_CHARGES"
+  },
+  {
+   "modifier": "TRAIT_OWNED_LUXURY_EXTRA_AMENITIES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_OWNED_LUXURY_EXTRA_AMENITIES"
+  },
+  {
+   "modifier": "TRAIT_FAITH_PEACEFUL_FOUNDERS",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_PLAYER_FAITH_PEACEFUL_FOUNDERS"
+  },
+  {
+   "modifier": "TRAIT_INCREASE_ENEMY_WAR_WEARINESS",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_WAR_WEARINESS"
+  },
+  {
+   "modifier": "TRAIT_ANCIENT_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_CLASSICAL_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_MEDIEVAL_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_RENAISSANCE_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_INDUSTRIAL_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_MODERN_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_ATOMIC_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_INFORMATION_NAVAL_MELEE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_BUILDER_CHARGES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_UNIT_BUILD_CHARGES"
+  },
+  {
+   "modifier": "TRAIT_BUILDER_WONDER_PERCENT",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_PLAYER_UNIT_WONDER_PERCENT"
+  },
+  {
+   "modifier": "UNIQUE_LEADER_ADD_VISIBILITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADD_DIPLO_VISIBILITY"
+  },
+  {
+   "modifier": "TRAIT_GREAT_PERSON_REFUND",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS_REFUND_PERCENT"
+  },
+  {
+   "modifier": "TRAIT_CULTURE_PER_CITY_STATE_TRIBUTARY",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_MODIFIER_PER_TRIBUTARY"
+  },
+  {
+   "modifier": "MINOR_CIV_BRUSSELS_WONDER_PRODUCTION_BONUS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_WONDER_PRODUCTION"
+  },
+  {
+   "modifier": "MINOR_CIV_BUENOS_AIRES_BONUS_RESOURCE_AMENITY_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_OWNED_BONUS_RESOURCE_EXTRA_AMENITIES"
+  },
+  {
+   "modifier": "MINOR_CIV_GENEVA_SCIENCE_AT_PEACE_BONUS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_HONG_KONG_PROJECT_PRODUCTION_BONUS",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_PROJECTS_PRODUCTION"
+  },
+  {
+   "modifier": "MINOR_CIV_JAKARTA_TRADING_POST_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_POST_IN_FOREIGN_CITY"
+  },
+  {
+   "modifier": "MINOR_CIV_KABUL_UNIT_EXPERIENCE_BONUS",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_ATTACK_EXPERIENCE_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_KUMASI_CULTURE_TRADE_ROUTE_YIELD_BONUS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_STATE_TRADE_ROUTE_DISTRICT_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_KUMASI_GOLD_TRADE_ROUTE_YIELD_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_STATE_TRADE_ROUTE_DISTRICT_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_NAN_MADOL_DISTRICTS_CULTURE_BONUS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_CHANGE"
+  },
+  {
+   "modifier": "MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_WALLS_BONUS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PURCHASE_COST"
+  },
+  {
+   "modifier": "MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_CASTLE_BONUS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PURCHASE_COST"
+  },
+  {
+   "modifier": "MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_STAR_BONUS",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PURCHASE_COST"
+  },
+  {
+   "modifier": "MINOR_CIV_ZANZIBAR_CINNAMON_RESOURCE_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT"
+  },
+  {
+   "modifier": "MINOR_CIV_ZANZIBAR_CLOVES_RESOURCE_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT"
+  },
+  {
+   "modifier": "TRAIT_BUILDER_DISTRICT_PERCENT",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_PLAYER_UNIT_DISTRICT_PERCENT"
+  },
+  {
+   "modifier": "TRAIT_AQUEDUCT_AMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_EXTRA_ENTERTAINMENT"
+  },
+  {
+   "modifier": "TRAIT_FARM_AQUEDUCT_ADJECENCY_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_FAITH_CITY_CENTER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_NUSANTARA_COAST_HOLY_SITE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_NUSANTARA_COAST_CAMPUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_NUSANTARA_COAST_INDUSTRIAL_ZONE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_NUSANTARA_COAST_THEATER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_NUSANTARA_COAST_ENTERTAINMENT",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_EXTRA_ENTERTAINMENT"
+  },
+  {
+   "modifier": "PRASAT_TOURISM_10_POPULATION",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_DISTRICT_TOURISM_CHANGE"
+  },
+  {
+   "modifier": "PRASAT_TOURISM_20_POPULATION",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_DISTRICT_TOURISM_CHANGE"
+  },
+  {
+   "modifier": "BARAYS_FAITH_POPULATION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "TRAIT_FARM_HOLY_SITE_ADJECENCY_FAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MONASTERIES_KING_HOLY_SITE_RIVER_ADJACENCY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_RIVER_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_HOLY_SITE_RIVER_2HOUSING",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_HOUSING"
+  },
+  {
+   "modifier": "MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_BASE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_AUCKLAND_SHALLOW_WATER_PRODUCTION_BONUS_INDUSTRIAL",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_ANTANANARIVO_CULTURE_FROM_EARNED_GREAT_PEOPLE_BONUS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_MODIFIER_PER_EARNED_GREAT_PERSON"
+  },
+  {
+   "modifier": "MINOR_CIV_MUSCAT_COMMERCIAL_HUB_AMENITY_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_AMENITIES_FROM_CITY_STATES"
+  },
+  {
+   "modifier": "MINOR_CIV_PALENQUE_CAMPUS_GROWTH_BONUS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_GROWTH"
+  },
+  {
+   "modifier": "TRAIT_LITHUANIANUNION_FAITH_RELIC",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_LITHUANIANUNION_CULTURE_RELIC",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_LITHUANIANUNION_GOLD_RELIC",
+   "argument": "YieldChange",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_ANCIENT_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_CLASSICAL_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_MEDIEVAL_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_RENAISSANCE_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_INDUSTRIAL_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_MODERN_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_ATOMIC_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_INFORMATION_RANGED_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "30",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_STRATEGIC_MINE_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_BONUS_MINE_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_LUXURY_MINE_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_BASE_DISTRICT_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICTS_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_PYRAMID_DISTRICT_PRODUCTION_MODIFIER",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICTS_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_TOWORLDSEND_NO_WAR_WEARINESS",
+   "argument": "Amount",
+   "value": "-100",
+   "effect": "EFFECT_ADJUST_WAR_WEARINESS"
+  },
+  {
+   "modifier": "TRAIT_SATRAPIES_INTERNAL_TRADE_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_SATRAPIES_INTERNAL_TRADE_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_SATRAPIES_POLITICAL_PHILOSOPHY_TRADE_ROUTE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "TRAIT_ADDITIONAL_MARTIAL_LAW",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_PLAYER_LOYALTY_MARTIAL_LAW_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_COASTAL_HOUSING",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_WATER_HOUSING"
+  },
+  {
+   "modifier": "TRAIT_CHARMING_CAMPUS",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_BREATHTAKING_CAMPUS",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_CHARMING_COMMERCIAL_HUB",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_BREATHTAKING_COMMERCIAL_HUB",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_CHARMING_HOLY_SITE",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_BREATHTAKING_HOLY_SITE",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_CHARMING_THEATER_DISTRICT",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_BREATHTAKING_THEATER_DISTRICT",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_BASED_ON_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_CITADELCIVILIZATION_DEFENSIVE_PRODUCTION",
+   "argument": "TurnsActive",
+   "value": "10",
+   "effect": "EFFECT_ADD_DIPLOMATIC_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_CITADELCIVILIZATION_DEFENSIVE_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADD_DIPLOMATIC_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_CITADELCIVILIZATION_LIBERATION_PRODUCTION_XP2",
+   "argument": "TurnsActive",
+   "value": "10",
+   "effect": "EFFECT_ADD_DIPLOMATIC_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_CITADELCIVILIZATION_LIBERATION_PRODUCTION_XP2",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADD_DIPLOMATIC_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_POTTERY_TRADE_ROUTE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "TRAIT_CAMPUS_RIVER_ADJACENCY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_RIVER_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_INDUSTRIAL_ZONE_RIVER_ADJACENCY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_RIVER_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_THEATER_DISTRICT_RIVER_ADJACENCY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_RIVER_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_TRADING_POST_DIPLO_VISIBILITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADD_DIPLO_VISIBILITY"
+  },
+  {
+   "modifier": "TRAIT_EACH_DIPLO_VISIBILITY_COMBAT_MODIFIER",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_UNIT_DIPLO_VISIBILITY_COMBAT_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_ALLOW_QUESTS_IN_GOLDEN_AGE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_ALWAYS_ALLOW_COMMEMORATION_QUEST_COUNT"
+  },
+  {
+   "modifier": "TRAIT_WALLS_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_CASTLE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_TSIKHE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_STAR_FORT_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_SCIENCE_HAPPY",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_YIELD"
+  },
+  {
+   "modifier": "TRAIT_SCIENCE_ECSTATIC",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_YIELD"
+  },
+  {
+   "modifier": "TRAIT_PRODUCTION_HAPPY",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_YIELD"
+  },
+  {
+   "modifier": "TRAIT_PRODUCTION_ECSTATIC",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_YIELD"
+  },
+  {
+   "modifier": "TRAIT_SCIENTIST_HAPPY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_GREAT_PERSON"
+  },
+  {
+   "modifier": "TRAIT_SCIENTIST_ECSTATIC",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_GREAT_PERSON"
+  },
+  {
+   "modifier": "TRAIT_ENGINEER_HAPPY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_GREAT_PERSON"
+  },
+  {
+   "modifier": "TRAIT_ENGINEER_ECSTATIC",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_HAPPINESS_GREAT_PERSON"
+  },
+  {
+   "modifier": "TOQUI_CULTURE_FROM_GOVERNOR",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TOQUI_CULTURE_GOVERNOR_NOT_FOUNDED",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TOQUI_PRODUCTION_FROM_GOVERNOR",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TOQUI_PRODUCTION_GOVERNOR_NOT_FOUNDED",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TOQUI_DOMESTIC_LOYALTY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE"
+  },
+  {
+   "modifier": "TOQUI_FOREIGN_LOYALTY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE"
+  },
+  {
+   "modifier": "TRAIT_ISIBONGO_GARRISONIDENTITY",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "TRAIT_ISIBONGO_GARRISONFORMATIONIDENTITY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_BARRACKS_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_BARRACKS_SCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_STABLE_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_STABLE_SCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_ARMORY_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_ARMORY_SCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_MILITARY_ACADEMY_GOLD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_IKANDA_MILITARY_ACADEMY_SCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_LAND_CORPS_COMBAT_STRENGTH",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CORPS_ARMY_MODIFIED_STRENGTH"
+  },
+  {
+   "modifier": "TRAIT_LAND_ARMIES_COMBAT_STRENGTH",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CORPS_ARMY_MODIFIED_STRENGTH"
+  },
+  {
+   "modifier": "TRAIT_TERRITORIAL_WAR_COMBAT",
+   "argument": "TurnsActive",
+   "value": "10",
+   "effect": "EFFECT_ADD_DIPLOMATIC_COMBAT_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_TERRITORIAL_WAR_COMBAT",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADD_DIPLOMATIC_COMBAT_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_LIBERATION_WAR_PRODUCTION",
+   "argument": "TurnsActive",
+   "value": "10",
+   "effect": "EFFECT_ADD_DIPLOMATIC_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_LIBERATION_WAR_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADD_DIPLOMATIC_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_CITY_CULTURE_PER_GOVERNOR_TITLE_MODIFIER",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER_PER_GOVERNOR_TITLE"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_CITY_SCIENCE_PER_GOVERNOR_TITLE_MODIFIER",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER_PER_GOVERNOR_TITLE"
+  },
+  {
+   "modifier": "TRAIT_TRADE_FOOD_FROM_CAMPS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_IN_TARGET_CITY"
+  },
+  {
+   "modifier": "TRAIT_TRADE_GOLD_FROM_CAMPS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_IN_TARGET_CITY"
+  },
+  {
+   "modifier": "TRAIT_TRADE_FOOD_FROM_PASTURES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_IN_TARGET_CITY"
+  },
+  {
+   "modifier": "TRAIT_TRADE_GOLD_FROM_PASTURES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_IN_TARGET_CITY"
+  },
+  {
+   "modifier": "TRAIT_IDENTITY_FROM_DOMESTIC_TRADE_ROUTES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_IDENTITY_PER_TURN_FOR_DOMESTIC_TRADE_ROUTE_ORIGIN"
+  },
+  {
+   "modifier": "TRAIT_CULTURE_FROM_INTERNATIONAL_TRADE_ROUTES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_CULTURE_FROM_INCOMING_TRADE_ROUTES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_FROM_OTHERS"
+  },
+  {
+   "modifier": "TRAIT_DIMINISH_LOYALTY_IN_ENEMY_CITY",
+   "argument": "Amount",
+   "value": "-20",
+   "effect": "EFFECT_ADJUST_PLAYER_POST_COMBAT_LOYALTY"
+  },
+  {
+   "modifier": "TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_FLOOD_BARRIER_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_DAM_PRODUCTION_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_MISSION_IDENTITY_PER_TURN_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "TRAIT_ALLIANCE_POINTS_FROM_COMMON_FOE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_ALLIANCE_POINTS_FOR_COMMON_ENEMY_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_ALLIANCE_POINTS_FROM_TRADE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_ALLIANCE_POINTS_FOR_TRADE_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_ANTIOCH_LUXURY_TRADE_ROUTE_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_DESTINATION_LUXURY_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "MINOR_CIV_BABYLON_GREAT_WORK_WRITING_SCIENCE",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_BABYLON_GREAT_WORK_ARTIFACT_SCIENCE",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_BABYLON_GREAT_WORK_RELIC_SCIENCE",
+   "argument": "YieldChange",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "MINOR_CIV_VILNIUS_ALLIANCE_LEVEL_1",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_VILNIUS_ALLIANCE_LEVEL_2",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_VILNIUS_ALLIANCE_LEVEL_3",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_DISTRICT_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_WILD_CARD_FAVOR",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_GOVERNMENT_SLOT_TYPE_GRANT_FAVOR"
+  },
+  {
+   "modifier": "TRAIT_POWERED_BUILDINGS_MORE_CULTURE",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_FROM_POWERED_BUILDING"
+  },
+  {
+   "modifier": "TRAIT_POWERED_BUILDINGS_MORE_GOLD",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_FROM_POWERED_BUILDING"
+  },
+  {
+   "modifier": "TRAIT_POWERED_BUILDINGS_MORE_PRODUCTION",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_FROM_POWERED_BUILDING"
+  },
+  {
+   "modifier": "TRAIT_POWERED_BUILDINGS_MORE_SCIENCE",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_FROM_POWERED_BUILDING"
+  },
+  {
+   "modifier": "TRAIT_POWERED_BUILDINGS_MORE_FOOD",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_FROM_POWERED_BUILDING"
+  },
+  {
+   "modifier": "TRAIT_ACCUMULATE_MORE_COAL",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE"
+  },
+  {
+   "modifier": "TRAIT_ACCUMULATE_MORE_IRON",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION_SPECIFIC_RESOURCE"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_MILITARY_ENGINEER_PRODUCTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_UNIT_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_MILITARY_ENGINEER_BUILDCHARGES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_UNIT_BUILD_CHARGES"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_INDUSTRIAL_ZONE_BUILDINGS_PRODUCTION",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_LIGHTHOUSE_STOCKPILE_CAP",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_STOCKPILE_CAP"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_SHIPYARD_STOCKPILE_CAP",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_STOCKPILE_CAP"
+  },
+  {
+   "modifier": "TRAIT_ADJUST_SEAPORT_STOCKPILE_CAP",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_PLAYER_RESOURCE_STOCKPILE_CAP"
+  },
+  {
+   "modifier": "TRAIT_MISSIONARY_SPREADS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_BUILDING_SPREAD_CHARGES"
+  },
+  {
+   "modifier": "TRAIT_AMENITIES_FOR_MIN_FOLLOWERS",
+   "argument": "Amenities",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_RELIGION_AMENITIES_FOR_MINIMUM_FOLLOWERS"
+  },
+  {
+   "modifier": "TRAIT_ORIGIN_DESTINATION_RELIGIOUS_PRESSURE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_RELIGIOUS_PRESSURE"
+  },
+  {
+   "modifier": "TRAIT_BLIZZARD_DOUBLE_DAMAGE_SIGNIFICANT",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_RANDOM_EVENT_MODIFIED_DAMAGE_OPPOSING_PLAYER"
+  },
+  {
+   "modifier": "TRAIT_BLIZZARD_DOUBLE_DAMAGE_CRIPPLING",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_RANDOM_EVENT_MODIFIED_DAMAGE_OPPOSING_PLAYER"
+  },
+  {
+   "modifier": "TRAIT_HURRICANE_DOUBLE_DAMAGE_CAT_4",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_RANDOM_EVENT_MODIFIED_DAMAGE_OPPOSING_PLAYER"
+  },
+  {
+   "modifier": "TRAIT_HURRICANE_DOUBLE_DAMAGE_CAT_5",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_RANDOM_EVENT_MODIFIED_DAMAGE_OPPOSING_PLAYER"
+  },
+  {
+   "modifier": "TRAIT_INQUISITORS_FULL_EVICT",
+   "argument": "Amount",
+   "value": "25",
+   "effect": "EFFECT_ADJUST_UNIT_EVICT_PERCENT"
+  },
+  {
+   "modifier": "TRAIT_LEADER_PILLAGE_SCIENCE_MINES",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ADDITIONAL_PILLAGING"
+  },
+  {
+   "modifier": "TRAIT_LEADER_PILLAGE_CULTURE_QUARRIES",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ADDITIONAL_PILLAGING"
+  },
+  {
+   "modifier": "TRAIT_LEADER_PILLAGE_CULTURE_PLANTATIONS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ADDITIONAL_PILLAGING"
+  },
+  {
+   "modifier": "TRAIT_LEADER_PILLAGE_CULTURE_PASTURES",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ADDITIONAL_PILLAGING"
+  },
+  {
+   "modifier": "TRAIT_LEADER_PILLAGE_CULTURE_CAMPS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_ADDITIONAL_PILLAGING"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_GENERAL_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_ADMIRAL_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_ENGINEER_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_MERCHANT_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_PROPHET_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_SCIENTIST_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_WRITER_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_ARTIST_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_BOLOGNA_GREAT_MUSICIAN_POINTS_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "MINOR_CIV_CARDIFF_POWER_LIGHTHOUSE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_FREE_POWER"
+  },
+  {
+   "modifier": "MINOR_CIV_CARDIFF_POWER_SHIPYARD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_FREE_POWER"
+  },
+  {
+   "modifier": "MINOR_CIV_CARDIFF_POWER_SEAPORT",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_FREE_POWER"
+  },
+  {
+   "modifier": "MINOR_CIV_FEZ_INITIATION_SCIENCE_POPULATION",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_UNIT_INITIATION_YIELD_POPULATION"
+  },
+  {
+   "modifier": "MINOR_CIV_HATTUSA_ALUMINUM_RESOURCE_XP2",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION"
+  },
+  {
+   "modifier": "MINOR_CIV_HATTUSA_COAL_RESOURCE_XP2",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION"
+  },
+  {
+   "modifier": "MINOR_CIV_HATTUSA_HORSES_RESOURCE_XP2",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION"
+  },
+  {
+   "modifier": "MINOR_CIV_HATTUSA_IRON_RESOURCE_XP2",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION"
+  },
+  {
+   "modifier": "MINOR_CIV_HATTUSA_NITER_RESOURCE_XP2",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION"
+  },
+  {
+   "modifier": "MINOR_CIV_HATTUSA_OIL_RESOURCE_XP2",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION"
+  },
+  {
+   "modifier": "MINOR_CIV_HATTUSA_URANIUM_RESOURCE_XP2",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION"
+  },
+  {
+   "modifier": "MINOR_CIV_NGAZARGAMU_BARRACKS_STABLE_PURCHASE_BONUS",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_UNITS_PURCHASE_COST"
+  },
+  {
+   "modifier": "MINOR_CIV_NGAZARGAMU_ARMORY_PURCHASE_BONUS",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_UNITS_PURCHASE_COST"
+  },
+  {
+   "modifier": "MINOR_CIV_NGAZARGAMU_MILITARY_ACADEMY_PURCHASE_BONUS",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_ALL_UNITS_PURCHASE_COST"
+  },
+  {
+   "modifier": "TRAIT_TOURISM_INTO_FAVOR",
+   "argument": "Tourism",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_TOURISM_FAVOR"
+  },
+  {
+   "modifier": "TRAIT_EMERGENCY_FAVOR_MODIFIER",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_EMERGENCY_FAVOR_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_CITY_ADJACENT_RIVER_BUILDING_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_ADJACENT_CITY_RIVER_BUILDING_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_CITY_ADJACENT_RIVER_DISTRICT_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_ADJACENT_CITY_RIVER_DISTRICT_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_PRODUCTION_MOUNTAIN",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_PRODUCTION_MOUNTAIN_LATE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_TERRACE_GRASS_MOUNTAIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TERRAIN_YIELD_FROM_ADJACENT_IMPROVEMENTS"
+  },
+  {
+   "modifier": "TRAIT_TERRACE_PLAINS_MOUNTAIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TERRAIN_YIELD_FROM_ADJACENT_IMPROVEMENTS"
+  },
+  {
+   "modifier": "TRAIT_TERRACE_DESERT_MOUNTAIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TERRAIN_YIELD_FROM_ADJACENT_IMPROVEMENTS"
+  },
+  {
+   "modifier": "TRAIT_TERRACE_TUNDRA_MOUNTAIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TERRAIN_YIELD_FROM_ADJACENT_IMPROVEMENTS"
+  },
+  {
+   "modifier": "TRAIT_TERRACE_SNOW_MOUNTAIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TERRAIN_YIELD_FROM_ADJACENT_IMPROVEMENTS"
+  },
+  {
+   "modifier": "TRAIT_DESERT_CITY_CENTER_FAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_DESERT_HILLS_CITY_CENTER_FAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_DESERT_HILLS_CITY_CENTER_FOOD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_DESERT_CITY_CENTER_FOOD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_TERRAIN_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_MALI_MINES_PRODUCTION",
+   "argument": "Amount",
+   "value": "-1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MALI_MINES_GOLD",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_LESS_BUILDING_PRODUCTION",
+   "argument": "Amount",
+   "value": "-30",
+   "effect": "EFFECT_ADJUST_ALL_BUILDING_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_LESS_UNIT_PRODUCTION",
+   "argument": "Amount",
+   "value": "-30",
+   "effect": "EFFECT_ADJUST_ALL_UNIT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_MAORI_PRODUCTION_WOODS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MAORI_PRODUCTION_RAINFOREST",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MAORI_PRODUCTION_RAINFOREST_MERCANTILISM",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MAORI_PRODUCTION_WOODS_MERCANTILISM",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MAORI_PRODUCTION_RAINFOREST_CONSERVATION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MAORI_PRODUCTION_WOODS_CONSERVATION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_MAORI_FISHING_BOAT_FOOD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_SIEGE_PRODUCTION",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_UNIT_TAG_ERA_PRODUCTION"
+  },
+  {
+   "modifier": "TRAIT_CAPTURED_LOYALTY",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "TRAIT_CAPTURED_AMENITY",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRAIT_AMENITY"
+  },
+  {
+   "modifier": "TRAIT_CAPTURED_NO_POPULATION_LOSS",
+   "argument": "Percent",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_POPULATION_AFTER_CONQUEST"
+  },
+  {
+   "modifier": "TRAIT_GREATPERSON_FAVOR_MODIFIER",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_PLAYER_GREATPERSON_FAVOR_MODIFIER"
+  },
+  {
+   "modifier": "TRAIT_GREAT_SCIENTIST_UNIVERSITY_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "TRAIT_GREAT_ENGINEER_FACTORY_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "TRADE_ROUTE_GOVERNMENT_DISTRICT",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "TRADE_ROUTE_GOVERNMENT_TIER_1_BUILDING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "TRADE_ROUTE_GOVERNMENT_TIER_2_BUILDING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "TRADE_ROUTE_GOVERNMENT_TIER_3_BUILDING",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "PRODUCTION_GOVERNMENT_DISTRICT",
+   "argument": "Amount",
+   "value": "50",
+   "effect": "EFFECT_ADJUST_ALL_DISTRICT_PRODUCTION_MODIFIER"
+  },
+  {
+   "modifier": "IDENTITY_NEARBY_GREATWORKS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_IDENTITY_PER_TURN_FROM_NEARBY_GREAT_WORKS"
+  },
+  {
+   "modifier": "THEMED_YIELD_MODIFIER",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_ALL_GREAT_WORKS_YIELDS_MODIFIER"
+  },
+  {
+   "modifier": "THEMED_TOURISM_MODIFIER",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_ALL_GREAT_WORKS_TOURISM_MODIFIER"
+  },
+  {
+   "modifier": "SCIENCE_PRESETTLEMENT",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE"
+  },
+  {
+   "modifier": "CULTURE_PRESETTLEMENT",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLAYER_YIELD_CHANGE"
+  },
+  {
+   "modifier": "POPULATION_PRESETTLEMENT",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_POPULATION"
+  },
+  {
+   "modifier": "CAPITAL_ENTERTAINMENT",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_ENTERTAINMENT"
+  },
+  {
+   "modifier": "CAPITAL_HOUSING",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_BUILDING_HOUSING"
+  },
+  {
+   "modifier": "TUNDRA_PLOT_COST",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLOT_PURCHASE_COST_TERRAIN"
+  },
+  {
+   "modifier": "TUNDRA_HILLS_PLOT_COST",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLOT_PURCHASE_COST_TERRAIN"
+  },
+  {
+   "modifier": "SNOW_PLOT_COST",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLOT_PURCHASE_COST_TERRAIN"
+  },
+  {
+   "modifier": "SNOW_HILLS_PLOT_COST",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_PLOT_PURCHASE_COST_TERRAIN"
+  },
+  {
+   "modifier": "TUNDRA_RESOURCE_EXTRACTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_EXTRA_ACCUMALATION_TERRAIN"
+  },
+  {
+   "modifier": "TUNDRA_HILLS_RESOURCE_EXTRACTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_EXTRA_ACCUMALATION_TERRAIN"
+  },
+  {
+   "modifier": "SNOW_RESOURCE_EXTRACTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_EXTRA_ACCUMALATION_TERRAIN"
+  },
+  {
+   "modifier": "SNOW_HILLS_RESOURCE_EXTRACTION",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_EXTRA_ACCUMALATION_TERRAIN"
+  },
+  {
+   "modifier": "TUNDRA_MINES_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TUNDRA_HILLS_MINES_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_MINES_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_HILLS_MINES_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TUNDRA_CAMPS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TUNDRA_HILLS_CAMPS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_CAMPS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_HILLS_CAMPS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TUNDRA_FARMS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TUNDRA_HILLS_FARMS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_FARMS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_HILLS_FARMS_FOOD",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TUNDRA_LUMBER_MILLS_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TUNDRA_HILLS_LUMBER_MILLS_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_LUMBER_MILLS_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "SNOW_HILLS_LUMBER_MILLS_PRODUCTION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "LEVY_UNITUPGRADEDISCOUNT",
+   "argument": "Amount",
+   "value": "75",
+   "effect": "EFFECT_ADJUST_PLAYER_LEVIED_UNIT_UPGRADE_DISCOUNT_PERCENT"
+  },
+  {
+   "modifier": "TRADE_ROUTE_GOLD_DESERT_ORIGIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_TERRAIN_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "DOMESTIC_TRADE_ROUTE_FOOD_GRASS_MOUNTAIN_ORIGIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_TERRAIN_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "DOMESTIC_TRADE_ROUTE_FOOD_PLAINS_MOUNTAIN_ORIGIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_TERRAIN_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "DOMESTIC_TRADE_ROUTE_FOOD_DESERT_MOUNTAIN_ORIGIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_TERRAIN_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "DOMESTIC_TRADE_ROUTE_FOOD_TUNDRA_MOUNTAIN_ORIGIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_TERRAIN_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "DOMESTIC_TRADE_ROUTE_FOOD_SNOW_MOUNTAIN_ORIGIN",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_TERRAIN_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "SULEIMAN_GOVERNOR_POINTS",
+   "argument": "Delta",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_GOVERNOR_POINTS"
+  },
+  {
+   "modifier": "JANISSARY_LOSE_POPULATION_IN_FOUNDED_CITIES",
+   "argument": "Amount",
+   "value": "-1",
+   "effect": "EFFECT_ADJUST_CITY_POPULATION_UNIT_CREATED"
+  },
+  {
+   "modifier": "TRAIT_NATIONAL_PARK_APPEAL_BONUS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_APPEAL"
+  },
+  {
+   "modifier": "TRAIT_ANTIQUES_AND_PARKS_CULTURE_FORESTS_OR_WONDERS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_ANTIQUES_AND_PARKS_SCIENCE_NATIONAL_WONDERS_OR_MOUNTAINS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "ELIZABETH_TRADE_ROUTES_MODIFIER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_CAPACITY"
+  },
+  {
+   "modifier": "ELIZABETH_TRADE_ROUTES_YIELDS",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_STATE_TRADE_ROUTE_DISTRICT_YIELD"
+  },
+  {
+   "modifier": "HARALD_LEVY_DISCOUNT",
+   "argument": "Percent",
+   "value": "75",
+   "effect": "EFFECT_ADJUST_PLAYER_LEVY_DISCOUNT_PERCENT"
+  },
+  {
+   "modifier": "HARALD_MAINTENANCE_DISCOUNT",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_UNIT_MAINTENANCE_DISCOUNT"
+  },
+  {
+   "modifier": "VICTORIA_PRODUCTION_WORKSHOP",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "VICTORIA_PRODUCTION_FACTORY",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "VICTORIA_PRODUCTION_POWER_PLANT",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "VICTORIA_STRATEGIC_RESOURCE",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "INDUSTRIAL_ZONE_ADDAMENITIES",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_DISTRICT_AMENITY"
+  },
+  {
+   "modifier": "TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_IDENTITY_PER_TURN"
+  },
+  {
+   "modifier": "WU_ZETIAN_OFFENSIVE_SPY_BETTER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_SPY_BONUS"
+  },
+  {
+   "modifier": "WU_ZETIAN_OFFENSIVE_SPY_SCIENCE",
+   "argument": "Percent",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT"
+  },
+  {
+   "modifier": "WU_ZETIAN_OFFENSIVE_SPY_CULTURE",
+   "argument": "Percent",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT"
+  },
+  {
+   "modifier": "WU_ZETIAN_OFFENSIVE_SPY_FAITH",
+   "argument": "Percent",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT"
+  },
+  {
+   "modifier": "YONGLE_SCIENCE_POPULATION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "YONGLE_CULTURE_POPULATION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "YONGLE_GOLD_POPULATION",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_POPULATION"
+  },
+  {
+   "modifier": "CLEOPATRA_FLOODPLAINS_APPEAL",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_FEATURE_APPEAL_MODIFIER"
+  },
+  {
+   "modifier": "CLEOPATRA_GRASS_FLOODPLAINS_APPEAL",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_FEATURE_APPEAL_MODIFIER"
+  },
+  {
+   "modifier": "CLEOPATRA_PLAINS_FLOODPLAINS_APPEAL",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_FEATURE_APPEAL_MODIFIER"
+  },
+  {
+   "modifier": "SUNDIATA_KEITA_MARKET_GREAT_WRITING_SLOTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_EXTRA_GREAT_WORK_SLOTS"
+  },
+  {
+   "modifier": "SUNDIATA_KEITA_PURCHASE_GREAT_PEOPLE",
+   "argument": "Amount",
+   "value": "20",
+   "effect": "EFFECT_ADJUST_GREAT_PERSON_PATRONAGE_DISCOUNT_PERCENT"
+  },
+  {
+   "modifier": "SUNDIATA_KEITA_GREAT_WORK_GOLD_WRITING",
+   "argument": "YieldChange",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "SUNDIATA_KEITA_GREAT_WORK_PRODUCTION_WRITING",
+   "argument": "YieldChange",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_GREATWORK_YIELD"
+  },
+  {
+   "modifier": "TRAIT_ADD_AMENITY_PER_ADJACENT_LUXURY",
+   "argument": "AddAmenity",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_ADD_AMENITY_PER_ADJACENT_LUXURY"
+  },
+  {
+   "modifier": "TRAIT_MAYA_FARMS_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "MINOR_CIV_HUNZA_GOLD_FROM_TRADE_ROUTE_LENGTH",
+   "argument": "Amount",
+   "value": "0.2",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_PATH_TILE"
+  },
+  {
+   "modifier": "MINOR_CIV_SINGAPORE_PRODUCTION_PER_MAJOR_TRADE_PARTNER",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_PER_MAJOR_TRADE_PARTNER"
+  },
+  {
+   "modifier": "MINOR_CIV_TARUGA_ALUMINUM_RESOURCE_SCIENCE",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_TARUGA_COAL_RESOURCE_SCIENCE",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_TARUGA_HORSES_RESOURCE_SCIENCE",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_TARUGA_IRON_RESOURCE_SCIENCE",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_TARUGA_NITER_RESOURCE_SCIENCE",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_TARUGA_OIL_RESOURCE_SCIENCE",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_TARUGA_URANIUM_RESOURCE_SCIENCE",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE",
+   "argument": "Amount",
+   "value": "400",
+   "effect": "EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED"
+  },
+  {
+   "modifier": "TRAIT_CAESAR_BARB_COMBAT",
+   "argument": "Amount",
+   "value": "5",
+   "effect": "EFFECT_ADJUST_UNIT_BARBARIAN_COMBAT"
+  },
+  {
+   "modifier": "BARBARIAN_CAMP_GOLD_CAPTURED_CITY",
+   "argument": "Amount",
+   "value": "300",
+   "effect": "EFFECT_ADJUST_GOLD_DISPERSAL"
+  },
+  {
+   "modifier": "BARBARIAN_CAMP_GOLD_CAPTURED_CITY_METAL_CASTING",
+   "argument": "Amount",
+   "value": "200",
+   "effect": "EFFECT_ADJUST_GOLD_DISPERSAL"
+  },
+  {
+   "modifier": "BARBARIAN_CAMP_GOLD_CAPTURED_CITY_STEEL",
+   "argument": "Amount",
+   "value": "400",
+   "effect": "EFFECT_ADJUST_GOLD_DISPERSAL"
+  },
+  {
+   "modifier": "BYZANTIUM_GREATPROPHETPOINTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_GREAT_PERSON_POINTS"
+  },
+  {
+   "modifier": "GAUL_MINE_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TRAIT_CIVILIZATION_GAUL_HOLYSITE_ADJACENCYFAITH",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_CIVILIZATION_GAUL_CAMPUS_ADJACENCYSCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_CIVILIZATION_GAUL_HARBOR_ADJACENCYGOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_CIVILIZATION_GAUL_COMMERCIALHUB_ADJACENCYGOLD",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_CIVILIZATION_GAUL_THEATER_ADJACENCYCULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_CIVILIZATION_GAUL_OPPIDUM_ADJACENCYPRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "TRAIT_FOREST_BUILDINGS_CULTURE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_FEATURE_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_JUNGLE_BUILDINGS_SCIENCE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_FEATURE_YIELD_CHANGE"
+  },
+  {
+   "modifier": "TRAIT_MARSH_BUILDINGS_PRODUCTION",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_BUILDING_FEATURE_YIELD_CHANGE"
+  },
+  {
+   "modifier": "MAGNIFICENCES_CULTURE_LUXURY_ADJACENT_TO_THEATER_SQUARE_OR_CHATEAU",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_PLOT_YIELD"
+  },
+  {
+   "modifier": "TOKUGAWA_NEGATIVE_INTERNATIONAL_TOURISM",
+   "argument": "Amount",
+   "value": "-25",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_TOURISM_MODIFIER"
+  },
+  {
+   "modifier": "TOKUGAWA_POSITIVE_DOMESTIC_CULTURE_DISTRICTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_PER_SPECIALTY_DISTRICT_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TOKUGAWA_POSITIVE_DOMESTIC_SCIENCE_DISTRICTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_PER_SPECIALTY_DISTRICT_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TOKUGAWA_POSITIVE_DOMESTIC_GOLD_DISTRICTS",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_TRADE_ROUTE_YIELD_PER_SPECIALTY_DISTRICT_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TOKUGAWA_TOURISM_DISTRICTS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_DISTRICT_TOURISM_CHANGE"
+  },
+  {
+   "modifier": "NADER_SHAH_TRADE_GOLD",
+   "argument": "Amount",
+   "value": "3",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "NADER_SHAH_TRADE_FAITH",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_FOR_DOMESTIC"
+  },
+  {
+   "modifier": "TRAIT_FAITH_RESOURCES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_RESOURCE_YIELD_BY_COUNT"
+  },
+  {
+   "modifier": "TRAIT_FAITH_BONUS_RESOURCES_TRADE_INTERNATIONAL",
+   "argument": "Amount",
+   "value": "0.5",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_LOCAL_BONUS_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_FAITH_LUXURY_RESOURCES_TRADE_INTERNATIONAL",
+   "argument": "Amount",
+   "value": "0.5",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_LOCAL_LUXURY_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_FAITH_STRATEGIC_RESOURCES_TRADE_INTERNATIONAL",
+   "argument": "Amount",
+   "value": "0.5",
+   "effect": "EFFECT_ADJUST_CITY_TRADE_ROUTE_YIELD_PER_LOCAL_STRATEGIC_RESOURCE_FOR_INTERNATIONAL"
+  },
+  {
+   "modifier": "TRAIT_FAITH_INTO_SCIENCE_HILLS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER_FROM_FAITH"
+  },
+  {
+   "modifier": "TRAIT_FAITH_INTO_CULTURE_HILLS",
+   "argument": "Amount",
+   "value": "15",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER_FROM_FAITH"
+  },
+  {
+   "modifier": "TRAIT_EUREKA_INCREASE",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_TECHNOLOGY_BOOST"
+  },
+  {
+   "modifier": "TRAIT_SCIENCE_DECREASE",
+   "argument": "Amount",
+   "value": "-50",
+   "effect": "EFFECT_ADJUST_CITY_YIELD_MODIFIER"
+  },
+  {
+   "modifier": "MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING",
+   "argument": "BuildingProductionPercent",
+   "value": "10",
+   "effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST"
+  },
+  {
+   "modifier": "MINOR_CIV_CHINGUETTI_FAITH_FOLLOWERS",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_FOLLOWER"
+  },
+  {
+   "modifier": "MINOR_CIV_JOHANNESBURG_PRODUCTION_RESOURCES",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_YIELD_BY_NUMBER_OF_RESOURCES"
+  },
+  {
+   "modifier": "MINOR_CIV_JOHANNESBURG_PRODUCTION_RESOURCES_LATE",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_YIELD_BY_NUMBER_OF_RESOURCES"
+  },
+  {
+   "modifier": "MINOR_CIV_SAMARKAND_TRADE_GOLD_MODIFIER",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_INTERNATIONAL_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_IN_ORIGIN_CITY"
+  },
+  {
+   "modifier": "LUDWIG_WONDER_ADJACENCY",
+   "argument": "Amount",
+   "value": "2",
+   "effect": "EFFECT_DISTRICT_ADJACENCY"
+  },
+  {
+   "modifier": "LUDWIG_CULTURE_TOURISM_DISTRICTS",
+   "argument": "Amount",
+   "value": "100",
+   "effect": "EFFECT_ADJUST_DISTRICT_TOURISM_ADJACENCY_YIELD_MOFIFIER"
+  },
+  {
+   "modifier": "THEODORA_HOLY_SITE_ADJACENCY_FARM",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "THEODORA_HIPPODROME_ADJACENCY_FARM",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_IMPROVEMENT_ADJACENCY"
+  },
+  {
+   "modifier": "TRADE_PRODUCTION_FROM_FEITORIA",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_IN_TARGET_CITY"
+  },
+  {
+   "modifier": "TRADE_GOLD_FROM_FEITORIA",
+   "argument": "Amount",
+   "value": "4",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_IN_TARGET_CITY"
+  },
+  {
+   "modifier": "TRAIT_JOAO_TRADE_ROUTE_ON_MEET",
+   "argument": "Amount",
+   "value": "1",
+   "effect": "EFFECT_ADJUST_PLAYER_TRADE_ROUTE_CAPACITY_ON_MEETING"
+  }
+ ],
+ "UnitPromotionModifiers": [
+  {
+   "modifier": "NIHANG_SUZERAIN_COMBAT_BONUS",
+   "argument": "Amount",
+   "value": "10",
+   "effect": "EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER"
+  }
+ ]
+}
