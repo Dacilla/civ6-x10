@@ -1724,6 +1724,34 @@
    "disposition": "keep private; never package"
   },
   {
+   "path": "spike/8a-frontier/gen_tables.py",
+   "tracked": true,
+   "bytes": 7178,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/generated_tables.md",
+   "tracked": true,
+   "bytes": 4000,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
    "path": "spike/8a-frontier/in_registry_pairs.json",
    "tracked": true,
    "bytes": 152496,
@@ -1769,6 +1797,20 @@
    "path": "spike/8a-frontier/modes.json",
    "tracked": true,
    "bytes": 935016,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/projection.py",
+   "tracked": true,
+   "bytes": 10610,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "frontier_scratch",
@@ -3078,8 +3120,8 @@
    "bytes": 71543
   },
   "private": {
-   "files": 99,
-   "bytes": 14786966
+   "files": 102,
+   "bytes": 14808754
   },
   "workshop_runtime": {
    "files": 8,
