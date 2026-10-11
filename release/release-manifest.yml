@@ -68,7 +68,7 @@ workshop_items:
     runtime_files:
       - stage_path: CE-X10.modinfo
         source: dependencies/CE-X10/CE-X10.modinfo
-        sha256: 5342b15b834bb3627adea890ddc7e8f1ed4396196258b80db1a2ea00b93688f9
+        sha256: 52eae822212dba03bf4fed522cc7c86121c8ac4a5e95e6d0771105aa554e13a1
       - stage_path: Config/EngineRedirect.sql
         source: dependencies/CE-X10/Config/EngineRedirect.sql
         sha256: 3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3
@@ -81,7 +81,7 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/engine/README.txt
-        sha256: 9cbca3366b54ccd0cd30ff35049874a2240263b10c098272e2f1ae33a5f116bc
+        sha256: a37283c840e765c4b7f6975ef26bc1f5922cc350816dbf7125a118f4a720ca71
       - stage_path: LICENSE.txt
         source: release/staging-src/engine/LICENSE.txt
         sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
@@ -101,13 +101,13 @@ workshop_items:
     runtime_files:
       - stage_path: X10.modinfo
         source: controller/X10/X10.modinfo
-        sha256: bdc52152920b59d5a03ef5d9ca8276e56546b9a3af823e347f2cb2516b864684
+        sha256: e0109ccdd483b851289f7f0f9006cbab77868cc71d87a1457248b70df17a6014
       - stage_path: Config/X10Config.sql
         source: controller/X10/Config/X10Config.sql
         sha256: b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464
       - stage_path: Config/X10Text.sql
         source: controller/X10/Config/X10Text.sql
-        sha256: d350eb93ee342a847a547bbb42c3f69c582891bdb07d990d8e3c0d16b858ec2e
+        sha256: 2380e23aea821277e86075ce14e54a22f730a043b679aa92b00c6654682ba328
       - stage_path: Config/Dummy.sql
         source: controller/X10/Config/Dummy.sql
         sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
@@ -117,13 +117,13 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt
-        sha256: e3cec0e38e54048c2a656b80165a07e4f1870e16d5e118b9c76c9a8532839209
+        sha256: f8ef73862fbe37d5cbf36f93dd9619af79b2982d63b87deb3869d0aef1c00e7d
       - stage_path: LICENSE.txt
         source: release/staging-src/controller/LICENSE.txt
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/controller/THIRD_PARTY_NOTICES.txt
-        sha256: 7c86f76fb19d722d106aa02e33df1e90dde21e6cadd66382f0a8fc48e35034e8
+        sha256: c8b195e16a2c89ef71a987d2b3da10ba9c2540ebffecbfd205829131974a07a9
       - stage_path: SOURCE.txt
         source: release/staging-src/controller/SOURCE.txt
         sha256: 7859e3a62104aa6b05b7aa0bfe5b4c2249348a49e5fca528a07a86f9e698b470

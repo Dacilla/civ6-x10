@@ -25,7 +25,7 @@
 - [ ] setup localization present (`Config/X10Text.sql` in controller Files)
 - [ ] both modinfos Single Player Yes / Multiplayer No
 - [ ] preview images present (`release/preview-engine.png`,
-      `release/preview-controller.png`; PNG/JPG, <1 MB, ≥512x512)
+      `release/preview-controller.png`; PNG/JPG, <1 MB, ≥512x512 (1024x1024 square recommended))
 
 ## After unlisted engine upload
 - [ ] subscribe/install test passes

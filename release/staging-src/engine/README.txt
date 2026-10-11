@@ -1,9 +1,8 @@
 X10 CE Engine (dependency mod for X10)
 ==========================================
 
-This item is the ENGINE dependency for "X10 — Configurable Bonus
-Multiplier". Subscribe to it together with the main X10 controller
-item; you do not configure anything here.
+This item is the engine X10 needs in order to run. Subscribe to it
+together with the main X10 mod. It has no settings.
 
 Requirements: Windows x64, Civilization VI: Gathering Storm.
 Do NOT enable another Community Extension GameCore replacement at the

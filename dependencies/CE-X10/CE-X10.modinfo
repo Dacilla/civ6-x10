@@ -3,7 +3,7 @@
   <Properties>
     <Name>X10 CE Engine</Name>
     <Teaser>Required engine dependency for X10. No settings here; configure X10 from the main mod.</Teaser>
-    <Description>Required engine for X10 — Configurable Bonus Multiplier. Enable this alongside the main X10 mod. It has no settings of its own.</Description>
+    <Description>Required engine for X10: Configurable Bonus Multiplier. Enable this alongside the main X10 mod. It has no settings of its own. Do not use another Community Extension/GameCore replacement at the same time.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
     <CompatibleVersions>2.0</CompatibleVersions>
     <SupportsSinglePlayer>1</SupportsSinglePlayer>

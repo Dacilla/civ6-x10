@@ -116,6 +116,88 @@ class TestProductionLocCoverage(unittest.TestCase):
                     "LOC_X10_PRESET_CUSTOM", "LOC_X10_PRESET_CUSTOM_DESC"):
             self.assertIn(tag, have, tag)
 
+    def test_loc_key_set_pinned(self):
+        # Keys are frozen: copy changes display values only, never keys.
+        cfg = CONFIG.read_text(encoding="utf-8")
+        keys = sorted(set(re.findall(r"LOC_X10_[A-Z0-9_]+", cfg)))
+        self.assertEqual(keys, [
+            "LOC_X10_CUSTOM_DESC", "LOC_X10_CUSTOM_NAME",
+            "LOC_X10_MOD_GOVERNMENTS_DESC", "LOC_X10_MOD_GOVERNMENTS_NAME",
+            "LOC_X10_MOD_GOVERNORS_DESC", "LOC_X10_MOD_GOVERNORS_NAME",
+            "LOC_X10_MOD_PANTHEONS_DESC", "LOC_X10_MOD_PANTHEONS_NAME",
+            "LOC_X10_MOD_POLICIES_DESC", "LOC_X10_MOD_POLICIES_NAME",
+            "LOC_X10_MOD_SUZERAIN_DESC", "LOC_X10_MOD_SUZERAIN_NAME",
+            "LOC_X10_MOD_TRAITS_DESC", "LOC_X10_MOD_TRAITS_NAME",
+            "LOC_X10_MOD_WONDERS_DESC", "LOC_X10_MOD_WONDERS_NAME",
+            "LOC_X10_PRESET_10", "LOC_X10_PRESET_100",
+            "LOC_X10_PRESET_100_DESC", "LOC_X10_PRESET_10_DESC",
+            "LOC_X10_PRESET_2", "LOC_X10_PRESET_20",
+            "LOC_X10_PRESET_20_DESC", "LOC_X10_PRESET_2_DESC",
+            "LOC_X10_PRESET_3", "LOC_X10_PRESET_3_DESC",
+            "LOC_X10_PRESET_5", "LOC_X10_PRESET_50",
+            "LOC_X10_PRESET_50_DESC", "LOC_X10_PRESET_5_DESC",
+            "LOC_X10_PRESET_CUSTOM", "LOC_X10_PRESET_CUSTOM_DESC",
+            "LOC_X10_PRESET_DESC", "LOC_X10_PRESET_NAME",
+            "LOC_X10_PRESET_OFF", "LOC_X10_PRESET_OFF_DESC",
+        ])
+
+
+class TestDisplayCopyLint(unittest.TestCase):
+    """Player-facing display values: Civ-style punctuation, no AI tells,
+    no implementation jargon. Structure (keys/values/order) is asserted
+    elsewhere; this pins only the surface."""
+
+    def _display_texts(self):
+        text = TEXT.read_text(encoding="utf-8")
+        return re.findall(r"\('en_US', 'LOC_[^']+', '(.*?)'\)\);?\s*$",
+                          text, re.M)
+
+    def test_no_em_en_dash_ellipsis_semicolon(self):
+        for value in self._display_texts():
+            for ch, name in (("—", "em dash"), ("–", "en dash"),
+                             ("…", "ellipsis")):
+                self.assertNotIn(ch, value, f"{name} in {value[:60]}")
+            self.assertNotIn(";", value, f"semicolon in {value[:60]}")
+        for rel in ("controller/X10/X10.modinfo",
+                    "dependencies/CE-X10/CE-X10.modinfo"):
+            meta = (ROOT / rel).read_text(encoding="utf-8")
+            for tag in ("Name", "Teaser", "Description"):
+                m = re.search(rf"<{tag}>(.*?)</{tag}>", meta, re.S)
+                self.assertIsNotNone(m, f"{rel} {tag}")
+                for ch, name in (("—", "em dash"), ("–", "en dash"),
+                                 ("…", "ellipsis")):
+                    self.assertNotIn(ch, m.group(1), f"{rel} {tag} {name}")
+
+    def test_no_implementation_jargon(self):
+        banned = ["ModifierId", "registry", "transform", "certification",
+                  "semantic floor", "owner bit", "fail-closed",
+                  "official values", "intrinsic stats",
+                  "structural values", "structural effects",
+                  "Configurable Semantic", "semantic multiplier"]
+        texts = self._display_texts()
+        meta = []
+        for rel in ("controller/X10/X10.modinfo",
+                    "dependencies/CE-X10/CE-X10.modinfo"):
+            t = (ROOT / rel).read_text(encoding="utf-8")
+            for tag in ("Name", "Teaser", "Description"):
+                meta.append(re.search(rf"<{tag}>(.*?)</{tag}>", t,
+                                      re.S).group(1))
+        for value in texts + meta:
+            for term in banned:
+                self.assertNotIn(term, value,
+                                 f"{term!r} in {value[:70]}")
+
+    def test_final_labels(self):
+        text = TEXT.read_text(encoding="utf-8")
+        for label in ("X10: Multiplier", "X10: Custom Multiplier",
+                      "X10: Civilization & Leader Traits",
+                      "X10: Policy Cards", "X10: Governments",
+                      "X10: Pantheons", "X10: Wonders",
+                      "X10: Governors & Secret Societies",
+                      "X10: City-State Suzerain Bonuses",
+                      "×10 Classic", "Custom..."):
+            self.assertIn(label, text, label)
+
 
 class TestProductionModinfo7C2(unittest.TestCase):
     def _mod(self, rel):
@@ -128,7 +210,7 @@ class TestProductionModinfo7C2(unittest.TestCase):
                          "55d7b934-62f9-46fb-a771-badf3d1a1538")
         props = m.find("Properties")
         self.assertEqual(props.find("Name").text,
-                         "X10 — Configurable Bonus Multiplier")
+                         "X10: Configurable Bonus Multiplier")
         self.assertTrue(props.find("Teaser").text)
         self.assertEqual(props.find("CompatibleVersions").text, "2.0")
         self.assertEqual(props.find("SupportsSinglePlayer").text, "1")

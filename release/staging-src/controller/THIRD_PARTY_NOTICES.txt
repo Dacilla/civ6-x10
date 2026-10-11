@@ -8,6 +8,6 @@ Native transformation engine (required dependency item "X10 CE Engine"):
 
 Raw Firaxis game database/data files are never redistributed. This item
 necessarily contains narrowly derived identifiers and guard values
-(target ModifierIds, expected bridge values, generated registry source)
+(target game identifiers, expected bridge values, generated registry source)
 required for the mod to function; bulk audit/research material is not
 included (see SOURCE.txt for the corresponding source surface).

@@ -1,9 +1,9 @@
-# Civ VI X10 — Configurable Bonus Multiplier
+# Civ VI X10: Configurable Bonus Multiplier
 
 Civilization VI X10 scales supported numeric bonuses by the multiplier
 you choose, with per-module category controls. Install two Workshop
-items — **X10 — Configurable Bonus Multiplier** plus its required
-**X10 CE Engine** dependency — and configure everything in Advanced
+items: **X10: Configurable Bonus Multiplier** plus its required
+**X10 CE Engine** dependency, and configure everything in Advanced
 Setup (Windows x64 + Gathering Storm, single-player).
 
 > Status: **all seven modules (traits, policies, governments, pantheons,
