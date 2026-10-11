@@ -1,0 +1,31 @@
+000001 ===== X10 native session =====
+000002 X10 CE native write test x10-write-test 2 (definition overrides, 2026-10-07)
+000003 GameCore:
+000004   module = GameCore_XP2_FinalRelease.dll
+000005   image size = 0xc60000
+000006   timestamp = 0x667c6f5b
+000007   .text = [0x0000000199A31000, 0x000000019A3E6627)
+000008 compatibility profile: user-validated-15038592
+000009 Hook validation:
+000010   PopulateModifierDefinitions PASS (in.text=1 prologue=1)
+000011   AddModifierDefinition PASS (in.text=1 prologue=1)
+000012   DynamicModifier_ctor_A PASS (in.text=1 prologue=1)
+000013   DynamicModifier_ctor_B PASS (in.text=1 prologue=1)
+000014 ALL_REQUIRED_SIGNATURES_VALID
+000015   GetModifierDefinition PASS (in.text=1 prologue=1)
+000016 4 lifecycle hooks installed (Populate/Add/InstanceA/InstanceB)
+000017 PopulateModifierDefinitions ENTER depth=1
+000018 CONFIG key=X10_MULTIPLIER found=true type=INT32 id=2 raw=-1.000000 reason=out-of-range
+000019 X10 Custom selected but X10_MULTIPLIER is blank, malformed, or outside 0-100 (decimals need a period, e.g. 7.3): X10 remains disabled for safety
+000020 X10 writes DISABLED for this session (no native k)
+000021 AddModifierDefinition #1
+000022 AddModifierDefinition #2
+000023 AddModifierDefinition #3
+000024 AddModifierDefinition #1000
+000025 AddModifierDefinition #2000
+000026 AddModifierDefinition #3000
+000027 PopulateModifierDefinitions EXIT depth=1 definitions_added=3336 writes=0 transform_refused=0 official_mismatch=0 post_add_match=0 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0
+000028 FIRST DynamicModifier instance #1 (attach underway)
+000029 FIRST DynamicModifier instance #2 (attach underway)
+000030 FIRST DynamicModifier instance #3 (attach underway)
+000031 X10 gameplay Lua initialized (RegisterScriptData)

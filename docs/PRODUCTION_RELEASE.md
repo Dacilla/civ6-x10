@@ -92,9 +92,7 @@
   en_US localization, SP-only flags); native reader gains
   preset/custom/bool resolution with legacy fallback; new DLL
   `3b6dc3d2...ab14` (CE `0655190`); same 1010 gameplay set/transforms.
-  Release candidate `1.0.0-rc2`, awaiting the 7C.2 validation matrix
-  (preset-x10 1010/0, Custom-7.3 801/209, Custom-7.3-no-Gov 745/195/70,
-  Off disarmed, probe-free RC2 smoke).
+  Release candidate `1.0.0-rc2`, matrix COMPLETE except the final probe-free smoke: preset-x10 1010/0 x2 sessions, Custom-7.3 801/209 pair-identical to 6C, Custom-7.3-no-Gov 745/195/70 exact, Off disarmed, invalid Custom (abc/-1/101) fail-closed with reasons; evidence spike/validation-evidence/X10Lifecycle.1010-7C2-run*.log. Probe-free RC2 smoke pending.
 
 Follow-up (done in Phase 6B): the two Toqui governor-pressure rows were
 re-admitted after the 6A.2 probe proved stored MATCH via store-lookup on

@@ -39,3 +39,25 @@ Private archived evidence (hashes only):
   `100e9a0861c89056cabaff1880c62447938238247daadfe0d9c6cd4a02ae5689`
 - `X10Probe.1010-6C-runB.log`:
   `f4868369b112926e435340435e34207fa964016fb6fad02e3ba93bcf62030082`
+
+## 7C.2 UX validation matrix (RC2, DLL `3b6dc3d2...ab14`, same 1010 set)
+
+Setup UI: preset dropdown `X10_MULTIPLIER_PRESET`, custom
+`X10_MULTIPLIER` text, seven bool `X10_MODULE_*` checkboxes,
+AdvancedOptions 2400-2408, en_US localization.
+
+- Run A -- preset x10 Classic, all ON (load+reload):
+  `writes=1010 refused=0 mismatch=0 unreadable=0 skipped=0`,
+  `post_add_match=1010`, sessions identical.
+- Run B -- Custom 7.3, all ON: `writes=801 refused=209`,
+  pair-for-pair identical to the 6C evidence above.
+- Run C -- Custom 7.3, Governors OFF: `writes=745 refused=195
+  skipped=70` (exactly the 70 governor-manifest skips, zero Governor
+  mutations, Toqui still writes).
+- Run D -- preset Off: disarmed, zero mutations, concise OFF reason.
+- Run E -- invalid Custom: `abc` (TEXT variant, fail-closed),
+  `-1`/`101` (INT32 out-of-range, fail-closed); each disarmed with an
+  explicit reason and zero transforms. Blank covered analytically
+  (same decode-failure path as `abc`).
+- RC2 smoke (probe-free, preset x10, save/reload): pending at the time
+  of writing; expectation 1010/0 both sessions.
