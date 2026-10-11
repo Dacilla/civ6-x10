@@ -23,10 +23,15 @@ foreach ($item in @('X10-CE-Engine', 'X10')) {
     if (-not (Test-Path $src)) { throw "staging item missing: $src" }
     $dst = Join-Path $mods ($item -replace '^X10-CE-Engine$', 'CE-X10')
     if (Test-Path $dst) {
-        $bak = "$dst.rc-backup"
-        if (Test-Path $bak) { Remove-Item $bak -Recurse -Force }
-        Rename-Item $dst (Split-Path -Leaf $bak)
-        Write-Host "backed up existing: $dst -> $bak"
+        # backups must live OUTSIDE Mods: Civ VI lists every subfolder
+        # containing a .modinfo, so an in-place backup reads as a
+        # duplicate mod with a colliding Mod ID.
+        $bakRoot = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'X10-mod-backups'
+        New-Item -ItemType Directory -Force -Path $bakRoot | Out-Null
+        $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+        $bak = Join-Path $bakRoot ((Split-Path -Leaf $dst) + ".$stamp")
+        Move-Item $dst $bak -Force
+        Write-Host "backed up existing outside Mods: $dst -> $bak"
     }
     Copy-Item $src $dst -Recurse -Force
     Write-Host "installed: $dst"
