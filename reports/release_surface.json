@@ -506,6 +506,20 @@
    "disposition": "publish"
   },
   {
+   "path": "civ6x10/rules/support_frontier.yml",
+   "tracked": true,
+   "bytes": 1143224,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_research",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": true,
+   "audit_only": true,
+   "provenance": "Phase 8A closed-world discovery metadata (identifiers/counts only)",
+   "disposition": "keep private; publish summary counts only"
+  },
+  {
    "path": "civ6x10/rules/suzerain_audit.yml",
    "tracked": true,
    "bytes": 794426,
@@ -994,6 +1008,20 @@
    "audit_only": false,
    "provenance": "authored analysis (quotes official IDs/values in prose)",
    "disposition": "publish; audit docs under review for bulk tables (see footprint)"
+  },
+  {
+   "path": "docs/SUPPORT_FRONTIER.md",
+   "tracked": true,
+   "bytes": 32925,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_research",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A frontier matrix + roadmap (references official IDs)",
+   "disposition": "keep private pending bulk-content review"
   },
   {
    "path": "docs/SUZERAIN_AUDIT.md",
@@ -1596,6 +1624,160 @@
    "audit_only": true,
    "provenance": "generated decision reports (tracked)",
    "disposition": "keep private pending bulk-content review"
+  },
+  {
+   "path": "spike/8a-frontier/build_yml.py",
+   "tracked": true,
+   "bytes": 16030,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/db_scan.json",
+   "tracked": true,
+   "bytes": 92871,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/direct_tables.json",
+   "tracked": true,
+   "bytes": 193917,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/disposition_engine.py",
+   "tracked": true,
+   "bytes": 23712,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/dispositioned.json",
+   "tracked": true,
+   "bytes": 693037,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/frontend_research.md",
+   "tracked": true,
+   "bytes": 8945,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/frontier_pairs.json",
+   "tracked": true,
+   "bytes": 380651,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/in_registry_pairs.json",
+   "tracked": true,
+   "bytes": 152496,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/install_surface.json",
+   "tracked": true,
+   "bytes": 877774,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/invalid_input_matrix.md",
+   "tracked": true,
+   "bytes": 5505,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
+  },
+  {
+   "path": "spike/8a-frontier/modes.json",
+   "tracked": true,
+   "bytes": 935016,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "frontier_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "Phase 8A disposable scanner outputs",
+   "disposition": "keep private; never package"
   },
   {
    "path": "spike/EXPECTED_DLL_SHA256.txt",
@@ -2788,6 +2970,20 @@
    "disposition": "publish; scrub bulk inventories if any found (see footprint)"
   },
   {
+   "path": "tests/test_support_frontier.py",
+   "tracked": true,
+   "bytes": 11481,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "test_fixture",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored tests + small regression constants",
+   "disposition": "publish; scrub bulk inventories if any found (see footprint)"
+  },
+  {
    "path": "tests/test_suzerain.py",
    "tracked": true,
    "bytes": 88427,
@@ -2874,16 +3070,16 @@
  ],
  "surface_summary": {
   "corresponding_source": {
-   "files": 109,
-   "bytes": 1216621
+   "files": 110,
+   "bytes": 1228102
   },
   "corresponding_build_artifact": {
    "files": 1,
    "bytes": 71543
   },
   "private": {
-   "files": 86,
-   "bytes": 9251733
+   "files": 99,
+   "bytes": 13807836
   },
   "workshop_runtime": {
    "files": 8,
@@ -2931,14 +3127,14 @@
    "bytes_normalization": "LF",
    "lines": 31887,
    "uppercase_identifier_tokens": 10750,
-   "tracked": false
+   "tracked": true
   },
   "docs/SUPPORT_FRONTIER.md": {
    "bytes": 32925,
    "bytes_normalization": "LF",
    "lines": 557,
    "uppercase_identifier_tokens": 54,
-   "tracked": false
+   "tracked": true
   },
   "manifests/governors.yml": {
    "bytes": 39719,
