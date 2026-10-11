@@ -1,4 +1,4 @@
-X10 controller - source reference (1.0.0-rc1, RC PLACEHOLDER)
+X10 controller - source reference (1.0.0-rc2, RC PLACEHOLDER)
 ============================================================
 
 STATUS: PLANNED-PLACEHOLDER - release-source repository does not exist yet.
@@ -6,9 +6,12 @@ A publish-ready build must fail on this marker (assembler enforces).
 
 Controller / release source (planned):
   https://github.com/Dacilla/civ6-x10-release-source  [PLANNED-PLACEHOLDER]
-  production source commit 2cf953e
-  live-validation tag phase6b-1010-live-validated
+  semantic registry freeze 2cf953e (1010 entries; validated by tag
+  phase6b-1010-live-validated)
+  controller runtime tree: see controller_release_commit in
+  release-manifest.yml
+  UX validation: LIVE_VALIDATED (preset/Custom/Off matrix + RC2 smoke)
 
 Engine dependency source (exact, available now):
   https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
-  branch x10-lifecycle-log, commit 1ce3188
+  branch x10-lifecycle-log, commit 0655190

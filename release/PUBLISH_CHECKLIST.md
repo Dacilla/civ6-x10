@@ -17,11 +17,13 @@
 - [ ] `release/verified-sources.yml` completed from the example and URLs verified
 - [ ] publish-ready assembler rerun (`-PublishReady`, no RC flag): passes
 - [ ] no `PLANNED-PLACEHOLDER` markers anywhere staged
-- [ ] DLL hash exact (`e33d84b8…d619`)
+- [ ] DLL hash exact (`3b6dc3d2…ab14`, RC2 config-reader build)
 - [ ] final CHECKSUMS.sha256 generated
 - [ ] no probe content
 - [ ] engine/controller Mod IDs correct
 - [ ] `CompatibleVersions` present in both modinfos
+- [ ] setup localization present (`Config/X10Text.sql` in controller Files)
+- [ ] both modinfos Single Player Yes / Multiplayer No
 - [ ] preview images present (`release/preview-engine.png`,
       `release/preview-controller.png`; PNG/JPG, <1 MB, ≥512x512)
 
@@ -34,7 +36,8 @@
 - [ ] engine configured as Steam Required Item
 - [ ] subscribing to the controller pulls the engine automatically
 - [ ] exactly the two staged folders install (no duplicates/old copies)
-- [ ] launch smoke test + save/reload: lifecycle 801/209, reload identical
+- [ ] launch smoke test + save/reload: lifecycle 1010/0, reload identical
+  (Custom 7.3 = 801/209 retained as a secondary spot check, not primary)
 
 ## Before making anything public
 - [ ] EXPLICIT HUMAN APPROVAL (never automatic)

@@ -1,9 +1,11 @@
 {
- "generated_by": "civ6x10.release_surface (Phase 7A audit/design)",
+ "generated_by": "civ6x10.release_surface (Phase 7C.3 provenance)",
  "freeze": {
-  "production_commit": "2cf953e",
-  "ce_commit": "1ce3188",
-  "dll_sha256": "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619",
+  "semantic_registry_commit": "2cf953e",
+  "controller_release_commit": "f5e2d174506ab721f3cad316f883c1adecf57c43",
+  "ce_commit": "0655190",
+  "dll_sha256": "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14",
+  "ux_validation_status": "LIVE_VALIDATED",
   "registry": {
    "entries": 1010,
    "unique": 1006,
@@ -380,7 +382,7 @@
   {
    "path": "civ6x10/release_surface.py",
    "tracked": true,
-   "bytes": 14004,
+   "bytes": 14166,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -1024,7 +1026,7 @@
   {
    "path": "docs/UX_REVIEW.md",
    "tracked": true,
-   "bytes": 17442,
+   "bytes": 17437,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1164,7 +1166,7 @@
   {
    "path": "release/BUILDING.md",
    "tracked": true,
-   "bytes": 2149,
+   "bytes": 2255,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1220,7 +1222,7 @@
   {
    "path": "release/PUBLISH_CHECKLIST.md",
    "tracked": true,
-   "bytes": 1617,
+   "bytes": 1845,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1234,7 +1236,7 @@
   {
    "path": "release/README-public.md",
    "tracked": true,
-   "bytes": 2129,
+   "bytes": 2575,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1248,7 +1250,7 @@
   {
    "path": "release/VALIDATION.md",
    "tracked": true,
-   "bytes": 3366,
+   "bytes": 4539,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1262,7 +1264,7 @@
   {
    "path": "release/WORKSHOP_PLAN.md",
    "tracked": true,
-   "bytes": 2469,
+   "bytes": 2461,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1276,7 +1278,7 @@
   {
    "path": "release/assemble-release.ps1",
    "tracked": true,
-   "bytes": 8960,
+   "bytes": 9203,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1290,7 +1292,7 @@
   {
    "path": "release/export_public_source.py",
    "tracked": true,
-   "bytes": 5892,
+   "bytes": 6576,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1332,7 +1334,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 5960,
+   "bytes": 6858,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1374,7 +1376,7 @@
   {
    "path": "release/staging-src/controller/SOURCE.txt",
    "tracked": true,
-   "bytes": 630,
+   "bytes": 797,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1416,7 +1418,7 @@
   {
    "path": "release/staging-src/engine/README.txt",
    "tracked": true,
-   "bytes": 550,
+   "bytes": 549,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1472,7 +1474,7 @@
   {
    "path": "release/workshop-controller.md",
    "tracked": true,
-   "bytes": 1835,
+   "bytes": 2094,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2690,7 +2692,7 @@
   {
    "path": "tests/test_release_candidate.py",
    "tracked": true,
-   "bytes": 22216,
+   "bytes": 28071,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2704,7 +2706,7 @@
   {
    "path": "tests/test_release_freeze.py",
    "tracked": true,
-   "bytes": 13506,
+   "bytes": 13517,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2859,7 +2861,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 108,
-   "bytes": 1186130
+   "bytes": 1196348
   },
   "corresponding_build_artifact": {
    "files": 1,

@@ -2,7 +2,9 @@
 
 Copies ONLY reviewed paths into <out>/civ6-x10-release-source/.
 Writes PROVENANCE.md (no absolute paths, usernames, or private data).
-Usage: python release/export_public_source.py --out <dir> [--version 1.0.0-rc1]
+Usage: python release/export_public_source.py --out <dir> [--version 1.0.0-rc2]
+Release identity (version default) is derived from release-manifest.yml;
+--version overrides only for experiments (never for a real release).
 """
 from __future__ import annotations
 
@@ -78,11 +80,22 @@ def sha_file(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
+def yaml_safe_load(path: Path) -> dict:
+    try:
+        import yaml
+    except ImportError:
+        print("export needs pyyaml (pip install pyyaml)", file=sys.stderr)
+        raise SystemExit(2)
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
-    ap.add_argument("--version", default="1.0.0-rc1")
+    ap.add_argument("--version", default=None)
     args = ap.parse_args()
+    man = yaml_safe_load(REPO / "release" / "release-manifest.yml")
+    version = args.version or man["release_version"]
     out = Path(args.out)
     if str(out.resolve()) == str(REPO.resolve()) or REPO in out.resolve().parents:
         print("refusing: --out must be outside the private repo", file=sys.stderr)
@@ -135,12 +148,14 @@ def main() -> int:
         f"{r.as_posix()}:{sha_file(dest / r)}" for r in sorted(copied)
     ).encode()).hexdigest()
     prov = (
-        "# Public-source provenance (X10 v1.0.0-rc1)\n\n"
+        f"# Public-source provenance (X10 {version})\n\n"
         f"- private development source head: `{head}`\n"
-        "- validated gameplay commit: `2cf953e`\n"
+        f"- semantic registry commit: `{man['semantic_registry_commit']}`\n"
         "- validation tag: `phase6b-1010-live-validated`\n"
-        "- CE fork commit: `1ce3188`\n"
-        f"- release candidate version: `{args.version}`\n"
+        f"- controller release commit: `{man['controller_release_commit']}`\n"
+        f"- CE fork commit: `{man['ce_commit']}`\n"
+        f"- release DLL SHA-256: `{man['dll_sha256']}`\n"
+        f"- release candidate version: `{version}`\n"
         "- export command: `python release/export_public_source.py --out <dir>`\n"
         f"- exported files: {len(copied)}\n"
         f"- export file-list hash: `{file_hash}`\n"

@@ -116,6 +116,10 @@ $staged = @()
 foreach ($itemName in @('engine', 'controller')) {
     $item = $man.workshop_items.$itemName
     $dest = Join-Path $workshop $item.stage_dir
+    # Fresh per-item collection (never path-prefix filtering: the
+    # controller stage dir '.../X10' is a string prefix of the engine
+    # dir '.../X10-CE-Engine', which once poisoned the X10 item file).
+    $itemStaged = @()
     foreach ($entry in @($item.runtime_files) + @($item.auxiliary_files)) {
         $rel = Join-Path $dest $entry.stage_path
         if ($entry.dll_input) {
@@ -142,10 +146,11 @@ foreach ($itemName in @('engine', 'controller')) {
             }
         }
         $staged += $rel
+        $itemStaged += $rel
     }
-    # per-item checksum file over packaged bytes
+    # per-item checksum file over packaged bytes (exact membership)
     $lines = @()
-    foreach ($f in ($staged | Where-Object { $_ -like "$dest*" } | Sort-Object)) {
+    foreach ($f in ($itemStaged | Sort-Object)) {
         $h = ([Security.Cryptography.SHA256]::Create().ComputeHash([IO.File]::ReadAllBytes($f)) |
             ForEach-Object { $_.ToString('x2') }) -join ''
         $lines += "$h  " + [IO.Path]::GetRelativePath($OutDir, $f).Replace('\', '/')

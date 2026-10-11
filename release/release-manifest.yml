@@ -1,8 +1,17 @@
-# Release manifest (Phase 7B.1) — single source of truth for release assembly.
+# Release manifest (Phase 7C.3) — single source of truth for release assembly.
 #
-# Describes the validated Phase-6B/6C gameplay-production freeze point plus
-# the v1.0.0-rc1 two-item staging surfaces. Asserted by
-# tests/test_release_freeze.py (freeze pins) and
+# Provenance split (do not conflate):
+# - semantic_registry_commit: froze the 1010 gameplay semantic registry
+#   (Phase 6B; validated by tag phase6b-1010-live-validated).
+# - controller_release_commit: civ6-x10 commit whose controller/runtime
+#   tree (controller/, dependencies/, release/staging-src/) is byte-equal
+#   to the live-validated RC2 staging. Verified via git tree equality.
+# - ce_commit: CE fork commit of the exact corresponding source for the
+#   distributed DLL (preset/custom/bool readers).
+# - release_source_head: content-closure commit of THIS release cycle,
+#   recorded by a manifest-sync follow-up (which changes nothing else);
+#   per-export heads additionally recorded in PROVENANCE.md files.
+# Asserted by tests/test_release_freeze.py (freeze pins) and
 # tests/test_release_candidate.py (schema + assembly invariants).
 # Public URLs are PLANNED placeholders in RC mode only
 # (see PLANNED-PLACEHOLDER markers in staging-src/*/SOURCE.txt).
@@ -20,8 +29,13 @@ modinfo_version: 1
 platform: Windows x64
 requires_gathering_storm: true
 requires_secret_societies_for_mode_definitions: true
-production_commit: 2cf953e
-ce_commit: 1ce3188
+semantic_registry_commit: 2cf953e
+semantic_validation_tag: phase6b-1010-live-validated
+controller_release_commit: f5e2d174506ab721f3cad316f883c1adecf57c43
+release_source_head: TODO-closure-commit
+ux_validation_status: LIVE_VALIDATED
+ux_validation_dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
+ce_commit: 0655190
 ce_branch: x10-lifecycle-log
 ce_fork_url: https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
 upstream_url: https://github.com/Wild-W/CivilizationVI_CommunityExtension
@@ -63,20 +77,20 @@ workshop_items:
         sha256: 8a48ba744fd5c06503eaff885d69cde3441cdf331ee6558867f9e8afa28d62fe
       - stage_path: Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
         dll_input: true
-        sha256: e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
+        sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/engine/README.txt
-        sha256: d6deb23b94984ceada51c249474b07437855b513db649f8f59899d25314ca8ae
+        sha256: 9cbca3366b54ccd0cd30ff35049874a2240263b10c098272e2f1ae33a5f116bc
       - stage_path: LICENSE.txt
         source: release/staging-src/engine/LICENSE.txt
         sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/engine/THIRD_PARTY_NOTICES.txt
-        sha256: b0203f7cff7e63775c96032de0483d36c0503e24575c1a355644ec6283efe46e
+        sha256: 16499653fd0971c28f3755d5ab12fffa6b5960d37cb1138c30addff4933c63dd
       - stage_path: SOURCE.txt
         source: release/staging-src/engine/SOURCE.txt
-        sha256: 43816e72b256b7598f1ccd8061837ef286d0cc6bf87f1963b5017bdc2d3fc00f
+        sha256: 566ea894cf37428930a26cf19fbae41413a0012b12042cecd2876baa03f41c86
         has_planned_placeholder: true
   controller:
     name: X10 — Configurable Bonus Multiplier
@@ -109,10 +123,10 @@ workshop_items:
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/controller/THIRD_PARTY_NOTICES.txt
-        sha256: 9c45020734e558fabe350730d7499a54c8604dd92c999676747adac97bbaf57d
+        sha256: 7c86f76fb19d722d106aa02e33df1e90dde21e6cadd66382f0a8fc48e35034e8
       - stage_path: SOURCE.txt
         source: release/staging-src/controller/SOURCE.txt
-        sha256: c64a17d74c19341a77073cfc5abc3aca4aee06f75842c9a625e091f2e20e3479
+        sha256: 7859e3a62104aa6b05b7aa0bfe5b4c2249348a49e5fca528a07a86f9e698b470
         has_planned_placeholder: true
 
 source_release:

@@ -23,11 +23,15 @@ Description:
 > unique-improvement intrinsics, and other ambiguous mechanics stay at
 > official values (full list: release/KNOWN_ISSUES.md in the source).
 >
-> Requirements: Windows x64 ONLY and Gathering Storm. Affects saved
-> games: enabling/disabling mid-campaign changes definition values.
+> Requirements: Windows x64 ONLY and Gathering Storm. X10 affects
+> saved games. Choose your X10 settings when creating the game;
+> changing X10 configuration for an existing campaign is not supported.
 >
-> Troubleshooting: after reaching the map, check
-> `%TEMP%\X10Lifecycle.log` for `writes=` / `post_add_match=` lines.
+> Troubleshooting: first check both X10 items are enabled, no competing
+> GameCore/Community Extension is active, Multiplier is not Off, and
+> Secret Societies mode is on if you expect Society bonuses. If
+> anything still looks wrong, reach the map and provide
+> `%TEMP%\X10Lifecycle.log` when seeking support.
 >
 > License AGPL-3.0. Source, build instructions, validation summary:
 > SOURCE.txt / VALIDATION.md in the release source

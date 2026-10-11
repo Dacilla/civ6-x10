@@ -1,4 +1,4 @@
-X10 CE Engine - source reference (1.0.0-rc1, RC PLACEHOLDER)
+X10 CE Engine - source reference (1.0.0-rc2, RC PLACEHOLDER)
 ============================================================
 
 STATUS: PLANNED-PLACEHOLDER - release-source repository does not exist yet.
@@ -9,7 +9,7 @@ Controller / release source (planned):
 
 Engine source (exact, available now):
   https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
-  branch x10-lifecycle-log, commit 1ce3188
+  branch x10-lifecycle-log, commit 0655190
   (contains the exact X10/X10ProductionRegistry.inc used by the DLL)
 
 Upstream project:

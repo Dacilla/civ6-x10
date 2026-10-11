@@ -2,7 +2,7 @@
 
 Two items. Engine FIRST, then controller. Both start Unlisted.
 No upload tooling is automated here; uploads use the Civ VI/Steam
-Workshop uploader against the exact `release/out/1.0.0-rc1`-style
+Workshop uploader against the exact `release/out/1.0.0-rc2`-style
 staging folders (regenerated final, not RC, at publication time).
 
 ## Item 1 — X10 CE Engine (upload first)
@@ -19,9 +19,9 @@ staging folders (regenerated final, not RC, at publication time).
   publication state; verify subscribe/install yields exactly the
   staged file set.
 
-## Item 2 — X10: Configurable Semantic Multiplier (upload second)
+## Item 2 - X10: Configurable Bonus Multiplier (upload second)
 
-- Title: `X10 - Configurable Semantic Multiplier`
+- Title: `X10 - Configurable Bonus Multiplier`
 - Description: `release/workshop-controller.md`
 - Staging folder: `workshop/X10`
 - Modinfo version integer: 1

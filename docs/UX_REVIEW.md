@@ -99,9 +99,9 @@ bonuses`. Tooltips per the Phase-7C.1 brief (traits/policies/
 governments-shared-rule/pantheons-scope/wonders-structural/governors-
 mode-gating/suzerain-unlocks).
 
-## 5. Mod-browser metadata (prototype values; production in 7C.2)
+## 5. Mod-browser metadata (adopted in 7C.2 production files)
 
-- Controller: Name `X10 - Configurable Semantic Multiplier`, Teaser
+- Controller: Name `X10 — Configurable Bonus Multiplier`, Teaser
   `Choose a multiplier and scale supported Civ VI bonuses by category.
   Requires X10 CE Engine.` Retain `CompatibleVersions=2.0`.
 - Engine: Name `X10 CE Engine`, Teaser `Required engine dependency for

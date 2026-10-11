@@ -1,4 +1,4 @@
-# X10 v1.0.0-rc1 — build instructions
+# X10 v1.0.0-rc2 — build instructions
 
 Two separate reproducibility paths. The clean civ6-x10 source snapshot
 alone does NOT regenerate the 1010-entry registry from scratch (its
@@ -9,7 +9,7 @@ byte-verifiable engine binary.
 
 1. Checkout the engine source (exact, available now):
    `https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10`
-   branch `x10-lifecycle-log` at commit `1ce3188`.
+   branch `x10-lifecycle-log` at commit `0655190`.
    That commit already contains the exact generated
    `X10/X10ProductionRegistry.inc` used by the distributed DLL (1010
    entries / 1006 definitions; verify against the `registry_sha256` in
@@ -26,9 +26,11 @@ byte-verifiable engine binary.
 ## Controller (text-only)
 
 The controller ships as source: `X10.modinfo`, `Config/X10Config.sql`
-(seven module toggles, default ON), `Config/X10WonderBridge.sql`
-(guarded direct-table bridge), `Config/Dummy.sql`, plus the four
-auxiliary text files. No compilation is involved.
+(preset dropdown, custom value, seven bool module checkboxes, default
+preset ×10 Classic / all ON), `Config/X10Text.sql` (en_US setup text),
+`Config/X10WonderBridge.sql` (guarded direct-table bridge),
+`Config/Dummy.sql`, plus the four auxiliary text files. No compilation
+is involved.
 
 ## Assembling the two Workshop staging directories
 
@@ -36,7 +38,7 @@ From the release source with a verified DLL available:
 
 ```powershell
 pwsh -NoProfile -File release/assemble-release.ps1 `
-  -OutDir release/out/1.0.0-rc1 `
+  -OutDir release/out/1.0.0-rc2 `
   -DllPath <path to GameCore_XP2_CE_FinalRelease.dll> `
   -AllowPlaceholderUrls
 ```

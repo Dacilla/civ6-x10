@@ -369,6 +369,126 @@ class TestFinalTransitionSurface(unittest.TestCase):
                                  e["stage_path"])
 
 
+class TestReleaseProvenanceClosure(unittest.TestCase):
+    """Phase 7C.3: one current DLL/CE identity across the release surface."""
+
+    def test_single_dll_identity(self):
+        man = manifest()
+        expect = "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14"
+        self.assertEqual(man["dll_sha256"], expect)
+        dll_entries = [
+            e for e in man["workshop_items"]["engine"]["runtime_files"]
+            if e.get("dll_input")]
+        self.assertEqual(len(dll_entries), 1)
+        self.assertEqual(dll_entries[0]["sha256"], expect)
+        self.assertEqual(man["ce_commit"], "0655190")
+
+    def test_semantic_vs_release_provenance_split(self):
+        man = manifest()
+        self.assertEqual(man["semantic_registry_commit"], "2cf953e")
+        self.assertEqual(man["semantic_validation_tag"],
+                         "phase6b-1010-live-validated")
+        self.assertIn("controller_release_commit", man)
+        self.assertRegex(man["controller_release_commit"], r"^[0-9a-f]{7,40}$")
+        self.assertEqual(man["ux_validation_status"], "LIVE_VALIDATED")
+        self.assertEqual(man["ux_validation_dll_sha256"],
+                         "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
+
+    def test_current_provenance_everywhere(self):
+        import re
+        man = manifest()
+        ce = man["ce_commit"]
+        dll = man["dll_sha256"]
+        self.assertEqual(ce, "0655190")
+        checks = {
+            "release/BUILDING.md": [ce, dll],
+            "release/VALIDATION.md": [ce, dll],
+            "release/staging-src/engine/SOURCE.txt": [ce],
+            "release/staging-src/controller/SOURCE.txt": [ce],
+            "release/staging-src/engine/THIRD_PARTY_NOTICES.txt": [ce, dll],
+            "release/staging-src/controller/THIRD_PARTY_NOTICES.txt": [ce],
+        }
+        for rel, needles in checks.items():
+            text = (ROOT / rel).read_text(encoding="utf-8")
+            for n in needles:
+                self.assertIn(n, text, f"{rel} missing {n[:12]}")
+
+
+class TestCrossFileProvenance(unittest.TestCase):
+    """One current DLL/CE identity everywhere (manifest is source of truth)."""
+
+    def test_building_matches_manifest(self):
+        man = manifest()
+        text = (ROOT / "release" / "BUILDING.md").read_text(encoding="utf-8")
+        self.assertIn(man["ce_commit"], text)
+        self.assertIn(man["dll_sha256"], text)
+        self.assertNotIn("1.0.0-rc1", text)
+
+    def test_staged_source_notices_match_manifest(self):
+        man = manifest()
+        for item in ("engine", "controller"):
+            for name in ("SOURCE.txt", "THIRD_PARTY_NOTICES.txt"):
+                text = (ROOT / "release" / "staging-src" / item / name
+                        ).read_text(encoding="utf-8")
+                self.assertIn(man["ce_commit"], text, f"{item}/{name}")
+        eng = (ROOT / "release" / "staging-src" / "engine"
+               / "THIRD_PARTY_NOTICES.txt").read_text(encoding="utf-8")
+        self.assertIn(man["dll_sha256"], eng)
+
+    def test_validation_matches_manifest(self):
+        man = manifest()
+        text = (ROOT / "release" / "VALIDATION.md").read_text(encoding="utf-8")
+        self.assertIn(man["ce_commit"], text)
+        self.assertIn(man["dll_sha256"], text)
+        self.assertIn("v1.0.0-rc2", text)
+
+    def test_surface_matches_manifest(self):
+        import json
+        man = manifest()
+        rep = json.loads(
+            (ROOT / "reports" / "release_surface.json").read_text(
+                encoding="utf-8"))
+        self.assertEqual(rep["freeze"]["ce_commit"], man["ce_commit"])
+        self.assertEqual(rep["freeze"]["dll_sha256"], man["dll_sha256"])
+
+    def test_export_provenance_matches_manifest(self):
+        self.skipTest("covered against a fresh export in "
+                      "TestPublicExport.test_provenance_matches_manifest")
+
+    def test_per_item_checksums_disjoint(self):
+        import hashlib
+        out = ROOT / "release" / "out" / "1.0.0-rc2" / "workshop"
+        if not (out / "X10" / "CHECKSUMS-item.sha256").is_file():
+            self.skipTest("RC2 staging not assembled")
+        eng = (out / "X10-CE-Engine" / "CHECKSUMS-item.sha256"
+               ).read_text(encoding="utf-8").splitlines()
+        ctl = (out / "X10" / "CHECKSUMS-item.sha256"
+               ).read_text(encoding="utf-8").splitlines()
+        eng_paths = [l.split("  ")[1] for l in eng if l.strip()]
+        ctl_paths = [l.split("  ")[1] for l in ctl if l.strip()]
+        # X10 / X10-CE-Engine prefix-collision regression: neither item
+        # file may reference the other item's tree
+        self.assertTrue(all("X10-CE-Engine" in p for p in eng_paths),
+                        eng_paths)
+        self.assertTrue(all(p.startswith("workshop/X10/")
+                            for p in ctl_paths), ctl_paths)
+        self.assertEqual(len(eng_paths), 8)
+        self.assertEqual(len(ctl_paths), 9)
+        # every hash reproduces from packaged bytes
+        for rel in eng_paths + ctl_paths:
+            h = hashlib.sha256(
+                (ROOT / "release" / "out" / "1.0.0-rc2" / rel)
+                .read_bytes()).hexdigest()
+            line = [l for l in eng + ctl if l.endswith(rel)][0]
+            self.assertTrue(line.startswith(h), rel)
+
+    def test_assembler_no_prefix_filter(self):
+        text = (ROOT / "release" / "assemble-release.ps1").read_text(
+            encoding="utf-8")
+        self.assertNotIn('$_ -like "$dest*"', text)
+        self.assertIn("$itemStaged", text)
+
+
 class TestPublicExport(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -411,9 +531,17 @@ class TestPublicExport(unittest.TestCase):
 
     def test_provenance_present_and_clean(self):
         prov = (self.root / "PROVENANCE.md").read_text(encoding="utf-8")
-        for needle in ("2cf953e", "phase6b-1010-live-validated", "1ce3188",
+        for needle in ("2cf953e", "phase6b-1010-live-validated",
                        "1.0.0-rc2", "file-list hash"):
             self.assertIn(needle, prov)
+
+    def test_provenance_matches_manifest(self):
+        man = manifest()
+        prov = (self.root / "PROVENANCE.md").read_text(encoding="utf-8")
+        self.assertIn(man["ce_commit"], prov)
+        self.assertIn(man["dll_sha256"], prov)
+        self.assertIn(man["controller_release_commit"], prov)
+        self.assertIn("1.0.0-rc2", prov)
         for needle in ("C:\\Users", "/home/", "data/local/Debug"):
             self.assertNotIn(needle, prov)
 

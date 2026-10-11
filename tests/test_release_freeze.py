@@ -161,9 +161,9 @@ class TestReleaseFreeze(unittest.TestCase):
                if a["asset_path"] == "X10ProductionRegistry.inc"][0]
         self.assertEqual(reg["sha256"], FROZEN_REGISTRY_SHA256)
         self.assertEqual(man["registry_entries"], 1010)
-        self.assertEqual(man["production_commit"], "2cf953e")
-        self.assertEqual(man["ce_commit"], "1ce3188")
-        self.assertEqual(man["live_validation_tag"],
+        self.assertEqual(man["semantic_registry_commit"], "2cf953e")
+        self.assertEqual(man["ce_commit"], "0655190")
+        self.assertEqual(man["semantic_validation_tag"],
                          "phase6b-1010-live-validated")
         self.assertIn("X10_Probe_Test", man["forbidden_in_release"])
         self.assertIn("probe.lua", man["forbidden_in_release"])

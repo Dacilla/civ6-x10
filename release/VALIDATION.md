@@ -1,14 +1,16 @@
-# X10 v1.0.0-rc1 — validation summary (compact public evidence)
+# X10 v1.0.0-rc2 — validation summary (compact public evidence)
 
 No raw log dumps are included. Full native logs remain in the private
 development workspace; their SHA-256 hashes are recorded below so the
 summaries stay checkable.
 
-- Validated production commit: `2cf953e`
+RC2 — not RC1 — is the final validated candidate: RC2 carries the new
+preset/custom/bool configuration path (DLL `3b6dc3d2…ab14`, CE
+`0655190`) over the unchanged 1010-entry gameplay set.
+
+### Semantic validation (registry freeze `2cf953e`)
+
 - Validation tag: `phase6b-1010-live-validated`
-- CE fork commit: `1ce3188` (branch `x10-lifecycle-log`)
-- DLL SHA-256:
-  `e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619`
 - Registry: 1010 entries / 1006 unique definitions / 25 shared
   (788 unconditional + 222 count-like)
 - Run A, all seven modules ON, initial load AND save/reload identical:
@@ -29,6 +31,29 @@ summaries stay checkable.
   Coal/Iron retain 2; all 21 new count-like pairs refuse at k=7.3
 - Setup: Gathering Storm, Rome/Trajan, Small map, 2 AI, multiplier 7.3,
   Secret Societies ON, Workshop Community Extension disabled
+
+### Final configuration/UX validation (RC2)
+
+- CE fork commit: `0655190` (branch `x10-lifecycle-log`)
+- DLL SHA-256:
+  `3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14`
+- Controller runtime: `release/release-manifest.yml`
+  `controller_release_commit`
+- Run A — preset ×10 Classic, all ON (load+reload):
+  `writes=1010 refused=0 mismatch=0 unreadable=0 skipped=0`,
+  `post_add_match=1010`, sessions identical.
+- Run B — Custom 7.3, all ON: `writes=801 refused=209`,
+  pair-for-pair identical to the semantic evidence above.
+- Run C — Custom 7.3, Governors OFF: `writes=745 refused=195
+  skipped=70` (exactly the 70 governor-manifest skips, zero Governor
+  mutations, Toqui still writes).
+- Run D — preset Off: disarmed, zero mutations, concise OFF reason.
+- Run E — invalid Custom: `abc` (TEXT variant, fail-closed),
+  `-1`/`101` (INT32 out-of-range, fail-closed); blank enters INT32 0
+  (Off-equivalent); each disarmed with an explicit reason and zero
+  transforms.
+- RC2 smoke (probe-free, preset ×10, save/reload): 1010/0 both
+  sessions, per-row identical to matrix Run A.
 
 Private archived evidence (hashes only):
 - `X10Lifecycle.1010-6C-runA.log`:

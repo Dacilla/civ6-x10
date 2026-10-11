@@ -264,11 +264,14 @@ def build_release_surface(root: Path) -> dict:
         surfaces[f["surface"]]["files"] += 1
         surfaces[f["surface"]]["bytes"] += f["bytes"]
     return {
-        "generated_by": "civ6x10.release_surface (Phase 7A audit/design)",
+        "generated_by": "civ6x10.release_surface (Phase 7C.3 provenance)",
         "freeze": {
-            "production_commit": "2cf953e",
-            "ce_commit": "1ce3188",
-            "dll_sha256": "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619",
+            "semantic_registry_commit": "2cf953e",
+            "controller_release_commit":
+                "f5e2d174506ab721f3cad316f883c1adecf57c43",
+            "ce_commit": "0655190",
+            "dll_sha256": "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14",
+            "ux_validation_status": "LIVE_VALIDATED",
             "registry": {"entries": 1010, "unique": 1006, "shared": 25,
                          "unconditional": 788, "count_like": 222},
         },
