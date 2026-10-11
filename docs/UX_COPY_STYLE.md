@@ -70,3 +70,18 @@ README-public, CHANGELOG current entry.
   Multiplier" in player surfaces only.
 - stop-slop: no such skill in this harness; the banned-term sweep
   (em/en dash, ellipsis, semicolons, jargon list) served instead.
+
+## 7C.2a.1 cleanup (parallel presets, descriptive modules)
+
+- Preset descriptions use one parallel settings-menu pattern
+  ('Sets the multiplier to ×N.' / 'Disables X10.' /
+  'Uses the custom multiplier below.') instead of varied verbs.
+- Module tooltips are descriptive ('... use the X10 multiplier.')
+  instead of imperative ('Apply ...'); caveat sentences unchanged.
+- Workshop HOW paragraph rewritten in player language (no 'discount
+  maths' / 'combat scaling' / 'anything left over' / 'safely');
+  technical source docs keep exact transform terminology.
+- Banned-phrase lint extended (test_no_player_surface_banned_phrases):
+  'supported bonuses', 'content populates', 'floating-point noise',
+  'discount maths', 'combat scaling', 'Anything left over',
+  'Apply the X10 multiplier'. Zero hits expected in player surfaces.

@@ -4,7 +4,7 @@
 - Requires Civilization VI: Gathering Storm.
 - Incompatible with any other active GameCore / Community Extension
   replacement: enable exactly one (X10 CE Engine + X10 controller).
-- Whole-unit effects (charges, power, resources, ...) are left
+- Whole-unit effects such as charges, power, and resources are left
   unchanged whenever the configured multiplier would produce a
   fraction. X10 never rounds these bonuses.
 - Some effects are intentionally left unchanged because multiplying
@@ -15,9 +15,10 @@
   Steam should pull it automatically once the Required-Item link is set.
 - X10 affects saved games: choose settings when creating the campaign;
   changing X10 configuration for an existing campaign is not supported.
-- Secret Societies content populates only with the mode enabled.
-- Custom decimals may redisplay with floating-point noise (7.3 may
-  appear as 7.3000001907349). The chosen multiplier still works
-  correctly; this is a Civ VI display artifact.
-- Troubleshooting: after reaching the map, inspect
-  `%TEMP%\X10Lifecycle.log`.
+- Secret Society bonuses are available only when Secret Societies
+  mode is enabled.
+- Custom decimal values may show extra digits after you enter them.
+  For example, 7.3 may appear as 7.3000001907349. This is only a
+  display issue.
+- If you need support, include `%TEMP%\X10Lifecycle.log` after
+  reaching the map.

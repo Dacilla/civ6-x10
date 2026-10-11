@@ -1,6 +1,6 @@
 # X10: Configurable Bonus Multiplier (v1.0.0-rc2 clean snapshot)
 
-X10 scales supported Civilization VI bonuses by the multiplier
+X10 scales Civilization VI bonuses by the multiplier
 you choose instead of fixed hand-tuned numbers.
 
 ## What you install (two Workshop items)
@@ -25,9 +25,9 @@ you choose instead of fixed hand-tuned numbers.
    want to keep unchanged.
 7. Start the game.
 
-Whole-unit bonuses (charges, power, granted resources, ...) apply only
-for exact whole-number results; otherwise they keep their normal
-values instead of rounding. Some effects stay unchanged because
+Whole-unit bonuses such as charges, power, and granted resources
+apply only for exact whole-number results; otherwise they keep their
+normal values instead of rounding. Some effects stay unchanged because
 multiplying them would not give a reliable result. Leaving Custom
 blank enters 0 (Off-equivalent).
 

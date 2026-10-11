@@ -2,8 +2,8 @@
 <Mod id="55d7b934-62f9-46fb-a771-badf3d1a1538" version="1">
   <Properties>
     <Name>X10: Configurable Bonus Multiplier</Name>
-    <Teaser>Scale Civilization VI bonuses with a configurable multiplier. Requires X10 CE Engine.</Teaser>
-    <Description>Choose an X10 multiplier and the bonus categories it affects in Advanced Setup. ×10 is the default. Requires X10 CE Engine.</Description>
+    <Teaser>Choose a multiplier for Civilization VI bonuses. Requires X10 CE Engine.</Teaser>
+    <Description>Choose a multiplier and the bonus categories it affects in Advanced Setup. ×10 is the default.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
     <CompatibleVersions>2.0</CompatibleVersions>
     <SupportsSinglePlayer>1</SupportsSinglePlayer>

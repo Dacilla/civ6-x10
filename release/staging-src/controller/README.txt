@@ -1,11 +1,9 @@
 X10: Configurable Bonus Multiplier (1.0.0-rc2)
 ==================================================
 
-X10 scales bonuses where multiplying them gives a clear result.
-Percentage discounts use proper percentage maths, combat bonuses use
-Civ VI's combat scaling, and whole-number effects such as charges are
-never rounded. Some effects stay unchanged because multiplying them
-would not give a reliable result.
+X10 handles different bonuses according to how Civilization VI uses
+them. Bonuses that require whole numbers are never rounded. Effects
+that cannot be multiplied reliably are left unchanged.
 
 SETUP (Advanced Setup, all defaults are fine):
 1. Subscribe to X10: Configurable Bonus Multiplier. Steam also
@@ -34,12 +32,12 @@ FAQ:
 - One bonus stayed the same? It may need whole numbers your
   multiplier did not produce, or that effect is intentionally left
   unchanged.
-- Secret Society bonuses unchanged? Secret Societies mode must be
-  enabled.
+- Secret Society bonuses unchanged? They are available only when
+  Secret Societies mode is enabled.
 - Change settings in an existing save? Not supported.
-- Custom shows lots of decimal places (7.3000001907349)? Civ VI
-  displays the internal floating-point representation; the chosen
-  multiplier still works correctly.
+- Custom decimal values may show extra digits after you enter them.
+  For example, 7.3 may appear as 7.3000001907349. This is only a
+  display issue.
 - Leaving Custom blank enters 0 (Off-equivalent): X10 stays disarmed.
 - Log? %TEMP%\X10Lifecycle.log (support/troubleshooting).
 

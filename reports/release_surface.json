@@ -662,7 +662,7 @@
   {
    "path": "controller/X10/Config/X10Text.sql",
    "tracked": true,
-   "bytes": 3297,
+   "bytes": 3341,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -690,7 +690,7 @@
   {
    "path": "controller/X10/X10.modinfo",
    "tracked": true,
-   "bytes": 1826,
+   "bytes": 1784,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -788,7 +788,7 @@
   {
    "path": "dependencies/CE-X10/CE-X10.modinfo",
    "tracked": true,
-   "bytes": 1407,
+   "bytes": 1349,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -1026,7 +1026,7 @@
   {
    "path": "docs/UX_COPY_STYLE.md",
    "tracked": true,
-   "bytes": 3563,
+   "bytes": 4393,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1222,7 +1222,7 @@
   {
    "path": "release/KNOWN_ISSUES.md",
    "tracked": true,
-   "bytes": 1296,
+   "bytes": 1295,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1250,7 +1250,7 @@
   {
    "path": "release/README-public.md",
    "tracked": true,
-   "bytes": 2493,
+   "bytes": 2488,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1376,7 +1376,7 @@
   {
    "path": "release/staging-src/controller/README.txt",
    "tracked": true,
-   "bytes": 2043,
+   "bytes": 1937,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1488,7 +1488,7 @@
   {
    "path": "release/workshop-controller.md",
    "tracked": true,
-   "bytes": 1797,
+   "bytes": 1765,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2692,7 +2692,7 @@
   {
    "path": "tests/test_production_config.py",
    "tracked": true,
-   "bytes": 16691,
+   "bytes": 19358,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2875,7 +2875,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 109,
-   "bytes": 1203346
+   "bytes": 1206699
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -2887,7 +2887,7 @@
   },
   "workshop_runtime": {
    "files": 8,
-   "bytes": 445664
+   "bytes": 445608
   }
  },
  "firaxis_footprint": {

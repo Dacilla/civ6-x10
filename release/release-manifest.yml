@@ -68,7 +68,7 @@ workshop_items:
     runtime_files:
       - stage_path: CE-X10.modinfo
         source: dependencies/CE-X10/CE-X10.modinfo
-        sha256: 52eae822212dba03bf4fed522cc7c86121c8ac4a5e95e6d0771105aa554e13a1
+        sha256: 5ad7d4fdc8b415dfc669f4175005e99d9cf55e376a4d2939f20bc01364ac733b
       - stage_path: Config/EngineRedirect.sql
         source: dependencies/CE-X10/Config/EngineRedirect.sql
         sha256: 3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3
@@ -101,13 +101,13 @@ workshop_items:
     runtime_files:
       - stage_path: X10.modinfo
         source: controller/X10/X10.modinfo
-        sha256: e0109ccdd483b851289f7f0f9006cbab77868cc71d87a1457248b70df17a6014
+        sha256: ec89ab2e8474708f3b0751a69018d09666444d14c7cf4e2e68b1dd05691b68be
       - stage_path: Config/X10Config.sql
         source: controller/X10/Config/X10Config.sql
         sha256: b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464
       - stage_path: Config/X10Text.sql
         source: controller/X10/Config/X10Text.sql
-        sha256: 2380e23aea821277e86075ce14e54a22f730a043b679aa92b00c6654682ba328
+        sha256: 478cdad41f8514851100568563a0ff4782d52f9c12b1d1ce1a65e3145d0be6da
       - stage_path: Config/Dummy.sql
         source: controller/X10/Config/Dummy.sql
         sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
@@ -117,7 +117,7 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt
-        sha256: f8ef73862fbe37d5cbf36f93dd9619af79b2982d63b87deb3869d0aef1c00e7d
+        sha256: c437acc906a6b580e6505caccbfdedbe4ec710838dd7d5930369eb8e14ac2447
       - stage_path: LICENSE.txt
         source: release/staging-src/controller/LICENSE.txt
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed

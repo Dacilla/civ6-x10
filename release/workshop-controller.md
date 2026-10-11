@@ -1,11 +1,11 @@
 # Workshop page draft: X10: Configurable Bonus Multiplier (NOT YET UPLOADED)
 
 Name: `X10: Configurable Bonus Multiplier`
-Teaser: `Scale Civilization VI bonuses with a configurable multiplier. Requires X10 CE Engine.`
+Teaser: `Choose a multiplier for Civilization VI bonuses. Requires X10 CE Engine.`
 
 Description:
 
-> X10 scales supported bonuses by the multiplier you choose, across
+> X10 scales bonuses by the multiplier you choose, across
 > seven categories: Traits, Policies, Governments, Pantheons, Wonders,
 > Governors, and City-State Suzerain bonuses.
 >
@@ -26,14 +26,13 @@ Description:
 > KNOWN_ISSUES in the release source for the full list.
 >
 > HOW SCALING WORKS
-> Percentage discounts use discount maths and combat bonuses use
-> combat scaling. Effects that need whole numbers are never rounded.
-> Anything left over stays unchanged. Effects that cannot be scaled
-> safely stay at their normal values.
+> X10 handles different bonuses according to how Civilization VI uses
+> them. Bonuses that require whole numbers are never rounded. Effects
+> that cannot be multiplied reliably are left unchanged.
 >
 > REQUIREMENTS
-> Gathering Storm, Windows x64, single-player. No other GameCore or
-> Community Extension replacement alongside X10.
+> Gathering Storm, Windows x64, single-player. Do not enable another
+> GameCore or Community Extension replacement at the same time.
 >
 > KNOWN LIMITATIONS
 > Healing caps, some percentage scaling, and base stats of unlocked
@@ -42,5 +41,5 @@ Description:
 >
 > TROUBLESHOOTING
 > Check both X10 items are enabled, Multiplier is not Off, and Secret
-> Societies mode is on if you expect Society bonuses. Then provide
-> `%TEMP%\X10Lifecycle.log` when seeking support.
+> Societies mode is on if you expect Society bonuses. If you need
+> support, include `%TEMP%\X10Lifecycle.log` after reaching the map.

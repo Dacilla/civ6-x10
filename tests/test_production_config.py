@@ -198,6 +198,59 @@ class TestDisplayCopyLint(unittest.TestCase):
                       "×10 Classic", "Custom..."):
             self.assertIn(label, text, label)
 
+    def test_no_player_surface_banned_phrases(self):
+        """Phase 7C.2a.1: developer phrasing stays out of player copy.
+        Each phrase may survive only in explicitly technical documents
+        (BUILDING/VALIDATION/semantic docs), never in the surfaces below.
+        """
+        banned = ["supported bonuses", "content populates",
+                  "floating-point noise", "discount maths",
+                  "combat scaling", "Anything left over",
+                  "Apply the X10 multiplier"]
+        surfaces = self._display_texts()
+        for rel in ("controller/X10/X10.modinfo",
+                    "dependencies/CE-X10/CE-X10.modinfo"):
+            t = (ROOT / rel).read_text(encoding="utf-8")
+            for tag in ("Name", "Teaser", "Description"):
+                surfaces.append(re.search(rf"<{tag}>(.*?)</{tag}>", t,
+                                          re.S).group(1))
+        rels = ["release/staging-src/controller/README.txt",
+                "release/staging-src/engine/README.txt",
+                "release/workshop-controller.md",
+                "release/workshop-engine.md",
+                "release/KNOWN_ISSUES.md",
+                "release/README-public.md"]
+        if (ROOT / "release" / "staging-src").is_dir():
+            # Full repo: every player surface must exist and be clean.
+            missing = [r for r in rels if not (ROOT / r).is_file()]
+            self.assertEqual(missing, [])
+        for rel in rels:
+            p = ROOT / rel
+            if p.is_file():
+                surfaces.append(p.read_text(encoding="utf-8"))
+        # Clean export renames README-public.md to root README.md.
+        export_readme = ROOT / "README.md"
+        if not (ROOT / "release" / "README-public.md").is_file() \
+                and export_readme.is_file():
+            surfaces.append(export_readme.read_text(encoding="utf-8"))
+        for value in surfaces:
+            for term in banned:
+                self.assertNotIn(term, value,
+                                 f"{term!r} in {value[:80]}")
+
+    def test_final_preset_descriptions(self):
+        text = TEXT.read_text(encoding="utf-8")
+        for desc in ("Sets the multiplier to ×2.",
+                     "Sets the multiplier to ×3.",
+                     "Sets the multiplier to ×5.",
+                     "Sets the multiplier to ×10. Default setting.",
+                     "Sets the multiplier to ×20.",
+                     "Sets the multiplier to ×50.",
+                     "Sets the multiplier to ×100.",
+                     "Uses the custom multiplier below.",
+                     "Disables X10."):
+            self.assertIn(desc, text, desc)
+
 
 class TestProductionModinfo7C2(unittest.TestCase):
     def _mod(self, rel):
