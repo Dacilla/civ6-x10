@@ -5,7 +5,7 @@ STATUS: PLANNED-PLACEHOLDER - release-source repository does not exist yet.
 A publish-ready build must fail on this marker (assembler enforces).
 
 Controller / release source (planned):
-  https://github.com/Dacilla/civ6-x10-release-source  [PLANNED-PLACEHOLDER]
+  https://github.com/Dacilla/civ6-overpowered-bonuses  [PLANNED-PLACEHOLDER]
   semantic registry freeze 2cf953e (1010 entries; validated by tag
   phase6b-1010-live-validated)
   controller runtime tree: see controller_release_commit in

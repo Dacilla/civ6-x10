@@ -224,6 +224,14 @@ class TestAssembleDynamic(unittest.TestCase):
             capture_output=True, text=True)
         if r.returncode != 0:
             raise unittest.SkipTest(f"assembler failed: {r.stderr[-500:]}")
+        cls.asm_returncode = r.returncode
+
+    def test_rc_assembly_succeeds(self):
+        # RC mode (placeholder URLs allowed) must succeed outright;
+        # only -PublishReady is gated. A skip here would hide breakage,
+        # so the return code is asserted, not merely survived.
+        self.assertEqual(self.asm_returncode, 0)
+        self.assertTrue((self.outdir / "CHECKSUMS.sha256").is_file())
 
     def test_tree_matches_manifest(self):
         man = manifest()
@@ -513,7 +521,7 @@ class TestPublicExport(unittest.TestCase):
             capture_output=True, text=True)
         if r.returncode != 0:
             raise unittest.SkipTest(f"export failed: {r.stderr[-500:]}")
-        cls.root = cls.tmp / "civ6-x10-release-source"
+        cls.root = cls.tmp / "civ6-overpowered-bonuses"
 
     def test_no_git_no_forbidden(self):
         self.assertFalse((self.root / ".git").exists())
@@ -567,6 +575,84 @@ class TestPublicExport(unittest.TestCase):
         m = re.search(r"(\d+) passed(?:, (\d+) skipped)?", r.stdout)
         self.assertIsNotNone(m, r.stdout[-500:])
         self.assertGreater(int(m.group(1)), 0)
+
+
+class TestPublicIdentityV10(unittest.TestCase):
+    """Final v1.0 pre-publication identity: new planned public source
+    repo, Overpowered Bonuses product names, X10 kept as the internal
+    namespace only."""
+
+    NEW_URL = "https://github.com/Dacilla/civ6-overpowered-bonuses"
+    OLD_REPO = "civ6-x10-release-source"
+
+    def test_public_source_url_is_new(self):
+        man = manifest()
+        self.assertEqual(man["public_source_url"], self.NEW_URL)
+        import yaml
+        dumped = yaml.safe_dump(man)
+        self.assertNotIn(self.OLD_REPO, dumped)
+
+    def test_no_stale_planned_url_in_current_surfaces(self):
+        rels = ["release/release-manifest.yml",
+                "release/staging-src/controller/SOURCE.txt",
+                "release/staging-src/engine/SOURCE.txt",
+                "release/GITHUB_PLAN.md",
+                "release/export_public_source.py"]
+        for rel in rels:
+            text = (ROOT / rel).read_text(encoding="utf-8")
+            self.assertNotIn(self.OLD_REPO, text, rel)
+        self.assertIn(self.NEW_URL.replace("https://github.com/", ""),
+                      (ROOT / "release" / "GITHUB_PLAN.md").read_text(
+                          encoding="utf-8"))
+
+    def test_export_dir_name(self):
+        text = (ROOT / "release" / "export_public_source.py").read_text(
+            encoding="utf-8")
+        self.assertIn('out / "civ6-overpowered-bonuses"', text)
+        self.assertNotIn("civ6-x10-release-source", text)
+
+    def test_github_plan_topics(self):
+        plan = (ROOT / "release" / "GITHUB_PLAN.md").read_text(
+            encoding="utf-8")
+        self.assertIn("Dacilla/civ6-overpowered-bonuses", plan)
+        self.assertIn("Overpowered Bonuses", plan)
+        self.assertIn("game-mod", plan)
+        self.assertNotIn("`x10`", plan)
+        self.assertNotIn(self.OLD_REPO, plan)
+
+    def test_source_files_use_new_url(self):
+        for item in ("controller", "engine"):
+            text = (ROOT / "release" / "staging-src" / item / "SOURCE.txt"
+                    ).read_text(encoding="utf-8")
+            self.assertIn(self.NEW_URL, text, item)
+            self.assertNotIn(self.OLD_REPO, text, item)
+
+    def test_product_identity(self):
+        import xml.etree.ElementTree as ET
+        ctl = ET.parse(
+            str(ROOT / "controller/X10/X10.modinfo")).getroot()
+        eng = ET.parse(
+            str(ROOT / "dependencies/CE-X10/CE-X10.modinfo")).getroot()
+        self.assertEqual(ctl.find("Properties/Name").text,
+                         "Overpowered Bonuses")
+        self.assertEqual(eng.find("Properties/Name").text,
+                         "Overpowered Bonuses CE Engine")
+        man = manifest()
+        self.assertEqual(
+            man["workshop_items"]["controller"]["name"],
+            "Overpowered Bonuses")
+        self.assertEqual(man["workshop_items"]["engine"]["name"],
+                         "Overpowered Bonuses CE Engine")
+
+    def test_internal_namespace_allowed(self):
+        cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
+               ).read_text(encoding="utf-8")
+        for needle in ("X10_MULTIPLIER_PRESET", "X10_MULTIPLIER",
+                       "X10_MODULE_TRAITS"):
+            self.assertIn(needle, cfg, needle)
+        readme = (ROOT / "release" / "staging-src" / "controller"
+                  / "README.txt").read_text(encoding="utf-8")
+        self.assertIn("X10Lifecycle.log", readme)
 
 
 class TestReleaseWordingAndPlan(unittest.TestCase):

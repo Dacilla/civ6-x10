@@ -1,6 +1,6 @@
 """Phase 7B.1: allowlist-based clean public-source export (no .git).
 
-Copies ONLY reviewed paths into <out>/civ6-x10-release-source/.
+Copies ONLY reviewed paths into <out>/civ6-overpowered-bonuses/.
 Writes PROVENANCE.md (no absolute paths, usernames, or private data).
 Usage: python release/export_public_source.py --out <dir> [--version 1.0.0-rc2]
 Release identity (version default) is derived from release-manifest.yml;
@@ -100,7 +100,7 @@ def main() -> int:
     if str(out.resolve()) == str(REPO.resolve()) or REPO in out.resolve().parents:
         print("refusing: --out must be outside the private repo", file=sys.stderr)
         return 2
-    dest = out / "civ6-x10-release-source"
+    dest = out / "civ6-overpowered-bonuses"
     if dest.exists():
         print(f"refusing: output exists: {dest}", file=sys.stderr)
         return 2
@@ -148,7 +148,7 @@ def main() -> int:
         f"{r.as_posix()}:{sha_file(dest / r)}" for r in sorted(copied)
     ).encode()).hexdigest()
     prov = (
-        f"# Public-source provenance (X10 {version})\n\n"
+        f"# Public-source provenance (Overpowered Bonuses {version})\n\n"
         f"- private development source head: `{head}`\n"
         f"- semantic registry commit: `{man['semantic_registry_commit']}`\n"
         "- validation tag: `phase6b-1010-live-validated`\n"

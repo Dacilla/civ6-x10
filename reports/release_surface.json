@@ -1222,7 +1222,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 1406,
+   "bytes": 1872,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1236,7 +1236,7 @@
   {
    "path": "release/GITHUB_PLAN.md",
    "tracked": true,
-   "bytes": 2307,
+   "bytes": 2208,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1264,7 +1264,7 @@
   {
    "path": "release/PUBLISH_CHECKLIST.md",
    "tracked": true,
-   "bytes": 1876,
+   "bytes": 1879,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1334,7 +1334,7 @@
   {
    "path": "release/export_public_source.py",
    "tracked": true,
-   "bytes": 6576,
+   "bytes": 6594,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1376,7 +1376,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 6877,
+   "bytes": 6878,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1418,7 +1418,7 @@
   {
    "path": "release/staging-src/controller/SOURCE.txt",
    "tracked": true,
-   "bytes": 802,
+   "bytes": 803,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1474,7 +1474,7 @@
   {
    "path": "release/staging-src/engine/SOURCE.txt",
    "tracked": true,
-   "bytes": 897,
+   "bytes": 898,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2930,7 +2930,7 @@
   {
    "path": "tests/test_release_candidate.py",
    "tracked": true,
-   "bytes": 28686,
+   "bytes": 32524,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3113,7 +3113,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 110,
-   "bytes": 1232687
+   "bytes": 1236916
   },
   "corresponding_build_artifact": {
    "files": 1,

@@ -5,7 +5,7 @@ STATUS: PLANNED-PLACEHOLDER - release-source repository does not exist yet.
 A publish-ready build must fail on this marker (assembler enforces).
 
 Controller / release source (planned):
-  https://github.com/Dacilla/civ6-x10-release-source  [PLANNED-PLACEHOLDER]
+  https://github.com/Dacilla/civ6-overpowered-bonuses  [PLANNED-PLACEHOLDER]
 
 Engine source (exact, available now):
   https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10

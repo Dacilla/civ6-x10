@@ -39,7 +39,7 @@ ce_commit: 0655190
 ce_branch: x10-lifecycle-log
 ce_fork_url: https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
 upstream_url: https://github.com/Wild-W/CivilizationVI_CommunityExtension
-public_source_url: https://github.com/Dacilla/civ6-x10-release-source
+public_source_url: https://github.com/Dacilla/civ6-overpowered-bonuses
 dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
 registry_sha256: 181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208
 registry_entries: 1010
@@ -90,7 +90,7 @@ workshop_items:
         sha256: cdbf1a1b53cef36c2d4e7ec896562f4337c0ad2e881649a8d5b98c930a70ec4a
       - stage_path: SOURCE.txt
         source: release/staging-src/engine/SOURCE.txt
-        sha256: 476bdebd39f23c77d9349c539640628709b49cb717ef886018a49b488ec9cab7
+        sha256: 49cfb8a36e525ac3a5e67b35993b13fb63de0b7d0584f75c43d96fab7d1250c2
         has_planned_placeholder: true
   controller:
     name: Overpowered Bonuses
@@ -126,7 +126,7 @@ workshop_items:
         sha256: 6088ac7073d1c4efacf1d9e2a6ad0d198ca754b6f39a738849aa59b2315c6004
       - stage_path: SOURCE.txt
         source: release/staging-src/controller/SOURCE.txt
-        sha256: 4807470d01b828d48cb50bc695886e8072aa891bc31a276767c02404d511def5
+        sha256: df87439293cbd37be272b32897a87fb16023a06546a0fbb9280622d1cab07dea
         has_planned_placeholder: true
 
 source_release:

@@ -14,6 +14,14 @@
   (`Bonus Multiplier`, `Affects: ...`). `X10` remains the
   internal/historical namespace only (config keys, log/registry
   filenames, source symbols).
+- Custom Multiplier label/tooltip FINAL for v1.0:
+  `Custom Multiplier (0 to 100)`; blank/0/invalid leave bonuses
+  unchanged (measured fail-closed). No frontend validation override.
+- Planned public source repo: `Dacilla/civ6-overpowered-bonuses`.
+- v1.1 research roadmap: normalized Phase-8A/8A.1 support frontier
+  (Religion → Promotions & Abilities → Great People → Monopolies →
+  later families). Internal roadmap only; not promised in Workshop
+  copy.
 
 ## v1.0.0-rc1 (release candidate, not published)
 
