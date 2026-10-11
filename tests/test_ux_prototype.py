@@ -56,8 +56,19 @@ class TestPrototypeLayout(unittest.TestCase):
         self.assertEqual([int(v) for v, _, _ in vals],
                          [0, 2, 3, 5, 10, 20, 50, 100, 101])
         self.assertIn("'X10UxPreset', 'LOC_X10_UX_PRESET_NAME', "
-                      "'LOC_X10_UX_PRESET_DESC',\n   'X10UxMultiplierPresets', '10'",
+                      "'LOC_X10_UX_PRESET_DESC',\n   'X10UxMultiplierPresets', 10",
                       proto_config())
+        # default MUST be SQLite INTEGER 10, not TEXT '10': the driver only
+        # coerces bool/int/uint domains and ==-compares custom-domain
+        # defaults against (numeric) domain values
+        self.assertNotIn("'X10UxMultiplierPresets', '10'", proto_config())
+
+    def test_multiplayer_metadata_explicit(self):
+        import xml.etree.ElementTree as ET
+        m = ET.parse(str(PROTO / "X10_UX_Prototype.modinfo")).getroot()
+        props = m.find("Properties")
+        self.assertEqual(props.find("SupportsSinglePlayer").text, "1")
+        self.assertEqual(props.find("SupportsMultiplayer").text, "0")
 
     def test_custom_dependency(self):
         cfg = proto_config()

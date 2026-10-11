@@ -79,7 +79,7 @@ workshop_items:
         sha256: 43816e72b256b7598f1ccd8061837ef286d0cc6bf87f1963b5017bdc2d3fc00f
         has_planned_placeholder: true
   controller:
-    name: X10 (configurable semantic multiplier)
+    name: X10 — Configurable Bonus Multiplier
     mod_id: 55d7b934-62f9-46fb-a771-badf3d1a1538
     primary: true
     stage_dir: X10

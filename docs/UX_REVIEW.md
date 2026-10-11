@@ -190,3 +190,133 @@ explicit review. Redesign from observed values on any surprise.
 - Run 3: Custom 7.3, Governors OFF → 745 / 195 / 70 owner-32 skips.
 - Optional Run 4: preset Off → disarmed, zero mutations.
 - Final exact RC gets a probe-free save/reload smoke.
+
+## 14. Phase-7C.1a closure (visual verdict + measured variants)
+
+Visual verdict (human screenshots reviewed): ACCEPTED — AdvancedOptions
+positioning works; 2400–2408 block visually contiguous; native bool
+checkboxes correct; repeated `X10 —` prefix acceptable; all seven labels
+fit at 2560×1440; Custom dependency visibility works (field hides until
+Custom… is selected); Governors/Suzerain long tooltips wrap readably; no
+custom AdvancedSetup UI replacement warranted.
+
+Open defects carried into the second prototype revision: preset
+defaults to Off instead of ×10 (root cause §15, fixed); Custom shows
+float32 noise `7.3000001907349` (investigation §16); mod-browser
+multiplayer metadata wrong (root cause §17, fixed in prototype);
+"semantic multiplier" too technical (renamed §9/§18).
+
+## 15. Measured configuration variant table (scratch DLL 153344b7…b49d3d)
+
+| key | stored | variant | type id | flags | decode |
+|---|---|---|---|---|---|
+| `X10_UX_PRESET` = Custom 101 | INT32 | integer scalar | 2 | 0 | 101 |
+| `X10_UX_CUSTOM` = 7.3 | FLOAT32 | float scalar | 4 | — | 7.30000019073486 |
+| `X10_UX_BOOL_*` = ON | integer scalar | bool-as-int | 1 | 0 | 1 |
+| `X10_UX_BOOL_GOVERNORS` = OFF | integer scalar | bool-as-int | 1 | 0 | exact 0 |
+| `X10_MULTIPLIER` (absent) | — | control | — | — | `found=false` |
+
+Consequences: NO speculative direct bool payload decoding — bools arrive
+through the proven integer path (type 1 ∈ verbatim engine int mask
+`{1,2,3,4,5,17,18}`). With the documented type-name order
+Bool,Int,UInt,Float and measured 1/2/4, type IDs are 1-based and type 0
+is the null/unset sentinel (also absent from the engine int mask, so the
+current reader can never misdecode it as INT32 0).
+
+`TryGetConfigBool(key, out)`: require integer-decoded variant; accept
+only exact 0/1 (covers legacy INT32 module params and new bool-checkbox
+integer variants); reject all other numerics; present-but-malformed
+fails closed.
+
+### Unset/null reader-state model (7C.2)
+
+- `ABSENT`: `FindConfigVariant()` returns null.
+- `UNSET`: real variant pointer with type 0, flags 0 (payload observed
+  zero; a type-0/flags-0 variant with nonzero payload is INVALID).
+- `VALID`: decoded value in domain.
+- `INVALID`: present but undecodable/out-of-domain/malformed.
+- Absent OR unset preset → try legacy `X10_MULTIPLIER` path.
+- Present-but-invalid preset → fail closed, never silent fallback.
+- Narrow helper: `IsUnsetConfigVariant()` checking exactly the above.
+
+### Reader API (7C.2)
+
+`TryGetConfigScalar(...)`, `TryGetConfigBool(...)`,
+`TryGetMultiplierPreset(...)` (accepts exactly 0,2,3,5,10,20,50,100,101
+Custom — no other integer), `ResolveEffectiveMultiplier(...)`:
+1. read new preset; 2. valid standard → use it; 3. Off → k=0/no writes;
+4. Custom → require valid custom 0–100; 5. ABSENT/UNSET → legacy path
+(INT32/FLOAT32 as proven); 6. present INVALID → fail closed. Stop
+abusing `TryGetMultiplier()` per type. NOT implemented in 7C.1a.
+
+## 16. Default-Off root cause and fix (prototype revision 2)
+
+`SetupParameters.lua` coerces `DefaultValue` ONLY for `bool`/`int`/`uint`
+domains; custom domains compare the RAW value with `==` against domain
+`Value`s, falling back to the first valid row on mismatch (Firaxis's own
+`-- blech! get the first valid value`). Our `DefaultValue '10'` is TEXT
+while `DomainValues.Value 10` is INTEGER → Lua `"10" == 10` is false →
+Off selected. This is NOT a first-row-default mechanism.
+Fix (supported native mechanism, no reordering): store INTEGER `10`
+(`Parameters.DefaultValue` is typeless; unquoted 10 persists as integer
+and `==`-matches). Verified by test; proven live by second-review
+screenshot B (fresh setup + Restore Defaults → ×10 Classic).
+
+## 17. Custom-value precision and validation (driver evidence)
+
+`AdvancedSetup.lua`: `int`/`uint`/`text` all render as the same string
+edit box. `int` commits `tonumber(text)`; `uint` commits
+`math.max(tonumber or 0, 0)` — SILENTLY coercing garbage to 0, which
+disqualifies both for Custom (malformed input must fail closed, never
+become 0). `text` commits the raw string; the FLOAT32 materialization
+happens deeper in the config layer, and redisplay shows the widened
+`7.3000001907349`. No numeric formatting, min/max, step, or Validate
+hook exists anywhere in the setup framework (verified by source search).
+A 1000-entry dropdown is banned by design review.
+
+Decision: keep the `text` field (option D, and the ONLY option that
+preserves malformed input for fail-closed handling). Document the
+float-display artifact in user text. Native validation behavior for the
+final control (enforced in native code, never clamp/round/silent-zero):
+blank → reject; `abc` → reject; `-1` → reject; `101` → reject;
+`0.5`/`7.3`/`100` → accept; `0` → valid (Off-equivalent, no writes).
+User fallback with no frontend error channel: Custom + invalid → X10
+does not arm + explicit lifecycle-log reason + README/FAQ states
+"Custom must be 0–100". Optional slider (`IntRange`) exists natively
+but is integer-step — unsuitable for decimals.
+
+## 18. Multiplayer metadata root cause (prototype revision 2)
+
+SetupParameter support flags do NOT drive the Additional Content
+`Multiplayer?` line (proven by screenshot). The root properties are
+modinfo `<Properties>` tags `<SupportsSinglePlayer>` /
+`<SupportsMultiplayer>` (official precedent: Alexander/CivRoyale/
+Pirates/WarMachine scenario modinfos use exactly these). Prototype now
+declares `<SupportsSinglePlayer>1</SupportsSinglePlayer>` +
+`<SupportsMultiplayer>0</SupportsMultiplayer>`; second-review
+screenshot A must show Single Player Yes / Multiplayer No. Production
+modinfo adoption is 7C.2 (frozen in 7C.1a). Module controls stay
+unsupported in LAN/Internet/Hotseat/Cloud via the parameter flags.
+
+## 19. Second-revision prototype deltas (installed for re-review)
+
+- Preset `DefaultValue` INTEGER 10 (§16).
+- `SupportsSinglePlayer 1` / `SupportsMultiplayer 0` in prototype
+  modinfo (§18).
+- Custom presentation: text field retained with float-artifact wording
+  (§17); no structural change (layout 2400–2408, defaults ON, tooltips
+  unchanged per §10).
+- Engine metadata: prototype is disposable; production engine targets
+  recorded in `release/workshop-engine.md` (Name/Teaser/Description per
+  brief; build details moved to SOURCE/README).
+- Controller naming: `X10 — Configurable Bonus Multiplier` (+ teaser +
+  short description) adopted in `release/workshop-controller.md` and the
+  release manifest; production modinfo rename is 7C.2 (Mod IDs frozen).
+
+Required second-review screenshots: A. Additional Content (SP Yes / MP
+No). B. Fresh setup AND after Restore Defaults: ×10 Classic, custom
+hidden, seven ON. C. Custom + 7.3 in the final presentation. If
+precision cannot be improved natively (finding: it cannot — §17), the
+human accepts the documented artifact. Re-run the scratch config probe
+ONLY if a storage representation changes (it did not: same keys,
+domains, and types).

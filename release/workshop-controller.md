@@ -1,18 +1,19 @@
-# Workshop page draft — X10: Configurable Semantic Multiplier (NOT YET UPLOADED)
+# Workshop page draft — X10: Configurable Bonus Multiplier (NOT YET UPLOADED)
 
-Name: `X10 - Configurable Semantic Multiplier`
-Teaser: `Scale certified game numbers by any multiplier (default x10), per-module toggles. Requires X10 CE Engine.`
+Name: `X10 — Configurable Bonus Multiplier`
+Teaser: `Choose a multiplier and scale supported Civ VI bonuses by category. Requires X10 CE Engine.`
 
 Description:
 > THIS IS THE MAIN ITEM. Subscribing here should automatically pull in
 > the required "X10 CE Engine" item (set as a Steam Required Item);
 > enable BOTH, and no other Community Extension / GameCore replacement.
 >
-> X10 multiplies certified numeric game effects by the multiplier you
-> choose. Configure in game setup under Game Options: X10_MULTIPLIER
-> (0-100, default 10, e.g. 7.3; 0 turns the multiplier off) plus seven
-> per-module toggles (traits, policies, governments, pantheons,
-> wonders, governors, suzerain), all default ON.
+> X10 scales supported numeric game bonuses by the multiplier you
+> choose. Configure in game setup under Advanced Setup: X10 — Multiplier
+> (presets Off through ×100, default ×10 Classic, plus Custom for values
+> such as 7.3; Off leaves official values untouched) plus seven
+> per-module category checkboxes (traits, policies, governments,
+> pantheons, wonders, governors, suzerain), all default ON.
 >
 > Whole-unit bonuses (charges, power, granted resources, ...) are only
 > applied for exact whole-number results; fractional results keep their

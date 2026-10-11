@@ -15,7 +15,7 @@ INSERT OR IGNORE INTO Parameters
    ChangeableAfterGameStart)
 VALUES
   ('X10UxPreset', 'LOC_X10_UX_PRESET_NAME', 'LOC_X10_UX_PRESET_DESC',
-   'X10UxMultiplierPresets', '10', 0,
+   'X10UxMultiplierPresets', 10, 0,
    'Game', 'X10_UX_PRESET', 'AdvancedOptions', 2400,
    1, 1, 0, 0, 0, 0, 0),
   ('X10UxCustom', 'LOC_X10_UX_CUSTOM_NAME', 'LOC_X10_UX_CUSTOM_DESC',
@@ -66,6 +66,13 @@ VALUES
   ('X10UxMultiplierPresets', 50, 'LOC_X10_UX_PRESET_50', 'LOC_X10_UX_PRESET_50_DESC', 70),
   ('X10UxMultiplierPresets', 100, 'LOC_X10_UX_PRESET_100', 'LOC_X10_UX_PRESET_100_DESC', 80),
   ('X10UxMultiplierPresets', 101, 'LOC_X10_UX_PRESET_CUSTOM', 'LOC_X10_UX_PRESET_CUSTOM_DESC', 90);
+
+-- Preset default is INTEGER 10, not TEXT '10': the setup driver coerces
+-- DefaultValue only for bool/int/uint domains and otherwise compares with
+-- == against domain values, so a text default can never match the numeric
+-- DomainValues and the UI falls back to the first row ("blech! get the
+-- first valid value" in SetupParameters.lua). Parameters.DefaultValue is
+-- typeless: unquoted 10 stores INTEGER and matches domain value 10.
 
 -- Custom field visible only when the preset is Custom (101). If the setup
 -- UI ignores this, the graceful fallback is the always-visible field with

@@ -1010,7 +1010,7 @@
   {
    "path": "docs/UX_REVIEW.md",
    "tracked": true,
-   "bytes": 10191,
+   "bytes": 17198,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1318,7 +1318,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 5791,
+   "bytes": 5790,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1458,7 +1458,7 @@
   {
    "path": "release/workshop-controller.md",
    "tracked": true,
-   "bytes": 1771,
+   "bytes": 1835,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1472,7 +1472,7 @@
   {
    "path": "release/workshop-engine.md",
    "tracked": true,
-   "bytes": 895,
+   "bytes": 942,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1640,7 +1640,7 @@
   {
    "path": "spike/X10_UX_Prototype/Config/X10UxConfig.sql",
    "tracked": true,
-   "bytes": 4147,
+   "bytes": 4584,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "spike_scratch",
@@ -1668,7 +1668,7 @@
   {
    "path": "spike/X10_UX_Prototype/X10_UX_Prototype.modinfo",
    "tracked": true,
-   "bytes": 1284,
+   "bytes": 1384,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "spike_scratch",
@@ -2648,7 +2648,7 @@
   {
    "path": "tests/test_ux_prototype.py",
    "tracked": true,
-   "bytes": 7049,
+   "bytes": 7663,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2691,7 +2691,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 107,
-   "bytes": 1160175
+   "bytes": 1167906
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -2699,7 +2699,7 @@
   },
   "private": {
    "files": 76,
-   "bytes": 7219316
+   "bytes": 7219853
   },
   "workshop_runtime": {
    "files": 7,

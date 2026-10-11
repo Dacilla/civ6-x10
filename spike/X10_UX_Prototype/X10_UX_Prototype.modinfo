@@ -6,6 +6,8 @@
     <Description>Phase-7C.1 disposable prototype: native SetupParameters layout (preset dropdown, custom value, bool module checkboxes) with X10_UX_* keys only. No gameplay SQL, no DLL, no production keys.</Description>
     <AffectsSavedGames>0</AffectsSavedGames>
     <CompatibleVersions>2.0</CompatibleVersions>
+    <SupportsSinglePlayer>1</SupportsSinglePlayer>
+    <SupportsMultiplayer>0</SupportsMultiplayer>
   </Properties>
   <Dependencies>
     <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />
