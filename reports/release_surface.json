@@ -2240,6 +2240,34 @@
    "disposition": "keep private; publish hashes + compact summary only"
   },
   {
+   "path": "spike/validation-evidence/X10Lifecycle.1010-RC2-smoke-load.log",
+   "tracked": true,
+   "bytes": 299539,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "validation_evidence_log",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "live-game output dumps",
+   "disposition": "keep private; publish hashes + compact summary only"
+  },
+  {
+   "path": "spike/validation-evidence/X10Lifecycle.1010-RC2-smoke-reload.log",
+   "tracked": true,
+   "bytes": 299539,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "validation_evidence_log",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "live-game output dumps",
+   "disposition": "keep private; publish hashes + compact summary only"
+  },
+  {
    "path": "spike/validation-evidence/X10Lifecycle.684-live.log",
    "tracked": true,
    "bytes": 193027,
@@ -2838,8 +2866,8 @@
    "bytes": 71543
   },
   "private": {
-   "files": 84,
-   "bytes": 8652655
+   "files": 86,
+   "bytes": 9251733
   },
   "workshop_runtime": {
    "files": 8,
