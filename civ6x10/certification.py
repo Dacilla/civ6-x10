@@ -146,6 +146,42 @@ def _engine_integral_match(modifier_type: str, effect_type: str,
     return None
 
 
+def _strong_family_override(modifier_type: str, effect_type: str,
+                               argument_name: str, proposed_family: str,
+                               sem_family: str | None,
+                               rules: dict) -> dict | None:
+    """Exact strong-family override for one positively-reviewed argument.
+
+    Exists for the narrow case where a coarse semantic-floor heuristic
+    classified a whole EffectType family as a strong exclusion, but a
+    particular numeric argument was subsequently reviewed and proven to be
+    a plain magnitude. Returns None when no entry names this
+    (effect, argument) tuple.
+
+    When an entry DOES name the tuple, every field must agree exactly or
+    the row fails closed: a floor-family drift, a different proposed
+    family, or any sibling argument never certifies through this path.
+    `excluded_effects` is consulted before this function is ever reached,
+    so a deliberately excluded EffectType cannot be re-admitted here.
+    """
+    for entry in rules.get("strong_family_overrides") or []:
+        if entry.get("effect") != effect_type:
+            continue
+        if entry.get("argument") != argument_name:
+            continue
+        if entry.get("expected_floor_family") != sem_family:
+            return {"certified": False,
+                    "resolution": "conflict:strong-override-floor-drift:"
+                                  + str(sem_family)}
+        if entry.get("proposed_family") != proposed_family:
+            return {"certified": False,
+                    "resolution": "conflict:strong-override-family-mismatch:"
+                                  + str(proposed_family)}
+        return {"certified": True, "kind": entry.get("kind"),
+                "resolution": "certified"}
+    return None
+
+
 def certify_row(manifest_row: dict, sem_row: dict | None,
                 rules: dict | None = None) -> dict:
     """Certify one manifest row. Never trusts heuristic confidence.
@@ -186,6 +222,20 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
     mode_provenance = sem_row.get("mode_provenance")
     proven = floor_conf in ("FORMULA_DERIVED", "HUMAN_CERTIFIED", "CERTIFIED")
     count_like = _count_like(et, arg, proposed, rules)
+
+    # Exact strong-family override (checked after excluded_effects and floor
+    # resolution, before all ordinary family logic): a positively-reviewed
+    # numeric argument on a coarsely-excluded family. Any mismatch fails
+    # closed; non-listed tuples fall through untouched.
+    strong = _strong_family_override(mt, et, arg, proposed, sf, rules)
+    if strong is not None:
+        if not strong["certified"]:
+            return {**base, "resolution": strong["resolution"],
+                    "source": "none"}
+        return {**base, "certified": True, "kind": strong["kind"],
+                "count_like": False,
+                "source": "curated-effect:strong-family:" + et,
+                "resolution": "certified"}
 
     if sf == "DISCOUNT":
         # AUTO_PATTERN / NEEDS_REVIEW floor rows cannot certify a special

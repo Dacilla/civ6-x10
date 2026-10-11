@@ -262,3 +262,30 @@ engine_integral_effects:
     effect: EFFECT_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL_GOVERNOR
     argument: Amount
     rationale: "governor appeal rating (Forestry Management) is a whole appeal level: the engine represents appeal integrally, so 1 x 7.3 must refuse and keep vanilla 1 while 1 x 10 writes 10 (Phase 4B); appeal is a left-anchored whole-level count, not a continuous yield"
+
+# Exact strong-family overrides (Phase 6A.3). Narrow escape hatch for the
+# case where a coarse semantic-floor heuristic classified a whole EffectType
+# family as a strong exclusion, but one numeric argument was positively
+# reviewed. Each entry matches ONLY its (effect, argument, expected floor
+# family, proposed family) quadruple; anything else fails closed in
+# certification._strong_family_override. Consulted after excluded_effects
+# (which keeps precedence) and floor resolution, before ordinary logic.
+strong_family_overrides:
+  - effect: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
+    argument: BuildingProductionPercent
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: PERCENT_BONUS
+    kind: ADDITIVE
+    rationale: "argument is explicitly BuildingProductionPercent; Citadel +25
+      and Ayutthaya +10 with Ramses signed -15/+30 siblings prove a scalar
+      percent-of-building-cost parameter; object selectors and IncludeWonder
+      are separate arguments and do not ride along (Phase 6A evidence)"
+  - effect: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: LOYALTY
+    kind: ADDITIVE
+    rationale: "the GRANT_OBJECT floor came from coarse EFFECT_GRANT_* pattern
+      matching; Amount=400 is the quantity of religious pressure per Great
+      Person activation, not a count of granted objects; Phase-6A.2 live probe
+      proved native storage/readback at 2920 for stored k=7.3 on load+reload"

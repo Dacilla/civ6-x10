@@ -114,10 +114,12 @@ is only coherent as a percent of production cost, and the ModifierType
 literally names `GRANT_YIELD_PER_BUILDING_COST`. Family `PERCENT_BONUS`,
 kind `ADDITIVE`, canonical multiply (25→250 / 10→100; float-safe percents:
 182.5/73.0 at k=7.3). No transform design fork: additive percent scaling is
-the established reading (Geneva precedent). Requires a 6B `mixed_overrides`
-entry (same shape as the two live ones; the floor's `GRANT_OBJECT` row is
-`AUTO_PATTERN` heuristic and currently excludes the rows — verified by dry
-run). `IncludeWonder` stays a structural boolean. Ramses rows corroborate
+the established reading (Geneva precedent). Requires the exact
+strong-family override (`EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST`
+/ `BuildingProductionPercent`, floor `GRANT_OBJECT` → `PERCENT_BONUS` /
+`ADDITIVE`) — the `mixed_overrides` path is unreachable from a
+`GRANT_OBJECT` floor, as proven by the failing-first gate test in 6A.3.
+`IncludeWonder` stays a structural boolean. Ramses rows corroborate
 only; Ramses is out of production scope and stays out.
 
 ## 6. Loyalty / identity / religious pressure verdict: CLEARED BY LIVE PROBE
@@ -135,7 +137,7 @@ Per-row gate results (each verified independently — no sibling auto-clear):
 | row | gate | outcome |
 |---|---|---|
 | Bishop 100, Owls 4, Preslav 2 ×3 | `curated-category:LOYALTY`, no rule change | 5 candidates |
-| Vatican 400 | floor `GRANT_OBJECT` (heuristic) → needs 6B mixed override (recorded) | candidate contingent on that entry |
+| Vatican 400 | floor `GRANT_OBJECT` (heuristic) → exact strong-family override (recorded) | candidate contingent on that entry |
 | Toqui 4 ×2 | excluded ONLY by the held-out effect entry; removal is surgical (2 carriers total) → `curated-category:LOYALTY` | 2 candidates (owner traits) + proposed exclusion removal |
 
 Direct `IdentityPressure` columns (12) were NOT probed (no carrier) and stay

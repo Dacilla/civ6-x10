@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import sys
 import unittest
+from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -625,6 +626,185 @@ class TestToquiProbePreflight(unittest.TestCase):
         text = p.read_text(encoding="utf-8")
         self.assertIn("b6862b28", text)
         self.assertIn("Restore", text)
+
+
+
+def _dry_run_inputs():
+    """Assemble the complete intended Phase-6B gate + candidate set.
+
+    NOTHING is written: rules are deep-copied and extended in memory,
+    manifest rows are built/copied in memory, Toqui family review is
+    simulated in memory. Returns (manifest_rows, floor, rules, backlog)
+    or raises SkipTest.
+    """
+    import copy
+    from civ6x10.bridge import collect_registry_rows
+    from civ6x10.backlog import build_backlog
+    from civ6x10.certification import load_rules
+    try:
+        rows = [dict(r) for r in collect_registry_rows(ROOT)]
+    except FileNotFoundError:
+        raise unittest.SkipTest("local-only registry inputs unavailable")
+    try:
+        from civ6x10.production import DEFAULT_SEM_PATH
+        from civ6x10.certification import load_sem_floor
+        if not DEFAULT_SEM_PATH.is_file():
+            raise unittest.SkipTest("effect-semantic floor unavailable")
+        floor = load_sem_floor(DEFAULT_SEM_PATH)
+    except ImportError:
+        raise unittest.SkipTest("production certification gate unavailable")
+    backlog = build_backlog(
+        ROOT / "civ6x10" / "rules" / "governor_audit.yml",
+        ROOT / "civ6x10" / "rules" / "suzerain_audit.yml")
+    rules = copy.deepcopy(load_rules())
+    # proposed count-like patterns (6A backlog proposal, in memory only)
+    for pattern in ("RELIGION_EXTRA_PROMOTIONS", "EXTRA_ACCUMULATION",
+                    "ATTACKS_PER_TURN", "RESOURCE_POWER_PROVIDED",
+                    "FREE_RESOURCE_IMPORT"):
+        rules.setdefault("count_like_effects", []).append(
+            {"pattern": pattern,
+             "rationale": "Phase-6B dry run (6A proposal)"})
+    rules.setdefault("discount_effects", []).append(
+        {"effect": "EFFECT_ADJUST_BUILDING_PURCHASE_COST",
+         "semantics": "PERCENT_DISCOUNT",
+         "rationale": "Phase-6B dry run (6A proposal)"})
+    # simulated Toqui exclusion removal (live evidence justifies it in 6B)
+    rules["excluded_effects"] = [
+        e for e in rules.get("excluded_effects", [])
+        if e.get("effect") != "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE"]
+    out = []
+    for r in rows:
+        # simulated 6B manifest review: Toqui Amount rows carry LOYALTY
+        if r["modifier_id"] in ("TOQUI_DOMESTIC_LOYALTY",
+                                "TOQUI_FOREIGN_LOYALTY") \
+                and r["argument_name"] == "Amount":
+            r = dict(r)
+            r["semantic_family"] = "LOYALTY"
+        out.append(r)
+    # 37 projection pairs as manifest rows (module = proposed owner).
+    # The 2 Toqui pairs are NOT appended: they come from the EXISTING
+    # traits rows above, so no second source is ever invented.
+    for p in backlog["proposed_production_pairs"]:
+        out.append({
+            "object_id": p["modifier_id"],
+            "modifier_id": p["modifier_id"],
+            "modifier_type": p["modifier_type"],
+            "effect_type": p["effect_type"],
+            "argument_name": p["argument"],
+            "official_value": p["value"],
+            "semantic_family": p["family"],
+            "transformation": {"ADDITIVE": "canonical_x10_multiply",
+                               "DISCOUNT": "compound_discount",
+                               "COMBAT": "canonical_combat_bonus",
+                               "PROBABILITY": "repeated_probability"}[p["kind"]],
+            "generated_value": "",
+            "status": "ok",
+            "confidence": "human_certified",
+            "module": p["owner"],
+        })
+    return out, floor, rules, backlog
+
+
+class TestPhase6BDryRun(unittest.TestCase):
+    """Complete intended Phase-6B gate + set, simulated without writing."""
+
+    def test_toqui_comes_from_existing_traits_manifest(self):
+        from civ6x10.bridge import collect_registry_rows
+        try:
+            rows = collect_registry_rows(ROOT)
+        except FileNotFoundError:
+            self.skipTest("local-only registry inputs unavailable")
+        got = {r["modifier_id"]: r for r in rows
+               if r["modifier_id"] in ("TOQUI_DOMESTIC_LOYALTY",
+                                       "TOQUI_FOREIGN_LOYALTY")
+               and r["argument_name"] == "Amount"}
+        self.assertEqual(len(got), 2)
+        for mid, r in got.items():
+            self.assertEqual(r.get("module"), "traits", mid)
+            self.assertEqual(r["official_value"], "4", mid)
+            self.assertEqual(r["status"], "ok", mid)
+
+    def test_complete_dry_run(self):
+        import math
+        from civ6x10 import transforms as T
+        from civ6x10.production import build_production_registry
+        rows, floor, rules, backlog = _dry_run_inputs()
+        entries, report = build_production_registry(
+            rows, sem_floor=floor, rules=rules)
+        self.assertEqual(report["unresolved_conflicts"], [])
+        self.assertEqual(len(entries), 1010)
+        self.assertEqual(report["unique_definitions"], 1006)
+        self.assertEqual(report["shared_definitions"], 25)
+        self.assertEqual(report["certified_unconditional"], 788)
+        self.assertEqual(report["certified_count_like_conditional"], 222)
+        self.assertEqual(report["ownership_counts"]["traits"], 360)
+        self.assertEqual(report["ownership_counts"]["policies"], 284)
+        self.assertEqual(report["ownership_counts"]["governments"], 18)
+        self.assertEqual(report["ownership_counts"]["pantheons"], 31)
+        self.assertEqual(report["ownership_counts"]["wonders"], 154)
+        self.assertEqual(report["ownership_counts"]["governors"], 70)
+        self.assertEqual(report["ownership_counts"]["suzerain"], 68)
+        kinds = Counter(e["kind"] for e in entries)
+        self.assertEqual(kinds, {"ADDITIVE": 973, "COMBAT": 14,
+                                 "DISCOUNT": 23})
+        # all 39 final pairs present with the intended shape
+        by_key = {(e["modifier_id"], e["argument"]): e for e in entries}
+        final_pairs = (
+            {(p["modifier_id"], p["argument"])
+             for p in backlog["proposed_production_pairs"]}
+            | {(p["modifier_id"], p["argument"]) for p in
+               backlog["probe_cleared_addendum"]["pairs"]})
+        self.assertEqual(len(final_pairs), 39)
+        for key in final_pairs:
+            self.assertIn(key, by_key, key)
+        # owner split of the 39
+        owners = Counter(by_key[k]["owners"] for k in final_pairs)
+        self.assertEqual(owners, {32: 16, 64: 21, 1: 2})
+        # k=7.3 behavior
+        kf = T.stored_float32(7.3)
+        self.assertEqual(kf, 7.300000190734863)
+        writes = refusals = 0
+        for e in entries:
+            v = float(e["official"])
+            if e["count_like"]:
+                if T.count_like_applies(v, kf):
+                    writes += 1
+                else:
+                    refusals += 1
+                continue
+            if e["kind"] == "ADDITIVE":
+                r = v * kf
+            elif e["kind"] == "COMBAT":
+                r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
+            elif e["kind"] == "DISCOUNT":
+                d = abs(v) / 100.0
+                r = (1.0 - (1.0 - d) ** kf) * 100.0 * (-1 if v < 0 else 1)
+            else:
+                continue
+            if math.isfinite(r) and abs(r) <= 1e6:
+                writes += 1
+            else:
+                refusals += 1
+        self.assertEqual((writes, refusals), (801, 209))
+        self.assertEqual(writes + refusals, 1010)
+        # k=10: everything transform-applicable
+        for e in entries:
+            v = float(e["official"])
+            if e["count_like"]:
+                self.assertTrue(T.count_like_applies(v, 10.0),
+                                (e["modifier_id"], e["argument"]))
+                continue
+            if e["kind"] == "ADDITIVE":
+                r = v * 10.0
+            elif e["kind"] == "COMBAT":
+                r = 25.0 * math.log(10.0 * (math.exp(v / 25.0) - 1) + 1)
+            elif e["kind"] == "DISCOUNT":
+                d = abs(v) / 100.0
+                r = (1.0 - (1.0 - d) ** 10.0) * 100.0
+            else:
+                continue
+            self.assertTrue(math.isfinite(r),
+                            (e["modifier_id"], e["argument"]))
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

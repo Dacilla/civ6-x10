@@ -967,20 +967,27 @@ def proposed_gate_evidence() -> dict:
                           "compound",
              "blast_radius": "Valletta x3 only (effect-scoped)"},
         ],
-        "mixed_overrides_add": [
+        "mixed_overrides_add": [],
+        "strong_family_overrides_add": [
             {"effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
-             "argument": "BuildingProductionPercent", "kind": "ADDITIVE",
+             "argument": "BuildingProductionPercent",
+             "expected_floor_family": "GRANT_OBJECT",
+             "proposed_family": "PERCENT_BONUS", "kind": "ADDITIVE",
              "rationale": "scalar percent of production cost (signed "
-                          "+25/+10/-15/+30 multi-carrier pattern); same shape "
-                          "as the two live mixed overrides",
+                          "+25/+10/-15/+30 multi-carrier pattern); the "
+                          "mixed_overrides path is UNREACHABLE from a "
+                          "GRANT_OBJECT floor (proven by failing-first "
+                          "test), so the exact strong-family mechanism "
+                          "carries it",
              "blast_radius": "Citadel + Ayutthaya rows (Ramses rows are out "
                              "of production scope and stay out)"},
             {"effect": "EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
-             "argument": "Amount", "kind": "ADDITIVE",
+             "argument": "Amount",
+             "expected_floor_family": "GRANT_OBJECT",
+             "proposed_family": "LOYALTY", "kind": "ADDITIVE",
              "rationale": "scalar pressure rate per activation, not an "
                           "object grant; Vatican storage proven live "
-                          "(MATCH 2920.0 on load+reload); same shape as the "
-                          "two live mixed overrides",
+                          "(MATCH 2920.0 on load+reload)",
              "blast_radius": "Vatican row only (sole carrier of this effect)"},
         ],
         "exclusion_removals": [

@@ -729,21 +729,26 @@ proposed_gate_evidence:
     effect: EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
     rationale: 'the 2026-10-08 stored-form hold is lifted: both carriers MATCH via=store-lookup on load AND reload with current
       native code (Phase-6A.2 probe evidence); LOYALTY pressure is float-valued (live-proven 21.9 precedent)'
-  mixed_overrides_add:
+  mixed_overrides_add: []
+  note: PROPOSAL ONLY — not applied to certified_overrides.yml. Each addition must land atomically with its rows, or the rows
+    would certify with the wrong shape (proven by gate dry run).
+  strong_family_overrides_add:
   - argument: BuildingProductionPercent
     blast_radius: Citadel + Ayutthaya rows (Ramses rows are out of production scope and stay out)
     effect: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
+    expected_floor_family: GRANT_OBJECT
     kind: ADDITIVE
-    rationale: scalar percent of production cost (signed +25/+10/-15/+30 multi-carrier pattern); same shape as the two live
-      mixed overrides
+    proposed_family: PERCENT_BONUS
+    rationale: scalar percent of production cost (signed +25/+10/-15/+30 multi-carrier pattern); the mixed_overrides path
+      is UNREACHABLE from a GRANT_OBJECT floor (proven by failing-first test), so the exact strong-family mechanism carries
+      it
   - argument: Amount
     blast_radius: Vatican row only (sole carrier of this effect)
     effect: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+    expected_floor_family: GRANT_OBJECT
     kind: ADDITIVE
-    rationale: scalar pressure rate per activation, not an object grant; Vatican storage proven live (MATCH 2920.0 on load+reload);
-      same shape as the two live mixed overrides
-  note: PROPOSAL ONLY — not applied to certified_overrides.yml. Each addition must land atomically with its rows, or the rows
-    would certify with the wrong shape (proven by gate dry run).
+    proposed_family: LOYALTY
+    rationale: scalar pressure rate per activation, not an object grant; Vatican storage proven live (MATCH 2920.0 on load+reload)
 proposed_production_pairs:
 - argument: Amount
   count_like: false
