@@ -508,7 +508,7 @@
   {
    "path": "civ6x10/rules/support_frontier.yml",
    "tracked": true,
-   "bytes": 1143224,
+   "bytes": 2117530,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "frontier_research",
@@ -676,7 +676,7 @@
   {
    "path": "controller/X10/Config/X10Text.sql",
    "tracked": true,
-   "bytes": 3405,
+   "bytes": 3466,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -1012,7 +1012,7 @@
   {
    "path": "docs/SUPPORT_FRONTIER.md",
    "tracked": true,
-   "bytes": 32925,
+   "bytes": 36607,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "frontier_research",
@@ -1292,7 +1292,7 @@
   {
    "path": "release/VALIDATION.md",
    "tracked": true,
-   "bytes": 4539,
+   "bytes": 4558,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1404,7 +1404,7 @@
   {
    "path": "release/staging-src/controller/README.txt",
    "tracked": true,
-   "bytes": 2099,
+   "bytes": 2124,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1670,7 +1670,7 @@
   {
    "path": "spike/8a-frontier/disposition_engine.py",
    "tracked": true,
-   "bytes": 23712,
+   "bytes": 24927,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "frontier_scratch",
@@ -1684,7 +1684,7 @@
   {
    "path": "spike/8a-frontier/dispositioned.json",
    "tracked": true,
-   "bytes": 693037,
+   "bytes": 692964,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "frontier_scratch",
@@ -2874,7 +2874,7 @@
   {
    "path": "tests/test_production_config.py",
    "tracked": true,
-   "bytes": 25818,
+   "bytes": 26457,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2972,7 +2972,7 @@
   {
    "path": "tests/test_support_frontier.py",
    "tracked": true,
-   "bytes": 11481,
+   "bytes": 15383,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3071,7 +3071,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 110,
-   "bytes": 1228102
+   "bytes": 1232687
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -3079,11 +3079,11 @@
   },
   "private": {
    "files": 99,
-   "bytes": 13807836
+   "bytes": 14786966
   },
   "workshop_runtime": {
    "files": 8,
-   "bytes": 445746
+   "bytes": 445807
   }
  },
  "firaxis_footprint": {
@@ -3123,17 +3123,17 @@
    "tracked": true
   },
   "civ6x10/rules/support_frontier.yml": {
-   "bytes": 1143224,
+   "bytes": 2117530,
    "bytes_normalization": "LF",
-   "lines": 31887,
-   "uppercase_identifier_tokens": 10750,
+   "lines": 78977,
+   "uppercase_identifier_tokens": 19603,
    "tracked": true
   },
   "docs/SUPPORT_FRONTIER.md": {
-   "bytes": 32925,
+   "bytes": 36607,
    "bytes_normalization": "LF",
-   "lines": 557,
-   "uppercase_identifier_tokens": 54,
+   "lines": 654,
+   "uppercase_identifier_tokens": 109,
    "tracked": true
   },
   "manifests/governors.yml": {

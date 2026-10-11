@@ -925,9 +925,9 @@
   "value": "25",
   "root_table": "BuildingModifiers",
   "effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_UNIT_CREATED_COST",
-  "disposition": "NEEDS_SEMANTIC_RESEARCH",
-  "system": "research:percent",
-  "note": "percent/scaling magnitude; percentage-factor and discount semantics need per-effect research"
+  "disposition": "STRONG_CANDIDATE",
+  "system": "system:buildingmodifiers",
+  "note": "price-discount percent; discount family exists, per-effect certification at integration"
  },
  {
   "modifier": "BIG_BEN_INCREASE_GOLD",
@@ -965,9 +965,9 @@
   "value": "50",
   "root_table": "BuildingModifiers",
   "effect": "EFFECT_ADJUST_PLAYER_LEVY_DISCOUNT_PERCENT",
-  "disposition": "NEEDS_SEMANTIC_RESEARCH",
-  "system": "research:percent",
-  "note": "percent/scaling magnitude; percentage-factor and discount semantics need per-effect research"
+  "disposition": "STRONG_CANDIDATE",
+  "system": "system:buildingmodifiers",
+  "note": "price-discount percent; discount family exists, per-effect certification at integration"
  },
  {
   "modifier": "CHANCERY_COUNTERYSPY_SCIENCE",
@@ -2165,9 +2165,9 @@
   "value": "25",
   "root_table": "CivicModifiers",
   "effect": "EFFECT_ADJUST_PLAYER_TOURISM",
-  "disposition": "STRONG_CANDIDATE",
-  "system": "tech_civic",
-  "note": "unlocked bonus magnitude (costs/prereqs are direct fields, not modifiers)"
+  "disposition": "NEEDS_SEMANTIC_RESEARCH",
+  "system": "research:percent",
+  "note": "global tourism percent scaling; per-effect scaling semantics need research"
  },
  {
   "modifier": "COMMEMORATION_AERONAUTICAL_BUILDING_QUEST",
@@ -3715,9 +3715,9 @@
   "value": "0",
   "root_table": "GameModifiers",
   "effect": "EFFECT_ADD_CULTURE_BOMB_TRIGGER",
-  "disposition": "STRONG_CANDIDATE",
-  "system": "natural_game",
-  "note": "natural-wonder bonus magnitude (plot yields, GPP, amenity, production)"
+  "disposition": "STRUCTURAL_OR_FILTER",
+  "system": "none",
+  "note": "boolean/selector flag, not a bonus magnitude"
  },
  {
   "modifier": "PAITITI_GOLD_FROM_INTERNATIONAL_TRADE_ROUTES",
@@ -5805,9 +5805,9 @@
   "value": "50",
   "root_table": "GreatPersonIndividualActionModifiers",
   "effect": "EFFECT_GRANT_PLAYER_YIELD_PERCENT_UNIT_COST",
-  "disposition": "NEEDS_SEMANTIC_RESEARCH",
-  "system": "research:percent",
-  "note": "percent/scaling magnitude; percentage-factor and discount semantics need per-effect research"
+  "disposition": "STRONG_CANDIDATE",
+  "system": "system:greatpersonindividualactionmodifiers",
+  "note": "price-discount percent; discount family exists, per-effect certification at integration"
  },
  {
   "modifier": "GREAT_PERSON_INDIVIDUAL_COMMANDANTE_UNIT_PROMOTION",
@@ -7285,9 +7285,9 @@
   "value": "5",
   "root_table": "ProjectCompletionModifiers",
   "effect": "EFFECT_ADJUST_CITY_REQUIRED_POWER",
-  "disposition": "STRONG_CANDIDATE",
-  "system": "projects",
-  "note": "project-completion reward magnitude"
+  "disposition": "STRUCTURAL_OR_FILTER",
+  "system": "none",
+  "note": "base stat / requirement threshold, not a bonus"
  },
  {
   "modifier": "PROJECT_COMPLETION_TERRESTRIAL_LASER_SCIENCE_VP",
@@ -7685,9 +7685,9 @@
   "value": "25",
   "root_table": "TechnologyModifiers",
   "effect": "EFFECT_ADJUST_PLAYER_TOURISM",
-  "disposition": "STRONG_CANDIDATE",
-  "system": "tech_civic",
-  "note": "unlocked bonus magnitude (costs/prereqs are direct fields, not modifiers)"
+  "disposition": "NEEDS_SEMANTIC_RESEARCH",
+  "system": "research:percent",
+  "note": "global tourism percent scaling; per-effect scaling semantics need research"
  },
  {
   "modifier": "FUTURE_TECH_PROJECT_PRODUCTION",
@@ -7695,9 +7695,9 @@
   "value": "5",
   "root_table": "TechnologyModifiers",
   "effect": "EFFECT_ADJUST_ALL_PROJECTS_PRODUCTION",
-  "disposition": "STRONG_CANDIDATE",
-  "system": "tech_civic",
-  "note": "unlocked bonus magnitude (costs/prereqs are direct fields, not modifiers)"
+  "disposition": "NEEDS_SEMANTIC_RESEARCH",
+  "system": "research:rates",
+  "note": "rate/percent production or progress mechanic; per-effect scaling semantics need research"
  },
  {
   "modifier": "MATHEMATICS_ADJUST_SEA_MOVEMENT",
@@ -7755,9 +7755,9 @@
   "value": "400",
   "root_table": "TechnologyModifiers",
   "effect": "EFFECT_ADJUST_CITIES_HAS_URBAN_DEFENSES",
-  "disposition": "STRONG_CANDIDATE",
-  "system": "tech_civic",
-  "note": "unlocked bonus magnitude (costs/prereqs are direct fields, not modifiers)"
+  "disposition": "STRUCTURAL_OR_FILTER",
+  "system": "none",
+  "note": "base stat / requirement threshold, not a bonus"
  },
  {
   "modifier": "TECH_GRANT_SPY",
@@ -12955,9 +12955,9 @@
   "value": "-15",
   "root_table": "TraitModifiers",
   "effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
-  "disposition": "NEEDS_SEMANTIC_RESEARCH",
-  "system": "research:percent",
-  "note": "percent/scaling magnitude; percentage-factor and discount semantics need per-effect research"
+  "disposition": "STRONG_CANDIDATE",
+  "system": "system:traitmodifiers",
+  "note": "price-discount percent; discount family exists, per-effect certification at integration"
  },
  {
   "modifier": "RAMSES_CULTURE_NEGATIVE_BUILDINGS",
@@ -12975,9 +12975,9 @@
   "value": "30",
   "root_table": "TraitModifiers",
   "effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
-  "disposition": "NEEDS_SEMANTIC_RESEARCH",
-  "system": "research:percent",
-  "note": "percent/scaling magnitude; percentage-factor and discount semantics need per-effect research"
+  "disposition": "STRONG_CANDIDATE",
+  "system": "system:traitmodifiers",
+  "note": "price-discount percent; discount family exists, per-effect certification at integration"
  },
  {
   "modifier": "RAMSES_CULTURE_POSITIVE_WONDERS_BUILDINGS",
@@ -14835,9 +14835,9 @@
   "value": "1",
   "root_table": "TraitModifiers",
   "effect": "EFFECT_ADJUST_CULTURE_BOMB_CONVERTS_CITY",
-  "disposition": "STRONG_CANDIDATE",
-  "system": "system:traitmodifiers",
-  "note": "unaudited trait/policy/government bonus magnitude; needs per-effect certification at integration"
+  "disposition": "STRUCTURAL_OR_FILTER",
+  "system": "none",
+  "note": "boolean/selector flag, not a bonus magnitude"
  },
  {
   "modifier": "TRAIT_DELTA_DIPLO_VISIBILITY_COMBAT_MODIFIER",
@@ -15065,9 +15065,9 @@
   "value": "20",
   "root_table": "TraitModifiers",
   "effect": "EFFECT_GRANT_CITY_YIELD_PERCENT_UNIT_CREATED_COST",
-  "disposition": "NEEDS_SEMANTIC_RESEARCH",
-  "system": "research:percent",
-  "note": "percent/scaling magnitude; percentage-factor and discount semantics need per-effect research"
+  "disposition": "STRONG_CANDIDATE",
+  "system": "system:traitmodifiers",
+  "note": "price-discount percent; discount family exists, per-effect certification at integration"
  },
  {
   "modifier": "TRAIT_HELLENISTIC_FUSION_CAMPUS_EUREKA_MODIFIER",

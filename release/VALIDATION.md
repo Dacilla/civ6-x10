@@ -82,7 +82,7 @@ AdvancedOptions 2400-2408, en_US localization.
 - Run D -- preset Off: disarmed, zero mutations, concise OFF reason.
 - Run E -- invalid Custom: `abc` (TEXT variant, fail-closed),
   `-1`/`101` (INT32 out-of-range, fail-closed); each disarmed with an
-  explicit reason and zero transforms. Blank covered analytically
-  (same decode-failure path as `abc`).
+  explicit reason and zero transforms. Blank enters INT32 0
+  (Off-equivalent, measured-live, bit-identical to explicit 0).
 - RC2 smoke (probe-free, preset x10, save/reload): PASS 1010/0 both
   sessions, per-row identical to matrix Run A (evidence X10Lifecycle.1010-RC2-smoke-{load,reload}.log).

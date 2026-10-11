@@ -15,7 +15,8 @@ SETUP (Advanced Setup, all defaults are fine):
 3. Create a new single-player Gathering Storm game.
 4. Open Advanced Setup.
 5. Choose Bonus Multiplier; ×10 Classic is the default. Choose
-   Custom for values such as 7.3 (decimals use a period).
+   Custom Multiplier (0 to 100) for values such as 7.3 (decimals use
+   a period).
 6. Leave all categories enabled, or uncheck anything you want to keep
    unchanged.
 7. Start the game.

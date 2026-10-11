@@ -80,7 +80,8 @@ FLAG_ARGS = {'Ignore', 'UniqueOverride', 'KeepOverflow', 'Origin',
              'SeeHidden', 'DeltaWithOpponent', 'Score', 'Turns',
              'PerXLevels', 'MinScore', 'Range', 'ConvertCity',
              'NoSpread', 'CanAttack', 'CanMove', 'Member',
-             'ForceRetreat', 'Overall'}
+             'ForceRetreat', 'Overall', 'CaptureOwnedTerritory',
+             'ConvertsCity'}
 TIMER_ARGS = {'Turns', 'Turn', 'TurnsActive', 'IncrementTurns',
               'ReductionTurns', 'Timer', 'Duration', 'Time'}
 CAP_ARGS = {'MaxValue', 'MaxEffectMagnitude', 'MaxDiploModifierMagnitude'}
@@ -153,6 +154,12 @@ def dispose(p):
     if arg in SPATIAL_ARGS:
         return S('none', 'spatial/distance parameter, not a bonus magnitude',
                  'STRUCTURAL_OR_FILTER')
+    # R3d: base-stat unlock values and power/requirement thresholds
+    if arg in ('DefenseValue',) or eff in (
+            'EFFECT_ADJUST_CITIES_HAS_URBAN_DEFENSES',
+            'EFFECT_ADJUST_CITY_REQUIRED_POWER'):
+        return S('none', 'base stat / requirement threshold, not a bonus',
+                 'STRUCTURAL_OR_FILTER')
     # R3c: cosmetic naming/level markers
     if eff == 'EFFECT_ADJUST_UNIT_EXPERIENCE_LEVEL':
         return S('none', 'cosmetic naming/level marker, not a magnitude',
@@ -165,6 +172,20 @@ def dispose(p):
     if arg in CAP_ARGS or arg in THRESH_ARGS:
         return S('none', 'cap/threshold/AI-scoring parameter',
                  'STRUCTURAL_OR_FILTER')
+    # R5b: price-discount percents belong to the certified discount
+    # family (not the excluded percent-scaling precedent)
+    if arg in PERCENT_ARGS and ('DISCOUNT' in eff or 'LEVY' in eff or
+                                'PURCHASE' in eff or 'COST' in eff):
+        return S('system:' + t.lower(),
+                 'price-discount percent; discount family exists, '
+                 'per-effect certification at integration',
+                 'STRONG_CANDIDATE')
+    # R5c: global tourism percent scalings need research
+    if eff in ('EFFECT_ADJUST_PLAYER_TOURISM',):
+        return S('research:percent',
+                 'global tourism percent scaling; per-effect scaling '
+                 'semantics need research',
+                 'NEEDS_SEMANTIC_RESEARCH')
     # R6: percent / scaling family
     if arg in PERCENT_ARGS:
         return S('research:percent',
@@ -256,7 +277,8 @@ def dispose(p):
                'EFFECT_ADJUST_PLAYER_GRIEVANCE_DECAY',
                'EFFECT_ADJUST_AUTO_THEMED_BUILDINGS_WITH_X_SLOTS',
                'EFFECT_ADJUST_DISTRICT_ADJACENT_NATURAL_WONDER_PRODUCTION',
-               'EFFECT_ADJUST_WONDER_ADJACENT_NATURAL_WONDER_PRODUCTION'):
+               'EFFECT_ADJUST_WONDER_ADJACENT_NATURAL_WONDER_PRODUCTION',
+               'EFFECT_ADJUST_ALL_PROJECTS_PRODUCTION'):
         return S('research:rates',
                  'rate/percent production or progress mechanic; per-effect '
                  'scaling semantics need research',

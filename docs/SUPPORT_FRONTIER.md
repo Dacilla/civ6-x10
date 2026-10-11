@@ -30,6 +30,26 @@ synthetic `X10_*` wonder-direct bridge helpers that exist only in the
 generated registry by design, plus 22 secret-society governor/promotion
 modifiers from mode overlays absent from the no-overlay snapshot).
 
+Three metrics with explicit units (Phase 8A.1 normalization):
+1. ROOT_OCCURRENCES — one row per (root table, ModifierId, argument);
+   cross-root pairs counted once per root. Total 2958.
+2. UNIQUE_DEFINITIONS — one row per (ModifierId, argument) after
+   cross-root deduplication. Total 2928 (30 multi-root definitions,
+   exactly 1 conflicting: `CIVIC_AWARD_ONE_INFLUENCE_TOKEN`/`Amount`,
+   resolved conservatively to NEEDS_PRODUCT_DECISION).
+3. PROPOSED_PRODUCTION_PAIRS — unique definitions actionable only after
+   shared-root conflicts resolve (fail closed): 608 (432 STRONG +
+   176 COUNT_LIKE) against a stated denominator of 1010 production
+   pairs (60.2% potential pair coverage).
+Divergence reconciled: the Phase-8A prose froze intermediate
+hand-copied totals (411/173) while the disposition rules kept being
+refined (discount-family, emergency/WC/natural merit rules added
+candidates; percent/spatial/flag fixes moved pairs out) before the
+artifact was finalized at 433/178 root occurrences. Remedy: every
+number below is generated from `support_frontier.yml`
+(`spike/8a-frontier/generated_tables.md`, pasted verbatim and
+verbatim-tested); hand-maintained totals are banned by test.
+
 ## 1. Baseline sanity numbers (spec §4)
 
 Reproduced mechanically against the baseline DB (nested-closure,
@@ -75,54 +95,99 @@ modifier root (no ModifierId column).
 
 ## 2. Support-frontier matrix (spec §19)
 
-Columns: raw numeric | already supported | strong | count-like |
-unresolved (semantic-research + product-decision) | excluded (prior
-audit/floor + structural + cost + timer + base-stat + no-target) |
-global/leakage | new-transform-needed | owner-safe | proposed module.
-Mode rows carry overlay pairs + in-registry overlap. Full overlay file
-lists with SHA-256 live in the yml (`game_modes[].overlay_files`) and
-`spike/8a-frontier/modes.json`; short SHAs per gameplay file in §3.
+The tables below are pasted verbatim from
+`spike/8a-frontier/generated_tables.md` (units labeled per table; never
+mix units in one total). `unres` = NEEDS_SEMANTIC_RESEARCH +
+NEEDS_PRODUCT_DECISION. Mode pair counts are discovery rows, not
+candidate counts (see Table N5 note and §3).
 
-| system | source/root | raw | sup | strong | clike | unres | excl | glob | new-tr | owner-safe | proposed module |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| Beliefs (non-Pantheon) | BeliefModifiers | 87 | 31 | 30 | 0 | 6 | 20 | 0 | 0 | yes | Religion |
-| Great People | GPIAction 176 + GPIBirth 2 | 178 | 0 | 77 | 40 | 10 | 51 | 0 | 0 | yes | Great People |
-| Unit Promotions | UnitPromotionModifiers | 199 | 1 | 90 | 27 | 37 | 44 | 0 | 0 | yes | Promotions |
-| Unit Abilities | UnitAbilityModifiers | 210 | 0 | 115 | 26 | 15 | 53 | 1 | 0 | mixed | Promotions & Abilities |
-| Eras / Dedications | CommemorationModifiers | 46 | 0 | 13 | 25 | 6 | 2 | 0 | 0 | yes | Eras & Diplomacy |
-| Tech / Civic unlocks | Civic 18 + Tech 13 | 31 | 0 | 11 | 12 | 2 | 5 | 1 | 0 | yes | Eras & Diplomacy |
-| Projects | ProjectCompletionModifiers | 14 | 0 | 7 | 0 | 1 | 0 | 1 | 0 | yes | Projects |
-| Goody Huts | GoodyHutSubTypes | 30 | 0 | 8 | 14 | 1 | 7 | 0 | 0 | yes | Tribal Villages |
-| Alliances | AllianceEffects | 28 | 0 | 0 | 0 | 20 | 8 | 0 | 0 | shared | Eras & Diplomacy |
-| Emergencies | EmergencyBuffs 15 + Rewards 54 | 69 | 0 | 34 | 15 | 3 | 9 | 8 | 0 | mixed | Eras & Diplomacy |
-| World Congress | ResolutionEffects | 36 | 0 | 1 | 1 | 1 | 6 | 21 | 0 | no | Eras & Diplomacy (favor/slots only) |
-| Infrastructure mods | Building 115 + District 21 + Improvement 48 | 184 | 94 | 0 | 0 | 147 | 37 | 0 | 0 | n/a | Infrastructure (scope-B only) |
-| Traits remainder | TraitModifiers | 827 | 427 | 38 | 5 | 26 | 295 | 0 | 0 | yes | existing Traits module (no new toggle) |
-| Policies remainder | PolicyModifiers | 364 | 308 | 5 | 1 | 8 | 42 | 0 | 0 | yes | existing Policies module |
-| Governments remainder | GovernmentModifiers | 44 | 43 | 0 | 0 | 0 | 1 | 0 | 0 | yes | existing Governments module |
-| Governors remainder | GovernorPromotionModifiers | 75 | 48 | 1 | 1 | 8 | 16 | 1 | 0 | mixed | existing Governors module |
-| Minor-civ traits | TraitModifiers (MINOR_CIV_*) | 93 | 0 | 0 | 0 | 93 | 0 | 0 | 0 |? | Suzerain module or City-States (decision) |
-| Diplomacy agendas | TraitModifiers (EFFECT_DIPLOMACY_*) | 319 | 0 | 0 | 0 | 0 | 0 | 319 | 0 | no | none (never scale AI opinion) |
-| Natural wonders / game | GameModifiers | 23 | 0 | 8 | 11 | 3 | 1 | 0 | 0 | yes | Wonders module (wonder-adjacent) |
-| Victory / WMD | mixed tables | 23 | 4 | 0 | 0 | 15 | 4 | 0 | 0 | no | none without explicit product call |
-| Difficulty handicaps | TraitModifiers | 3 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | no | none (never scale handicaps) |
-| Direct numeric fields | 508 schema fields | 508 | n/a | 0 | 0 | 272 | 221 | ~15 | 0 | mixed | Infrastructure-direct (scope-B only) |
+### Table N1 — disposition totals in ROOT_OCCURRENCES (root table, ModifierId, argument)
 
-`unres` = NEEDS_SEMANTIC_RESEARCH + NEEDS_PRODUCT_DECISION. `excl` =
-EXISTING_AUDIT_EXCLUDED + STRUCTURAL_OR_FILTER + COST_OR_PRICE +
-TIMER_OR_DURATION + BASE_STAT_NOT_BONUS + NO_MEANINGFUL_MULTIPLIER_TARGET.
-New transforms needed: none (see §7). Congress participant magnitudes
-beyond favor/slots stay out: 21 global/targeted pairs.
+| disposition | root occurrences |
+|---|---|
+| STRONG_CANDIDATE | 432 |
+| CANDIDATE_COUNT_LIKE | 178 |
+| NEEDS_SEMANTIC_RESEARCH | 132 |
+| NEEDS_PRODUCT_DECISION | 270 |
+| GLOBAL_OR_CROSS_PLAYER_LEAKAGE | 355 |
+| EXISTING_AUDIT_EXCLUDED | 106 |
+| STRUCTURAL_OR_FILTER | 481 |
+| COST_OR_PRICE | 0 |
+| TIMER_OR_DURATION | 37 |
+| BASE_STAT_NOT_BONUS | 0 |
+| MODE_SYSTEM_MECHANIC | 0 |
+| NO_MEANINGFUL_MULTIPLIER_TARGET | 11 |
+| ALREADY_SUPPORTED | 956 |
+| TOTAL | 2958 |
 
-Direct-field roles (508): bonus_magnitude 102, cap 69, base_stat 54,
-cost 36, duration_timer 27, requirement_filter 20, chance 16,
-global_intensity 15, ai_weight 7, progression_threshold 5, selector 6,
-structural_internal 151. Bonus-magnitude fields are overwhelmingly
-ordinary infrastructure yields (adjacency ±1–4, GPP/turn 1–5, plot
-yields), costs are true prices (Buildings.Cost 1–1850, Civics.Cost
-20–3500), chances are selection weights (GoodyHut Weight 0–100).
-All four `*_MODE` tables exist in the snapshot with 0 rows (overlays
-absent), as do `HeroClassProgressions` et al. outcome tables.
+### Table N2 — disposition totals in UNIQUE_DEFINITIONS (ModifierId, argument, cross-root deduplicated)
+
+| disposition | unique definitions |
+|---|---|
+| STRONG_CANDIDATE | 432 |
+| CANDIDATE_COUNT_LIKE | 176 |
+| NEEDS_SEMANTIC_RESEARCH | 131 |
+| NEEDS_PRODUCT_DECISION | 270 |
+| GLOBAL_OR_CROSS_PLAYER_LEAKAGE | 355 |
+| EXISTING_AUDIT_EXCLUDED | 106 |
+| STRUCTURAL_OR_FILTER | 479 |
+| COST_OR_PRICE | 0 |
+| TIMER_OR_DURATION | 37 |
+| BASE_STAT_NOT_BONUS | 0 |
+| MODE_SYSTEM_MECHANIC | 0 |
+| NO_MEANINGFUL_MULTIPLIER_TARGET | 11 |
+| ALREADY_SUPPORTED | 931 |
+| TOTAL | 2928 |
+
+### Table N3 — definition-level actionable count (PROPOSED_PRODUCTION_PAIRS)
+
+ACTIONABLE_UNIQUE_DEFINITIONS = 608
+COVERAGE_DENOMINATOR = 1010 production pairs
+
+### Table N4 — definition-level dispositions by proposed module (UNIQUE_DEFINITIONS)
+
+| proposed module | unique defs | strong | count-like | research | product-dec | global | prior-excl | structural+other | supported |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Already supported | 931 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 931 |
+| Cross-module:Infrastructure+Tech/Civic | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| Eras | 38 | 13 | 25 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Eras & Diplomacy | 100 | 35 | 16 | 0 | 20 | 29 | 0 | 0 | 0 |
+| Existing Governors module | 11 | 1 | 1 | 8 | 0 | 1 | 0 | 0 | 0 |
+| Existing Policies module | 6 | 5 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Existing Traits module | 46 | 40 | 5 | 1 | 0 | 0 | 0 | 0 | 0 |
+| Great People | 113 | 73 | 40 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Infrastructure | 141 | 0 | 0 | 0 | 141 | 0 | 0 | 0 | 0 |
+| Minor City-States | 93 | 0 | 0 | 0 | 93 | 0 | 0 | 0 | 0 |
+| None | 527 | 0 | 0 | 0 | 0 | 0 | 0 | 527 | 0 |
+| None (global) | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 0 |
+| None (never) | 323 | 0 | 0 | 0 | 0 | 323 | 0 | 0 | 0 |
+| None (product call) | 15 | 0 | 0 | 0 | 15 | 0 | 0 | 0 | 0 |
+| Other:system:buildingmodifiers | 2 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Prior exclusions | 106 | 0 | 0 | 0 | 0 | 0 | 106 | 0 | 0 |
+| Projects | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Promotions & Abilities | 257 | 205 | 52 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Religion | 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Research pool | 122 | 0 | 0 | 122 | 0 | 0 | 0 | 0 | 0 |
+| Tech/Civic | 18 | 7 | 11 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Tribal Villages | 22 | 8 | 14 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Wonders module | 18 | 7 | 11 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+SHARED_DEFINITIONS (multi-root) = 30
+
+### Table N5 — per-mode discovery split (DISCOVERY ROWS, not candidates)
+
+| mode | triples | unique pairs | numeric-scalar | structural/selector | in-registry | mode-only | candidates |
+|---|---|---|---|---|---|---|---|---|
+| apocalypse | 64 | 24 | 8 | 16 | 0 | 24 | PENDING |
+| barbarian_clans | 0 | 0 | 0 | 0 | 0 | 0 | PENDING |
+| dramatic_ages | 435 | 149 | 70 | 79 | 8 | 141 | PENDING |
+| heroes_legends | 394 | 163 | 48 | 115 | 0 | 163 | PENDING |
+| monopolies_corporations | 432 | 125 | 51 | 74 | 0 | 125 | PENDING |
+| secret_societies | 391 | 134 | 39 | 95 | 22 | 112 | PENDING |
+| tech_civic_shuffle | 0 | 0 | 0 | 0 | 0 | 0 | NONE_NO_TARGET |
+| zombie_defense | 105 | 42 | 3 | 39 | 0 | 42 | PENDING |
+
+Mode-level STRONG_CANDIDATE means the mode is worth a dedicated Phase-8 audit; overlay pair counts are discovery rows, not production candidates.
 
 ## 3. Game-mode audits (spec §7)
 
@@ -149,7 +214,7 @@ their production overlap.
 `..._UnitPromotions_MODE.xml` e8cbc42a19c6d965,
 `..._Units_MODE.xml` aa8edca5ab2bb213,
 `..._RandomEvents_Vikings_MODE.xml` 94db6c5ce57fba96.
-24 overlay pairs, 0 in production. Soothsayer promotions/charges and
+24 unique overlay pairs (8 numeric-scalar, 16 structural/selector), 0 in production. Soothsayer promotions/charges and
 Appease-the-Gods rewards are clean participant magnitudes; disaster and
 climate globals (intensity, frequency, RandomEvents weights) must never
 scale with the multiplier. Verdict: NEEDS_PRODUCT_DECISION on the
@@ -167,8 +232,8 @@ Key files: `Ethiopia_SecretSocieties_MODE.xml` 0199ba145c0ad41d,
 `Babylon_Heroes_SecretSocieties_MODE.xml` 7d59382522a95e89,
 `Byzantium_Gaul_SecretSocieties_MODE.xml` fe854f12571668dd,
 `Portugal_Improvements_Secret_MODE.xml` 2481d4f39e1673cb.
-136 overlay pairs, 22 in production (Owls/Voidsingers/Hermetic/Vampire
-governor pairs via the governors module). Honest remainder: 114 pairs
+134 unique overlay pairs (39 numeric-scalar, 95 structural/selector), 22 in production (Owls/Voidsingers/Hermetic/Vampire
+governor pairs via the governors module). Honest remainder: 112 mode-only pairs
 covering society units, Ley-Line yields, buildings, improvements, city
 projects, resource effects, Vampire builds. Current coverage of the mode
 is promotion-magnitude-complete but system-partial. Verdict:
@@ -202,7 +267,7 @@ magnitudes. Verdict: STRONG_CANDIDATE.
 `Heroes_SecretSocieties_Mode`): `Babylon_Heroes_MODE.xml`
 300cd257e39bead7, `..._XP1_MODE.xml` dcd40d337d9b35b1,
 `..._XP2_MODE.xml` 54e4637b4981132b, plus 13 units, 14 abilities,
-13 projects, HeroClassProgressions direct fields. 176 overlay pairs, 0
+13 projects, HeroClassProgressions direct fields. 163 unique overlay pairs (48 numeric-scalar, 115 structural/selector), 0
 in production. Hero ability magnitudes are strong; Hero base combat-stat
 progression, charges, recall costs/discounts, lifespan and project
 effects must be separated first — base Hero CombatStrength must not be
@@ -215,10 +280,9 @@ base-stat/charges/cost separation.
 `..._Monopolies_XP1_MODE.xml` 0f71cfeb32ddd0de,
 `..._Monopolies_XP2_MODE.xml` 5a179ab2144a0acc,
 `..._Monopolies_GranColombiaMaya_MODE.xml` a459af1f128b7525.
-125 overlay pairs (28 projects incl. corporations, ResourceCorporations
+125 unique overlay pairs (51 numeric-scalar, 74 structural/selector; 28 projects incl. corporations, ResourceCorporations
 definitions, Product great works, industry/corporation bonuses, monopoly
-tourism, improvement yields), 0 in production. Highest-density clean
-magnitude set of any mode. Verdict: STRONG_CANDIDATE.
+tourism, improvement yields), 0 in production. Densest discovery set of any mode; numeric candidacy is PENDING a dedicated audit. Verdict: STRONG_CANDIDATE.
 
 ### Barbarian Clans — GAMEMODE_BARBARIAN_CLANS, bool default 0, DLC BarbarianClansMode (GS only)
 28 overlays / 3 gameplay (`BarbarianClansMode`,
@@ -239,7 +303,7 @@ c1f487f5add88c94, `..._Improvements_MODE.xml` ca9bb83e5d114efd,
 `..._Projects_MODE.xml` f13f2783d3941061,
 `..._GameEffects_MODE.xml` 5139e3fcc24bb42f,
 `..._Barbarians_MODE.xml` e05e52242b8fa49d,
-`VikingsLandmarks_TowerDefense_MODE.xml` 8848ca6e1747e34d. 44 overlay
+`VikingsLandmarks_TowerDefense_MODE.xml` 8848ca6e1747e34d. 42 unique overlay
 pairs (mutation strength, traps, barricades, movement penalties,
 damage, projects, control duration, spawn counts/chances, spy outbreak
 effects), 0 in production. Verdict: NEEDS_PRODUCT_DECISION — player
@@ -256,7 +320,7 @@ Follower/founder/enhancer/worship classes all represented; 30 strong
 reliquaries scaling, monastic reduction), 5 prior exclusions. Verdict:
 highest-value standard system; no new transform needed.
 
-Great People: 178 pairs, 0 in production. 77 strong (one-off yields
+Great People: 178 pairs, 0 in production. 72 strong (one-off yields
 60–3000, production grants, happiness, loyalty, tourism, trade-route
 gold, GPP), 40 count-like (tech/civic boosts, relics, envoys, titles,
 trade capacity, air/district slots, population, governor points, era
@@ -273,7 +337,7 @@ initiation gold, escape? no — escape is chance-research), 27 count-like
 (movement, sight, range, attacks, air slots, rock-band levels, apostle
 charges, spy levels), 37 research (spy chance/time, flanking/support
 percents, evict, healing, tourism-bomb scaling, post-combat percent),
-44 structural (capability flags: move-after-attack, ignore-terrain,
+40 structural (capability flags: move-after-attack, ignore-terrain,
 paradrop, conversions, stealth), 4 prior exclusions. Promotions and
 abilities must not be conflated (separate roots, separate trees), but
 one player-facing module can carry both.
@@ -329,14 +393,14 @@ explicitly intended.
 Buildings / Districts / Improvements: 184 uncovered modifier pairs (94
 already supported via wonders/suzerain overlap) + ~150 direct
 bonus-magnitude fields. THIS IS THE PRODUCT-SCOPE QUESTION. Scope A
-(special systems/choices only): all 142 stay out. Scope B (ordinary
+(special systems/choices only): all 142 occurrence-level (141 unique + 1 cross-module conflict) stay out. Scope B (ordinary
 infrastructure yields/stats too): 142 + the direct adjacency/GPP/plot
 fields come in. The audit quantifies both scopes and takes no implicit
 position: every pair is NEEDS_PRODUCT_DECISION with its effect noted.
 Recommendation: decide scope B explicitly or not at all; do not let it
 in through the back door one effect at a time.
 
-Projects: 14 pairs. 7 strong (aid gold, favor, loyalty), 1 research
+Projects: 14 pairs. 6 strong (aid gold, favor, loyalty, luxury yields), 1 research
 (luxury-rate scaling), 1 global (sequestered carbon — climate pool),
 5 victory/WMD (product call). Space-race VP-per-turn and nuke creation
 are the sharp edges; everything else is ordinary reward magnitude.
@@ -456,34 +520,56 @@ LIVE-cost-ease / UI-ease, 1–5):
 - Zombie/Apocalypse participant slices: 3/2/2/2/2/5/2/3 — boundary
   questions dominate.
 
-Recommended implementation order:
-- 8B: Religion + Promotions & Abilities + Great People (core fun,
-  owner-safe, no new transforms; ~370 strong/count-like magnitudes;
-  validates the special-systems reading and the overlay-aware audit
-  method on Dramatic-Ages cards).
-- 8C: Monopolies + Heroes ability slices (mode-gated), Eras &
-  Diplomacy bundle, Goody + Projects, remainder folds into existing
-  modules (no UI change).
-- Later: Dramatic Ages remainder, Barbarian Clans, Apocalypse/Zombie
-  participant slices (pending boundaries), Secret Societies remainder,
-  minor-civ traits (pending ownership), Infrastructure (pending scope-B).
+DISCOVERY PRIORITY vs IMPLEMENTATION READINESS are recorded
+separately: Religion ranks lower on raw fun but highest on readiness
+(30 definitions, owner-safe, no research); Monopolies ranks high on
+discovery upside (125 discovery rows) but its candidacy is PENDING.
+Recommended staged v1.1 sequence (audit → correction/review →
+production integration → targeted live validation per family):
+- 8B: Religion (30 actionable definitions; smallest, safest; proves
+  the expansion pipeline and the overlay-aware audit method on
+  Dramatic-Ages cards).
+- 8C: Promotions & Abilities (257 actionable definitions; every unit
+  interaction goes absurd; intrinsic curation already done).
+- 8D: Great People (112 actionable definitions; grant semantics need
+  the integration pass).
+- 8E: Monopolies & Corporations (dedicated overlay audit first: 125
+  discovery rows, 51 numeric-scalar, candidacy PENDING).
+- Later: Heroes (163 discovery rows; base-stat separation first),
+  Eras & Diplomacy bundle (38 eras + 23 tech/civic + participant
+  alliances/emergencies + favor/slots), Goody (22) + Projects (7),
+  remainder folds into existing modules (traits 43 + policies 6 +
+  governors 2, no UI change), Dramatic Ages remainder, Barbarian
+  Clans, Apocalypse/Zombie participant slices (pending boundaries),
+  Secret Societies remainder (114 mode-only pairs), minor-civ traits
+  (93, pending ownership), Infrastructure (141 unique + direct
+  fields, pending scope-B).
 - Never: agendas, difficulty, victory points, WMD, disaster globals,
   shuffle, costs, timers, base stats.
 
-Top 3: (1) Promotions & Abilities — 90+115 strong plus ~50 count-like;
-every unit interaction becomes absurd; promotion owners are unit
-owners. (2) Great People — 77+40; GP strategies become builds; grant
-semantics need the integration pass. (3) Monopolies & Corporations —
-125 overlay pairs, densest clean set, mode-gated to zero
-standard-game risk. (Heroes is fourth: 176 pairs but base-stat
-separation + 13 units/projects make it heavier than its count
-suggests — this is where the audit deliberately diverges from raw
-row-count sorting.)
+Top 3 by value (UNIQUE_DEFINITIONS): (1) Promotions & Abilities —
+205 strong + 52 count-like = 257 (Promotions 90+26, Abilities 115+25,
+plus shared EXPERT_MARKSMAN); every unit interaction becomes absurd;
+promotion owners are unit owners. (2) Great People — 72+40 = 112; GP
+strategies become builds; grant semantics need the integration pass.
+(3) Religion — 30 strong, smallest and safest. (Eras holds 13+25 = 38
+actionable adjacent to third place; Monopolies leads the unclassified
+upside with 51 numeric-scalar discovery rows PENDING audit. Heroes is
+next: 163 unique overlay pairs but base-stat separation + 13
+units/projects make it heavier than its count suggests — this is where
+the audit deliberately diverges from raw row-count sorting.)
+Top-3 total: 257 + 112 + 30 = 399 unique definitions = 39.5% more pair
+coverage against the stated denominator of 1010 production pairs.
 
-RELEASE-NOW VS EXPAND-FIRST: release now. v1.0 already delivers the
+RELEASE-NOW VS EXPAND-FIRST (reassessed after normalization — verdict
+unchanged): release now. Normalization found no hole in the existing
+seven-module product (all 931 DB-located production pairs resolve to
+ALREADY_SUPPORTED at definition level; the 79 missing are synthetic
+helpers + absent overlays, both by design). v1.0 already delivers the
 absurd-build fantasy across 7 systems with a live-validated 1010 core.
-The top-3 expansions add ~370 candidate magnitudes (~37% more pair
-coverage) but each needs its own audit/certification/live-validation
+The top-3 expansions add 399 unique candidate definitions (39.5% more
+pair coverage against the stated 1010 denominator) but each needs its
+own audit/certification/live-validation
 campaign plus new module bits and UI; 8B alone is another full
 validation cycle. Delaying first publication front-loads risk and
 postpones user feedback for breadth that is cleanly additive later.
@@ -544,6 +630,17 @@ rejected. Production policy stands: never clamp, never round, never
 malformed-to-zero; invalid Custom disables transforms; no fallback to
 ×10 or the legacy key. Full table:
 `spike/8a-frontier/invalid_input_matrix.md`.
+
+Phase 8A.1 closure (approved pre-v1.0 display-text-only change):
+label is now `Custom Multiplier (0 to 100)` (word form); tooltip is
+`Enter a value from 0 to 100. Use a period for decimals, for example
+7.3. Blank, 0, or invalid values leave affected bonuses unchanged.`
+The stale `VALIDATION.md` line claiming blank follows the `abc`
+decode-failure path was corrected to the measured result (blank ==
+explicit zero at the native layer); README/FAQ already state the
+correct behavior. v1.0 policy stays visible-range + tooltip + native
+fail-closed; no frontend Lua; the post-load informational notification
+is future polish only, not v1.0.
 
 ## 9. Files and freeze
 

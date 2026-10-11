@@ -107,7 +107,7 @@ workshop_items:
         sha256: b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464
       - stage_path: Config/X10Text.sql
         source: controller/X10/Config/X10Text.sql
-        sha256: 4ed72d7a30ace3a60e9bcc7e932c92f8d4c1220c83517197dc9fca887bcd964a
+        sha256: 3ffcfc94c4894be955616a92a55d48d8a32e0c409c160673858e23570a4b6812
       - stage_path: Config/Dummy.sql
         source: controller/X10/Config/Dummy.sql
         sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
@@ -117,7 +117,7 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt
-        sha256: b35ceaa852bfb9655ff895394eea9cacb6afdefbd8c4349d0f49e776c54a1f31
+        sha256: caec1bf9f1045689eac3a9e0be49b782124564b00671a9eb28bcf7f353c8f23f
       - stage_path: LICENSE.txt
         source: release/staging-src/controller/LICENSE.txt
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed

@@ -182,6 +182,92 @@ class TestFrontierArtifact(unittest.TestCase):
             surface = classify(rel)[0]
             self.assertEqual(surface, "private", rel)
 
+    def test_three_metrics_defined(self):
+        doc = frontier()
+        fig = doc["roadmap_figures"]
+        for key in ("units_root_occurrences", "units_unique_definitions",
+                    "units_proposed_production"):
+            self.assertTrue(fig[key], key)
+        self.assertEqual(
+            fig["actionable_definitions"],
+            fig["unique_definition_totals"].get("STRONG_CANDIDATE", 0)
+            + fig["unique_definition_totals"].get(
+                "CANDIDATE_COUNT_LIKE", 0))
+        # root occurrences and unique definitions are different units:
+        # dedup can only shrink counts, never grow them
+        for disp, n_root in fig["root_occurrence_totals"].items():
+            self.assertGreaterEqual(
+                n_root, fig["unique_definition_totals"].get(disp, 0),
+                disp)
+
+    def test_civic_award_conflict_regression(self):
+        doc = frontier()
+        proj = {(p["modifier"], p["argument"]): p
+                for p in doc["definition_projection"]}
+        key = ("CIVIC_AWARD_ONE_INFLUENCE_TOKEN", "Amount")
+        self.assertIn(key, proj)
+        p = proj[key]
+        self.assertFalse(p["roots_agree"])
+        self.assertEqual(
+            sorted(p["dispositions"]),
+            ["CANDIDATE_COUNT_LIKE", "NEEDS_PRODUCT_DECISION"])
+        self.assertEqual(p["final_disposition"], "NEEDS_PRODUCT_DECISION")
+
+    def test_no_candidate_hides_conflict(self):
+        doc = frontier()
+        bad = [(p["modifier"], p["argument"], p["dispositions"])
+               for p in doc["definition_projection"]
+               if p["final_disposition"] in ("STRONG_CANDIDATE",
+                                             "CANDIDATE_COUNT_LIKE")
+               and not p["roots_agree"]]
+        self.assertEqual(bad, [])
+
+    def test_cross_root_duplicates_complete(self):
+        doc = frontier()
+        by_table = {}
+        for r in doc["modifier_roots"]:
+            for q in r["pairs"]:
+                if q["disposition"] == "ALREADY_SUPPORTED":
+                    continue
+                by_table.setdefault(
+                    (q["modifier"], q["argument"]), set()).add(r["table"])
+        expected = sorted(k for k, v in by_table.items() if len(v) > 1)
+        recorded = sorted((d["modifier"], d["argument"])
+                          for d in doc["cross_root_duplicates"])
+        self.assertEqual(recorded, expected)
+        for d in doc["cross_root_duplicates"]:
+            self.assertTrue(d["roots"] and d["dispositions"])
+            self.assertIn(d["final_disposition"], TAXONOMY)
+
+    def test_mode_counts_not_labelled_candidates(self):
+        doc = frontier()
+        for g in doc["game_modes"]:
+            self.assertIn(g["candidate_status"],
+                          ("PENDING", "NONE_NO_TARGET"), g["id"])
+            self.assertTrue(g["verdict_meaning"], g["id"])
+            self.assertLessEqual(
+                g["numeric_scalar_pairs"] + g["structural_selector_pairs"],
+                g["unique_pairs"], g["id"])
+        md = (ROOT / "docs" / "SUPPORT_FRONTIER.md").read_text(
+            encoding="utf-8")
+        for banned in ("125 scalable magnitudes",
+                       "176 scalable magnitudes",
+                       "163 scalable magnitudes",
+                       "149 scalable magnitudes",
+                       "every overlay pair is ready for production",
+                       "370 candidate magnitudes"):
+            self.assertNotIn(banned, md, banned)
+
+    def test_generated_tables_verbatim_in_md(self):
+        frag = (ROOT / "spike" / "8a-frontier" / "generated_tables.md"
+                ).read_text(encoding="utf-8")
+        md = (ROOT / "docs" / "SUPPORT_FRONTIER.md").read_text(
+            encoding="utf-8")
+        blocks = [b.strip() for b in frag.split("### Table")[1:]]
+        self.assertTrue(blocks)
+        for b in blocks:
+            self.assertIn("### Table " + b, md)
+
 
 class TestFrontierLiveCrossCheck(unittest.TestCase):
     """Needs private inputs; skips in CI and clean checkouts."""

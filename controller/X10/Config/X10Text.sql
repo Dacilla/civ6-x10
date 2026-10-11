@@ -7,8 +7,8 @@
 INSERT OR IGNORE INTO LocalizedText (Language, Tag, Text) VALUES
 ('en_US', 'LOC_X10_PRESET_NAME', 'Bonus Multiplier'),
 ('en_US', 'LOC_X10_PRESET_DESC', 'Sets the multiplier for affected bonuses. ×10 is the default. Bonuses that use whole numbers are unchanged if the multiplier would produce a fraction.'),
-('en_US', 'LOC_X10_CUSTOM_NAME', 'Custom Multiplier'),
-('en_US', 'LOC_X10_CUSTOM_DESC', 'Enter a custom multiplier from 0 to 100. Use a period for decimals, for example 7.3.'),
+('en_US', 'LOC_X10_CUSTOM_NAME', 'Custom Multiplier (0 to 100)'),
+('en_US', 'LOC_X10_CUSTOM_DESC', 'Enter a value from 0 to 100. Use a period for decimals, for example 7.3. Blank, 0, or invalid values leave affected bonuses unchanged.'),
 ('en_US', 'LOC_X10_MOD_TRAITS_NAME', 'Affects: Civilization & Leader Traits'),
 ('en_US', 'LOC_X10_MOD_TRAITS_DESC', 'Civilization and Leader Trait bonuses use the selected multiplier.'),
 ('en_US', 'LOC_X10_MOD_POLICIES_NAME', 'Affects: Policy Cards'),

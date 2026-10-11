@@ -187,6 +187,20 @@ class TestDisplayCopyLint(unittest.TestCase):
                 self.assertNotIn(term, value,
                                  f"{term!r} in {value[:70]}")
 
+    def test_custom_range_label_and_tooltip(self):
+        # Phase 8A.1: the one approved pre-v1.0 display-text change.
+        # Word form (0 to 100), never a dash-range.
+        text = TEXT.read_text(encoding="utf-8")
+        self.assertIn(
+            "'LOC_X10_CUSTOM_NAME', 'Custom Multiplier (0 to 100)')",
+            text)
+        self.assertIn(
+            "'LOC_X10_CUSTOM_DESC', 'Enter a value from 0 to 100. Use a "
+            "period for decimals, for example 7.3. Blank, 0, or invalid "
+            "values leave affected bonuses unchanged.')",
+            text)
+        self.assertNotIn("Custom Multiplier (0-100)", text)
+
     def test_final_labels(self):
         text = TEXT.read_text(encoding="utf-8")
         for label in ("Bonus Multiplier", "Custom Multiplier",
