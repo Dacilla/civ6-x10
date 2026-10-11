@@ -197,7 +197,27 @@ class TestReleaseSurfaceInventory(unittest.TestCase):
         from civ6x10.release_surface import build_release_surface
         rep = self._report()
         fresh = build_release_surface(ROOT)
-        self.assertEqual(fresh, rep)
+        # exact equality over the TRACKED subset only: untracked local
+        # inputs (build/, gitignored manifests, data/local/) are
+        # machine-specific and covered structurally below
+        old = [f for f in rep["files"] if f["tracked"]]
+        new = [f for f in fresh["files"] if f["tracked"]]
+        self.assertEqual(new, old)
+        def summary(files):
+            from collections import Counter
+            agg = {}
+            for f in files:
+                agg.setdefault(f["surface"], {"files": 0, "bytes": 0})
+                agg[f["surface"]]["files"] += 1
+                agg[f["surface"]]["bytes"] += f["bytes"]
+            return agg
+        self.assertEqual(summary(new),
+                         summary([f for f in rep["files"] if f["tracked"]]))
+        # structural invariants over the full local report
+        paths = {f["path"] for f in fresh["files"]}
+        for rel in ("controller/X10/Config/X10WonderBridge.sql",
+                    "dependencies/CE-X10/CE-X10.modinfo"):
+            self.assertIn(rel, paths, rel)
 
     def test_every_runtime_source_classified(self):
         rep = self._report()
