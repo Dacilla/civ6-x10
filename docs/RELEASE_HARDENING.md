@@ -128,8 +128,8 @@ Fork base: `Wild-W/CivilizationVI_CommunityExtension`, AGPL-3.0
 - [ ] upstream attribution + AGPL-3.0 text **inside the Workshop package**
       — MISSING (verified: package holds 0 license/notice/source-link
       files; modinfo carries no version metadata beyond `version="1"`)
-- [ ] build instructions/toolchain (MSBuild 18, Release x64, OutDir
-      convention) — TO WRITE in 7B
+- [x] build instructions/toolchain (MSBuild 17.14 / v143, Windows SDK
+  10.0, Release x64 — DONE in 7B.1 `release/BUILDING.md`)
 - [ ] exact registry source for the DLL (`X10ProductionRegistry.inc` at
       `b60a280`, hash-pinned) — available
 - [ ] DLL hash `e33d84b8…d619` — pinned
@@ -175,23 +175,24 @@ archive/staging artifact; copies whole source dirs (`controller\X10`,
 `dependencies\CE-X10`) instead of an allowlist (today equivalent to the
 allowlist, but unproven mechanically).
 
-7B `spike/assemble-release.ps1` (proposed, not implemented): parameterized
-`(-OutDir, -Manifest release/release-manifest.yml)`, copies ONLY
-allowlisted paths, verifies each sha256, emits `CHECKSUMS.txt` +
-`README-RELEASE.txt` + `LICENSE`/`THIRD_PARTY` bundle + source-URL file,
-refuses if any extra file appears, never copies arbitrary dev-dir content.
+7B `release/assemble-release.ps1`: IMPLEMENTED in 7B.1 (parameterized
+`(-OutDir, -DllPath, -Manifest, -AllowPlaceholderUrls)`, copies ONLY
+allowlisted paths, verifies each sha256, emits per-item + root
+`CHECKSUMS.sha256` over packaged bytes, refuses probe/placeholder/DLL
+mismatches and any extra file, never copies arbitrary dev-dir content).
 
 ## 7. Release manifest + versioning + metadata
 
-Schema: `release/release-manifest.yml` (checked in 7A as proposal with
-frozen values; URLs TODO). Single source of truth for 7B assembly; extend
+Schema: `release/release-manifest.yml` (refined in 7B.1 into
+`workshop_items` engine/controller surfaces with runtime vs auxiliary
+files plus `source_release` build assets; checked in with frozen values). Single source of truth for 7B assembly; extend
 with `CHECKSUMS.txt` generation.
 
 Versioning: keep stable Mod IDs (`55d7b934…`, `397f2070…`); modinfo
-integer increments monotonically per Workshop update (1→2→3…);
-human-facing tags `v1.0.0`, `v1.0.1`… map to integers in the manifest.
-First public release: modinfo `version=2` (1 was the private test series),
-tag `v1.0.0`.
+integer increments monotonically per Workshop update, starting at **1**
+for the first public release (private test history is not public
+history); human-facing tags `v1.0.0`, `v1.0.1`… map to integers in the
+manifest (v1.0.0 → 1).
 
 Workshop page checklist (structure only, no artwork): display name,
 one-line teaser, full description (multiplier semantics in plain language:
@@ -230,18 +231,20 @@ evidence = pinned hashes of the archived logs + the compact per-run
 summaries (evidence README §6B/6C sections) + live-validation tag/commit.
 Full logs stay in the private workspace. Nothing deleted in 7A.
 
-## 10. Phase-7B implementation plan (for review)
+## 10. Phase-7B implementation plan (for review) — 7B.1 status
 
-1. Fix `THIRD_PARTY_NOTICES.md` release-context section.
-2. Write `spike/assemble-release.ps1` (parameterized, allowlist from
-   manifest, CHECKSUMS + README + license bundle, probe refusal test).
-3. Decide tracked-manifest disposition (publish generated vs
-   inputs-only) with reproducibility consequence (§8).
-4. Create private `civ6-x10-release-source` allowlist export; dry-run the
-   §8 recommended path (verify DLL-byte reproducibility or document the
-   hash-verifiable boundary).
-5. Workshop metadata text (checklist §7) + preview image (outside 7A
-   scope: artwork only).
+1. Fix `THIRD_PARTY_NOTICES.md` release-context section. DONE (raw-DB
+   clarification + 7A release-context note).
+2. Write the allowlist assembler (parameterized, allowlist from manifest,
+   CHECKSUMS + README + license bundle, probe refusal test). DONE:
+   `release/assemble-release.ps1` + `tests/test_release_candidate.py`.
+3. Decide tracked-manifest disposition. DONE: both PRIVATE (7B.1 §5).
+4. Create `civ6-x10-release-source` allowlist export; dry-run the §8
+   recommended path. DONE locally (71 files, isolated pytest green);
+   no public repo created.
+5. Workshop metadata text (checklist §7) + preview image (outside scope:
+   artwork only). DONE text (`release/workshop-*.md`, `CHANGELOG.md`).
 6. Upload as TWO items (engine + controller) to Workshop (unlisted first),
    verify subscription install + one live smoke run, then visibility
-   decision — separate explicit approval, never implicit.
+   decision — separate explicit approval, never implicit. NOT DONE
+   (7B.2, requires human approval).

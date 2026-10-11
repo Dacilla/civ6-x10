@@ -34,9 +34,9 @@ FROZEN_BRIDGE_SHA256 = (
 FROZEN_CONFIG_SHA256 = (
     "1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b")
 FROZEN_X10_MODINFO_SHA256 = (
-    "62d5e06a9fdef9bcae7703b8acde2f41586dc809856c2e58c9c3ff2672b3dfa4")
+    "baa3d92571b25e59facdbdc5fe52ceaa7d63ee4d8d0c006f03539c311dab7b99")
 FROZEN_ENGINE_MODINFO_SHA256 = (
-    "d6b580fec40e626d119d57cbd5d789c4167324166f5ca1fc036832f7b8f2e7f6")
+    "a0474162042ee481de028cef676d98fd513dd8c144ade4505513882c37002acb")
 FROZEN_REDIRECT_SHA256 = (
     "3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3")
 
@@ -151,37 +151,45 @@ class TestReleaseFreeze(unittest.TestCase):
                          "no absolute developer paths in release manifest")
         self.assertNotIn("Users", yaml.safe_dump(man))
         self.assertEqual(man["dll_sha256"], FROZEN_DLL_SHA256)
-        self.assertEqual(man["bridge_sql_sha256"], FROZEN_BRIDGE_SHA256)
-        self.assertEqual(man["registry_sha256"], FROZEN_REGISTRY_SHA256)
+        ctrl = man["workshop_items"]["controller"]
+        bridge = [e for e in ctrl["runtime_files"]
+                  if e["stage_path"] == "Config/X10WonderBridge.sql"][0]
+        self.assertEqual(bridge["sha256"], FROZEN_BRIDGE_SHA256)
+        reg = [a for a in man["source_release"]["build_assets"]
+               if a["asset_path"] == "X10ProductionRegistry.inc"][0]
+        self.assertEqual(reg["sha256"], FROZEN_REGISTRY_SHA256)
         self.assertEqual(man["registry_entries"], 1010)
         self.assertEqual(man["production_commit"], "2cf953e")
         self.assertEqual(man["ce_commit"], "1ce3188")
         self.assertEqual(man["live_validation_tag"],
                          "phase6b-1010-live-validated")
         self.assertIn("X10_Probe_Test", man["forbidden_in_release"])
-        # every allowlisted runtime file resolves to a tracked source file
-        # with the pinned hash (engine DLL resolves to the pinned build)
-        src_map = {
-            "CE-X10/CE-X10.modinfo":
-                "dependencies/CE-X10/CE-X10.modinfo",
-            "CE-X10/Config/EngineRedirect.sql":
-                "dependencies/CE-X10/Config/EngineRedirect.sql",
-            "CE-X10/Config/Dummy.sql":
-                "dependencies/CE-X10/Config/Dummy.sql",
-            "X10/X10.modinfo": "controller/X10/X10.modinfo",
-            "X10/Config/X10Config.sql":
-                "controller/X10/Config/X10Config.sql",
-            "X10/Config/Dummy.sql": "controller/X10/Config/Dummy.sql",
-            "X10/Config/X10WonderBridge.sql":
-                "controller/X10/Config/X10WonderBridge.sql",
-        }
-        for entry in man["runtime_allowlist"]:
-            rel = entry["path"]
-            if rel.endswith(".dll"):
-                continue
-            src = ROOT / src_map[rel]
-            self.assertTrue(src.is_file(), rel)
-            self.assertEqual(sha256(src), entry["sha256"], rel)
+        self.assertIn("probe.lua", man["forbidden_in_release"])
+        self.assertEqual(man["release_version"], "1.0.0-rc1")
+        self.assertEqual(man["modinfo_version"], 1)
+        self.assertEqual(man["workshop_items"]["engine"]["mod_id"],
+                         "397f2070-dfde-4124-88ce-e34249fc8190")
+        self.assertEqual(man["workshop_items"]["controller"]["mod_id"],
+                         "55d7b934-62f9-46fb-a771-badf3d1a1538")
+        self.assertEqual(man["workshop_items"]["controller"]["requires"],
+                         ["engine"])
+        # every staged file resolves to a source file with the pinned
+        # LF-normalized hash (engine DLL resolves to the pinned build)
+        for item in man["workshop_items"].values():
+            for entry in item["runtime_files"] + item["auxiliary_files"]:
+                if entry.get("dll_input"):
+                    continue
+                src = ROOT / entry["source"]
+                self.assertTrue(src.is_file(), entry["stage_path"])
+                self.assertEqual(sha256(src), entry["sha256"],
+                                 entry["stage_path"])
+        self.assertEqual(len(man["workshop_items"]["engine"]["runtime_files"]
+                             + man["workshop_items"]["engine"]
+                             ["auxiliary_files"]), 8)
+        self.assertEqual(len(man["workshop_items"]["controller"]
+                             ["runtime_files"]
+                             + man["workshop_items"]["controller"]
+                             ["auxiliary_files"]), 8)
 
 
 class TestReleaseSurfaceInventory(unittest.TestCase):
@@ -239,8 +247,10 @@ class TestReleaseSurfaceInventory(unittest.TestCase):
         man = yaml.safe_load(
             (ROOT / "release" / "release-manifest.yml")
             .read_text(encoding="utf-8"))
-        allow = [e["path"] for e in man["runtime_allowlist"]]
-        self.assertTrue(all("Probe" not in a for a in allow))
+        staged = [e["stage_path"]
+                  for item in man["workshop_items"].values()
+                  for e in item["runtime_files"] + item["auxiliary_files"]]
+        self.assertTrue(all("Probe" not in a for a in staged))
         self.assertIn("X10_Probe_Test", man["forbidden_in_release"])
         rep = self._report()
         by_path = {f["path"]: f for f in rep["files"]}

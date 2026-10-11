@@ -16,7 +16,7 @@
   {
    "path": ".gitattributes",
    "tracked": true,
-   "bytes": 159,
+   "bytes": 195,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "repo_meta",
@@ -44,7 +44,7 @@
   {
    "path": ".gitignore",
    "tracked": true,
-   "bytes": 767,
+   "bytes": 780,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "repo_meta",
@@ -72,7 +72,7 @@
   {
    "path": "README.md",
    "tracked": true,
-   "bytes": 2667,
+   "bytes": 2755,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -86,7 +86,7 @@
   {
    "path": "THIRD_PARTY_NOTICES.md",
    "tracked": true,
-   "bytes": 1190,
+   "bytes": 1376,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "license_notice",
@@ -380,7 +380,7 @@
   {
    "path": "civ6x10/release_surface.py",
    "tracked": true,
-   "bytes": 14040,
+   "bytes": 14004,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -674,7 +674,7 @@
   {
    "path": "controller/X10/X10.modinfo",
    "tracked": true,
-   "bytes": 1370,
+   "bytes": 1441,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -772,7 +772,7 @@
   {
    "path": "dependencies/CE-X10/CE-X10.modinfo",
    "tracked": true,
-   "bytes": 1033,
+   "bytes": 1229,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -926,7 +926,7 @@
   {
    "path": "docs/RELEASE_HARDENING.md",
    "tracked": true,
-   "bytes": 13345,
+   "bytes": 13656,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1040,14 +1040,14 @@
    "tracked": true,
    "bytes": 39719,
    "size_normalization": "LF",
-   "surface": "corresponding_source_candidate",
+   "surface": "private",
    "kind": "generated_derived_manifest",
    "generated": true,
    "runtime_required": false,
    "rebuild_required": true,
    "audit_only": false,
-   "provenance": "generated from audit + backlog (tracked exception)",
-   "disposition": "decide in 7B: publish generated file OR publish generator inputs only"
+   "provenance": "generated from audit + backlog (tracked deterministic dev artifact)",
+   "disposition": "PRIVATE DEVELOPMENT INPUT (Phase 7B.1 decision); never publish"
   },
   {
    "path": "manifests/pantheons.yml",
@@ -1082,14 +1082,14 @@
    "tracked": true,
    "bytes": 44055,
    "size_normalization": "LF",
-   "surface": "corresponding_source_candidate",
+   "surface": "private",
    "kind": "generated_derived_manifest",
    "generated": true,
    "runtime_required": false,
    "rebuild_required": true,
    "audit_only": false,
-   "provenance": "generated from audit + backlog (tracked exception)",
-   "disposition": "decide in 7B: publish generated file OR publish generator inputs only"
+   "provenance": "generated from audit + backlog (tracked deterministic dev artifact)",
+   "disposition": "PRIVATE DEVELOPMENT INPUT (Phase 7B.1 decision); never publish"
   },
   {
    "path": "manifests/traits.yml",
@@ -1136,7 +1136,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 2660,
+   "bytes": 5791,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2046,7 +2046,7 @@
   {
    "path": "tests/test_release_freeze.py",
    "tracked": true,
-   "bytes": 12373,
+   "bytes": 13228,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2187,23 +2187,19 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 81,
-   "bytes": 1008332
+   "bytes": 1012916
   },
   "corresponding_build_artifact": {
    "files": 1,
    "bytes": 71543
   },
   "private": {
-   "files": 64,
-   "bytes": 6580846
+   "files": 66,
+   "bytes": 6664620
   },
   "workshop_runtime": {
    "files": 7,
-   "bytes": 439988
-  },
-  "corresponding_source_candidate": {
-   "files": 2,
-   "bytes": 83774
+   "bytes": 440255
   }
  },
  "firaxis_footprint": {
@@ -2354,7 +2350,7 @@
   }
  ],
  "open_policy_questions": [
-  "tracked manifests: publish generated files or generator-inputs-only?",
+  "tracked manifests: DECIDED private in 7B.1 (never publish)",
   "audit docs with bulk tables: publish as analysis or summarize?",
   "reports/*.md tracked decision outputs: publish or keep private?",
   "validation evidence: hashes + compact summary vs raw logs?"

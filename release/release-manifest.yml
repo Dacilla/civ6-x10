@@ -1,26 +1,32 @@
-# Release manifest (Phase 7A proposal — single source of truth for 7B assembly).
+# Release manifest (Phase 7B.1) — single source of truth for release assembly.
 #
-# Describes the validated Phase-6B/6C gameplay-production freeze point.
-# Values are asserted by tests/test_release_freeze.py. Public URLs are
-# placeholders until decided (no upload has occurred).
+# Describes the validated Phase-6B/6C gameplay-production freeze point plus
+# the v1.0.0-rc1 two-item staging surfaces. Asserted by
+# tests/test_release_freeze.py (freeze pins) and
+# tests/test_release_candidate.py (schema + assembly invariants).
+# Public URLs are PLANNED placeholders in RC mode only
+# (see PLANNED-PLACEHOLDER markers in staging-src/*/SOURCE.txt).
 #
-# hash_normalization: LF. All text-file hashes below are LF-normalized
-# (universal-newlines read), identical on CRLF and LF checkouts. Live
-# Windows packaging bytes hash differently (bridge CRLF d0faabfa...,
-# registry CRLF f42c6a61...); the 7B assembler must normalize before
-# comparing. The DLL hash is a true binary hash (unaffected).
+# hash_normalization: LF. All text-file sha256 values below are
+# LF-normalized (universal-newlines read), identical on CRLF and LF
+# checkouts. Live Windows packaging bytes hash differently (bridge CRLF
+# d0faabfa..., registry CRLF f42c6a61...); the assembler normalizes
+# before comparing and records packaged bytes separately in
+# CHECKSUMS.sha256.
 hash_normalization: LF
-release_version: 0.0.0-proposed
+release_version: 1.0.0-rc1
+intended_tag: v1.0.0
 modinfo_version: 1
-controller_mod_id: 55d7b934-62f9-46fb-a771-badf3d1a1538
-engine_mod_id: 397f2070-dfde-4124-88ce-e34249fc8190
 platform: Windows x64
 requires_gathering_storm: true
+requires_secret_societies_for_mode_definitions: true
 production_commit: 2cf953e
 ce_commit: 1ce3188
 ce_branch: x10-lifecycle-log
+ce_fork_url: https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
+upstream_url: https://github.com/Wild-W/CivilizationVI_CommunityExtension
+public_source_url: https://github.com/Dacilla/civ6-x10-release-source
 dll_sha256: e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
-bridge_sql_sha256: 81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe
 registry_sha256: 181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208
 registry_entries: 1010
 registry_unique_definitions: 1006
@@ -28,8 +34,8 @@ registry_shared_definitions: 25
 registry_unconditional: 788
 registry_count_like: 222
 live_validation_tag: phase6b-1010-live-validated
-source_url: TODO-decide
-release_notes_url: TODO-decide
+live_run_a: {writes: 801, refused: 209}
+live_run_b: {writes: 698, refused: 174, skipped: 138}
 modules:
   traits: {bit: 1, default: on}
   policies: {bit: 2, default: on}
@@ -38,22 +44,89 @@ modules:
   wonders: {bit: 16, default: on}
   governors: {bit: 32, default: on}
   suzerain: {bit: 64, default: on}
-runtime_allowlist:
-  - path: CE-X10/CE-X10.modinfo
-    sha256: d6b580fec40e626d119d57cbd5d789c4167324166f5ca1fc036832f7b8f2e7f6
-  - path: CE-X10/Config/EngineRedirect.sql
-    sha256: 3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3
-  - path: CE-X10/Config/Dummy.sql
-    sha256: 8a48ba744fd5c06503eaff885d69cde3441cdf331ee6558867f9e8afa28d62fe
-  - path: CE-X10/Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
-    sha256: e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
-  - path: X10/X10.modinfo
-    sha256: 62d5e06a9fdef9bcae7703b8acde2f41586dc809856c2e58c9c3ff2672b3dfa4
-  - path: X10/Config/X10Config.sql
-    sha256: 1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b
-  - path: X10/Config/Dummy.sql
-    sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
-  - path: X10/Config/X10WonderBridge.sql
-    sha256: 81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe
+
+workshop_items:
+  engine:
+    name: X10 CE Engine
+    mod_id: 397f2070-dfde-4124-88ce-e34249fc8190
+    primary: false
+    stage_dir: X10-CE-Engine
+    runtime_files:
+      - stage_path: CE-X10.modinfo
+        source: dependencies/CE-X10/CE-X10.modinfo
+        sha256: a0474162042ee481de028cef676d98fd513dd8c144ade4505513882c37002acb
+      - stage_path: Config/EngineRedirect.sql
+        source: dependencies/CE-X10/Config/EngineRedirect.sql
+        sha256: 3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3
+      - stage_path: Config/Dummy.sql
+        source: dependencies/CE-X10/Config/Dummy.sql
+        sha256: 8a48ba744fd5c06503eaff885d69cde3441cdf331ee6558867f9e8afa28d62fe
+      - stage_path: Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
+        dll_input: true
+        sha256: e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
+    auxiliary_files:
+      - stage_path: README.txt
+        source: release/staging-src/engine/README.txt
+        sha256: d6deb23b94984ceada51c249474b07437855b513db649f8f59899d25314ca8ae
+      - stage_path: LICENSE.txt
+        source: release/staging-src/engine/LICENSE.txt
+        sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+      - stage_path: THIRD_PARTY_NOTICES.txt
+        source: release/staging-src/engine/THIRD_PARTY_NOTICES.txt
+        sha256: b0203f7cff7e63775c96032de0483d36c0503e24575c1a355644ec6283efe46e
+      - stage_path: SOURCE.txt
+        source: release/staging-src/engine/SOURCE.txt
+        sha256: 43816e72b256b7598f1ccd8061837ef286d0cc6bf87f1963b5017bdc2d3fc00f
+        has_planned_placeholder: true
+  controller:
+    name: X10 (configurable semantic multiplier)
+    mod_id: 55d7b934-62f9-46fb-a771-badf3d1a1538
+    primary: true
+    stage_dir: X10
+    requires: [engine]
+    runtime_files:
+      - stage_path: X10.modinfo
+        source: controller/X10/X10.modinfo
+        sha256: baa3d92571b25e59facdbdc5fe52ceaa7d63ee4d8d0c006f03539c311dab7b99
+      - stage_path: Config/X10Config.sql
+        source: controller/X10/Config/X10Config.sql
+        sha256: 1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b
+      - stage_path: Config/Dummy.sql
+        source: controller/X10/Config/Dummy.sql
+        sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
+      - stage_path: Config/X10WonderBridge.sql
+        source: controller/X10/Config/X10WonderBridge.sql
+        sha256: 81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe
+    auxiliary_files:
+      - stage_path: README.txt
+        source: release/staging-src/controller/README.txt
+        sha256: 8607c826fa40de05696b3d98704d5a3bbfa70a0679fbff5b42507c39200e20b5
+      - stage_path: LICENSE.txt
+        source: release/staging-src/controller/LICENSE.txt
+        sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
+      - stage_path: THIRD_PARTY_NOTICES.txt
+        source: release/staging-src/controller/THIRD_PARTY_NOTICES.txt
+        sha256: 9c45020734e558fabe350730d7499a54c8604dd92c999676747adac97bbaf57d
+      - stage_path: SOURCE.txt
+        source: release/staging-src/controller/SOURCE.txt
+        sha256: c64a17d74c19341a77073cfc5abc3aca4aee06f75842c9a625e091f2e20e3479
+        has_planned_placeholder: true
+
+source_release:
+  public_export_allowlist: []
+  build_assets:
+    - asset_path: X10ProductionRegistry.inc
+      source: build/X10ProductionRegistry.inc
+      sha256: 181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208
+      entries: 1010
+    - asset_path: release-manifest.yml
+      source: release/release-manifest.yml
+    - asset_path: VALIDATION.md
+      source: release/VALIDATION.md
+    - asset_path: BUILDING.md
+      source: release/BUILDING.md
+
 forbidden_in_release:
   - X10_Probe_Test
+  - probe.lua
+  - stonediag.lua

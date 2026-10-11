@@ -7,8 +7,11 @@ This repository contains no third-party code. Research sources consulted
   accepted dependency/foundation for X10). Workshop ID 3277976174, v1.3.
 - Civ VI GameCore reference — cru121/civ6-gamecore-reference (see its LICENSE).
 - Dev CE research — cru121/civ6-dev-ce (see its LICENSE).
-- Firaxis game data (official runtime database) is used locally as an input
-  and is never redistributed: `data/local/` is gitignored.
+- Firaxis game data: raw copied official runtime database/data files
+  (`data/local/`, never redistributed) are used locally as an input. The
+  public package necessarily contains narrowly derived identifiers/guard
+  values in the registry/bridge (see `docs/RELEASE_HARDENING.md` §2 for
+  the exact engineering policy).
 
 A future `docs/CE_UPSTREAM_PROPOSAL.md` will be reviewed here before any
 upstream contact.

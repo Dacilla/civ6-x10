@@ -1,0 +1,21 @@
+X10 CE Engine - third-party notices
+=======================================
+
+Upstream foundation:
+  Wild-W/CivilizationVI_CommunityExtension
+  https://github.com/Wild-W/CivilizationVI_CommunityExtension
+  (AGPL-3.0; see LICENSE.txt)
+
+X10 native transformation engine fork:
+  https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
+  branch x10-lifecycle-log, commit 1ce3188
+
+Distributed binary:
+  Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
+  SHA-256 e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
+
+The engine applies certified numeric-definition transformations at
+definition-population time under the X10 controller's configuration.
+No Firaxis game database or asset files are distributed with this item;
+only narrowly derived identifiers/guard values required for the mod to
+function (see SOURCE.txt for the corresponding source).

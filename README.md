@@ -1,17 +1,19 @@
 # Civ VI X10 — configurable semantic multiplier mod
 
-Civilization VI X10 is **one configurable mod/Workshop item**, internally
-composed of independently tested gameplay components. A Community Extension
+Civilization VI X10 is **one configurable controller plus one required CE
+engine dependency** (two Workshop items at release), internally composed of
+independently tested gameplay components. A Community Extension
 replacement GameCore performs the arbitrary multiplier at runtime; the
 controller carries configuration plus a generated, guarded SQL fallback and
 a direct-table bridge.
 
 > Status: **all seven modules (traits, policies, governments, pantheons,
-> wonders, governors, suzerain) are LIVE_VALIDATED as the 971-entry slice**
-> at stored FLOAT32 k=7.3 (see `docs/PRODUCTION_RELEASE.md` for per-module
-> counters and `spike/validation-evidence/` for the archived native logs).
-> The current **1010-entry Phase-6B build is LIVE_VALIDATED** (Phase 6C:
-> Run A 801 writes / 209 refusals, Run B 698 / 174 / 138).
+> wonders, governors, suzerain) are LIVE_VALIDATED in the 1010-entry
+> production state** at stored FLOAT32 k=7.3 (see
+> `docs/PRODUCTION_RELEASE.md` for per-module counters and
+> `spike/validation-evidence/` for the archived native logs; the prior
+> 971-entry slice evidence remains where explicitly historical). Phase 6C:
+> Run A 801 writes / 209 refusals, Run B 698 / 174 / 138.
 > Controller packaging is functionally complete locally; **Steam Workshop
 > release is not ready** pending the public-data hygiene step.
 
