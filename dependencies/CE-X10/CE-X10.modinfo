@@ -2,9 +2,12 @@
 <Mod id="397f2070-dfde-4124-88ce-e34249fc8190" version="1">
   <Properties>
     <Name>X10 CE Engine</Name>
-    <Description>Required engine dependency for the X10 configurable semantic multiplier (GameCore replacement carrying the X10 native transformation engine). Subscribe together with the main X10 item; no configuration here. Built from CivilizationVI_CommunityExtension-X10, branch x10-lifecycle-log.</Description>
+    <Teaser>Required engine dependency for X10. No settings here; configure X10 from the main mod.</Teaser>
+    <Description>Required engine for X10 — Configurable Bonus Multiplier. Enable this alongside the main X10 mod. It has no settings of its own.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
     <CompatibleVersions>2.0</CompatibleVersions>
+    <SupportsSinglePlayer>1</SupportsSinglePlayer>
+    <SupportsMultiplayer>0</SupportsMultiplayer>
   </Properties>
   <Dependencies>
     <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />

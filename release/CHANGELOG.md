@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.0-rc2 (release candidate, not published)
+
+- Native preset/custom/bool config readers; setup migrates to Advanced
+  Setup (preset dropdown, custom value, checkbox modules) with en_US
+  localization. New DLL `3b6dc3d2…ab14`.
+- Same 1010-entry gameplay registry, transforms, and ownership; no
+  semantic change vs the validated `2cf953e` state.
+- Controller/engine display names, teasers, and single/multiplayer
+  metadata polished; `CompatibleVersions=2.0` retained.
+
 ## v1.0.0-rc1 (release candidate, not published)
 
 - Validated gameplay: 1010-entry registry (1006 definitions, 25 shared;

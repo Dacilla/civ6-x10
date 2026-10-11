@@ -1,11 +1,10 @@
-# Civ VI X10 — configurable semantic multiplier mod
+# Civ VI X10 — Configurable Bonus Multiplier
 
-Civilization VI X10 is **one configurable controller plus one required CE
-engine dependency** (two Workshop items at release), internally composed of
-independently tested gameplay components. A Community Extension
-replacement GameCore performs the arbitrary multiplier at runtime; the
-controller carries configuration plus a generated, guarded SQL fallback and
-a direct-table bridge.
+Civilization VI X10 scales supported numeric bonuses by the multiplier
+you choose, with per-module category controls. Install two Workshop
+items — **X10 — Configurable Bonus Multiplier** plus its required
+**X10 CE Engine** dependency — and configure everything in Advanced
+Setup (Windows x64 + Gathering Storm, single-player).
 
 > Status: **all seven modules (traits, policies, governments, pantheons,
 > wonders, governors, suzerain) are LIVE_VALIDATED in the 1010-entry
@@ -13,7 +12,8 @@ a direct-table bridge.
 > `docs/PRODUCTION_RELEASE.md` for per-module counters and
 > `spike/validation-evidence/` for the archived native logs; the prior
 > 971-entry slice evidence remains where explicitly historical). Phase 6C:
-> Run A 801 writes / 209 refusals, Run B 698 / 174 / 138.
+> Run A 801 writes / 209 refusals, Run B 698 / 174 / 138. Phase 7C.2
+> migrates setup to a native preset/checkbox UI (same 1010 gameplay set).
 > Controller packaging is functionally complete locally; **Steam Workshop
 > release is not ready** pending the public-data hygiene step.
 

@@ -130,7 +130,7 @@ class TestWriteProbeRegressions(unittest.TestCase):
     def test_disarm_before_lookup(self):
         t = self._fork("X10Lifecycle.cpp")
         i_dis = t.index("X10Write::Disarm()")
-        i_cfg = t.index("TryGetProbeK")
+        i_cfg = t.index("ResolveEffectiveMultiplier")
         self.assertLess(i_dis, i_cfg)
 
     def test_disarm_at_population_exit(self):
@@ -174,7 +174,7 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIn("nextafterf", w)
         self.assertIn("g_kErr", w)
         lc = self._code(self._fork("X10Lifecycle.cpp"))
-        self.assertIn("TryGetMultiplier", lc)
+        self.assertIn("ResolveEffectiveMultiplier", lc)
         self.assertIn("Arm(k, mods, kErr)", lc)
 
     def test_x10_only_rollback(self):
@@ -201,13 +201,13 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIn("Arm(double k, const bool* mods, double kErr)", h)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
                ).read_text(encoding="utf-8")
-        self.assertIn("X10_MODULE_PANTHEONS', 'X10: Pantheons', "
-                      "'Apply to founded-pantheon belief effects.',\n   'int', '1',",
+        self.assertIn("X10ModulePantheons', 'LOC_X10_MOD_PANTHEONS_NAME', ",
                       cfg.replace("\r\n", "\n"))
         import re
-        m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'", cfg, re.S)
+        m = re.search(r"'X10_MODULE_PANTHEONS', 'AdvancedOptions', 2405,\s*1, 1, 0, 0, 0, 0, 0\)", cfg, re.S)
         self.assertIsNotNone(m)
-        self.assertEqual(m.group(2), "1")
+        m = re.search(r"'bool', '1', 0,\s*'Game', 'X10_MODULE_SUZERAIN'", cfg, re.S)
+        self.assertIsNotNone(m)
 
     def test_wonder_module_bit_wired(self):
         # Wonders are the fifth supported module (bit 16): native slots,
@@ -223,14 +223,13 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertNotIn('{"suzerain"}', flat)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
                ).read_text(encoding="utf-8")
-        self.assertIn("X10_MODULE_WONDERS', 'X10: Wonders', ",
+        self.assertIn("X10ModuleWonders', 'LOC_X10_MOD_WONDERS_NAME', ",
                       cfg.replace("\r\n", "\n"))
         self.assertNotIn("X10: Wonders (unsupported)", cfg)
         import re
-        m = re.search(r"X10_MODULE_WONDERS'.*?\n.*?'(int)', '(0|1)'",
+        m = re.search(r"'X10_MODULE_WONDERS', 'AdvancedOptions', 2406,\s*1, 1, 0, 0, 0, 0, 0\)",
                       cfg, re.S)
         self.assertIsNotNone(m)
-        self.assertEqual(m.group(2), "1")
 
     def test_governor_module_bit_wired(self):
         # Governors are the sixth supported module (bit 32): native slots,
@@ -253,17 +252,16 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertNotIn('{"suzerain"}', flat)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
                ).read_text(encoding="utf-8")
-        self.assertIn("X10_MODULE_GOVERNORS', 'X10: Governors', ",
+        self.assertIn("X10ModuleGovernors', 'LOC_X10_MOD_GOVERNORS_NAME', ",
                       cfg.replace("\r\n", "\n"))
         self.assertNotIn("X10: Governors (unsupported)", cfg)
         import re
-        m = re.search(r"X10_MODULE_GOVERNORS'.*?\n.*?'(int)', '(0|1)'",
+        m = re.search(r"'X10_MODULE_GOVERNORS', 'AdvancedOptions', 2407,\s*1, 1, 0, 0, 0, 0, 0\)",
                       cfg, re.S)
         self.assertIsNotNone(m)
-        self.assertEqual(m.group(2), "1")
-        m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'",
+        m = re.search(r"'bool', '1', 0,\s*'Game', 'X10_MODULE_SUZERAIN', 'AdvancedOptions', 2408",
                       cfg, re.S)
-        self.assertEqual(m.group(2), "1")
+        self.assertIsNotNone(m)
 
     def test_suzerain_module_bit_wired(self):
         # Suzerain is the seventh supported module (bit 64): native slots,
@@ -282,14 +280,13 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertNotIn("ignored", flat)
         cfg = (ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
                ).read_text(encoding="utf-8")
-        self.assertIn("X10_MODULE_SUZERAIN', 'X10: Suzerain', ",
+        self.assertIn("X10ModuleSuzerain', 'LOC_X10_MOD_SUZERAIN_NAME', ",
                       cfg.replace("\r\n", "\n"))
         self.assertNotIn("(unsupported)", cfg)
         import re
-        m = re.search(r"X10_MODULE_SUZERAIN'.*?\n.*?'(int)', '(0|1)'",
+        m = re.search(r"'X10_MODULE_SUZERAIN', 'AdvancedOptions', 2408,\s*1, 1, 0, 0, 0, 0, 0\)",
                       cfg, re.S)
         self.assertIsNotNone(m)
-        self.assertEqual(m.group(2), "1")
         # owners-bit documentation covers all seven modules
         self.assertIn("64=suzerain", cfg)
 

@@ -19,7 +19,7 @@ byte-verifiable engine binary.
    `msbuild CivilizationVI_CommunityExtension.sln /p:Configuration=Release
    /p:Platform=x64`
 3. Output DLL must SHA-256 to:
-   `e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619`
+   `3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14`
    (binary hash; MSVC builds are not claimed byte-reproducible across
    toolchains — this is a corresponding-source build, verified by hash).
 

@@ -86,6 +86,16 @@
   70/68. Evidence: `spike/validation-evidence/X10Lifecycle.1010-6C-run{AB}.log`,
   `X10Probe.1010-6C-run{AB}.log`.
 
+- Phase 7C.2 UX integration (NOT live-validated yet): setup migrates to
+  native Advanced Setup (preset dropdown `X10_MULTIPLIER_PRESET`,
+  custom `X10_MULTIPLIER` text, seven bool `X10_MODULE_*` checkboxes,
+  en_US localization, SP-only flags); native reader gains
+  preset/custom/bool resolution with legacy fallback; new DLL
+  `3b6dc3d2...ab14` (CE `0655190`); same 1010 gameplay set/transforms.
+  Release candidate `1.0.0-rc2`, awaiting the 7C.2 validation matrix
+  (preset-x10 1010/0, Custom-7.3 801/209, Custom-7.3-no-Gov 745/195/70,
+  Off disarmed, probe-free RC2 smoke).
+
 Follow-up (done in Phase 6B): the two Toqui governor-pressure rows were
 re-admitted after the 6A.2 probe proved stored MATCH via store-lookup on
 load AND reload; the temporary exclusion entry is removed.

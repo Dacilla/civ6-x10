@@ -297,7 +297,7 @@ class TestProductionUnchanged(unittest.TestCase):
         p = ROOT / "spike" / "EXPECTED_DLL_SHA256.txt"
         if p.is_file():
             self.assertEqual(p.read_text(encoding="utf-8").strip(),
-                             "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
+                             "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
 
 
 

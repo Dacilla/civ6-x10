@@ -28,15 +28,15 @@ ROOT = Path(__file__).resolve().parents[1]
 FROZEN_REGISTRY_SHA256 = (
     "181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208")
 FROZEN_DLL_SHA256 = (
-    "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
+    "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
 FROZEN_BRIDGE_SHA256 = (
     "81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe")
 FROZEN_CONFIG_SHA256 = (
-    "1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b")
+    "b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464")
 FROZEN_X10_MODINFO_SHA256 = (
-    "54c278b66e48e921cb1ecef80e2a43d37560a14e8cfdc10214bfadca9d30877d")
+    "bdc52152920b59d5a03ef5d9ca8276e56546b9a3af823e347f2cb2516b864684")
 FROZEN_ENGINE_MODINFO_SHA256 = (
-    "2a761d7abf4e7c364e9610af06946f0e823f39ce1b7e73f8810da99c22ace0fe")
+    "5342b15b834bb3627adea890ddc7e8f1ed4396196258b80db1a2ea00b93688f9")
 FROZEN_REDIRECT_SHA256 = (
     "3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3")
 
@@ -131,15 +131,17 @@ class TestReleaseFreeze(unittest.TestCase):
         if not p.is_file():
             self.skipTest("controller config unavailable")
         text = p.read_text(encoding="utf-8")
-        # ParameterId position opens the VALUES tuple; ConfigurationId
-        # occurrences are preceded by 'Game' and never match this prefix.
-        names = re.findall(r"\('X10_MODULE_([A-Z]+)',", text)
-        self.assertEqual(
-            names,
-            ["TRAITS", "POLICIES", "GOVERNMENTS", "PANTHEONS",
-             "GOVERNORS", "WONDERS", "SUZERAIN"])
-        defaults = re.findall(r"'int',\s*'(\d)'", text)
-        self.assertEqual(defaults, ["1"] * 7)
+        # ConfigurationId positions (ParameterIds are X10Module* in 7C.2)
+        names = re.findall(r"'Game', '(X10_MODULE_[A-Z]+)'", text)
+        self.assertEqual(names, ["X10_MODULE_TRAITS", "X10_MODULE_POLICIES",
+                                 "X10_MODULE_GOVERNMENTS",
+                                 "X10_MODULE_PANTHEONS", "X10_MODULE_WONDERS",
+                                 "X10_MODULE_GOVERNORS", "X10_MODULE_SUZERAIN"])
+        # native bool checkboxes, default ON
+        for mod in ("TRAITS", "POLICIES", "GOVERNMENTS", "PANTHEONS",
+                    "WONDERS", "GOVERNORS", "SUZERAIN"):
+            self.assertIn(f"'bool', '1', 0,\n   'Game', 'X10_MODULE_{mod}'",
+                          text.replace("\r\n", "\n"), mod)
 
     def test_release_manifest_matches_reality(self):
         import yaml
@@ -165,7 +167,7 @@ class TestReleaseFreeze(unittest.TestCase):
                          "phase6b-1010-live-validated")
         self.assertIn("X10_Probe_Test", man["forbidden_in_release"])
         self.assertIn("probe.lua", man["forbidden_in_release"])
-        self.assertEqual(man["release_version"], "1.0.0-rc1")
+        self.assertEqual(man["release_version"], "1.0.0-rc2")
         self.assertEqual(man["modinfo_version"], 1)
         self.assertEqual(man["workshop_items"]["engine"]["mod_id"],
                          "397f2070-dfde-4124-88ce-e34249fc8190")
@@ -189,7 +191,7 @@ class TestReleaseFreeze(unittest.TestCase):
         self.assertEqual(len(man["workshop_items"]["controller"]
                              ["runtime_files"]
                              + man["workshop_items"]["controller"]
-                             ["auxiliary_files"]), 8)
+                             ["auxiliary_files"]), 9)
 
 
 class TestReleaseSurfaceInventory(unittest.TestCase):

@@ -61,7 +61,8 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
                if a.find("File") is not None else None)
               for a in m.find("FrontEndActions")]
         self.assertEqual([(t, i) for t, i, _ in fe],
-                         [("UpdateDatabase", "X10Config")])
+                         [("UpdateDatabase", "X10Config"),
+                          ("UpdateText", "X10Text")])
         ig = [(a.tag, a.get("id")) for a in m.find("InGameActions")]
         self.assertEqual(ig, [("UpdateDatabase", "X10Dummy"),
                              ("UpdateDatabase", "X10WonderBridge")])
@@ -71,10 +72,11 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
                                     ["Config/X10WonderBridge.sql"]])
         fe_files = [[f.text for f in a.iter("File")]
                     for a in m.find("FrontEndActions")]
-        self.assertEqual(fe_files, [["Config/X10Config.sql"]])
+        self.assertEqual(fe_files, [["Config/X10Config.sql"],
+                                    ["Config/X10Text.sql"]])
         files = sorted(f.text for f in m.find("Files"))
         self.assertEqual(files, [
-            "Config/Dummy.sql", "Config/X10Config.sql",
+            "Config/Dummy.sql", "Config/X10Config.sql", "Config/X10Text.sql",
             "Config/X10WonderBridge.sql", "LICENSE.txt", "README.txt",
             "SOURCE.txt", "THIRD_PARTY_NOTICES.txt",
         ])
@@ -113,7 +115,7 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
 class TestManifestSurfaces(unittest.TestCase):
     def test_schema(self):
         man = manifest()
-        self.assertEqual(man["release_version"], "1.0.0-rc1")
+        self.assertEqual(man["release_version"], "1.0.0-rc2")
         self.assertEqual(man["modinfo_version"], 1)
         items = man["workshop_items"]
         self.assertEqual(set(items), {"engine", "controller"})
@@ -132,6 +134,11 @@ class TestManifestSurfaces(unittest.TestCase):
                          for e in item["auxiliary_files"])
             self.assertEqual(aux, ["LICENSE.txt", "README.txt",
                                    "SOURCE.txt", "THIRD_PARTY_NOTICES.txt"])
+        self.assertEqual(
+            sorted(e["stage_path"]
+                   for e in items["controller"]["runtime_files"]),
+            ["Config/Dummy.sql", "Config/X10Config.sql", "Config/X10Text.sql",
+             "Config/X10WonderBridge.sql", "X10.modinfo"])
         self.assertTrue(man["source_release"]["build_assets"])
 
     def test_no_absolute_paths(self):
@@ -208,7 +215,7 @@ class TestAssembleDynamic(unittest.TestCase):
             raise unittest.SkipTest("validated DLL build unavailable")
         cls.dll = str(dll)
         cls.outdir = (Path(__import__("tempfile").mkdtemp(
-            prefix="x10rc")) / "1.0.0-rc1")
+            prefix="x10rc")) / "1.0.0-rc2")
         r = subprocess.run(
             [PWSH, "-NoProfile", "-File",
              str(ROOT / "release" / "assemble-release.ps1"),
@@ -294,7 +301,7 @@ class TestAssembleDynamic(unittest.TestCase):
 
 
 class TestFinalTransitionSurface(unittest.TestCase):
-    """RC (1.0.0-rc1) -> final (1.0.0) may touch ONLY non-gameplay text.
+    """RC (1.0.0-rc2) -> final (1.0.0) may touch ONLY non-gameplay text.
 
     Exact mutable set: version strings, SOURCE URLs (once the public repo
     exists), CHANGELOG status, Workshop draft URLs. Gameplay pins must
@@ -337,9 +344,9 @@ class TestFinalTransitionSurface(unittest.TestCase):
     def test_gameplay_pins_intact(self):
         man = manifest()
         self.assertEqual(man["dll_sha256"],
-                         "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
+                         "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
         self.assertEqual(man["registry_entries"], 1010)
-        self.assertEqual(man["release_version"], "1.0.0-rc1")
+        self.assertEqual(man["release_version"], "1.0.0-rc2")
         self.assertEqual(man["modinfo_version"], 1)
 
     def test_placeholders_only_in_source_txt(self):
@@ -369,7 +376,7 @@ class TestPublicExport(unittest.TestCase):
         cls.tmp = Path(tempfile.mkdtemp(prefix="x10pub"))
         r = subprocess.run(
             [sys.executable, str(ROOT / "release" / "export_public_source.py"),
-             "--out", str(cls.tmp), "--version", "1.0.0-rc1"],
+             "--out", str(cls.tmp), "--version", "1.0.0-rc2"],
             capture_output=True, text=True)
         if r.returncode != 0:
             raise unittest.SkipTest(f"export failed: {r.stderr[-500:]}")
@@ -405,7 +412,7 @@ class TestPublicExport(unittest.TestCase):
     def test_provenance_present_and_clean(self):
         prov = (self.root / "PROVENANCE.md").read_text(encoding="utf-8")
         for needle in ("2cf953e", "phase6b-1010-live-validated", "1ce3188",
-                       "1.0.0-rc1", "file-list hash"):
+                       "1.0.0-rc2", "file-list hash"):
             self.assertIn(needle, prov)
         for needle in ("C:\\Users", "/home/", "data/local/Debug"):
             self.assertNotIn(needle, prov)

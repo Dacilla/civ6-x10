@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Mod id="55d7b934-62f9-46fb-a771-badf3d1a1538" version="1">
   <Properties>
-    <Name>X10 (configurable semantic multiplier)</Name>
-    <Description>Configurable Civ VI semantic multiplier with per-module controls. Requires the matching X10 CE Engine dependency.</Description>
+    <Name>X10 — Configurable Bonus Multiplier</Name>
+    <Teaser>Choose a multiplier and scale supported Civ VI bonuses by category. Requires X10 CE Engine.</Teaser>
+    <Description>Choose a multiplier and scale supported Civilization VI bonuses such as traits, policy cards, governments, Pantheons, Wonders, Governors and City-State Suzerain bonuses. Configure everything in Advanced Setup.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
     <CompatibleVersions>2.0</CompatibleVersions>
+    <SupportsSinglePlayer>1</SupportsSinglePlayer>
+    <SupportsMultiplayer>0</SupportsMultiplayer>
   </Properties>
   <Dependencies>
     <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />
@@ -14,6 +17,9 @@
     <UpdateDatabase id="X10Config">
       <File>Config/X10Config.sql</File>
     </UpdateDatabase>
+    <UpdateText id="X10Text">
+      <File>Config/X10Text.sql</File>
+    </UpdateText>
   </FrontEndActions>
   <InGameActions>
     <UpdateDatabase id="X10Dummy">
@@ -25,6 +31,7 @@
   </InGameActions>
   <Files>
     <File>Config/X10Config.sql</File>
+    <File>Config/X10Text.sql</File>
     <File>Config/Dummy.sql</File>
     <File>Config/X10WonderBridge.sql</File>
     <File>README.txt</File>

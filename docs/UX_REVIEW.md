@@ -152,7 +152,9 @@ Expected log lines per key: `CONFIG key=X10_UX_PRESET ...` (preset
 storage type — int vs text decides the reader), `...X10_UX_CUSTOM...`
 (text payload shape), `...X10_UX_BOOL_TRAITS...` ON +
 `...X10_UX_BOOL_GOVERNORS...` OFF (bool type id/flags/payload; profile
-field `boolId` candidate), `...X10_MULTIPLIER... found=false` (control).
+field `boolId` candidate), `...X10_MULTIPLIER...` absent-key control
+(`found=false` if the pointer is null, or the UNSET type-0 shape — both
+mean legacy-fallback permission, corrected 7C.1a §15).
 
 ## 11. Screenshot + run instructions (for the human)
 

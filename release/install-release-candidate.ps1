@@ -5,8 +5,8 @@
 # the installed DLL hash. Never touches stock files or the upstream
 # Workshop Community Extension directory. Human smoke test only.
 param(
-    [string]$StageDir = (Join-Path $PSScriptRoot 'out' '1.0.0-rc1' 'workshop'),
-    [string]$ExpectedDllHash = 'e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619'
+    [string]$StageDir = (Join-Path $PSScriptRoot 'out' '1.0.0-rc2' 'workshop'),
+    [string]$ExpectedDllHash = '3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14'
 )
 $ErrorActionPreference = 'Stop'
 

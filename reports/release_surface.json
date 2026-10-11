@@ -72,7 +72,7 @@
   {
    "path": "README.md",
    "tracked": true,
-   "bytes": 2755,
+   "bytes": 2782,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -646,7 +646,7 @@
   {
    "path": "controller/X10/Config/X10Config.sql",
    "tracked": true,
-   "bytes": 2767,
+   "bytes": 4316,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -674,7 +674,7 @@
   {
    "path": "controller/X10/X10.modinfo",
    "tracked": true,
-   "bytes": 1490,
+   "bytes": 1920,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -772,7 +772,7 @@
   {
    "path": "dependencies/CE-X10/CE-X10.modinfo",
    "tracked": true,
-   "bytes": 1278,
+   "bytes": 1332,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -912,7 +912,7 @@
   {
    "path": "docs/PRODUCTION_RELEASE.md",
    "tracked": true,
-   "bytes": 20769,
+   "bytes": 21349,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1010,7 +1010,7 @@
   {
    "path": "docs/UX_REVIEW.md",
    "tracked": true,
-   "bytes": 17198,
+   "bytes": 17324,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1164,7 +1164,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 650,
+   "bytes": 1126,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1192,7 +1192,7 @@
   {
    "path": "release/KNOWN_ISSUES.md",
    "tracked": true,
-   "bytes": 1119,
+   "bytes": 1294,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1276,7 +1276,7 @@
   {
    "path": "release/export_public_source.py",
    "tracked": true,
-   "bytes": 5853,
+   "bytes": 5892,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1318,7 +1318,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 5790,
+   "bytes": 5960,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1346,7 +1346,7 @@
   {
    "path": "release/staging-src/controller/README.txt",
    "tracked": true,
-   "bytes": 911,
+   "bytes": 2001,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2452,7 +2452,7 @@
   {
    "path": "tests/test_live_package.py",
    "tracked": true,
-   "bytes": 21712,
+   "bytes": 21767,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2522,7 +2522,7 @@
   {
    "path": "tests/test_release_candidate.py",
    "tracked": true,
-   "bytes": 21815,
+   "bytes": 22216,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2536,7 +2536,7 @@
   {
    "path": "tests/test_release_freeze.py",
    "tracked": true,
-   "bytes": 13228,
+   "bytes": 13506,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2691,7 +2691,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 107,
-   "bytes": 1167906
+   "bytes": 1171323
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -2703,7 +2703,7 @@
   },
   "workshop_runtime": {
    "files": 7,
-   "bytes": 440353
+   "bytes": 442386
   }
  },
  "firaxis_footprint": {

@@ -132,7 +132,7 @@ class TestProductionUntouched(unittest.TestCase):
     def test_controller_sql_hashes(self):
         self.assertEqual(
             norm_hash(ROOT / "controller" / "X10" / "Config" / "X10Config.sql"),
-            "1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b")
+            "b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464")
         self.assertEqual(
             norm_hash(ROOT / "controller" / "X10" / "Config" /
                       "X10WonderBridge.sql"),
@@ -149,7 +149,7 @@ class TestProductionUntouched(unittest.TestCase):
             self.skipTest("expected DLL hash unavailable")
         self.assertEqual(
             pin.read_text(encoding="utf-8").strip().lower(),
-            "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
+            "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
 
     def test_scratch_pin_distinct(self):
         pin = ROOT / "spike" / "UX_PROBE_DLL_SHA256.txt"
@@ -159,7 +159,7 @@ class TestProductionUntouched(unittest.TestCase):
         self.assertRegex(scratch, r"^[0-9a-f]{64}$")
         self.assertNotEqual(
             scratch,
-            "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
+            "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
 
     def test_modinfo_gameplay_nodes_stable(self):
         import xml.etree.ElementTree as ET

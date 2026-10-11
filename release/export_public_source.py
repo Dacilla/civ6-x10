@@ -56,6 +56,7 @@ TESTS = [
     "tests/test_governors_production.py",
     "tests/test_phase6b_production.py",
     "tests/test_production.py",
+    "tests/test_production_config.py",
     "tests/test_semantic_backlog.py",
     "tests/test_semantics.py",
     "tests/test_strong_family_override.py",

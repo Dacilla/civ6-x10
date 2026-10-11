@@ -14,7 +14,7 @@
 # before comparing and records packaged bytes separately in
 # CHECKSUMS.sha256.
 hash_normalization: LF
-release_version: 1.0.0-rc1
+release_version: 1.0.0-rc2
 intended_tag: v1.0.0
 modinfo_version: 1
 platform: Windows x64
@@ -26,7 +26,7 @@ ce_branch: x10-lifecycle-log
 ce_fork_url: https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
 upstream_url: https://github.com/Wild-W/CivilizationVI_CommunityExtension
 public_source_url: https://github.com/Dacilla/civ6-x10-release-source
-dll_sha256: e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
+dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
 registry_sha256: 181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208
 registry_entries: 1010
 registry_unique_definitions: 1006
@@ -54,7 +54,7 @@ workshop_items:
     runtime_files:
       - stage_path: CE-X10.modinfo
         source: dependencies/CE-X10/CE-X10.modinfo
-        sha256: 2a761d7abf4e7c364e9610af06946f0e823f39ce1b7e73f8810da99c22ace0fe
+        sha256: 5342b15b834bb3627adea890ddc7e8f1ed4396196258b80db1a2ea00b93688f9
       - stage_path: Config/EngineRedirect.sql
         source: dependencies/CE-X10/Config/EngineRedirect.sql
         sha256: 3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3
@@ -87,10 +87,13 @@ workshop_items:
     runtime_files:
       - stage_path: X10.modinfo
         source: controller/X10/X10.modinfo
-        sha256: 54c278b66e48e921cb1ecef80e2a43d37560a14e8cfdc10214bfadca9d30877d
+        sha256: bdc52152920b59d5a03ef5d9ca8276e56546b9a3af823e347f2cb2516b864684
       - stage_path: Config/X10Config.sql
         source: controller/X10/Config/X10Config.sql
-        sha256: 1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b
+        sha256: b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464
+      - stage_path: Config/X10Text.sql
+        source: controller/X10/Config/X10Text.sql
+        sha256: d350eb93ee342a847a547bbb42c3f69c582891bdb07d990d8e3c0d16b858ec2e
       - stage_path: Config/Dummy.sql
         source: controller/X10/Config/Dummy.sql
         sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
@@ -100,7 +103,7 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt
-        sha256: 8607c826fa40de05696b3d98704d5a3bbfa70a0679fbff5b42507c39200e20b5
+        sha256: 15b198454481f16731d6e3d901ea28848842b36800eae7be1d04618bccd5e459
       - stage_path: LICENSE.txt
         source: release/staging-src/controller/LICENSE.txt
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
