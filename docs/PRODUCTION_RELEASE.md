@@ -86,7 +86,7 @@
   70/68. Evidence: `spike/validation-evidence/X10Lifecycle.1010-6C-run{AB}.log`,
   `X10Probe.1010-6C-run{AB}.log`.
 
-- Phase 7C.2 UX integration (NOT live-validated yet): setup migrates to
+- Phase 7C.2 UX integration: **LIVE_VALIDATED** (`Phase 7C production UX`): setup migrates to
   native Advanced Setup (preset dropdown `X10_MULTIPLIER_PRESET`,
   custom `X10_MULTIPLIER` text, seven bool `X10_MODULE_*` checkboxes,
   en_US localization, SP-only flags); native reader gains
@@ -113,8 +113,10 @@ load AND reload; the temporary exclusion entry is removed.
   The prior 971-entry slice (773 unconditional + 198 count-like; Suzerain
   ON: 786 writes / 185 refusals; OFF: 748 / 176 with 47 ownership skips;
   both `post_add_match` = writes, `post_add_mismatch` = 0) stays
-  LIVE_VALIDATED for every component module in both ON and OFF states, but
-  the 1010 build itself is NOT live-validated yet.
+  LIVE_VALIDATED for every component module in both ON and OFF states, and
+  the 1010 build itself is LIVE_VALIDATED (Phase 6C), with the 7C.2
+  configuration path independently validated (preset/Custom/Off matrix +
+  probe-free RC2 smoke).
   66 of the baseline conditional entries are engine-integral
   entries — 31 Wonder bridge helpers, 21 Release-1 player-cities rows and
   5 Governor rows — plus 9 Bologna suzerain GP-point rows under the existing

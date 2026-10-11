@@ -926,7 +926,7 @@
   {
    "path": "docs/PRODUCTION_RELEASE.md",
    "tracked": true,
-   "bytes": 21548,
+   "bytes": 21685,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -2859,7 +2859,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 108,
-   "bytes": 1185993
+   "bytes": 1186130
   },
   "corresponding_build_artifact": {
    "files": 1,
