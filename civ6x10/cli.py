@@ -123,6 +123,13 @@ def cmd_verify(args) -> int:
     return 0 if result["verdict"] == "PASS" else 1
 
 
+def cmd_audit_release_surface(args) -> int:
+    from .release_surface import write_report
+    out = write_report(ROOT)
+    print(f"wrote {out}")
+    return 0
+
+
 def cmd_generate_suzerain_manifest(args) -> int:
     from .suzerain import build_suzerain_manifest, write_suzerain_manifest
     manifest = build_suzerain_manifest(args.audit, args.module,
@@ -310,6 +317,10 @@ def main(argv=None) -> int:
                  "governors", "suzerain"])
     p.add_argument("--db", required=True)
     p.set_defaults(fn=cmd_verify)
+    p = sub.add_parser("audit-release-surface",
+                       help="Phase 7A release-surface inventory "
+                            "(audit/design only)")
+    p.set_defaults(fn=cmd_audit_release_surface)
     p = sub.add_parser("audit-governors")
     p.add_argument("--db", required=True,
                    help="official Gameplay SQLite COPY (never the live install)")

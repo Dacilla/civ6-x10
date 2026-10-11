@@ -12,3 +12,13 @@ This repository contains no third-party code. Research sources consulted
 
 A future `docs/CE_UPSTREAM_PROPOSAL.md` will be reviewed here before any
 upstream contact.
+
+## Release-context note (Phase 7A review)
+
+The "no third-party code" claim above describes this source repository
+(the GameCore DLL is built from the external CE fork, never vendored
+here). A Workshop runtime bundle's DLL *is* built from AGPL-3.0 fork
+source (`Wild-W/CivilizationVI_CommunityExtension` @ `1ce3188` +
+X10 native changes), so the 7B release package must carry its own
+license/notice bundle (AGPL-3.0 text + fork source reference + DLL hash)
+rather than relying on this file. See `docs/RELEASE_HARDENING.md` §4.

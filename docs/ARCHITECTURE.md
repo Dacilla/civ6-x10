@@ -10,14 +10,16 @@ native store lookup, then re-verifies every write
 identically, and the ownership bitmask proves module isolation (Governors OFF
 leaves the non-Governor written set byte-identical to Governors ON).
 
-Current production state: **971 registry entries / 967 unique definitions** -
-traits/policies/governments (684), pantheons (31), wonders (97), governors (54),
-suzerain (47),
+Current production state: **1010 registry entries / 1006 unique
+definitions / 25 shared (788 unconditional + 222 count-like)** -
+traits/policies/governments (684 + 2 re-admitted Toqui loyalty rows),
+pantheons (31), wonders (97 + bridge), governors (70), suzerain (68),
 with owner bits `1=traits 2=policies 4=governments 8=pantheons 16=wonders
-32=governors 64=suzerain`. All seven modules are LIVE_VALIDATED; suzerain
-was certified in Phase 5B and live-validated in Phase 5C (tag
-`phase5b-971-live-validated`);
-bit 128 is the next free bit.
+32=governors 64=suzerain`. All seven modules are LIVE_VALIDATED through
+Phase 6C (tag `phase6b-1010-live-validated`; Run A 801 writes / 209
+refusals, Run B 698 / 174 / 138);
+bit 128 is the next free bit. Release hardening: `docs/RELEASE_HARDENING.md`
+(machine inventory `reports/release_surface.json`).
 
 Proven numeric definition transforms: ADDITIVE, COMBAT (canonical `b_k`),
 DISCOUNT (percent discount / flat cost reduction), PROBABILITY, plus the
@@ -85,6 +87,9 @@ Phase 5B: suzerain production integration (+47 conservative rows for 971
 total, owner bit 64, `X10_MODULE_SUZERAIN` default ON). Phase 5C: targeted
 live validation passed (tag `phase5b-971-live-validated`); suzerain is now
 LIVE_VALIDATED.
+Phase 6B: cross-module backlog integration (+37 pairs + 2 Toqui addendum
+rows for 1010 total; 3 intentional count-like reclassifications). Phase
+6C: targeted live validation passed (tag `phase6b-1010-live-validated`).
 Then optional belief/great-people/promotion modules.
 Unrelated global semantics stay NEEDS_REVIEW by design. See
 `docs/PRODUCTION_RELEASE.md` for packaging, shared-ownership rule, and

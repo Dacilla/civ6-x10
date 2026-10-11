@@ -61,11 +61,14 @@ class TestBacklogImport(unittest.TestCase):
         d = b["by_resolution"]
         self.assertEqual(d[RESOLVED_CANDIDATE], 16)
         self.assertEqual(d[RESOLVED_CANDIDATE_COUNT_LIKE], 22)
-        self.assertEqual(d[RESOLVED_EXCLUDED], 25)
+        self.assertEqual(d[RESOLVED_EXCLUDED], 83)
         # all six pressure rows cleared by the live probe (Toqui pair handled
         # as an addendum below, never in the 142)
         self.assertNotIn(NEEDS_LIVE_PROBE, d)
-        self.assertEqual(d[NEEDS_PRODUCT_DECISION], 58)
+        # Phase 7A closed the 58 improvement-ownership cells as
+        # product_scope:narrow_suzerain_ownership exclusions: no open product
+        # decisions remain for Release-1 scope
+        self.assertNotIn(NEEDS_PRODUCT_DECISION, d)
         self.assertEqual(d[STILL_SEMANTICALLY_UNRESOLVED], 21)
 
     def test_checked_in_backlog_reproduces(self):
@@ -221,6 +224,37 @@ class TestTransitionStrength(unittest.TestCase):
         self.assertEqual(len(rows), 12)
         for r in rows:
             self.assertEqual(r["resolution"], RESOLVED_EXCLUDED)
+
+
+class TestImprovementOwnershipClosure(unittest.TestCase):
+    """Phase 7A: the 58 improvement cells are closed as narrow-ownership
+    exclusions (no open product decisions for Release-1 scope)."""
+
+    def test_58_cells_retained_as_product_scope_exclusions(self):
+        b = backlog_or_skip()
+        rows = [r for r in b["rows"] if r["source_kind"] == "improvement"]
+        self.assertEqual(len(rows), 58)
+        for r in rows:
+            self.assertEqual(r["resolution"], RESOLVED_EXCLUDED, r["root"])
+            self.assertIn("product_scope:narrow_suzerain_ownership",
+                          r["resolution_rationale"], r["root"])
+            # reopenable inventory: full cell metadata retained
+            for field in ("root", "root_detail", "argument", "value",
+                          "family", "audit_reason"):
+                self.assertTrue(r[field], (r["root"], field))
+
+    def test_no_open_product_decisions(self):
+        b = backlog_or_skip()
+        self.assertNotIn(NEEDS_PRODUCT_DECISION, b["by_resolution"])
+        self.assertEqual(
+            b["by_group_resolution"]["unique-object ownership"],
+            {"RESOLVED_EXCLUDED": 67})
+
+    def test_production_projection_unchanged(self):
+        b = backlog_or_skip()
+        self.assertEqual(len(b["proposed_production_pairs"]), 37)
+        self.assertEqual(b["production_pair_counts"]["unique_production_pairs"],
+                         37)
 
 
 class TestProductionUnchanged(unittest.TestCase):

@@ -1,0 +1,52 @@
+# Release manifest (Phase 7A proposal — single source of truth for 7B assembly).
+#
+# Describes the validated Phase-6B/6C gameplay-production freeze point.
+# Values are asserted by tests/test_release_freeze.py. Public URLs are
+# placeholders until decided (no upload has occurred).
+release_version: 0.0.0-proposed
+modinfo_version: 1
+controller_mod_id: 55d7b934-62f9-46fb-a771-badf3d1a1538
+engine_mod_id: 397f2070-dfde-4124-88ce-e34249fc8190
+platform: Windows x64
+requires_gathering_storm: true
+production_commit: 2cf953e
+ce_commit: 1ce3188
+ce_branch: x10-lifecycle-log
+dll_sha256: e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
+bridge_sql_sha256: d0faabfa29c32360dd48718383af173424a3ab51589877f3b597bbcec0e205b1
+registry_sha256: f42c6a61d8cfb2468f05c9b1dfe9ebeea74c05ddbcb24ec2d8daa578c422d711
+registry_entries: 1010
+registry_unique_definitions: 1006
+registry_shared_definitions: 25
+registry_unconditional: 788
+registry_count_like: 222
+live_validation_tag: phase6b-1010-live-validated
+source_url: TODO-decide
+release_notes_url: TODO-decide
+modules:
+  traits: {bit: 1, default: on}
+  policies: {bit: 2, default: on}
+  governments: {bit: 4, default: on}
+  pantheons: {bit: 8, default: on}
+  wonders: {bit: 16, default: on}
+  governors: {bit: 32, default: on}
+  suzerain: {bit: 64, default: on}
+runtime_allowlist:
+  - path: CE-X10/CE-X10.modinfo
+    sha256: d6b580fec40e626d119d57cbd5d789c4167324166f5ca1fc036832f7b8f2e7f6
+  - path: CE-X10/Config/EngineRedirect.sql
+    sha256: 3bb8544dd2babc9e2851628c3ce8470b36800f464430401eba09884f85df2ea3
+  - path: CE-X10/Config/Dummy.sql
+    sha256: 8a48ba744fd5c06503eaff885d69cde3441cdf331ee6558867f9e8afa28d62fe
+  - path: CE-X10/Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
+    sha256: e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619
+  - path: X10/X10.modinfo
+    sha256: 62d5e06a9fdef9bcae7703b8acde2f41586dc809856c2e58c9c3ff2672b3dfa4
+  - path: X10/Config/X10Config.sql
+    sha256: 1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b
+  - path: X10/Config/Dummy.sql
+    sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
+  - path: X10/Config/X10WonderBridge.sql
+    sha256: d0faabfa29c32360dd48718383af173424a3ab51589877f3b597bbcec0e205b1
+forbidden_in_release:
+  - X10_Probe_Test

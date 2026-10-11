@@ -25,15 +25,13 @@ by_group_resolution:
   spy-yield percentages:
     RESOLVED_CANDIDATE: 4
   unique-object ownership:
-    NEEDS_PRODUCT_DECISION: 58
-    RESOLVED_EXCLUDED: 9
+    RESOLVED_EXCLUDED: 67
   whole-unit / count-like magnitudes:
     RESOLVED_CANDIDATE_COUNT_LIKE: 22
 by_resolution:
-  NEEDS_PRODUCT_DECISION: 58
   RESOLVED_CANDIDATE: 16
   RESOLVED_CANDIDATE_COUNT_LIKE: 22
-  RESOLVED_EXCLUDED: 25
+  RESOLVED_EXCLUDED: 83
   STILL_SEMANTICALLY_UNRESOLVED: 21
 counts:
   imported_governor_direct: 24
@@ -1307,1585 +1305,6 @@ proposed_production_pairs:
   transform: canonical_x10_multiply
   value: '2'
 rows:
-- argument: Improvement_Tourism.ScalingFactor
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
-    this open for wonders), not naive multiplication'
-  count_like: false
-  effect_type: null
-  family: MULTIPLICATIVE_FACTOR
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_ALCAZAR
-  root_detail: Improvement_Tourism.ScalingFactor
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Improvement_YieldChanges.YIELD_CULTURE
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_ALCAZAR
-  root_detail: Improvement_YieldChanges.YIELD_CULTURE
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.DefenseModifier
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'district defense granted by the unlocked improvement (Alcazar +4): a magnitude, but attached to the improvement
-    rather than the Suzerain bonus'
-  count_like: false
-  effect_type: null
-  family: FLAT_AMOUNT
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_ALCAZAR
-  root_detail: Improvements.DefenseModifier
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '4'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_ALCAZAR
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '50'
-- argument: Adjacency_YieldChanges.Batey_BonusResourceAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_BATEY
-  root_detail: Adjacency_YieldChanges.Batey_BonusResourceAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Batey_EntertainmentComplexAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_BATEY
-  root_detail: Adjacency_YieldChanges.Batey_EntertainmentComplexAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Batey_LateBonusResourceAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_BATEY
-  root_detail: Adjacency_YieldChanges.Batey_LateBonusResourceAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Adjacency_YieldChanges.Batey_LateEntertainmentComplexAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_BATEY
-  root_detail: Adjacency_YieldChanges.Batey_LateEntertainmentComplexAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvement_Tourism.ScalingFactor
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
-    this open for wonders), not naive multiplication'
-  count_like: false
-  effect_type: null
-  family: MULTIPLICATIVE_FACTOR
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_BATEY
-  root_detail: Improvement_Tourism.ScalingFactor
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Improvement_YieldChanges.YIELD_CULTURE
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_BATEY
-  root_detail: Improvement_YieldChanges.YIELD_CULTURE
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_BATEY
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Adjacency_YieldChanges.ColossalHead_FaithForestEarly.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_COLOSSAL_HEAD
-  root_detail: Adjacency_YieldChanges.ColossalHead_FaithForestEarly.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.ColossalHead_FaithForestLate.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_COLOSSAL_HEAD
-  root_detail: Adjacency_YieldChanges.ColossalHead_FaithForestLate.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.ColossalHead_FaithJungleEarly.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_COLOSSAL_HEAD
-  root_detail: Adjacency_YieldChanges.ColossalHead_FaithJungleEarly.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.ColossalHead_FaithJungleLate.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_COLOSSAL_HEAD
-  root_detail: Adjacency_YieldChanges.ColossalHead_FaithJungleLate.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvement_Tourism.ScalingFactor
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
-    this open for wonders), not naive multiplication'
-  count_like: false
-  effect_type: null
-  family: MULTIPLICATIVE_FACTOR
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_COLOSSAL_HEAD
-  root_detail: Improvement_Tourism.ScalingFactor
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Improvement_YieldChanges.YIELD_FAITH
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_COLOSSAL_HEAD
-  root_detail: Improvement_YieldChanges.YIELD_FAITH
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_COLOSSAL_HEAD
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Adjacency_YieldChanges.Mahavihara_Campus_Science_Early.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Adjacency_YieldChanges.Mahavihara_Campus_Science_Early.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Mahavihara_Campus_Science_Late.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Adjacency_YieldChanges.Mahavihara_Campus_Science_Late.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Adjacency_YieldChanges.Mahavihara_Holy_Site_Faith.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Adjacency_YieldChanges.Mahavihara_Holy_Site_Faith.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Mahavihara_Lavra_Faith.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Adjacency_YieldChanges.Mahavihara_Lavra_Faith.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Early.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Early.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Late.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Late.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvement_YieldChanges.YIELD_SCIENCE
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Improvement_YieldChanges.YIELD_SCIENCE
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.Housing
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'base housing of the unlocked improvement: plausibly part of the ability but needs an explicit ownership decision'
-  count_like: false
-  effect_type: null
-  family: HOUSING
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Improvements.Housing
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MAHAVIHARA
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Adjacency_YieldChanges.Moai_FirstBonusAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOAI
-  root_detail: Adjacency_YieldChanges.Moai_FirstBonusAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Moai_SecondBonusAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOAI
-  root_detail: Adjacency_YieldChanges.Moai_SecondBonusAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.MOAI_COASTADJACENCY_CULTURE.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
-    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
-    era/terrain requirement is a filter, not a magnitude'
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOAI
-  root_detail: ImprovementModifiers.MOAI_COASTADJACENCY_CULTURE.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.MOAI_VOLCANICADJACENCY_CULTURE.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
-    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
-    era/terrain requirement is a filter, not a magnitude'
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOAI
-  root_detail: ImprovementModifiers.MOAI_VOLCANICADJACENCY_CULTURE.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvement_Tourism.ScalingFactor
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
-    this open for wonders), not naive multiplication'
-  count_like: false
-  effect_type: null
-  family: MULTIPLICATIVE_FACTOR
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOAI
-  root_detail: Improvement_Tourism.ScalingFactor
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Improvement_YieldChanges.YIELD_CULTURE
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOAI
-  root_detail: Improvement_YieldChanges.YIELD_CULTURE
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOAI
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Adjacency_YieldChanges.Monastery_DistrictAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MONASTERY
-  root_detail: Adjacency_YieldChanges.Monastery_DistrictAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.MONASTERY_HOUSING.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the HOUSING family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - housing granted by an unlocked
-    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
-  count_like: false
-  effect_type: null
-  family: HOUSING
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MONASTERY
-  root_detail: ImprovementModifiers.MONASTERY_HOUSING.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvement_YieldChanges.YIELD_FAITH
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MONASTERY
-  root_detail: Improvement_YieldChanges.YIELD_FAITH
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.Housing
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'base housing of the unlocked improvement: plausibly part of the ability but needs an explicit ownership decision'
-  count_like: false
-  effect_type: null
-  family: HOUSING
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MONASTERY
-  root_detail: Improvements.Housing
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.ReligiousUnitHealRate
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'per-turn religious-unit healing on the improvement: a property of the improvement'
-  count_like: false
-  effect_type: null
-  family: FLAT_AMOUNT
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MONASTERY
-  root_detail: Improvements.ReligiousUnitHealRate
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '15'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MONASTERY
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Adjacency_YieldChanges.Mound_MechanizedAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: Adjacency_YieldChanges.Mound_MechanizedAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Adjacency_YieldChanges.Mound_MedievalAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: Adjacency_YieldChanges.Mound_MedievalAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.MOUND_AMENITY_MAX_ONE.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the AMENITY family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - amenity granted by an unlocked
-    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
-  count_like: false
-  effect_type: null
-  family: AMENITY
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: ImprovementModifiers.MOUND_AMENITY_MAX_ONE.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.MOUND_AMENITY_MAX_TWO.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the AMENITY family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - amenity granted by an unlocked
-    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
-  count_like: false
-  effect_type: null
-  family: AMENITY
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: ImprovementModifiers.MOUND_AMENITY_MAX_TWO.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.MOUND_HOUSING.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the HOUSING family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - housing granted by an unlocked
-    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
-  count_like: false
-  effect_type: null
-  family: HOUSING
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: ImprovementModifiers.MOUND_HOUSING.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvement_YieldChanges.YIELD_GOLD
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: Improvement_YieldChanges.YIELD_GOLD
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '3'
-- argument: Improvements.Housing
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'base housing of the unlocked improvement: plausibly part of the ability but needs an explicit ownership decision'
-  count_like: false
-  effect_type: null
-  family: HOUSING
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: Improvements.Housing
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_MOUND
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
-    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
-    era/terrain requirement is a filter, not a magnitude'
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_NAZCA_LINE
-  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH_RESOURCE.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
-    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
-    era/terrain requirement is a filter, not a magnitude'
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_NAZCA_LINE
-  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH_RESOURCE.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_CIVIL_SERVICE.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
-    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
-    era/terrain requirement is a filter, not a magnitude'
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_NAZCA_LINE
-  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_CIVIL_SERVICE.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_HILLS_CIVIL_SERVICE.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
-    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
-    era/terrain requirement is a filter, not a magnitude'
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_NAZCA_LINE
-  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_HILLS_CIVIL_SERVICE.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_PRODUCTION_FLAT_MASS_PRODUCTION.Amount
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
-    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
-    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
-    era/terrain requirement is a filter, not a magnitude'
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_NAZCA_LINE
-  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_PRODUCTION_FLAT_MASS_PRODUCTION.Amount
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvements.Appeal
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'base appeal of the unlocked improvement: a property of the improvement itself, not of the Suzerain grant'
-  count_like: false
-  effect_type: null
-  family: APPEAL
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_NAZCA_LINE
-  root_detail: Improvements.Appeal
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_NAZCA_LINE
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
-- argument: Adjacency_YieldChanges.TradingDome_LuxuryAdjacency.YieldChange
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision (adjacency version)
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_TRADING_DOME
-  root_detail: Adjacency_YieldChanges.TradingDome_LuxuryAdjacency.YieldChange
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '1'
-- argument: Improvement_YieldChanges.YIELD_GOLD
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
-    Suzerain ability is an ownership decision
-  count_like: false
-  effect_type: null
-  family: FLAT_YIELD
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_TRADING_DOME
-  root_detail: Improvement_YieldChanges.YIELD_GOLD
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '2'
-- argument: Improvements.YieldFromAppealPercent
-  audit_disposition: DECISION_REQUIRED
-  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
-    unresolved'
-  count_like: false
-  effect_type: null
-  family: PERCENT_BONUS
-  group: unique-object ownership
-  k10_expectation: n/a (undecided)
-  k73_expectation: n/a (undecided)
-  modifier_id: null
-  modifier_type: null
-  native_support: withheld (ownership undecided)
-  production_kind: ''
-  proposed_owner: ''
-  required_gate_evidence: 'human product decision required (recommendation: narrow ownership — see the §11 table; expanded
-    ownership needs explicit override)'
-  resolution: NEEDS_PRODUCT_DECISION
-  resolution_rationale: 'unlocked-improvement intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism
-    factor — capability unlock vs benefit is a product question, see the nine-improvement table'
-  resolved_family: ''
-  root: IMPROVEMENT_TRADING_DOME
-  root_detail: Improvements.YieldFromAppealPercent
-  source: suzerain
-  source_kind: improvement
-  transform: ''
-  value: '100'
 - argument: Amount
   audit_disposition: DECISION_REQUIRED
   audit_reason: 'STRONGEST Suzerain-side-path candidate: this promotion''s own requirement (PLAYER_HAS_LAHORE_SUZERAIN_REQUIREMENTS)
@@ -4289,6 +2708,1701 @@ rows:
   root_detail: GOVERNOR_PROMOTION_CARDINAL_LAYING_ON_OF_HANDS
   source: governors
   source_kind: modifier
+  transform: ''
+  value: '100'
+- argument: Improvement_Tourism.ScalingFactor
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
+    this open for wonders), not naive multiplication'
+  count_like: false
+  effect_type: null
+  family: MULTIPLICATIVE_FACTOR
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_ALCAZAR
+  root_detail: Improvement_Tourism.ScalingFactor
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Improvement_YieldChanges.YIELD_CULTURE
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_ALCAZAR
+  root_detail: Improvement_YieldChanges.YIELD_CULTURE
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.DefenseModifier
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'district defense granted by the unlocked improvement (Alcazar +4): a magnitude, but attached to the improvement
+    rather than the Suzerain bonus'
+  count_like: false
+  effect_type: null
+  family: FLAT_AMOUNT
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_ALCAZAR
+  root_detail: Improvements.DefenseModifier
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '4'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_ALCAZAR
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '50'
+- argument: Adjacency_YieldChanges.Batey_BonusResourceAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_BATEY
+  root_detail: Adjacency_YieldChanges.Batey_BonusResourceAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Batey_EntertainmentComplexAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_BATEY
+  root_detail: Adjacency_YieldChanges.Batey_EntertainmentComplexAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Batey_LateBonusResourceAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_BATEY
+  root_detail: Adjacency_YieldChanges.Batey_LateBonusResourceAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Adjacency_YieldChanges.Batey_LateEntertainmentComplexAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_BATEY
+  root_detail: Adjacency_YieldChanges.Batey_LateEntertainmentComplexAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvement_Tourism.ScalingFactor
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
+    this open for wonders), not naive multiplication'
+  count_like: false
+  effect_type: null
+  family: MULTIPLICATIVE_FACTOR
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_BATEY
+  root_detail: Improvement_Tourism.ScalingFactor
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Improvement_YieldChanges.YIELD_CULTURE
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_BATEY
+  root_detail: Improvement_YieldChanges.YIELD_CULTURE
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_BATEY
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Adjacency_YieldChanges.ColossalHead_FaithForestEarly.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_COLOSSAL_HEAD
+  root_detail: Adjacency_YieldChanges.ColossalHead_FaithForestEarly.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.ColossalHead_FaithForestLate.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_COLOSSAL_HEAD
+  root_detail: Adjacency_YieldChanges.ColossalHead_FaithForestLate.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.ColossalHead_FaithJungleEarly.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_COLOSSAL_HEAD
+  root_detail: Adjacency_YieldChanges.ColossalHead_FaithJungleEarly.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.ColossalHead_FaithJungleLate.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_COLOSSAL_HEAD
+  root_detail: Adjacency_YieldChanges.ColossalHead_FaithJungleLate.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvement_Tourism.ScalingFactor
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
+    this open for wonders), not naive multiplication'
+  count_like: false
+  effect_type: null
+  family: MULTIPLICATIVE_FACTOR
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_COLOSSAL_HEAD
+  root_detail: Improvement_Tourism.ScalingFactor
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Improvement_YieldChanges.YIELD_FAITH
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_COLOSSAL_HEAD
+  root_detail: Improvement_YieldChanges.YIELD_FAITH
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_COLOSSAL_HEAD
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Adjacency_YieldChanges.Mahavihara_Campus_Science_Early.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Adjacency_YieldChanges.Mahavihara_Campus_Science_Early.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Mahavihara_Campus_Science_Late.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Adjacency_YieldChanges.Mahavihara_Campus_Science_Late.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Adjacency_YieldChanges.Mahavihara_Holy_Site_Faith.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Adjacency_YieldChanges.Mahavihara_Holy_Site_Faith.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Mahavihara_Lavra_Faith.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Adjacency_YieldChanges.Mahavihara_Lavra_Faith.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Early.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Early.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Late.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Adjacency_YieldChanges.Mahavihara_Observatory_Science_Late.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvement_YieldChanges.YIELD_SCIENCE
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Improvement_YieldChanges.YIELD_SCIENCE
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.Housing
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'base housing of the unlocked improvement: plausibly part of the ability but needs an explicit ownership decision'
+  count_like: false
+  effect_type: null
+  family: HOUSING
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Improvements.Housing
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MAHAVIHARA
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Adjacency_YieldChanges.Moai_FirstBonusAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOAI
+  root_detail: Adjacency_YieldChanges.Moai_FirstBonusAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Moai_SecondBonusAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOAI
+  root_detail: Adjacency_YieldChanges.Moai_SecondBonusAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.MOAI_COASTADJACENCY_CULTURE.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
+    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
+    era/terrain requirement is a filter, not a magnitude'
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOAI
+  root_detail: ImprovementModifiers.MOAI_COASTADJACENCY_CULTURE.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.MOAI_VOLCANICADJACENCY_CULTURE.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
+    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
+    era/terrain requirement is a filter, not a magnitude'
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOAI
+  root_detail: ImprovementModifiers.MOAI_VOLCANICADJACENCY_CULTURE.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvement_Tourism.ScalingFactor
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ScalingFactor=100 for improvement tourism: factor-vs-percent analysis required (the project already holds
+    this open for wonders), not naive multiplication'
+  count_like: false
+  effect_type: null
+  family: MULTIPLICATIVE_FACTOR
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOAI
+  root_detail: Improvement_Tourism.ScalingFactor
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Improvement_YieldChanges.YIELD_CULTURE
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOAI
+  root_detail: Improvement_YieldChanges.YIELD_CULTURE
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOAI
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Adjacency_YieldChanges.Monastery_DistrictAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MONASTERY
+  root_detail: Adjacency_YieldChanges.Monastery_DistrictAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.MONASTERY_HOUSING.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the HOUSING family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - housing granted by an unlocked
+    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
+  count_like: false
+  effect_type: null
+  family: HOUSING
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MONASTERY
+  root_detail: ImprovementModifiers.MONASTERY_HOUSING.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvement_YieldChanges.YIELD_FAITH
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MONASTERY
+  root_detail: Improvement_YieldChanges.YIELD_FAITH
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.Housing
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'base housing of the unlocked improvement: plausibly part of the ability but needs an explicit ownership decision'
+  count_like: false
+  effect_type: null
+  family: HOUSING
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MONASTERY
+  root_detail: Improvements.Housing
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.ReligiousUnitHealRate
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'per-turn religious-unit healing on the improvement: a property of the improvement'
+  count_like: false
+  effect_type: null
+  family: FLAT_AMOUNT
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MONASTERY
+  root_detail: Improvements.ReligiousUnitHealRate
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '15'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MONASTERY
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Adjacency_YieldChanges.Mound_MechanizedAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: Adjacency_YieldChanges.Mound_MechanizedAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Adjacency_YieldChanges.Mound_MedievalAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: Adjacency_YieldChanges.Mound_MedievalAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.MOUND_AMENITY_MAX_ONE.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the AMENITY family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - amenity granted by an unlocked
+    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
+  count_like: false
+  effect_type: null
+  family: AMENITY
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: ImprovementModifiers.MOUND_AMENITY_MAX_ONE.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.MOUND_AMENITY_MAX_TWO.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the AMENITY family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - amenity granted by an unlocked
+    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
+  count_like: false
+  effect_type: null
+  family: AMENITY
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: ImprovementModifiers.MOUND_AMENITY_MAX_TWO.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.MOUND_HOUSING.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the HOUSING family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - housing granted by an unlocked
+    improvement; a magnitude attached to the improvement, not to the Suzerain bonus'
+  count_like: false
+  effect_type: null
+  family: HOUSING
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: ImprovementModifiers.MOUND_HOUSING.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvement_YieldChanges.YIELD_GOLD
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: Improvement_YieldChanges.YIELD_GOLD
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '3'
+- argument: Improvements.Housing
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'base housing of the unlocked improvement: plausibly part of the ability but needs an explicit ownership decision'
+  count_like: false
+  effect_type: null
+  family: HOUSING
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: Improvements.Housing
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_MOUND
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
+    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
+    era/terrain requirement is a filter, not a magnitude'
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_NAZCA_LINE
+  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH_RESOURCE.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
+    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
+    era/terrain requirement is a filter, not a magnitude'
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_NAZCA_LINE
+  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FAITH_RESOURCE.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_CIVIL_SERVICE.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
+    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
+    era/terrain requirement is a filter, not a magnitude'
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_NAZCA_LINE
+  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_CIVIL_SERVICE.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_HILLS_CIVIL_SERVICE.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
+    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
+    era/terrain requirement is a filter, not a magnitude'
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_NAZCA_LINE
+  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_FOOD_DESERT_HILLS_CIVIL_SERVICE.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: ImprovementModifiers.NAZCA_LINE_ADJACENCY_PRODUCTION_FLAT_MASS_PRODUCTION.Amount
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'ownership decision: this value is semantically part of the FLAT_YIELD family but lives OUTSIDE the Suzerain
+    modifier graph, so it is not claimed until its ownership of the Suzerain ability is decided - flat shallow-water plot
+    yield (Auckland +1 production, base and industrial-era variants); reuses the certified plot-yield ADDITIVE override; the
+    era/terrain requirement is a filter, not a magnitude'
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_NAZCA_LINE
+  root_detail: ImprovementModifiers.NAZCA_LINE_ADJACENCY_PRODUCTION_FLAT_MASS_PRODUCTION.Amount
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvements.Appeal
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'base appeal of the unlocked improvement: a property of the improvement itself, not of the Suzerain grant'
+  count_like: false
+  effect_type: null
+  family: APPEAL
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_NAZCA_LINE
+  root_detail: Improvements.Appeal
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_NAZCA_LINE
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '100'
+- argument: Adjacency_YieldChanges.TradingDome_LuxuryAdjacency.YieldChange
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision (adjacency version)
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_TRADING_DOME
+  root_detail: Adjacency_YieldChanges.TradingDome_LuxuryAdjacency.YieldChange
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '1'
+- argument: Improvement_YieldChanges.YIELD_GOLD
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: flat yield of the unlocked improvement / adjacency; a substantive magnitude, but whether it is part of the
+    Suzerain ability is an ownership decision
+  count_like: false
+  effect_type: null
+  family: FLAT_YIELD
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_TRADING_DOME
+  root_detail: Improvement_YieldChanges.YIELD_GOLD
+  source: suzerain
+  source_kind: improvement
+  transform: ''
+  value: '2'
+- argument: Improvements.YieldFromAppealPercent
+  audit_disposition: DECISION_REQUIRED
+  audit_reason: 'percent of appeal converted to a yield by the unlocked improvement (Alcazar 50): factor-vs-percent scaling
+    unresolved'
+  count_like: false
+  effect_type: null
+  family: PERCENT_BONUS
+  group: unique-object ownership
+  k10_expectation: n/a (excluded)
+  k73_expectation: n/a (excluded)
+  modifier_id: null
+  modifier_type: null
+  native_support: n/a (not owned)
+  production_kind: ''
+  proposed_owner: ''
+  required_gate_evidence: none (exclusion needs no gate change; recorded here, not in the gate)
+  resolution: RESOLVED_EXCLUDED
+  resolution_rationale: 'product_scope:narrow_suzerain_ownership (Phase 7A product decision, adopted since Phase 6): unlocked-improvement
+    intrinsic cells (58): base/adjacency yields, housing/amenity/appeal, tourism factor stay vanilla — the Suzerain module
+    owns the unlock plus the 47+21 certified graph magnitudes, never the shared improvement definitions; expanded ''10x the
+    unlocked improvement'' behavior needs an explicit future decision accepting conquest leakage. Reopenable: per-cell inventory
+    retained'
+  resolved_family: ''
+  root: IMPROVEMENT_TRADING_DOME
+  root_detail: Improvements.YieldFromAppealPercent
+  source: suzerain
+  source_kind: improvement
   transform: ''
   value: '100'
 - argument: Amount

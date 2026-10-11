@@ -29,9 +29,9 @@ audited; Toqui's held-out pair is excluded in production and is handled in
 |---|---|
 | `RESOLVED_CANDIDATE` | 16 |
 | `RESOLVED_CANDIDATE_COUNT_LIKE` | 22 |
-| `RESOLVED_EXCLUDED` | 25 |
+| `RESOLVED_EXCLUDED` | 83 (incl. 58 improvement cells closed by the Phase-7A narrow-ownership product decision) |
 | `NEEDS_LIVE_PROBE` | 0 (all six cleared by the probe below) |
-| `NEEDS_PRODUCT_DECISION` | 58 |
+| `NEEDS_PRODUCT_DECISION` | 0 (closed in Phase 7A; see §11) |
 | `STILL_SEMANTICALLY_UNRESOLVED` | 21 |
 
 By problem group (post-probe):
@@ -47,7 +47,7 @@ By problem group (post-probe):
 | grievance score / duration | 1 excluded (Turns), 1 unresolved (Score) |
 | loyalty / identity / religious pressure | 6 cleared to candidates (probe §9), 12 direct columns unresolved |
 | multiplicative / ScalingFactor | 8 unresolved |
-| unique-object ownership | 58 product-decision, 9 excluded (intrinsic) |
+| unique-object ownership | 58 excluded by product scope (narrow ownership, Phase 7A), 9 excluded (intrinsic) |
 | direct structural/internal Governor fields | 12 excluded (TransitionStrength) |
 
 ## 3. Whole-unit / count-like family (22 → candidates)
@@ -220,9 +220,11 @@ hybrid subset fixes conquest leakage (attached modifiers are global too).
 The unlock remains a capability; intrinsic improvement data stays vanilla.
 The Suzerain bonus is the 47 graph magnitudes. Option B (expanded) would
 need an explicit human override accepting conquest leakage; it is NOT
-taken here. All 58 cells stay `NEEDS_PRODUCT_DECISION` pending that human
-call — this report recommends closing them as excluded-under-A when the
-decision lands. Captured/pre-existing improvements must not become globally
+taken here. **Phase-7A decision: all 58 cells are closed as
+`RESOLVED_EXCLUDED` with reason
+`product_scope:narrow_suzerain_ownership`** (backlog generator rule +
+regenerated artifact; per-cell inventory retained for a possible future
+expanded-ownership feature). Captured/pre-existing improvements must not become globally
 stronger merely because the X10 Suzerain module is enabled.
 
 ## 12. TransitionStrength verdict: RESOLVED_EXCLUDED

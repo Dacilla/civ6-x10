@@ -490,20 +490,28 @@ RULES[("EFFECT_ADJUST_GOVERNOR_GRIEVENCE_SCORE", "Score", "modifier")] = _rule(
 
 # --- unique-object ownership: decided at product level, not schema level ----
 # Intrinsic improvement cells and intrinsic unit/ability cells are
-# structurally accounted but never auto-claimed. Improvement cells await the
-# human product decision (narrow vs expanded ownership); intrinsic unit
-# cells stay vanilla (no '10x the unlocked unit' decision taken).
+# structurally accounted but never auto-claimed. Phase 7A closed the
+# improvement question as narrow ownership (adopted since Phase 6): the
+# Suzerain bonus is the certified graph magnitude; intrinsic globally shared
+# improvement definitions stay vanilla (no conquest leakage, no '10x the
+# unlocked improvement'). Intrinsic unit cells stay vanilla (no '10x the
+# unlocked unit' decision taken). Full per-cell inventory is retained in the
+# artifact so a future expanded-ownership feature could reopen it.
 RULES[("IMPROVEMENT_CELL", "value", "improvement")] = _rule(
-    NEEDS_PRODUCT_DECISION, GROUP_OWNERSHIP, "",
+    RESOLVED_EXCLUDED, GROUP_OWNERSHIP, "",
     "", "", False, "",
-    "human product decision required (recommendation: narrow ownership — "
-    "see the §11 table; expanded ownership needs explicit override)",
-    "n/a (undecided)",
-    "n/a (undecided)",
-    "withheld (ownership undecided)",
-    "unlocked-improvement intrinsic cells (58): base/adjacency yields, "
-    "housing/amenity/appeal, tourism factor — capability unlock vs benefit "
-    "is a product question, see the nine-improvement table",
+    "none (exclusion needs no gate change; recorded here, not in the gate)",
+    "n/a (excluded)",
+    "n/a (excluded)",
+    "n/a (not owned)",
+    "product_scope:narrow_suzerain_ownership (Phase 7A product decision, "
+    "adopted since Phase 6): unlocked-improvement intrinsic cells (58): "
+    "base/adjacency yields, housing/amenity/appeal, tourism factor stay "
+    "vanilla — the Suzerain module owns the unlock plus the 47+21 certified "
+    "graph magnitudes, never the shared improvement definitions; expanded "
+    "'10x the unlocked improvement' behavior needs an explicit future "
+    "decision accepting conquest leakage. Reopenable: per-cell inventory "
+    "retained",
 )
 RULES[("UNIT_CELL", "value", "unit")] = _rule(
     RESOLVED_EXCLUDED, GROUP_OWNERSHIP, "",

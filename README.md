@@ -38,8 +38,9 @@ Tests: `docs/TESTING.md`. Plan: `docs/ROADMAP.md`. Audits:
 ## Quick start (no game files needed)
 
 ```powershell
-python -m pytest -q            # 223+ tests; DB-backed groups skip
-                               # cleanly without private data (CI runs this)
+python -m pytest -q            # full suite (359 tests at last count);
+                               # DB-backed groups skip cleanly without
+                               # private data (CI runs this)
 ```
 
 With the sibling audit workspace present (private Firaxis data, gitignored):
