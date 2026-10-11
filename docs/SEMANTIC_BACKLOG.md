@@ -273,7 +273,7 @@ Final hypothetical: **1010 entries / 1006 unique / 25 shared; 788
 unconditional + 222 count-like; 801 writes / 209 refusals at k=7.3**
 (derived mechanically in test, not pinned).
 
-## 15. Phase-6B production integration (CERTIFIED, awaiting 6C live validation)
+## 15. Phase-6B production integration (LIVE_VALIDATED by 6C)
 
 Phase 6B landed the §14 proposal atomically: 5 new `count_like_effects`
 patterns, the Valletta `discount_effects` entry, both strong-family
@@ -301,8 +301,8 @@ regeneration test — no hand-edited rows, no duplicates.
   185+21+3); at k=10 all 1010 apply. Proven by
   `tests/test_phase6b_production.py` on the checked-in manifests/rules.
 
-The 1010 build is **CERTIFIED, NOT live-validated**: Phase 6C must
-target-validate the 39 new rows, the 3 write→refusal corrections, Toqui
+The 1010 build was **CERTIFIED, then LIVE_VALIDATED by Phase 6C** (tag
+`phase6b-1010-live-validated`), which target-validated the 39 new rows, the 3 write→refusal corrections, Toqui
 from traits ownership, Valletta DISCOUNT, Lahore COMBAT, the two
 strong-family overrides, and module ON/OFF isolation. Prior §15 text
 ("Registry stays 971…") described the pre-6B state and is superseded.

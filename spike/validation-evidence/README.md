@@ -157,3 +157,69 @@ Files:
 
 Validation tag: `phase5b-971-live-validated` (X10 @ fc176ca / CE-X10 @
 d17bdb6, probe witnesses added pre-run).
+
+
+---
+
+# Phase 6B/6C cross-module backlog validation (1010-entry registry, FLOAT32 k=7.3)
+
+Source: `%TEMP%\X10Lifecycle.log` + `%TEMP%\X10Probe.log` from the two
+validating runs (2026-10-11). Unmodified logs (Run-B files hold exactly the
+Run-B session; Run-A files hold load + reload).
+
+Setup: Gathering Storm, ROME (Trajan), Small map, 2 AI, X10 multiplier
+**7.3**, Workshop Community Extension disabled, X10 CE Engine + X10 + X10
+Production Probe enabled, **Secret Societies game mode ON**.
+
+DLL: `e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619`
+(X10 `2cf953e`; CE-X10 `1ce3188`; bridge SQL `d0faabfa` unchanged).
+Registry: **1010 entries / 1006 unique definitions** (971 Phase-5B baseline
++ 37 backlog pairs + 2 Toqui addendum pairs; 3 intentional count-like
+reclassifications).
+
+## Run A - all modules ON (`X10*1010-6C-runA.log`)
+
+Two population sessions (initial load and save/reload), **identical**:
+
+`definitions_added=3336 writes=801 transform_refused=209 official_mismatch=0
+post_add_match=801 post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`
+
+- 801 + 209 = 1010 = the entire registry.
+- 39 new pairs, matched per row against the backlog boundary: **18 written
+  (MATCH via=store-lookup) + 21 transform-refused**, 0 unaccounted, 0
+  ownership skips, 0 mismatches, 0 unreadables (16 governors / 21 suzerain
+  / 2 traits; 35 ADDITIVE / 3 DISCOUNT / 1 COMBAT).
+- New-witness stored values: Toqui 29.2 x2, Bishop 730, Owls loyalty 29.2,
+  Preslav 14.6 x3, Vatican 2920, Citadel 182.5, Ayutthaya 73, Lahore 38.10
+  (`transform=COMBAT`), Valletta 99.3654 x3 (`transform=DISCOUNT`,
+  compound - never 365/500).
+- The 3 accumulation rows refuse with zero write lines
+  (`CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION`,
+  `TRAIT_ACCUMULATE_MORE_COAL/_IRON`): previously 7.3/14.6/14.6 in 5C
+  evidence - intentional semantic correction, not a regression.
+- Regressions hold: Groundbreaker 365, Garrison 24.04, Owls interest 21.9,
+  Ley Line 7.3, Auckland 7.3, Antananarivo 14.6, Ngazargamu 80.3864, Zeus
+  365, Panama 73, bridge 57/57/0.
+
+## Run B - Governors OFF + Suzerain OFF (`X10*1010-6C-runB.log`)
+
+`definitions_added=3336 writes=698 transform_refused=174 official_mismatch=0
+post_add_match=698 post_add_mismatch=0 post_add_unreadable=0 skipped_other=138`
+
+- 698 + 174 + 138 = 1010. Exactly **70** `owners=0x20` + **68** `owners=0x40`
+  `not-all-enabled skipped` lines, covering exactly the manifest sets. Zero
+  masked writes/refusals/mismatches.
+- Toqui still writes 29.2 x2 (traits owner proven); accumulations still
+  refuse; Zeus/Panama still MATCH. Run-A-minus-masked equals Run B exactly
+  (write sets, stored values, refusal sets).
+- Note: a first Run-B attempt with Secret Societies OFF yielded 116 skips
+  (22 mode-gated governor definitions absent from the DB); the re-run with
+  the mode ON gives the letter-perfect 70/68. No evidence was taken from
+  the mode-OFF session.
+
+Files:
+- `X10Lifecycle.1010-6C-runA.log` / `X10Probe.1010-6C-runA.log` - Run A.
+- `X10Lifecycle.1010-6C-runB.log` / `X10Probe.1010-6C-runB.log` - Run B.
+
+Validation tag: `phase6b-1010-live-validated` (X10 @ 2cf953e / CE-X10 @
+1ce3188, probe witnesses added in 94f95fe).

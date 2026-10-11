@@ -50,7 +50,7 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
   `phase6a-semantic-backlog`. Suzerain source: 47 `phase5a.1-suzerain-audit`
   + 21 `phase6a-semantic-backlog` (incl. Lahore COMBAT via
   `canonical_combat_bonus`, Valletta ×3 via `compound_discount`).
-  Status: **CERTIFIED, awaiting Phase-6C targeted live validation** — the
+  Status: **LIVE_VALIDATED** (Phase 6C, tag `phase6b-1010-live-validated`) — the
   prior 971-entry slice stays LIVE_VALIDATED (tags below) but the 1010
   build is not.
   Frozen milestones: 684 Release-1 (`release1-684-live-validated`), 715
@@ -59,7 +59,7 @@ Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
   971 Phase-5B (`phase5b-971-live-validated`); every earlier line persists
   byte-identical except the 3 intentional count-like reclassifications
   (Corporate Libertarianism, Coal, Iron — previously live-tested fractional
-  writes, now exact-integral by reviewed correction).
+  writes, now exact-integral by reviewed correction, confirmed refusing live in Phase 6C).
 
 ### Engine-representability gate (Phase 3F + 3G)
 

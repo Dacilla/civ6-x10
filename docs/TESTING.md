@@ -14,8 +14,8 @@ Levels used in this project:
   mutation path is live-validated for the 971-entry slice covering all seven modules at stored FLOAT32
   k=7.3 in both ON and OFF module states (Run A 786 writes / 185 refusals,
   Run B 748 / 176 + 47 ownership skips; save/reload identical; evidence in
-  `spike/validation-evidence/`). The Phase-6B 1010-entry build is CERTIFIED with static expectation
-  801 writes / 209 refusals at k=7.3 and awaits Phase-6C targeted live validation (`tests/test_phase6b_production.py`).
+  `spike/validation-evidence/`). The Phase-6B 1010-entry build is LIVE_VALIDATED (Phase 6C: Run A 801 writes / 209 refusals,
+  Run B 698 / 174 / 138; evidence in `spike/validation-evidence/`; static suite `tests/test_phase6b_production.py`).
 - **Disposable probes** (`spike/X10_Probe_Test/probe.lua`, never production)
   are still used for new semantic/storage questions — e.g. whether a
   held-out identity-pressure definition has become observable through the

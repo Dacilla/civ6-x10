@@ -18,8 +18,9 @@
    `phase5b-971-live-validated`, audit `docs/SUZERAIN_AUDIT.md`).
    **Phase 6B extends Suzerain to 68 rows** (+21 backlog rows incl. Lahore
    COMBAT and Valletta DISCOUNT x3) **and Governors to 70 rows** (+16),
-   plus 2 re-admitted Toqui traits rows: **1010 total, CERTIFIED, awaiting
-   Phase-6C targeted live validation** (801 writes / 209 refusals at k=7.3).
+   plus 2 re-admitted Toqui traits rows: **1010 total, LIVE_VALIDATED**
+   (Phase 6C, tag `phase6b-1010-live-validated`; Run A 801 writes / 209
+   refusals, Run B 698 / 174 / 138).
    Still open: ScalingFactor rows, direct Governor IdentityPressure
    columns, unique-improvement intrinsics, Nihang intrinsics/progression,
    Sanguine -5, healing, Kandy scaling and other held side paths
@@ -27,9 +28,10 @@
 
 ## Remaining work
 
-6. Phase 6C targeted live validation of the 1010 build (39 new rows, 3
-   write-to-refusal corrections, Toqui-from-traits, Valletta DISCOUNT,
-   Lahore COMBAT, strong-family overrides, module ON/OFF isolation).
+6. Phase 6C targeted live validation of the 1010 build — **DONE 2026-10-11**
+   (39 new rows, 3 write-to-refusal corrections, Toqui-from-traits,
+   Valletta DISCOUNT, Lahore COMBAT, strong-family overrides, module ON/OFF
+   isolation all pass; see `docs/PRODUCTION_RELEASE.md`).
 7. Unresolved semantic backlog remainder (still open after Phase 6B):
    - 29 reachable + 24 direct/structural Governor decisions deliberately left
      out of Phase 4B (`docs/GOVERNOR_AUDIT.md`).

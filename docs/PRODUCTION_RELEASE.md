@@ -50,8 +50,9 @@
   other held side paths. Narrow improvement ownership stays adopted
   (see `docs/SUZERAIN_AUDIT.md`, `docs/SEMANTIC_BACKLOG.md`).
 
-- Phase 6B (cross-module backlog integration): **CERTIFIED, awaiting
-  Phase-6C targeted live validation — NOT live-validated.** 1010 entries /
+- Phase 6B (cross-module backlog integration): **LIVE_VALIDATED as the
+  1010-entry build** (Phase 6C, tag `phase6b-1010-live-validated`; see
+  Phase-6C record below). 1010 entries /
   1006 unique / 25 shared; 788 unconditional + 222 count-like (973
   ADDITIVE / 14 COMBAT / 23 DISCOUNT). Static k=7.3 expectation: 801 writes
   / 209 refusals; at k=10 all 1010 apply. DLL
@@ -61,6 +62,29 @@
   **Intentional correction:** Corporate Libertarianism / Coal / Iron were
   live-tested as fractional writes and are now count-like by reviewed
   correction (Phase 6C must confirm writes→refusals).
+
+- Phase 6C targeted live validation: **VALIDATED 2026-10-11** (tag
+  `phase6b-1010-live-validated`). Run A (all ON, load+reload identical):
+  `writes=801 transform_refused=209 official_mismatch=0
+  post_add_match=801 mismatch=0 unreadable=0 skipped_other=0`
+  (`definitions_added=3336`). 39 new pairs: 18 writes with exact static
+  values (Toqui 29.2 ×2, Bishop 730, Owls loyalty 29.2, Preslav 14.6 ×3,
+  Vatican 2920, Citadel 182.5, Ayutthaya 73, Lahore 38.10 COMBAT, Valletta
+  99.3654 ×3 DISCOUNT — compound, not 365/500) + 21 count-like refusals, 0
+  skipped/mismatched/unreadable. The 3 accumulation rows refuse with zero
+  write lines (previously 7.3/14.6/14.6 in 5C evidence — intentional
+  change, not a regression). All §10 regressions hold (Groundbreaker 365,
+  Garrison 24.04, Owls interest 21.9, Ley Line 7.3, Auckland 7.3,
+  Antananarivo 14.6, Ngazargamu 80.3864, Zeus 365, Panama 73, bridge
+  57/57/0). Run B (Governors OFF + Suzerain OFF, Secret Societies ON):
+  `writes=698 transform_refused=174 post_add_match=698 skipped_other=138`
+  with exactly the 70+68 manifest skip sets and zero masked mutations;
+  Toqui still writes (traits owner proven), accumulations still refuse.
+  Run-A-minus-masked == Run B exactly. A first Run-B attempt with Secret
+  Societies OFF yielded 116 skips (22 mode-gated governor definitions
+  absent from the DB); re-run with the mode ON gave the letter-perfect
+  70/68. Evidence: `spike/validation-evidence/X10Lifecycle.1010-6C-run{AB}.log`,
+  `X10Probe.1010-6C-run{AB}.log`.
 
 Follow-up (done in Phase 6B): the two Toqui governor-pressure rows were
 re-admitted after the 6A.2 probe proved stored MATCH via store-lookup on
@@ -315,12 +339,17 @@ with zero mutations. Save/reload identical.
 6. Rollback any time: disable the three mods (or
    `spike/uninstall-prod-test.ps1`).
 
-Pass criteria: `compatibility profile` selected, `CONFIG key=X10_MULTIPLIER
-found=true`, up to 750-eligible write sequence at live stored-float k=7.3
-(735 unconditional + 13 exact-integral conditional under the
+Pass criteria (1010-entry Phase-6B build, VALIDATED 2026-10-11 — see
+Phase-6C section above): `compatibility profile` selected, `CONFIG
+key=X10_MULTIPLIER found=true`, `writes=801 transform_refused=209
+official_mismatch=0 post_add_match=801 post_add_mismatch=0
+post_add_unreadable=0 skipped_other=0` at live stored-float k=7.3 (788
+unconditional + 13 exact-integral conditional write under the
 FLOAT32-quantization-aware rule) with `stored_after_add MATCH
-via=store-lookup`, `post_add_mismatch=0`, `post_add_unreadable=0`, probe PASS
-lines, identical values across save/reload. The exit summary is fully
+via=store-lookup`, probe PASS lines, identical values across save/reload.
+Run B (Governors OFF + Suzerain OFF): `writes=698 transform_refused=174
+post_add_match=698 skipped_other=138` (70 owner-0x20 + 68 owner-0x40
+skips). The exit summary is fully
 counter-derived (`writes / transform_refused / official_mismatch /
 post_add_match / post_add_mismatch / post_add_unreadable / skipped_other`):
 it cannot report zero mismatches after a MISMATCH line.

@@ -20,8 +20,8 @@
 > Registry: **1010 entries / 1006 unique definitions** (788 unconditional +
 > 222 count-like). The 971-entry slice is **LIVE_VALIDATED** (Phase 5C, tag
 > `phase5b-971-live-validated`, evidence in `spike/validation-evidence/`);
-> the 1010 build is **CERTIFIED, awaiting Phase-6C targeted live
-> validation**.
+> the 1010 build is **LIVE_VALIDATED** (Phase 6C, tag
+> `phase6b-1010-live-validated`).
 
 Regenerate with:
 

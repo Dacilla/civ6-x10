@@ -10,8 +10,8 @@ a direct-table bridge.
 > wonders, governors, suzerain) are LIVE_VALIDATED as the 971-entry slice**
 > at stored FLOAT32 k=7.3 (see `docs/PRODUCTION_RELEASE.md` for per-module
 > counters and `spike/validation-evidence/` for the archived native logs).
-> The current **1010-entry Phase-6B build is CERTIFIED and awaits Phase-6C
-> targeted live validation** (801 writes / 209 refusals expected at k=7.3).
+> The current **1010-entry Phase-6B build is LIVE_VALIDATED** (Phase 6C:
+> Run A 801 writes / 209 refusals, Run B 698 / 174 / 138).
 > Controller packaging is functionally complete locally; **Steam Workshop
 > release is not ready** pending the public-data hygiene step.
 
