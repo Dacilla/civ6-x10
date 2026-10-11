@@ -1,0 +1,6 @@
+# Verified source URLs (EXAMPLE — copy to verified-sources.yml, gitignored).
+# -PublishReady requires the real file with verified: true and URLs
+# exactly matching the manifest + staged SOURCE.txt files.
+controller_source_url: ""
+engine_source_url: ""
+verified: false

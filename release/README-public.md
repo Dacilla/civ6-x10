@@ -1,37 +1,47 @@
-# X10 release source (v1.0.0-rc1 clean snapshot)
+# X10 — configurable Civilization VI semantic multiplier (v1.0.0-rc1)
 
-Configurable Civilization VI semantic multiplier: generator and
-certification source, curated rules, controller/engine text sources,
-and the release tooling that stages the two Workshop items
-(X10 controller + required X10 CE Engine dependency).
+X10 scales certified numeric game effects (yields, bonuses, discounts,
+loyalty pressure, ...) by the multiplier you choose instead of fixed
+hand-tuned numbers.
 
-## Contents
+## What you install (two Workshop items)
 
-- `civ6x10/` — generator, certification gate, transforms, CLI
-  (audit engines included as source; bulk audit inputs are NOT included)
-- `civ6x10/rules/` — curated rules only (no audit YAMLs, no backlog)
-- `controller/`, `dependencies/` — Workshop text sources (modinfo, config)
-- `data/fixtures/` — synthetic CI fixtures (no official game data)
-- `tests/` — deliberately reviewed subset: every included test passes or
-  skips cleanly with only this snapshot present
-- `release/` — release manifest, VALIDATION, BUILDING, CHANGELOG,
-  Workshop drafts, auxiliary sources, assembler + export tooling
-- `LICENSE`, `THIRD_PARTY_NOTICES.md`, `PROVENANCE.md`
+- **X10 — Configurable Semantic Multiplier** (this release's controller):
+  configuration, guarded SQL bridge, user documentation.
+- **X10 CE Engine** (required dependency): the GameCore replacement that
+  performs the transformation at runtime. Subscribe to both; configure
+  only the controller.
 
-## Test
+The engine does nothing without the controller, and the controller does
+nothing without the engine.
 
-```powershell
-python -m pytest -q
-```
+## Using it
 
-Tests needing private development inputs (official DB copies, audit
-YAMLs, built registry, CE fork checkout) are deliberately omitted from
-this snapshot — see PROVENANCE.md — never weakened to pass. Included
-tests that cannot run here skip with a documented reason. Expected:
-0 failures; skips require the private workspace.
+Multiplier `X10_MULTIPLIER` 0–100 (default **10**; **0 disables** the
+multiplier). Seven module toggles — traits, policies, governments,
+pantheons, wonders, governors, suzerain — default ON.
 
-## Reproduce the release
+Whole-unit bonuses (charges, power, granted resources, ...) apply only
+for exact whole-number results: a fractional result keeps its official
+value instead of rounding. Deliberately ambiguous mechanics (healing
+caps, factor-vs-percent scaling, improvement intrinsics, ...) stay
+vanilla; see `release/KNOWN_ISSUES.md`.
 
-`release/BUILDING.md` documents the exact engine binary build and the
-controller/assembler path. `release/VALIDATION.md` is the compact public
-validation summary. `release/release-manifest.yml` pins every staged file.
+Requirements: Windows x64, Gathering Storm. Incompatible with any other
+active Community Extension / GameCore replacement.
+
+## Source/build architecture
+
+- `civ6x10/` — generator, semantic certification gate, transforms.
+  Bulk game-data audits are NOT in this snapshot (private inputs).
+- `civ6x10/rules/` — the curated rule files the gate actually evaluates.
+- `controller/`, `dependencies/` — the exact Workshop text sources.
+- `release/` — manifest (all staged hashes), assembler, VALIDATION,
+  BUILDING, Workshop drafts. `release/out/` staging is generated, never
+  committed.
+- `tests/` — reviewed subset; everything here passes or skips cleanly
+  (DB/audit-dependent tests are omitted, never weakened).
+
+Validated release: registry 1010 entries / 1006 definitions; Run A 801
+writes / 209 refusals; Run B 698 / 174 / 138 ownership skips. Details in
+`release/VALIDATION.md`; provenance in `PROVENANCE.md`.

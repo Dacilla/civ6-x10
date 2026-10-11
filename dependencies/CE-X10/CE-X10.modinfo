@@ -4,6 +4,7 @@
     <Name>X10 CE Engine</Name>
     <Description>Required engine dependency for the X10 configurable semantic multiplier (GameCore replacement carrying the X10 native transformation engine). Subscribe together with the main X10 item; no configuration here. Built from CivilizationVI_CommunityExtension-X10, branch x10-lifecycle-log.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
+    <CompatibleVersions>2.0</CompatibleVersions>
   </Properties>
   <Dependencies>
     <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />

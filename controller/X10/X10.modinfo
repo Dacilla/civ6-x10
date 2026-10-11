@@ -4,6 +4,7 @@
     <Name>X10 (configurable semantic multiplier)</Name>
     <Description>Configurable Civ VI semantic multiplier with per-module controls. Requires the matching X10 CE Engine dependency.</Description>
     <AffectsSavedGames>1</AffectsSavedGames>
+    <CompatibleVersions>2.0</CompatibleVersions>
   </Properties>
   <Dependencies>
     <Mod id="4873eb62-8ccc-4574-b784-dda455e74e68" title="Expansion: Gathering Storm" />

@@ -43,6 +43,12 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
         m = self._mod("controller/X10/X10.modinfo")
         self.assertEqual(m.get("id"), CONTROLLER_ID)
         self.assertEqual(m.get("version"), "1")
+        # compatibility declaration (7B.2a polish): GS ruleset 2.0 only,
+        # matching the existing Gathering Storm dependency; presentation
+        # metadata, not runtime behavior
+        compat = m.find("Properties/CompatibleVersions")
+        self.assertIsNotNone(compat)
+        self.assertEqual(compat.text, "2.0")
         deps = [(d.get("id"), d.get("title"))
                 for d in m.find("Dependencies")]
         self.assertEqual(deps, [
@@ -78,6 +84,9 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
         m = self._mod("dependencies/CE-X10/CE-X10.modinfo")
         self.assertEqual(m.get("id"), ENGINE_ID)
         self.assertEqual(m.get("version"), "1")
+        compat = m.find("Properties/CompatibleVersions")
+        self.assertIsNotNone(compat)
+        self.assertEqual(compat.text, "2.0")
         deps = [(d.get("id")) for d in m.find("Dependencies")]
         self.assertEqual(deps, ["4873eb62-8ccc-4574-b784-dda455e74e68"])
         fe = [(a.tag, a.get("id")) for a in m.find("FrontEndActions")]
@@ -284,6 +293,75 @@ class TestAssembleDynamic(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
 
 
+class TestFinalTransitionSurface(unittest.TestCase):
+    """RC (1.0.0-rc1) -> final (1.0.0) may touch ONLY non-gameplay text.
+
+    Exact mutable set: version strings, SOURCE URLs (once the public repo
+    exists), CHANGELOG status, Workshop draft URLs. Gameplay pins must
+    still match the freeze (proven here, not just documented).
+    """
+
+    # repo-relative paths allowed to change at final transition
+    MUTABLE = [
+        "release/release-manifest.yml",  # keys below only
+        "release/staging-src/engine/SOURCE.txt",
+        "release/staging-src/controller/SOURCE.txt",
+        "release/staging-src/engine/README.txt",
+        "release/staging-src/controller/README.txt",
+        "release/CHANGELOG.md",
+        "release/workshop-engine.md",
+        "release/workshop-controller.md",
+        "README.md",
+    ]
+    # manifest keys allowed to change at final (everything else frozen)
+    MUTABLE_KEYS = {"release_version", "intended_tag", "public_source_url",
+                    "source_url", "release_notes_url"}
+    # gameplay paths that must NEVER change at final
+    GAMEPLAY = [
+        "build/X10ProductionRegistry.inc",
+        "controller/X10/Config/X10Config.sql",
+        "controller/X10/Config/X10WonderBridge.sql",
+        "controller/X10/Config/Dummy.sql",
+        "controller/X10/X10.modinfo",
+        "dependencies/CE-X10/CE-X10.modinfo",
+        "dependencies/CE-X10/Config/EngineRedirect.sql",
+        "dependencies/CE-X10/Config/Dummy.sql",
+    ]
+
+    def test_mutable_disjoint_from_gameplay(self):
+        self.assertEqual(set(self.MUTABLE) & set(self.GAMEPLAY), set())
+        for rel in self.MUTABLE:
+            self.assertFalse(rel.endswith(".dll"), rel)
+            self.assertFalse(rel.endswith(".sql"), rel)
+
+    def test_gameplay_pins_intact(self):
+        man = manifest()
+        self.assertEqual(man["dll_sha256"],
+                         "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
+        self.assertEqual(man["registry_entries"], 1010)
+        self.assertEqual(man["release_version"], "1.0.0-rc1")
+        self.assertEqual(man["modinfo_version"], 1)
+
+    def test_placeholders_only_in_source_txt(self):
+        hits = []
+        for rel in ["release/staging-src/engine/SOURCE.txt",
+                    "release/staging-src/controller/SOURCE.txt"]:
+            text = (ROOT / rel).read_text(encoding="utf-8")
+            if "PLANNED-PLACEHOLDER" in text:
+                hits.append(rel)
+        self.assertEqual(sorted(hits), sorted([
+            "release/staging-src/engine/SOURCE.txt",
+            "release/staging-src/controller/SOURCE.txt"]))
+        # no other staged source carries the marker
+        for item in manifest()["workshop_items"].values():
+            for e in item["runtime_files"] + item["auxiliary_files"]:
+                if e["stage_path"] == "SOURCE.txt" or e.get("dll_input"):
+                    continue
+                text = (ROOT / e["source"]).read_text(encoding="utf-8")
+                self.assertNotIn("PLANNED-PLACEHOLDER", text,
+                                 e["stage_path"])
+
+
 class TestPublicExport(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -341,6 +419,81 @@ class TestPublicExport(unittest.TestCase):
         m = re.search(r"(\d+) passed(?:, (\d+) skipped)?", r.stdout)
         self.assertIsNotNone(m, r.stdout[-500:])
         self.assertGreater(int(m.group(1)), 0)
+
+
+class TestReleaseWordingAndPlan(unittest.TestCase):
+    def test_no_stale_topology_wording(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertNotIn("one configurable mod/Workshop item", readme)
+        self.assertNotIn("One configurable Workshop item", readme)
+        # old current-state phrasing named 971 as THE validated state;
+        # 971 may remain only where explicitly historical
+        self.assertNotIn("LIVE_VALIDATED as the 971-entry slice", readme)
+        self.assertIn("1010-entry", readme)
+        for rel in ("controller/X10/X10.modinfo",
+                    "dependencies/CE-X10/CE-X10.modinfo"):
+            self.assertNotIn("One configurable Workshop item",
+                             (ROOT / rel).read_text(encoding="utf-8"), rel)
+
+    def test_manifests_classified_private(self):
+        import json
+        rep = json.loads(
+            (ROOT / "reports" / "release_surface.json").read_text(
+                encoding="utf-8"))
+        by_path = {f["path"]: f for f in rep["files"]}
+        for rel in ("manifests/governors.yml", "manifests/suzerain.yml"):
+            self.assertIn(rel, by_path, rel)
+            self.assertEqual(by_path[rel]["surface"], "private", rel)
+        self.assertFalse(any(f["surface"] == "corresponding_source_candidate"
+                             for f in rep["files"]))
+
+    def test_publication_state_example_clean(self):
+        import yaml
+        ex = yaml.safe_load(
+            (ROOT / "release" / "publication-state.example.yml")
+            .read_text(encoding="utf-8"))
+        dumped = yaml.safe_dump(ex).lower()
+        for needle in ("token", "password", "secret", "credential"):
+            self.assertNotIn(needle, dumped, needle)
+        for key in ("github_repo_created", "engine_workshop_id",
+                    "controller_workshop_id", "steam_dependency_configured",
+                    "source_urls_verified", "unlisted_smoke_passed",
+                    "public_visibility_approved"):
+            self.assertIn(key, ex, key)
+
+    def test_dependency_sequencing_recorded(self):
+        man = manifest()
+        self.assertEqual(man["workshop_items"]["controller"]["requires"],
+                         ["engine"])
+        plan = (ROOT / "release" / "WORKSHOP_PLAN.md").read_text(
+            encoding="utf-8")
+        for needle in ("upload first", "Required Item",
+                       "already exists in `X10.modinfo`",
+                       "never automatic"):
+            self.assertIn(needle, plan, needle)
+
+    def test_publish_ready_blocked_while_rc(self):
+        if PWSH is None:
+            self.skipTest("pwsh unavailable")
+        import tempfile
+        dll = None
+        for cand in (Path.home() / "Desktop" / "Code" / "ce-native-build" /
+                     "GameCore_XP2_CE_FinalRelease.dll",
+                     ROOT.parent / "ce-native-build" /
+                     "GameCore_XP2_CE_FinalRelease.dll"):
+            if cand.is_file():
+                dll = str(cand)
+                break
+        if dll is None:
+            self.skipTest("validated DLL build unavailable")
+        r = subprocess.run(
+            [PWSH, "-NoProfile", "-File",
+             str(ROOT / "release" / "assemble-release.ps1"),
+             "-OutDir", str(Path(tempfile.mkdtemp(prefix="x10pub"))),
+             "-DllPath", dll, "-PublishReady"],
+            capture_output=True, text=True)
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("rc", (r.stdout + r.stderr).lower())
 
 
 if __name__ == "__main__":

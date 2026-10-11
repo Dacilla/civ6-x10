@@ -30,6 +30,8 @@ build/
 generated/
 dist/
 release/out/
+release/publication-state.yml
+release/verified-sources.yml
 spike/live-test-output/
 
 # Native experimental builds

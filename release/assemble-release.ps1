@@ -11,7 +11,8 @@ param(
     [Parameter(Mandatory = $true)][string]$OutDir,
     [Parameter(Mandatory = $true)][string]$DllPath,
     [string]$Manifest = (Join-Path $PSScriptRoot 'release-manifest.yml'),
-    [switch]$AllowPlaceholderUrls
+    [switch]$AllowPlaceholderUrls,
+    [switch]$PublishReady
 )
 $ErrorActionPreference = 'Stop'
 
@@ -19,6 +20,44 @@ $OutDir = [IO.Path]::GetFullPath($OutDir)
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $manifestJson = python -c "import yaml, json, sys; print(json.dumps(yaml.safe_load(open(sys.argv[1], encoding='utf-8'))))" $Manifest | Out-String
 $man = $manifestJson | ConvertFrom-Json
+
+# --- publish-ready gate: RC mode permits explicit placeholders; publish
+# --- mode refuses placeholders, RC versions, unverified sources, and
+# --- missing preview assets / notices / licenses.
+if ($PublishReady) {
+    if ($AllowPlaceholderUrls) {
+        throw "-PublishReady is incompatible with -AllowPlaceholderUrls"
+    }
+    if ($man.release_version -match '-rc') {
+        throw "publish-ready refused: release_version '$($man.release_version)' is still an RC"
+    }
+    $vsPath = Join-Path $PSScriptRoot 'verified-sources.yml'
+    if (-not (Test-Path $vsPath)) {
+        throw "publish-ready refused: release/verified-sources.yml missing (copy the example, verify URLs)"
+    }
+    $vsJson = python -c "import yaml, json, sys; print(json.dumps(yaml.safe_load(open(sys.argv[1], encoding='utf-8'))))" $vsPath | Out-String
+    $vs = $vsJson | ConvertFrom-Json
+    if (-not $vs.verified) {
+        throw "publish-ready refused: verified-sources.yml not marked verified"
+    }
+    if ($vs.controller_source_url -ne $man.public_source_url -or
+        $vs.engine_source_url -ne $man.ce_fork_url) {
+        throw "publish-ready refused: verified URLs do not match the manifest"
+    }
+    foreach ($prev in @('preview-engine.png', 'preview-controller.png')) {
+        if (-not (Test-Path (Join-Path $PSScriptRoot $prev))) {
+            throw "publish-ready refused: missing preview asset release/$prev"
+        }
+    }
+    foreach ($req in @('release/staging-src/engine/LICENSE.txt',
+                       'release/staging-src/engine/THIRD_PARTY_NOTICES.txt',
+                       'release/staging-src/controller/LICENSE.txt',
+                       'release/staging-src/controller/THIRD_PARTY_NOTICES.txt')) {
+        if (-not (Test-Path (Join-Path $repoRoot $req))) {
+            throw "publish-ready refused: missing required notice/license: $req"
+        }
+    }
+}
 
 function RepoBytes([string]$rel) {
     $p = Join-Path $repoRoot $rel

@@ -1,0 +1,15 @@
+# Publication state (EXAMPLE — copy to publication-state.yml, gitignored).
+# IDs and URLs only. NEVER commit credentials, Steam tokens, or secrets.
+github_repo_created: false
+github_repo_url: ""
+github_commit: ""
+github_tag: ""
+engine_workshop_created: false
+engine_workshop_id: ""
+controller_workshop_created: false
+controller_workshop_id: ""
+steam_dependency_configured: false
+source_urls_verified: false
+preview_assets_ready: false
+unlisted_smoke_passed: false
+public_visibility_approved: false
