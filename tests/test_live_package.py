@@ -364,16 +364,18 @@ class TestWriteProbeRegressions(unittest.TestCase):
         i_val = lc.index("s_profile->getDefRva")
         self.assertIn("IsPrologue", lc[i_val:i_val + 600])
 
-    def test_toqui_loyalty_excluded_pending_recert(self):
+    def test_toqui_loyalty_readmitted_after_recert(self):
+        # Phase 6B: the 6A.2 pressure probe proved stored MATCH via
+        # store-lookup on load AND reload, lifting the hold, so the
+        # temporary exclusion entry is gone and both Toqui rows ship from
+        # traits ownership.
         import yaml
         rules = yaml.safe_load(
             open(ROOT / "civ6x10" / "rules" / "certified_overrides.yml",
                  encoding="utf-8"))
         hit = [e for e in rules["excluded_effects"]
                if e["effect"] == "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE"]
-        self.assertEqual(len(hit), 1)
-        self.assertIn("TOQUI", hit[0]["rationale"])
-        self.assertIn("re-certif", hit[0]["rationale"].lower())
+        self.assertEqual(hit, [])
 
     def test_verifier_id_buffer_fits_registry(self):
         # Live 684-run proved truncation: the 66-char Magnificences ID was

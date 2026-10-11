@@ -141,3 +141,19 @@ def apply_dynamic(transform: str, family: str, official: str,
 def load_csv(path: Path) -> list[dict]:
     with open(path, encoding="utf-8", newline="") as fh:
         return list(csv.DictReader(fh))
+
+
+def generated_value_for(transformation: str, official_value: str) -> str:
+    """Classic-k=10 generated value for a manifest row (fail closed).
+
+    Single shared helper so every manifest describes exactly the transform
+    the runtime applies: additive multiply, canonical combat formula,
+    compound discount, or repeated probability — never a universal
+    official x 10.
+    """
+    generated, status = apply_transform(transformation, official_value)
+    if status != "ok":
+        raise ValueError(
+            f"cannot generate k=10 value for {transformation=} "
+            f"{official_value=}")
+    return generated

@@ -141,8 +141,8 @@ class TestPantheonRegistry(unittest.TestCase):
             self.skipTest("manifests unavailable (run review locally)")
         # Four-module build (wonders land in test_wonders.py): 715 shipped
         # rows plus Suleiman governor titles, newly certified by the narrow
-        # Delta rule.
-        self.assertEqual(len(entries), 716)
+        # Delta rule, plus 2 re-admitted Toqui loyalty rows (Phase 6B).
+        self.assertEqual(len(entries), 718)
         self.assertEqual(report["unresolved_conflicts"], [])
         pan = [e for e in entries if e["owners"] == 8]
         self.assertEqual(len(pan), 31)
@@ -210,8 +210,8 @@ class TestPantheonRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         rest = [e for e in entries if not (e["owners"] & 8)]
-        self.assertEqual(len(old_entries), 685)
-        self.assertEqual(len(rest), 685)
+        self.assertEqual(len(old_entries), 687)
+        self.assertEqual(len(rest), 687)
         self.assertEqual(
             sorted(map(str, old_entries)), sorted(map(str, rest)))
 

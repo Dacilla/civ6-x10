@@ -125,7 +125,8 @@ def cmd_verify(args) -> int:
 
 def cmd_generate_suzerain_manifest(args) -> int:
     from .suzerain import build_suzerain_manifest, write_suzerain_manifest
-    manifest = build_suzerain_manifest(args.audit, args.module)
+    manifest = build_suzerain_manifest(args.audit, args.module,
+                                       backlog_path=args.backlog)
     rows = manifest[args.module]
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -160,7 +161,8 @@ def cmd_build_backlog(args) -> int:
 
 def cmd_generate_governor_manifest(args) -> int:
     from .governors import build_governor_manifest, write_governor_manifest
-    manifest = build_governor_manifest(args.audit, args.module)
+    manifest = build_governor_manifest(args.audit, args.module,
+                                       backlog_path=args.backlog)
     rows = manifest[args.module]
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -274,6 +276,9 @@ def main(argv=None) -> int:
                    help="checked-in Phase-4A.1 governor audit manifest")
     p.add_argument("--module", default="governors", choices=["governors"])
     p.add_argument("--out", default=str(ROOT / "manifests" / "governors.yml"))
+    p.add_argument("--backlog", default=str(ROOT / "civ6x10" / "rules" /
+                                            "semantic_backlog.yml"),
+                   help="checked-in Phase-6A semantic backlog (Phase-6B rows)")
     p.set_defaults(fn=cmd_generate_governor_manifest)
     p = sub.add_parser("generate-suzerain-manifest")
     p.add_argument("--audit", default=str(ROOT / "civ6x10" / "rules" /
@@ -281,6 +286,9 @@ def main(argv=None) -> int:
                    help="checked-in Phase-5A.1 suzerain audit manifest")
     p.add_argument("--module", default="suzerain", choices=["suzerain"])
     p.add_argument("--out", default=str(ROOT / "manifests" / "suzerain.yml"))
+    p.add_argument("--backlog", default=str(ROOT / "civ6x10" / "rules" /
+                                            "semantic_backlog.yml"),
+                   help="checked-in Phase-6A semantic backlog (Phase-6B rows)")
     p.set_defaults(fn=cmd_generate_suzerain_manifest)
     p = sub.add_parser("build-backlog",
                        help="Phase 6A unified unresolved-semantic backlog "

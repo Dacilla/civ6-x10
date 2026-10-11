@@ -1,20 +1,27 @@
 # City-State / Suzerain Semantic Audit (Phase 5A)
 
-> **Phase 5B (implemented):** the 47 `CERTIFIED_CANDIDATE` rows below are now
-> in production. `manifests/suzerain.yml` is generated mechanically from this
-> audit (`python -m civ6x10 generate-suzerain-manifest`) and is checked in
+> **Phase 5B (implemented) + Phase 6B (implemented):** the 47
+> `CERTIFIED_CANDIDATE` rows below are in production together with 21
+> Phase-6B backlog rows (`semantic_backlog.yml::proposed_production_pairs`
+> with `owner == suzerain`), for 68 suzerain rows total.
+> `manifests/suzerain.yml` is generated mechanically from this
+> audit plus the backlog (`python -m civ6x10 generate-suzerain-manifest`)
+> and is checked in
 > **by explicit request**; note this departs from the standing decision that
 > `manifests/*.yml` are local-only derived data (see
 > `docs/PRODUCTION_RELEASE.md`, "Public-data hygiene"), so treat that manifest
 > as a reviewed exception rather than a policy change — exactly as
 > `manifests/governors.yml` was in Phase 4B. Owner bit **64 = suzerain**; the
 > CE writer now arms seven modules (`s_modEnabled[7]`, `mask |= 64`) and
-> `X10_MODULE_SUZERAIN` defaults ON. No `DECISION_REQUIRED`, `EXCLUDED` or
-> side-path row entered production. All 47 suzerain entries are suzerain-only
-> (`owners == 64`) and the shared-definition count is unchanged at 25.
-> Registry: **971 entries / 967 unique definitions** (773 unconditional + 198
-> count-like). Suzerain status is **LIVE_VALIDATED** (Phase 5C, tag
-> `phase5b-971-live-validated`, evidence in `spike/validation-evidence/`).
+> `X10_MODULE_SUZERAIN` defaults ON. No still-unresolved, still-excluded or
+> non-admitted side-path row entered production. All 68 suzerain entries
+> are suzerain-only (`owners == 64`) and the shared-definition count is
+> unchanged at 25.
+> Registry: **1010 entries / 1006 unique definitions** (788 unconditional +
+> 222 count-like). The 971-entry slice is **LIVE_VALIDATED** (Phase 5C, tag
+> `phase5b-971-live-validated`, evidence in `spike/validation-evidence/`);
+> the 1010 build is **CERTIFIED, awaiting Phase-6C targeted live
+> validation**.
 
 Regenerate with:
 
@@ -393,11 +400,14 @@ Akkad's wall-attack capability per promotion class.
 | unlocked Nihang | Lahore | capability → side path (§8.2) |
 | unlimited apostle promotions | Yerevan | capability → excluded |
 
-## 10. Overlap with the production registry
+## 10. Overlap with the production registry (Phase-5A-time snapshot)
 
 The audited graph (182 modifier definitions, 74 numeric argument pairs) is
 compared against the shipped `build/X10ProductionRegistry.inc` (920
-registered definitions, 924 entries):
+registered definitions, 924 entries) **as of the Phase-5A audit** — kept as
+the historical record; Phase 5B then added the 47-row slice and Phase 6B
+20 more audit-graph rows plus Lahore (side-path), so current overlap is 67
+of 68 suzerain rows (asserted in `tests/test_suzerain.py`):
 
 | measure | value |
 |---|---|

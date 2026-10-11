@@ -143,12 +143,22 @@ class TestFullRegistrySemantics(unittest.TestCase):
         rows = { (r["modifier_id"], r["argument_name"]): r
                  for r in load_manifests() }
         floor = load_floor()
+        # Exact strong-family overrides (Phase 6B) are the only reviewed
+        # exceptions: positively-reviewed numeric arguments whose coarse
+        # GRANT_OBJECT floor was proven wrong per-argument.
+        allowed = {
+            ("EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
+             "BuildingProductionPercent"),
+            ("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
+             "Amount"),
+        }
         for e in entries:
             r = rows[(e["modifier_id"], e["argument"])]
             s = floor[(r["modifier_type"], r["effect_type"],
                        r["argument_name"])]
-            self.assertNotEqual(s["semantic_family"], "GRANT_OBJECT",
-                                e["modifier_id"])
+            if s["semantic_family"] == "GRANT_OBJECT":
+                self.assertIn((r["effect_type"], r["argument_name"]),
+                              allowed, e["modifier_id"])
             # Curated grant-like exclusions stay out entirely.
             self.assertNotIn(r["effect_type"], (
                 "EFFECT_ADJUST_EXTRA_UNIT_COPY",

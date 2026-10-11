@@ -93,12 +93,12 @@ class TestProductionRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         entries, report = build_production_registry(rows)
-        self.assertEqual(len(entries), 971)
-        self.assertEqual(report["eligible"], 971)
-        self.assertEqual(report["unique_definitions"], 967)
+        self.assertEqual(len(entries), 1010)
+        self.assertEqual(report["eligible"], 1010)
+        self.assertEqual(report["unique_definitions"], 1006)
         self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 773)
-        self.assertEqual(report["certified_count_like_conditional"], 198)
+        self.assertEqual(report["certified_unconditional"], 788)
+        self.assertEqual(report["certified_count_like_conditional"], 222)
         self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
         for mid in ("TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
@@ -106,21 +106,19 @@ class TestProductionRegistry(unittest.TestCase):
                     "TRAIT_GOLD_FROM_DOMESTIC_TRADING_POSTS",
                     "TRAIT_TOQUI_COMBAT_BONUS_VS_GOLDEN_AGE_CIV"):
             self.assertIn(mid, ids, mid)
-        # Toqui governor-loyalty Amounts are temporarily excluded: their raw
-        # strings verified blank post-Add while 610 siblings MATCH, so
-        # stored-form persistence is unproven (see docs; re-certify via the
-        # store-lookup witness before re-admitting).
-        self.assertNotIn("TOQUI_DOMESTIC_LOYALTY", ids)
-        self.assertNotIn("TOQUI_FOREIGN_LOYALTY", ids)
+        # Toqui governor-loyalty Amounts are re-admitted in Phase 6B: the
+        # 6A.2 pressure probe proved stored MATCH via=store-lookup on load
+        # AND reload, lifting the 2026-10-08 stored-form hold, and the
+        # temporary exclusion entry was removed.
+        self.assertIn("TOQUI_DOMESTIC_LOYALTY", ids)
+        self.assertIn("TOQUI_FOREIGN_LOYALTY", ids)
         for c in report["conflict_ledger"]:
             if (c["modifier_id"] in ("TOQUI_DOMESTIC_LOYALTY",
                                      "TOQUI_FOREIGN_LOYALTY")
                     and c["argument"] == "Amount"):
-                self.assertEqual(c["resolution"], "excluded:curated-effect", c)
-                self.assertEqual(
-                    c["cert_source"],
-                    "curated-effect:excluded-effect:"
-                    "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE", c)
+                self.assertEqual(c["resolution"], "certified", c)
+                self.assertEqual(c["cert_source"],
+                                 "curated-category:LOYALTY", c)
         keys = [(e["modifier_id"], e["argument"]) for e in entries]
         self.assertEqual(len(keys), len(set(keys)))
         kinds = {e["kind"] for e in entries}
@@ -187,7 +185,7 @@ class TestProductionTransforms(unittest.TestCase):
                     T.compound_discount_for_multiplier(v, 7.3),
                     (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1))
         discs = [e for e in entries if e["kind"] == "DISCOUNT"]
-        self.assertEqual(len(discs), 20)
+        self.assertEqual(len(discs), 23)
         # Flat gold-per-unit maintenance is ADDITIVE, not a percent discount:
         # 1 -> 7.3, 2 -> 14.6, -2 -> -14.6 at k=7.3.
         by_id = {}
@@ -209,10 +207,10 @@ class TestProductionTransforms(unittest.TestCase):
         # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
         # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
         # live against loaded definitions):
-        #   773 unconditional entries: every one transforms;
-        #   198 conditional entries: 13 exact-integral apply,
-        #   185 fractional refuse safely (never floored).
-        # Static successful transforms: 773 + 13 = 786 < registry size 971
+        #   788 unconditional entries: every one transforms;
+        #   222 conditional entries: 13 exact-integral apply,
+        #   209 fractional refuse safely (never floored).
+        # Static successful transforms: 788 + 13 = 801 < registry size 1010
         # (Toqui loyalty pair temporarily excluded pending stored-form
         # re-certification).
         import math
@@ -224,11 +222,11 @@ class TestProductionTransforms(unittest.TestCase):
         entries, report = build_production_registry(rows)
         kf = T.stored_float32(7.3)
         self.assertEqual(kf, 7.300000190734863)  # live representation
-        self.assertEqual(len(entries), 971)
+        self.assertEqual(len(entries), 1010)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        self.assertEqual(len(un), 773)
-        self.assertEqual(len(co), 198)
+        self.assertEqual(len(un), 788)
+        self.assertEqual(len(co), 222)
         ok = 0
         for e in un:
             v = float(e["official"])
@@ -243,14 +241,14 @@ class TestProductionTransforms(unittest.TestCase):
                 continue
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 773)
+        self.assertEqual(ok, 788)
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 185)
-        # Static expectation: 773 unconditional + 13 conditional = 786 of 971 certified.
-        self.assertEqual(ok + len(exact), 786)
+        self.assertEqual(len(refused), 209)
+        # Static expectation: 788 unconditional + 13 conditional = 801 of 1010 certified.
+        self.assertEqual(ok + len(exact), 801)
 
     def test_verifier_key_capacity(self):
         # Exact live fixture: the 66-char Magnificences ID truncated to

@@ -7,7 +7,7 @@ governors:
   official_value: '25'
   semantic_family: COMBAT_STRENGTH_BONUS
   transformation: canonical_combat_bonus
-  generated_value: '250'
+  generated_value: '72.51'
   status: ok
   confidence: human_certified
   certification_source: phase4a.1-governor-audit
@@ -44,6 +44,42 @@ governors:
   engine_integral: false
   root_governor: GOVERNOR_THE_CARDINAL
   multiplier: 10.0
+- object_id: GOVERNOR_THE_CARDINAL
+  modifier_id: CARDINAL_BISHOP_PRESSURE
+  modifier_type: MODIFIER_SINGLE_CITY_RELIGION_PRESSURE
+  effect_type: EFFECT_ADJUST_CITY_RELIGION_PRESSURE
+  argument_name: Amount
+  official_value: '100'
+  semantic_family: LOYALTY
+  transformation: canonical_x10_multiply
+  generated_value: '1000'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_CARDINAL
+    - GOVERNOR_PROMOTION_CARDINAL_BISHOP
+  multiplier: 10.0
+- object_id: GOVERNOR_THE_CARDINAL
+  modifier_id: CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS
+  modifier_type: MODIFIER_SINGLE_CITY_GRANT_YIELD_PER_BUILDING_COST
+  effect_type: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
+  argument_name: BuildingProductionPercent
+  official_value: '25'
+  semantic_family: PERCENT_BONUS
+  transformation: canonical_x10_multiply
+  generated_value: '250'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_CARDINAL
+    - GOVERNOR_PROMOTION_CARDINAL_CITADEL_OF_GOD
+  multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_CARDINAL_GRAND_INQUISITOR
   modifier_id: CARDINAL_GRAND_INQUISITOR_COMBAT
   modifier_type: MODIFIER_SINGLE_CITY_RELIGIOUS_COMBAT_BONUS
@@ -52,12 +88,48 @@ governors:
   official_value: '10'
   semantic_family: COMBAT_STRENGTH_BONUS
   transformation: canonical_combat_bonus
-  generated_value: '100'
+  generated_value: '44.45'
   status: ok
   confidence: human_certified
   certification_source: phase4a.1-governor-audit
   engine_integral: false
   root_governor: GOVERNOR_THE_CARDINAL
+  multiplier: 10.0
+- object_id: GOVERNOR_THE_CARDINAL
+  modifier_id: CARDINAL_PATRON_SAINT_PROMOTION
+  modifier_type: MODIFIER_SINGLE_CITY_RELIGION_EXTRA_PROMOTIONS
+  effect_type: EFFECT_ADJUST_CITY_RELIGION_EXTRA_PROMOTIONS
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_CARDINAL
+    - GOVERNOR_PROMOTION_CARDINAL_PATRON_SAINT
+  multiplier: 10.0
+- object_id: GOVERNOR_THE_DEFENDER
+  modifier_id: CITY_DEFENDER_ADJUST_ATTACKS_PER_TURN
+  modifier_type: MODIFIER_CITY_ADJUST_ATTACKS_PER_TURN
+  effect_type: EFFECT_ADJUST_CITY_ATTACKS_PER_TURN
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_DEFENDER
+    - GOVERNOR_PROMOTION_EMBRASURE
   multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_EDUCATOR_CONNOISSEUR
   modifier_id: CONNOISSEUR_CULTURE_CITIZEN
@@ -82,12 +154,30 @@ governors:
   official_value: '5'
   semantic_family: COMBAT_STRENGTH_BONUS
   transformation: canonical_combat_bonus
-  generated_value: '50'
+  generated_value: '29.19'
   status: ok
   confidence: human_certified
   certification_source: phase4a.1-governor-audit
   engine_integral: false
   root_governor: GOVERNOR_THE_DEFENDER
+  multiplier: 10.0
+- object_id: GOVERNOR_THE_DEFENDER
+  modifier_id: DEFENSE_LOGISTICS_BONUS_STRATEGICS
+  modifier_type: MODIFIER_SINGLE_CITY_ADJUST_EXTRA_ACCUMULATION
+  effect_type: EFFECT_ADJUST_CITY_EXTRA_ACCUMULATION
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_DEFENDER
+    - GOVERNOR_PROMOTION_DEFENSE_LOGISTICS
   multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_EDUCATOR_ARMS_RACE_PROPONENT
   modifier_id: EDUCATOR_FASTER_MANHATTAN_PROJECT_RESEARCH
@@ -232,7 +322,7 @@ governors:
   official_value: '5'
   semantic_family: COMBAT_STRENGTH_BONUS
   transformation: canonical_combat_bonus
-  generated_value: '50'
+  generated_value: '29.19'
   status: ok
   confidence: human_certified
   certification_source: phase4a.1-governor-audit
@@ -254,6 +344,24 @@ governors:
   engine_integral: false
   root_governor: GOVERNOR_OWLS_OF_MINERVA
   multiplier: 10.0
+- object_id: GOVERNOR_OWLS_OF_MINERVA
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  argument_name: Amount
+  official_value: '4'
+  semantic_family: LOYALTY
+  transformation: canonical_x10_multiply
+  generated_value: '40'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3
+  multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
   modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_GOLD_INTEREST
   modifier_type: MODIFIER_PLAYER_ADJUST_GOLD_INTEREST_PERCENT
@@ -268,6 +376,78 @@ governors:
   certification_source: phase4a.1-governor-audit
   engine_integral: false
   root_governor: GOVERNOR_OWLS_OF_MINERVA
+  multiplier: 10.0
+- object_id: GOVERNOR_OWLS_OF_MINERVA
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_CULTURE
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  argument_name: Percent
+  official_value: '50'
+  semantic_family: PERCENT_BONUS
+  transformation: canonical_x10_multiply
+  generated_value: '500'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
+  multiplier: 10.0
+- object_id: GOVERNOR_OWLS_OF_MINERVA
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_FAITH
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  argument_name: Percent
+  official_value: '50'
+  semantic_family: PERCENT_BONUS
+  transformation: canonical_x10_multiply
+  generated_value: '500'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
+  multiplier: 10.0
+- object_id: GOVERNOR_OWLS_OF_MINERVA
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_GOLD
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  argument_name: Percent
+  official_value: '50'
+  semantic_family: PERCENT_BONUS
+  transformation: canonical_x10_multiply
+  generated_value: '500'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
+  multiplier: 10.0
+- object_id: GOVERNOR_OWLS_OF_MINERVA
+  modifier_id: GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_SCIENCE
+  modifier_type: MODIFIER_PLAYER_ADJUST_TARGET_CITY_SPY_YIELD_PERCENT
+  effect_type: EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT
+  argument_name: Percent
+  official_value: '50'
+  semantic_family: PERCENT_BONUS
+  transformation: canonical_x10_multiply
+  generated_value: '500'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_OWLS_OF_MINERVA
+    - GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4
   multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_VOIDSINGERS_2
   modifier_id: GOVERNOR_PROMOTION_VOIDSINGERS_2_CULTURE_FROM_FAITH
@@ -329,6 +509,24 @@ governors:
   engine_integral: false
   root_governor: GOVERNOR_THE_RESOURCE_MANAGER
   multiplier: 10.0
+- object_id: GOVERNOR_THE_BUILDER
+  modifier_id: GUILDMASTER_ADDITIONAL_BUILDER_CHARGES_UNIT_MODIFIER
+  modifier_type: MODIFIER_SINGLE_CITY_BUILDER_CHARGES
+  effect_type: EFFECT_ADJUST_UNIT_BUILD_CHARGES
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_BUILDER
+    - GOVERNOR_PROMOTION_BUILDER_GUILDMASTER
+  multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_MERCHANT_HARBORMASTER
   modifier_id: HARBORMASTER_BONUS_COMMERCIAL_HUB_ADJACENCY
   modifier_type: MODIFIER_CITY_DISTRICTS_ADJUST_YIELD_MODIFIER
@@ -367,7 +565,7 @@ governors:
   official_value: '5'
   semantic_family: COMBAT_STRENGTH_BONUS
   transformation: canonical_combat_bonus
-  generated_value: '50'
+  generated_value: '29.19'
   status: ok
   confidence: human_certified
   certification_source: phase4a.1-governor-audit
@@ -569,6 +767,42 @@ governors:
   engine_integral: true
   root_governor: GOVERNOR_THE_RESOURCE_MANAGER
   multiplier: 10.0
+- object_id: GOVERNOR_THE_RESOURCE_MANAGER
+  modifier_id: INDUSTRIALIST_RESOURCE_POWER_PROVIDED
+  modifier_type: MODIFIER_GOVERNOR_ADJUST_RESOURCE_POWER_PROVIDED_GOVERNOR
+  effect_type: EFFECT_ADJUST_RESOURCE_POWER_PROVIDED_GOVERNOR
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_RESOURCE_MANAGER
+    - GOVERNOR_PROMOTION_RESOURCE_MANAGER_INDUSTRIALIST
+  multiplier: 10.0
+- object_id: GOVERNOR_IBRAHIM
+  modifier_id: KHASS_ODA_BASHI_ADJUST_ALLIANCE_POINTS
+  modifier_type: MODIFIER_GOVERNOR_ADJUST_ALLIANCE_POINTS
+  effect_type: EFFECT_ADJUST_GOVERNOR_ALLIANCE_POINTS
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_IBRAHIM
+    - GOVERNOR_PROMOTION_KHASS_ODA_BASHI
+  multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_MERCHANT_LAND_ACQUISITION
   modifier_id: LAND_ACQUISITION_FASTER_PLOT_ANNEXING
   modifier_type: MODIFIER_SINGLE_CITY_CULTURE_BORDER_EXPANSION
@@ -613,6 +847,24 @@ governors:
   certification_source: phase4a.1-governor-audit
   engine_integral: false
   root_governor: GOVERNOR_THE_EDUCATOR
+  multiplier: 10.0
+- object_id: GOVERNOR_THE_AMBASSADOR
+  modifier_id: LOCAL_INFORMANTS_SPY_DEFENSE_BONUS
+  modifier_type: MODIFIER_CITY_ADJUST_SPY_BONUS
+  effect_type: EFFECT_ADJUST_CITY_SPY_BONUS
+  argument_name: Amount
+  official_value: '3'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '30'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_THE_AMBASSADOR
+    - GOVERNOR_PROMOTION_LOCAL_INFORMANTS
   multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_PASHA
   modifier_id: PASHA_BONUS_UNIT_PRODUCTION
@@ -674,6 +926,45 @@ governors:
   engine_integral: false
   root_governor: GOVERNOR_THE_EDUCATOR
   multiplier: 10.0
+- object_id: GOVERNOR_SANGUINE_PACT
+  modifier_id: SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD
+  modifier_type: MODIFIER_PLAYER_UNITS_ADJUST_BUILDER_CHARGES
+  effect_type: EFFECT_ADJUST_UNIT_BUILD_CHARGES
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_SANGUINE_PACT
+    - GOVERNOR_PROMOTION_SANGUINE_PACT_3
+  - - governors
+    - GOVERNOR_SANGUINE_PACT
+    - GOVERNOR_PROMOTION_SANGUINE_PACT_4
+  multiplier: 10.0
+- object_id: GOVERNOR_SANGUINE_PACT
+  modifier_id: SECRET_SOCIETY_GRANT_TWO_VAMPIRE_BUILDS
+  modifier_type: MODIFIER_PLAYER_UNITS_ADJUST_BUILDER_CHARGES
+  effect_type: EFFECT_ADJUST_UNIT_BUILD_CHARGES
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - governors
+    - GOVERNOR_SANGUINE_PACT
+    - GOVERNOR_PROMOTION_SANGUINE_PACT_2
+  multiplier: 10.0
 - object_id: GOVERNOR_PROMOTION_SERASKER
   modifier_id: SERASKER_ADJUST_GOVERNOR_COMBAT_DISTRICT
   modifier_type: MODIFIER_GOVERNOR_ADJUST_DISTRICT_COMBAT_BONUS
@@ -682,7 +973,7 @@ governors:
   official_value: '10'
   semantic_family: COMBAT_STRENGTH_BONUS
   transformation: canonical_combat_bonus
-  generated_value: '100'
+  generated_value: '44.45'
   status: ok
   confidence: human_certified
   certification_source: phase4a.1-governor-audit

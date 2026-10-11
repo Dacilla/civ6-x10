@@ -223,15 +223,13 @@ RULES[("EFFECT_ADJUST_PLAYER_TARGET_CITY_SPY_YIELD_PERCENT", "Percent", "modifie
 RULES[("EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST", "BuildingProductionPercent", "modifier")] = _rule(
     RESOLVED_CANDIDATE, GROUP_COMPLETION, "PERCENT_BONUS",
     "ADDITIVE", "canonical_x10_multiply", False, None,
-    "6B must add a mixed_overrides entry for "
-    "(EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST, "
-    "BuildingProductionPercent) -> ADDITIVE (same shape as the two live "
-    "mixed overrides); the floor's GRANT_OBJECT row is AUTO_PATTERN "
-    "heuristic, and the gate dry run proves the row is otherwise excluded "
-    "by it",
+    "exact strong-family override for (effect, BuildingProductionPercent): "
+    "floor GRANT_OBJECT -> PERCENT_BONUS / ADDITIVE (the mixed_overrides "
+    "path is unreachable from a GRANT_OBJECT floor, proven by failing-first "
+    "test in 6A.3)",
     "writes 182.5 (25 x 7.3) / 73.0 (10 x 7.3), float-safe percents",
     "writes 250.0 / 100.0",
-    "already supported once the mixed entry lands (ADDITIVE percent)",
+    "already supported via the strong override (ADDITIVE percent)",
     "percent of a completed building's production cost granted as yield "
     "(Citadel +25% faith, Ayutthaya +10% culture); owner follows the row "
     "(governors / suzerain). No transform design fork: additive percent "
@@ -407,15 +405,13 @@ RULES[("EFFECT_ADJUST_CITY_IDENTITY_PER_TURN", "Amount", "modifier")] = _rule(
 RULES[("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED", "Amount", "modifier")] = _rule(
     RESOLVED_CANDIDATE, GROUP_PRESSURE, "LOYALTY",
     "ADDITIVE", "canonical_x10_multiply", False, "suzerain",
-    "6B must add a mixed_overrides entry for "
-    "(EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED, "
-    "Amount) -> ADDITIVE: scalar pressure rate, not an object grant (same "
-    "shape as the two live mixed overrides); the floor's GRANT_OBJECT row "
-    "is AUTO_PATTERN heuristic. Storage observability proven live (MATCH "
-    "2920.0 on load+reload)",
+    "exact strong-family override for (effect, Amount): floor GRANT_OBJECT "
+    "-> LOYALTY / ADDITIVE (the mixed_overrides path is unreachable from a "
+    "GRANT_OBJECT floor, proven by failing-first test in 6A.3). Storage "
+    "observability proven live (MATCH 2920.0 on load+reload)",
     "writes 2920.0",
     "writes 4000.0",
-    "already supported once the mixed entry lands (ADDITIVE pressure)",
+    "already supported via the strong override (ADDITIVE pressure)",
     "religious pressure per great person activated (Vatican City 400): "
     "storage observability proven live; semantics are a pressure rate",
 )

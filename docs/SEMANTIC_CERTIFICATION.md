@@ -32,25 +32,34 @@ and fail generation.
 | 2 | `AUTO_THEME` slot thresholds (Amount=2/3) scaled | Excluded: eligibility thresholds, not magnitudes |
 | 1 | `NATIONALIDENTITY` damage-reduction modifier (50) scaled as strength | Excluded: not strength points |
 | 16 | Curated grant/boolean/sentinel effects (extra unit copies, free envoys, token doublers, -1 spy sentinel, eureka grants) | Excluded with per-effect rationale |
-| 2 | Toqui governor-loyalty Amounts verify blank post-Add (stored-form proof pending) | Temporarily excluded (`EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE`); re-certify via store-lookup witness |
+| 2 | Toqui governor-loyalty Amounts verified blank post-Add (stored-form proof pending) | Re-admitted in Phase 6B: the 6A.2 probe proved stored MATCH via store-lookup on load AND reload, so the temporary `EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE` exclusion was removed and both rows ship LOYALTY from traits |
 | 33+ | Indivisible counts emitted unconditional (`FLAT_AMOUNT`, countLike=false) | Certified as count-like conditional (exact-integer applies, fractional refuses) |
 
 Unresolved conflicts after the gate: **0** (`unresolved_conflicts: []`;
 `SemanticConflict` would fail generation).
 
-## New certified registry
+## New certified registry (Phase 6B current state)
 
-- **971 entries / 967 unique definitions / 25 shared** (358 traits-only
-  incl. Suleiman titles, 284 policies-only, 18 governments-only, 31
-  pantheons-only, 154 wonders-only = 97 modifier-backed + 57 generated
-  bridge helpers, 54 governors-only, 47 suzerain-only; 773 unconditional +
-  198 count-like). Suzerain is CERTIFIED (Phase 5B, `phase5a.1-suzerain-audit`
-  source; 44 ADDITIVE — 35 unconditional + 9 count-like Bologna GP-point
-  rows — and 3 DISCOUNT Ngazargamu rows), live-validated in Phase 5C (tag
-  `phase5b-971-live-validated`).
+- **1010 entries / 1006 unique definitions / 25 shared** (360 traits-only
+  incl. Suleiman titles + 2 re-admitted Toqui loyalty rows, 284
+  policies-only, 18 governments-only, 31 pantheons-only, 154 wonders-only =
+  97 modifier-backed + 57 generated bridge helpers, 70 governors-only, 68
+  suzerain-only, 25 shared policies+governments; 788 unconditional + 222
+  count-like; kinds 973 ADDITIVE / 14 COMBAT / 23 DISCOUNT).
+  Governors source: 54 `phase4a.1-governor-audit` + 16
+  `phase6a-semantic-backlog`. Suzerain source: 47 `phase5a.1-suzerain-audit`
+  + 21 `phase6a-semantic-backlog` (incl. Lahore COMBAT via
+  `canonical_combat_bonus`, Valletta ×3 via `compound_discount`).
+  Status: **CERTIFIED, awaiting Phase-6C targeted live validation** — the
+  prior 971-entry slice stays LIVE_VALIDATED (tags below) but the 1010
+  build is not.
   Frozen milestones: 684 Release-1 (`release1-684-live-validated`), 715
-  Phase-2 (`phase2-715-live-validated`); every earlier line persists
-  byte-identical, additions only.
+  Phase-2 (`phase2-715-live-validated`), 813 Phase-3
+  (`phase3-813-live-validated`), 924 Phase-4B (`phase4b-924-live-validated`),
+  971 Phase-5B (`phase5b-971-live-validated`); every earlier line persists
+  byte-identical except the 3 intentional count-like reclassifications
+  (Corporate Libertarianism, Coal, Iron — previously live-tested fractional
+  writes, now exact-integral by reviewed correction).
 
 ### Engine-representability gate (Phase 3F + 3G)
 
@@ -67,10 +76,15 @@ transform is refused and the definition keeps its official value (gameplay
 `0 + V` = vanilla, never truncated, floored or rounded). Evidence, per-row
 inventory and the closed-world affected-set proof live in
 `docs/WONDER_AUDIT.md`.
-At the live stored-FLOAT32 k=7.3: 773 unconditional + 13 conditional write
-(**786**), 185 conditional refuse (31 Wonder bridge helpers + 21 Release-1
-player-cities entries + 5 Governor rows + 9 Bologna suzerain GP-point rows;
-66 production entries protected in total). At k=10 all five governor integral
+At the live stored-FLOAT32 k=7.3 **for the validated 971 baseline**: 773
+unconditional + 13 conditional write (**786**), 185 conditional refuse (31
+Wonder bridge helpers + 21 Release-1 player-cities entries + 5 Governor
+rows + 9 Bologna suzerain GP-point rows; 66 production entries protected in
+total). **Phase-6B current-state expectation: 788 unconditional + 13
+conditional write (801), 209 refuse** — the 39 new pairs contribute 18
+writes + 21 refusals and the 3 accumulation reclassifications move
+writes→refusals. At k=10 everything applies (Corporate Libertarianism 10,
+Coal/Iron 20, Lahore ≈44.45, Valletta ≈99.90 compound). At k=10 all five governor integral
 rows apply (appeal 1→10, four building yields 2→20), and all nine Bologna
 rows apply as 10.- **599 unconditional** (every one transforms at k=7.3), **85 conditional
   count-like** (11 exact-integral apply at live FLOAT32 k=7.3, 74 fractional
@@ -119,14 +133,19 @@ tiles, caps, GPP point amounts, alliance points, visibility levels,
 appeal/spy/defense/power ratings, resource accumulation). Fractional results
 refuse at runtime via the existing native `countLike` check.
 
-## Certification sources (entries)
+## Certification sources (1010 entries, Phase 6B; from
+`build/X10ProductionRegistry.inc.coverage.json`)
 
-curated-category:FLAT_AMOUNT 370, curated-category:FLAT_YIELD 215,
-curated-effect:mixed plot-yield 41, curated-effect:mixed city-yield 22,
-curated-effect:discount ×10 effects (15 entries), curated-effect:flat-cost
-maintenance (4 entries), combat overrides 6, curated-category:PERCENT_BONUS 5,
-curated-category:DURATION 4, curated-category:AMENITY 2,
-curated-category:TOURISM 1, formula-derived:COMBAT_STRENGTH_BONUS 1.
+curated-category:FLAT_AMOUNT 483, FLAT_YIELD 237, PERCENT_BONUS 26,
+PRODUCTION_PERCENT 10, LOYALTY 7, AMENITY 7, GOLD 5, DURATION 4,
+GREAT_PERSON_POINTS 9, EXPERIENCE 1, HOUSING 2, GOVERNOR_TITLES 2,
+TOURISM 1; curated-effect:mixed plot-yield 74 / city-yield 41;
+curated-effect:discount 23 rows across 11 effects (incl. the Phase-6B
+BUILDING_PURCHASE_COST ×3); curated-effect:flat-cost maintenance 4;
+curated-effect:engine-integral 57 (56 building-yield-change + 1 appeal);
+combat-points overrides 12; strong-family overrides 3 (completion percent
+×2, Vatican pressure ×1); formula-derived COMBAT_STRENGTH_BONUS 2
+(Toqui combat, Lahore).
 
 Trust policy: FORMULA_DERIVED floor rows may directly certify a special
 transform; AUTO_PATTERN / NEEDS_REVIEW rows inform but never certify COMBAT /
@@ -149,11 +168,12 @@ parity harness against the raw bytes, mirrored in `civ6x10/transforms.py`.
 No coarse epsilon: genuine fractions sit ≥0.2 from integers while tolerances
 stay <1e-3 across the registry.
 
-## Discount audit (11 effect types, one-time review)
+## Discount audit (12 effect types, one-time review + Phase-6B Valletta entry)
 
 | Effect | Verdict | Rationale |
 |---|---|---|
 | ALL_UNITS_PURCHASE_COST | PERCENT | sibling +20 percent discounts; boundary −100 is the percent fixed point (free/doubled stays stable under compound; additive −730 would invent behavior) |
+| BUILDING_PURCHASE_COST | PERCENT | Phase-6B Valletta entry: positive-means-discount proven cross-effect (CHEAPER naming + faith context; FLOWER_POWER −100 is the surcharge mirror); boundary +100 is the free fixed point under compound |
 | GREAT_PERSON_PATRONAGE_DISCOUNT_PERCENT | PERCENT | PERCENT in the EffectType (Sundiata 20) |
 | LEVIED_UNIT_UPGRADE_DISCOUNT_PERCENT | PERCENT | PERCENT in the ModifierType (75) |
 | LEVY_DISCOUNT_PERCENT | PERCENT | Percent argument by name (50/75) |

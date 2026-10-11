@@ -2018,12 +2018,13 @@ def summarize(audit: dict) -> dict:
 SUZERAIN_MODULE = "suzerain"
 SUZERAIN_MODULE_BIT = 64
 
-# Audited families -> production transform. Percent discounts compound;
-# everything else in the conservative slice is the additive magnitude
-# transform. The audited family is preserved verbatim (never relabelled to
-# satisfy the gate). There are no COMBAT rows in the 47-row slice.
+# Audited families -> production transform. Percent discounts compound,
+# combat uses the canonical combat formula (Lahore +10); everything else in
+# the slice is the additive magnitude transform. The audited family is
+# preserved verbatim (never relabelled to satisfy the gate).
 FAMILY_TRANSFORM = {
     "PERCENT_DISCOUNT": "compound_discount",
+    "COMBAT_STRENGTH_BONUS": "canonical_combat_bonus",
 }
 
 
@@ -2097,20 +2098,25 @@ def audited_suzerain_candidates(audit_path) -> list[dict]:
 
 
 def build_suzerain_manifest(audit_path,
-                            module: str = SUZERAIN_MODULE) -> dict:
-    """Production manifest rows for exactly the audited suzerain candidates.
+                            module: str = SUZERAIN_MODULE,
+                            backlog_path=None) -> dict:
+    """Production manifest rows: audited candidates + Phase-6B backlog slice.
 
-    Mechanically derived from `civ6x10/rules/suzerain_audit.yml` so the
-    production input stays reproducible without the gitignored inventory CSV.
-    Nothing is hand-maintained, no DECISION_REQUIRED / EXCLUDED / side-path
-    row can enter, and the audited semantic family is preserved as-is.
+    Mechanically derived from `civ6x10/rules/suzerain_audit.yml` (47
+    Phase-5A.1 CERTIFIED_CANDIDATE rows) plus, when backlog_path is given,
+    the accepted `semantic_backlog.yml::proposed_production_pairs` with
+    owner == suzerain (21 Phase-6B rows). Nothing is hand-maintained and
+    nothing hand-appended: exact-pair deduplication fails closed on any
+    metadata disagreement. Generated values come from the shared
+    manifest helper so the file describes the transform the runtime uses.
     """
+    from .modules import generated_value_for
     cands = audited_suzerain_candidates(audit_path)
     rows = []
     for r in cands:
         family = r["semantic_family"]
         transform = FAMILY_TRANSFORM.get(family, "canonical_x10_multiply")
-        generated = _generated_value(family, r["official_value"])
+        generated = generated_value_for(transform, r["official_value"])
         rows.append({
             "object_id": r["city_state"],
             "modifier_id": r["modifier_id"],
@@ -2130,7 +2136,57 @@ def build_suzerain_manifest(audit_path,
             "root_modifier_id": r["root_modifier_id"],
             "multiplier": 10.0,
         })
-    return {module: rows}
+    if backlog_path is not None:
+        rows.extend(_backlog_suzerain_rows(backlog_path))
+    seen: dict[tuple[str, str], dict] = {}
+    for r in rows:
+        key = (r["modifier_id"], r["argument_name"])
+        if key in seen:
+            prev = seen[key]
+            for field in ("modifier_type", "effect_type", "official_value",
+                          "semantic_family", "transformation"):
+                if prev[field] != r[field]:
+                    raise ValueError(
+                        f"suzerain manifest duplicate {key} disagrees on "
+                        f"{field}: {prev[field]!r} vs {r[field]!r} "
+                        "(fail closed)")
+            continue
+        seen[key] = r
+    merged = sorted(seen.values(),
+                    key=lambda r: (r["modifier_id"], r["argument_name"]))
+    return {module: merged}
+
+
+def _backlog_suzerain_rows(backlog_path) -> list[dict]:
+    """Phase-6B suzerain-owned rows from the checked-in semantic backlog."""
+    import yaml
+    from .modules import generated_value_for
+    doc = yaml.safe_load(Path(backlog_path).read_text(encoding="utf-8"))
+    pairs = [p for p in doc.get("proposed_production_pairs", [])
+             if p.get("owner") == "suzerain"]
+    out = []
+    for p in pairs:
+        transform = FAMILY_TRANSFORM.get(p["family"], "canonical_x10_multiply")
+        generated = generated_value_for(transform, p["value"])
+        out.append({
+            "object_id": p.get("sources", [[None, None, None]])[0][1]
+            if p.get("sources") else p["modifier_id"],
+            "modifier_id": p["modifier_id"],
+            "modifier_type": p["modifier_type"],
+            "effect_type": p["effect_type"],
+            "argument_name": p["argument"],
+            "official_value": p["value"],
+            "semantic_family": p["family"],
+            "transformation": transform,
+            "generated_value": generated,
+            "status": "ok",
+            "confidence": "human_certified",
+            "certification_source": "phase6a-semantic-backlog",
+            "engine_integral": False,
+            "backlog_sources": p.get("sources", []),
+            "multiplier": 10.0,
+        })
+    return out
 
 
 def write_suzerain_manifest(manifest: dict, out) -> None:

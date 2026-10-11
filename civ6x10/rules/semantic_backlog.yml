@@ -100,9 +100,8 @@ proposed_candidates:
   count_like: false
   effect_type: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
   family: PERCENT_BONUS
-  gate_evidence: 6B must add a mixed_overrides entry for (EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST, BuildingProductionPercent)
-    -> ADDITIVE (same shape as the two live mixed overrides); the floor's GRANT_OBJECT row is AUTO_PATTERN heuristic, and
-    the gate dry run proves the row is otherwise excluded by it
+  gate_evidence: 'exact strong-family override for (effect, BuildingProductionPercent): floor GRANT_OBJECT -> PERCENT_BONUS
+    / ADDITIVE (the mixed_overrides path is unreachable from a GRANT_OBJECT floor, proven by failing-first test in 6A.3)'
   k10: writes 250.0 / 100.0
   k73: writes 182.5 (25 x 7.3) / 73.0 (10 x 7.3), float-safe percents
   kind: ADDITIVE
@@ -117,9 +116,8 @@ proposed_candidates:
   count_like: false
   effect_type: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
   family: PERCENT_BONUS
-  gate_evidence: 6B must add a mixed_overrides entry for (EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST, BuildingProductionPercent)
-    -> ADDITIVE (same shape as the two live mixed overrides); the floor's GRANT_OBJECT row is AUTO_PATTERN heuristic, and
-    the gate dry run proves the row is otherwise excluded by it
+  gate_evidence: 'exact strong-family override for (effect, BuildingProductionPercent): floor GRANT_OBJECT -> PERCENT_BONUS
+    / ADDITIVE (the mixed_overrides path is unreachable from a GRANT_OBJECT floor, proven by failing-first test in 6A.3)'
   k10: writes 250.0 / 100.0
   k73: writes 182.5 (25 x 7.3) / 73.0 (10 x 7.3), float-safe percents
   kind: ADDITIVE
@@ -209,9 +207,9 @@ proposed_candidates:
   count_like: false
   effect_type: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
   family: LOYALTY
-  gate_evidence: '6B must add a mixed_overrides entry for (EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED,
-    Amount) -> ADDITIVE: scalar pressure rate, not an object grant (same shape as the two live mixed overrides); the floor''s
-    GRANT_OBJECT row is AUTO_PATTERN heuristic. Storage observability proven live (MATCH 2920.0 on load+reload)'
+  gate_evidence: 'exact strong-family override for (effect, Amount): floor GRANT_OBJECT -> LOYALTY / ADDITIVE (the mixed_overrides
+    path is unreachable from a GRANT_OBJECT floor, proven by failing-first test in 6A.3). Storage observability proven live
+    (MATCH 2920.0 on load+reload)'
   k10: writes 4000.0
   k73: writes 2920.0
   kind: ADDITIVE
@@ -2927,12 +2925,11 @@ rows:
   k73_expectation: writes 182.5 (25 x 7.3) / 73.0 (10 x 7.3), float-safe percents
   modifier_id: CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS
   modifier_type: MODIFIER_SINGLE_CITY_GRANT_YIELD_PER_BUILDING_COST
-  native_support: already supported once the mixed entry lands (ADDITIVE percent)
+  native_support: already supported via the strong override (ADDITIVE percent)
   production_kind: ADDITIVE
   proposed_owner: governors
-  required_gate_evidence: 6B must add a mixed_overrides entry for (EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST,
-    BuildingProductionPercent) -> ADDITIVE (same shape as the two live mixed overrides); the floor's GRANT_OBJECT row is AUTO_PATTERN
-    heuristic, and the gate dry run proves the row is otherwise excluded by it
+  required_gate_evidence: 'exact strong-family override for (effect, BuildingProductionPercent): floor GRANT_OBJECT -> PERCENT_BONUS
+    / ADDITIVE (the mixed_overrides path is unreachable from a GRANT_OBJECT floor, proven by failing-first test in 6A.3)'
   resolution: RESOLVED_CANDIDATE
   resolution_rationale: 'percent of a completed building''s production cost granted as yield (Citadel +25% faith, Ayutthaya
     +10% culture); owner follows the row (governors / suzerain). No transform design fork: additive percent scaling is the
@@ -2956,12 +2953,11 @@ rows:
   k73_expectation: writes 182.5 (25 x 7.3) / 73.0 (10 x 7.3), float-safe percents
   modifier_id: MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING
   modifier_type: MODIFIER_PLAYER_CITIES_GRANT_YIELD_PER_BUILDING_COST
-  native_support: already supported once the mixed entry lands (ADDITIVE percent)
+  native_support: already supported via the strong override (ADDITIVE percent)
   production_kind: ADDITIVE
   proposed_owner: suzerain
-  required_gate_evidence: 6B must add a mixed_overrides entry for (EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST,
-    BuildingProductionPercent) -> ADDITIVE (same shape as the two live mixed overrides); the floor's GRANT_OBJECT row is AUTO_PATTERN
-    heuristic, and the gate dry run proves the row is otherwise excluded by it
+  required_gate_evidence: 'exact strong-family override for (effect, BuildingProductionPercent): floor GRANT_OBJECT -> PERCENT_BONUS
+    / ADDITIVE (the mixed_overrides path is unreachable from a GRANT_OBJECT floor, proven by failing-first test in 6A.3)'
   resolution: RESOLVED_CANDIDATE
   resolution_rationale: 'percent of a completed building''s production cost granted as yield (Citadel +25% faith, Ayutthaya
     +10% culture); owner follows the row (governors / suzerain). No transform design fork: additive percent scaling is the
@@ -3118,12 +3114,12 @@ rows:
   k73_expectation: writes 2920.0
   modifier_id: MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE
   modifier_type: MODIFIER_PLAYER_GRANT_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
-  native_support: already supported once the mixed entry lands (ADDITIVE pressure)
+  native_support: already supported via the strong override (ADDITIVE pressure)
   production_kind: ADDITIVE
   proposed_owner: suzerain
-  required_gate_evidence: '6B must add a mixed_overrides entry for (EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED,
-    Amount) -> ADDITIVE: scalar pressure rate, not an object grant (same shape as the two live mixed overrides); the floor''s
-    GRANT_OBJECT row is AUTO_PATTERN heuristic. Storage observability proven live (MATCH 2920.0 on load+reload)'
+  required_gate_evidence: 'exact strong-family override for (effect, Amount): floor GRANT_OBJECT -> LOYALTY / ADDITIVE (the
+    mixed_overrides path is unreachable from a GRANT_OBJECT floor, proven by failing-first test in 6A.3). Storage observability
+    proven live (MATCH 2920.0 on load+reload)'
   resolution: RESOLVED_CANDIDATE
   resolution_rationale: 'religious pressure per great person activated (Vatican City 400): storage observability proven live;
     semantics are a pressure rate'

@@ -4,9 +4,13 @@ Regenerate the audit with
 `python -m civ6x10 audit-governors --db <official-copy>`
 (`--game-root` / `CIV6_GAME_ROOT` for the mode payload).
 
-**Phase 4B (implemented):** the 54 `CERTIFIED_CANDIDATE` rows below are now
-in production. `manifests/governors.yml` is generated mechanically from this
-audit (`python -m civ6x10 generate-governor-manifest`) and is checked in
+**Phase 4B (implemented) + Phase 6B (implemented):** the 54
+`CERTIFIED_CANDIDATE` rows below are in production together with 16
+Phase-6B backlog rows (`semantic_backlog.yml::proposed_production_pairs`
+with `owner == governors`), for 70 governor rows total.
+`manifests/governors.yml` is generated mechanically from this
+audit plus the backlog (`python -m civ6x10 generate-governor-manifest`)
+and is checked in
 **by explicit request**; note this departs from the earlier decision that
 `manifests/*.yml` are local-only derived data (see `docs/PRODUCTION_RELEASE.md`,
 "Public-data hygiene"), so treat that manifest as a reviewed exception
@@ -16,8 +20,11 @@ rather than a policy change. Owner bit
 No `DECISION_REQUIRED`, `EXCLUDED`, direct/structural, discovery-chance,
 requirement-filter or unit-ability row entered production.
 `SULEIMAN_GOVERNOR_POINTS` stays **traits-owned** and is never re-owned by
-governors, so all 54 governor entries are governor-only (`owners == 32`) and
-the shared-definition count is unchanged at 25.
+governors, so all 54 Phase-4B governor entries are governor-only
+(`owners == 32`) and the shared-definition count is unchanged at 25.
+Phase 6B adds 16 backlog rows (64 ADDITIVE + 6 COMBAT total, 14 count-like;
+the Sanguine vampire +1 build collapses two provenances into one row) and
+still no new shared definition.
 
 ## Discovery: schema-driven, not curated
 
@@ -216,11 +223,13 @@ Total Phase-4B rows: **54** across 54 distinct modifier IDs, all
 6 COMBAT. At stored FLOAT32 k=7.3 that is 49 successful transforms and
 5 safe refusals; at k=10 all 54 apply.
 
-## Unresolved Governor queue (explicitly outside Phase 4B)
+## Unresolved Governor queue (explicitly outside Phase 4B; partially resolved by Phase 6B)
 
 **29** reachable modifier-side `DECISION_REQUIRED` rows and **24**
 direct/structural decision cells remain outside production. Phase 4B shipped
-only the conservative candidates — those are NOT solved by this phase:
+only the conservative candidates — those are NOT solved by this phase.
+Phase 6B admitted 16 of the reachable backlog rows (see
+`docs/SEMANTIC_BACKLOG.md` §14); the rest below stay out:
 
 - both Laying-on-of-Hands healing rows (flat vs percent vs cap unresolved);
 - negative Sanguine Pact combat (transform undefined);

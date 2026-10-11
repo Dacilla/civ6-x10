@@ -1154,25 +1154,25 @@ def audited_governor_candidates(audit_path) -> list[dict]:
     return out
 
 
-def build_governor_manifest(audit_path, module: str = GOVERNOR_MODULE) -> dict:
-    """Production manifest rows for exactly the audited governor candidates.
+def build_governor_manifest(audit_path, module: str = GOVERNOR_MODULE,
+                            backlog_path=None) -> dict:
+    """Production manifest rows: audited candidates + Phase-6B backlog slice.
 
-    Mechanically derived from `civ6x10/rules/governor_audit.yml` so the
-    production input stays reproducible without the gitignored inventory CSV.
-    Nothing is hand-maintained, no DECISION_REQUIRED / EXCLUDED / direct /
-    structural / discovery-chance / requirement-filter / unit-ability row can
-    enter, and the audited semantic family is preserved as-is.
+    Mechanically derived from `civ6x10/rules/governor_audit.yml` (54
+    Phase-4A.1 CERTIFIED_CANDIDATE rows) plus, when backlog_path is given,
+    the accepted `semantic_backlog.yml::proposed_production_pairs` with
+    owner == governors (16 Phase-6B rows). Nothing is hand-maintained and
+    nothing hand-appended: exact-pair deduplication fails closed on any
+    metadata disagreement, so the Sanguine vampire +1 build (two backlog
+    provenances, one definition) yields exactly one row carrying both.
     """
     cands = audited_governor_candidates(audit_path)
     rows = []
     for r in cands:
         family = r["semantic_family"]
         transform = FAMILY_TRANSFORM.get(family, "canonical_x10_multiply")
-        try:
-            gen = float(r["official_value"]) * 10.0
-            generated = _fmt(gen)
-        except (TypeError, ValueError):
-            generated = r["official_value"]
+        from .modules import generated_value_for
+        generated = generated_value_for(transform, r["official_value"])
         rows.append({
             "object_id": r["root_promotion"],
             "modifier_id": r["modifier_id"],
@@ -1190,7 +1190,57 @@ def build_governor_manifest(audit_path, module: str = GOVERNOR_MODULE) -> dict:
             "root_governor": r["root_governor"],
             "multiplier": 10.0,
         })
-    return {module: rows}
+    if backlog_path is not None:
+        rows.extend(_backlog_governor_rows(backlog_path))
+    seen: dict[tuple[str, str], dict] = {}
+    for r in rows:
+        key = (r["modifier_id"], r["argument_name"])
+        if key in seen:
+            prev = seen[key]
+            for field in ("modifier_type", "effect_type", "official_value",
+                          "semantic_family", "transformation"):
+                if prev[field] != r[field]:
+                    raise ValueError(
+                        f"governor manifest duplicate {key} disagrees on "
+                        f"{field}: {prev[field]!r} vs {r[field]!r} "
+                        "(fail closed)")
+            continue
+        seen[key] = r
+    merged = sorted(seen.values(),
+                    key=lambda r: (r["modifier_id"], r["argument_name"]))
+    return {module: merged}
+
+
+def _backlog_governor_rows(backlog_path) -> list[dict]:
+    """Phase-6B governor-owned rows from the checked-in semantic backlog."""
+    import yaml
+    doc = yaml.safe_load(Path(backlog_path).read_text(encoding="utf-8"))
+    pairs = [p for p in doc.get("proposed_production_pairs", [])
+             if p.get("owner") == "governors"]
+    out = []
+    for p in pairs:
+        transform = FAMILY_TRANSFORM.get(p["family"], "canonical_x10_multiply")
+        from .modules import generated_value_for
+        generated = generated_value_for(transform, p["value"])
+        out.append({
+            "object_id": p.get("sources", [[None, None, None]])[0][1]
+            if p.get("sources") else p["modifier_id"],
+            "modifier_id": p["modifier_id"],
+            "modifier_type": p["modifier_type"],
+            "effect_type": p["effect_type"],
+            "argument_name": p["argument"],
+            "official_value": p["value"],
+            "semantic_family": p["family"],
+            "transformation": transform,
+            "generated_value": generated,
+            "status": "ok",
+            "confidence": "human_certified",
+            "certification_source": "phase6a-semantic-backlog",
+            "engine_integral": False,
+            "backlog_sources": p.get("sources", []),
+            "multiplier": 10.0,
+        })
+    return out
 
 
 def write_governor_manifest(manifest: dict, out) -> None:

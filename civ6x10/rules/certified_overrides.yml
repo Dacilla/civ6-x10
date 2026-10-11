@@ -116,6 +116,9 @@ discount_effects:
   - effect: EFFECT_ADJUST_UNIT_PURCHASE_COST
     semantics: PERCENT_DISCOUNT
     rationale: "sibling +20/+30 percent faith discounts (Holy Order, commemoration, Nobel CHEAPER); boundary +100 is the free fixed point under compound"
+  - effect: EFFECT_ADJUST_BUILDING_PURCHASE_COST
+    semantics: PERCENT_DISCOUNT
+    rationale: "positive-means-discount convention proven cross-effect (CHEAPER naming + faith context; FLOWER_POWER -100 is the surcharge mirror); boundary +100 is the free fixed point under compound (Phase 6B)"
 # Effects excluded by curation (sem floor: MAGNITUDE_UNCLASSIFIED, but the value
 # is a grant / boolean / threshold / sentinel / non-strength modifier).
 # Each: never ADDITIVE, never certified.
@@ -154,8 +157,6 @@ excluded_effects:
     rationale: "one-shot treasury multiplication (Big Ben +50): scaling the percent to +500 invents 6x gold; repeated-application semantics unresolved; DECISION_REQUIRED, never flat-multiplied"
   - effect: EFFECT_ADJUST_PLAYER_SUZERAIN_FAVOR_MULTIPLIER
     rationale: "favor multiplier (Orszaghaza +100 doubling): multiplicative factor, not an additive magnitude; DECISION_REQUIRED"
-  - effect: EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE
-    rationale: "TEMPORARY stored-form exclusion (2026-10-08): TOQUI_DOMESTIC_LOYALTY / TOQUI_FOREIGN_LOYALTY Amount rewrites (4 -> 29.2 at k=7.3) verify blank post-Add while 610 siblings MATCH, so raw-string persistence for this effect is unproven; re-certify via the store-lookup witness (stored MATCH or typed-value proof) before re-admitting"
 
 # Effect substrings marking indivisible counts (discrete objects/levels/slots/
 # tiles/turns/points). Certified rows on these effects are count-like:
@@ -212,6 +213,17 @@ count_like_effects:
     rationale: "diplomatic victory points are whole points"
   - pattern: ERA_SCORE
     rationale: "era score awards are whole points"
+
+  - pattern: RELIGION_EXTRA_PROMOTIONS
+    rationale: "extra religious promotions are whole promotions (Phase 6B)"
+  - pattern: EXTRA_ACCUMULATION
+    rationale: "extra strategic accumulation is a whole-unit flow (Phase 6B; intentionally also reclassifies CORPORATE_LIBERTARIANISM and TRAIT_ACCUMULATE_MORE_COAL/_IRON — reviewed semantic correction)"
+  - pattern: ATTACKS_PER_TURN
+    rationale: "city attacks per turn are whole attacks (Phase 6B)"
+  - pattern: RESOURCE_POWER_PROVIDED
+    rationale: "granted power units are whole units (Phase 6B)"
+  - pattern: FREE_RESOURCE_IMPORT
+    rationale: "granted resource units are whole units (Phase 6B)"
 
 # Argument names that are indivisible regardless of effect.
 count_like_args: [TurnsActive, Duration, Turns, Charges, SpreadCharges,

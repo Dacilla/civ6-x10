@@ -1252,7 +1252,9 @@ class SuzerainAuditTest(unittest.TestCase):
         from civ6x10.suzerain import build_suzerain_manifest
         import yaml
         audit = ROOT / "civ6x10" / "rules" / "suzerain_audit.yml"
-        fresh = build_suzerain_manifest(audit)
+        fresh = build_suzerain_manifest(
+            audit, backlog_path=ROOT / "civ6x10" / "rules" /
+            "semantic_backlog.yml")
         on_disk = yaml.safe_load(man.read_text(encoding="utf-8"))
         self.assertEqual(fresh, on_disk)
 
@@ -1481,15 +1483,29 @@ class SuzerainAuditRealIntegrationTest(unittest.TestCase):
             self.assertIn(r, objs)
 
     def test_real_registry_overlap_is_zero(self):
-        # Phase 5B: the live registry now contains the slice itself, so a
-        # fresh audit recomputation overlaps by construction. The invariant
-        # is that the ONLY overlap is exactly the accepted 47
-        # suzerain-owned pairs (no decision/excluded/side-path row leaks
-        # into production under another owner).
+        # Phase 6B: the live registry now contains the slice itself plus the
+        # 20 backlog-admitted suzerain rows that are audit numeric rows
+        # (Lahore is side-path, outside audit["rows"]), so a fresh audit
+        # recomputation overlaps by construction. The invariant is that the
+        # ONLY overlap is exactly those suzerain-owned pairs (no
+        # decision/excluded/side-path row leaks into production under
+        # another owner).
+        import yaml
+        backlog = yaml.safe_load(
+            (ROOT / "civ6x10" / "rules" / "semantic_backlog.yml")
+            .read_text(encoding="utf-8"))
+        by_row = {(r["modifier_id"], r["argument_name"]) for r in
+                  self.audit["rows"] if r["numeric"]}
+        admitted = {(p["modifier_id"], p["argument"]) for p in
+                    backlog["proposed_production_pairs"]
+                    if p["owner"] == "suzerain" and
+                    (p["modifier_id"], p["argument"]) in by_row}
+        self.assertEqual(len(admitted), 20)
         ov = self.audit["registry_overlap"]
-        self.assertEqual(ov["count"], 47)
+        self.assertEqual(ov["count"], 47 + len(admitted))
         self.assertEqual(set(ov["overlapping_modifier_ids"]),
-                         {m for m, a in ACCEPTED_47_SLICE})
+                         {m for m, a in ACCEPTED_47_SLICE} |
+                         {m for m, a in admitted})
 
     def test_real_legacy_comparison(self):
         lc = self.audit["legacy_comparison"]
@@ -1611,24 +1627,38 @@ class SuzerainAuditRealIntegrationTest(unittest.TestCase):
         self.assertEqual(sources["curated-category:PRODUCTION_PERCENT"], 2)
         self.assertEqual(sources["curated-category:AMENITY"], 2)
         self.assertEqual(sources["curated-category:EXPERIENCE"], 1)
-        # post-5B production state (planning arithmetic now realized):
-        # the live registry contains the slice itself, so the fresh
-        # recomputation overlaps by construction; the invariant is that the
-        # ONLY overlap is exactly the accepted suzerain-owned slice
-        self.assertEqual(self.audit["registry_overlap"]["count"], 47)
+        # post-6B production state (planning arithmetic now realized):
+        # the live registry contains the slice itself plus the 20
+        # backlog-admitted suzerain rows that are audit numeric rows, so
+        # the fresh recomputation overlaps by construction; the invariant
+        # is that the ONLY overlap is exactly those suzerain-owned pairs
+        import yaml as _yaml
+        _backlog = _yaml.safe_load(
+            (ROOT / "civ6x10" / "rules" / "semantic_backlog.yml")
+            .read_text(encoding="utf-8"))
+        _by_row = {(r["modifier_id"], r["argument_name"]) for r in
+                   self.audit["rows"] if r["numeric"]}
+        _admitted = {(p["modifier_id"], p["argument"]) for p in
+                     _backlog["proposed_production_pairs"]
+                     if p["owner"] == "suzerain" and
+                     (p["modifier_id"], p["argument"]) in _by_row}
+        self.assertEqual(len(_admitted), 20)
+        self.assertEqual(self.audit["registry_overlap"]["count"],
+                         47 + len(_admitted))
         self.assertEqual(set(self.audit["registry_overlap"]
                              ["overlapping_modifier_ids"]),
-                         {m for m, a in ACCEPTED_47_SLICE})
+                         {m for m, a in ACCEPTED_47_SLICE} |
+                         {m for m, a in _admitted})
         import json
         cov_path = ROOT / "build" / "X10ProductionRegistry.inc.coverage.json"
         if not cov_path.is_file():
             self.skipTest("production coverage report unavailable")
         cov = json.loads(cov_path.read_text(encoding="utf-8"))
-        self.assertEqual(cov["eligible"], 971)
-        self.assertEqual(cov["unique_definitions"], 967)
+        self.assertEqual(cov["eligible"], 1010)
+        self.assertEqual(cov["unique_definitions"], 1006)
         self.assertEqual(cov["shared_definitions"], 25)
-        self.assertEqual(cov["certified_unconditional"], 773)
-        self.assertEqual(cov["certified_count_like_conditional"], 198)
+        self.assertEqual(cov["certified_unconditional"], 788)
+        self.assertEqual(cov["certified_count_like_conditional"], 222)
         # k=7.3 writes: the 9 Bologna +1 rows refuse because
         # stored-FLOAT32 1 x 7.3 is non-integral; the other 38 write
         k32 = struct.unpack("f", struct.pack("f", 7.3))[0]

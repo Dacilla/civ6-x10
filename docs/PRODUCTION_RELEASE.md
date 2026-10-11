@@ -15,7 +15,7 @@
   modifier-backed rows plus the 57-helper guarded direct-table bridge;
   bridge diagnostics 57/57/0 and Zeus 365 + Panama 73 witness MATCH;
   see `docs/WONDER_AUDIT.md`).
-- Governors: **LIVE_VALIDATED** (Phase 4B + 4C, tag
+- Governors: **LIVE_VALIDATED as the 54-row Phase-4B slice** (tag
   `phase4b-924-live-validated`: 54 audited candidate rows from
   `docs/GOVERNOR_AUDIT.md`, owner bit 32, `X10_MODULE_GOVERNORS` default ON;
   48 ADDITIVE + 6 COMBAT, 5 engine-integral-conditional. Governors ON:
@@ -24,10 +24,14 @@
   transform_refused=171 ... skipped_other=54`, exactly 54
   `owners=0x20 not-all-enabled skipped` lines and zero Governor mutations.
   Evidence: `spike/validation-evidence/X10*924-gov*-live.log`).
-- Suzerains / City-states: **LIVE_VALIDATED** (Phase 5A.1 audit + Phase 5B
-  production integration + Phase 5C live validation, tag
-  `phase5b-971-live-validated`: 47 conservative numeric rows mechanically
-  derived from `civ6x10/rules/suzerain_audit.yml`
+  **Phase 6B extends Governors to 70 rows** (54 `phase4a.1-governor-audit` +
+  16 `phase6a-semantic-backlog`, generated mechanically from
+  `semantic_backlog.yml::proposed_production_pairs`; 64 ADDITIVE + 6 COMBAT,
+  14 count-like): **CERTIFIED, awaiting Phase-6C targeted live validation**.
+- Suzerains / City-states: **LIVE_VALIDATED as the 47-row Phase-5B slice**
+  (Phase 5A.1 audit + Phase 5B production integration + Phase 5C live
+  validation, tag `phase5b-971-live-validated`: 47 conservative numeric rows
+  mechanically derived from `civ6x10/rules/suzerain_audit.yml`
   (`phase5a.1-suzerain-audit` source), owner bit 64, `X10_MODULE_SUZERAIN`
   default ON; 44 ADDITIVE — 35 unconditional + 9 count-like Bologna
   GP-point rows — and 3 DISCOUNT Ngazargamu rows with `compound_discount`.
@@ -36,37 +40,60 @@
   `writes=748 transform_refused=176 ... skipped_other=47`, exactly 47
   `owners=0x40 not-all-enabled skipped` lines and zero Suzerain mutations.
   Evidence: `spike/validation-evidence/X10*971-suz*-live.log`).
-  Explicitly out of scope: the 21 main-graph numeric decisions, the 68
-  side-path decisions, improvement/Nihang intrinsic data, the Wolin
-  coefficients, Valletta discounts, Hattusa/Zanzibar quantities, Cardiff
-  power, loyalty/pressure rows, Kandy `ScalingFactor` and the Ayutthaya
-  percentage. See `docs/SUZERAIN_AUDIT.md`).
+  **Phase 6B extends Suzerain to 68 rows** (47 + 21
+  `phase6a-semantic-backlog`; 61 ADDITIVE + 6 DISCOUNT incl. Valletta ×3 +
+  1 COMBAT Lahore; 21 count-like): **CERTIFIED, awaiting Phase-6C targeted
+  live validation**.
+  Still out of scope: ScalingFactor rows, direct Governor IdentityPressure
+  columns, unique-improvement intrinsic cells, Nihang intrinsic/progression
+  cells, the Sanguine −5 penalty, healing, Kandy unresolved scaling and
+  other held side paths. Narrow improvement ownership stays adopted
+  (see `docs/SUZERAIN_AUDIT.md`, `docs/SEMANTIC_BACKLOG.md`).
 
-Follow-up (not a blocker): the two excluded Toqui governor-pressure rows
-await stored-form re-certification via the store-lookup witness.
+- Phase 6B (cross-module backlog integration): **CERTIFIED, awaiting
+  Phase-6C targeted live validation — NOT live-validated.** 1010 entries /
+  1006 unique / 25 shared; 788 unconditional + 222 count-like (973
+  ADDITIVE / 14 COMBAT / 23 DISCOUNT). Static k=7.3 expectation: 801 writes
+  / 209 refusals; at k=10 all 1010 apply. DLL
+  `e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619`;
+  bridge SQL unchanged
+  (`d0faabfa29c32360dd48718383af173424a3ab51589877f3b597bbcec0e205b1`).
+  **Intentional correction:** Corporate Libertarianism / Coal / Iron were
+  live-tested as fractional writes and are now count-like by reviewed
+  correction (Phase 6C must confirm writes→refusals).
+
+Follow-up (done in Phase 6B): the two Toqui governor-pressure rows were
+re-admitted after the 6A.2 probe proved stored MATCH via store-lookup on
+load AND reload; the temporary exclusion entry is removed.
 
 ## Status vocabulary (do not conflate)
 
 - **Four-ID architecture proof: LIVE_GAME_VERIFIED.** Native FLOAT32 config
   read, definition-population writes with `stored_after_add` MATCH, Rome
   runtime PASS, identical save/reload (2026-10-07, k=7.3).
-- **971-entry certified production slice (684 Release-1 + 31 Pantheon + 155
-  Wonder/Suleiman incl. 57 bridge helpers + 54 Governors + 47 Suzerain):
-  LIVE_VALIDATED** for every component module at stored FLOAT32
-  k=7.3 in both the ON and OFF module states (Suzerain ON: 786 writes / 185
-  refusals; OFF: 748 / 176 with 47 ownership skips; both `post_add_match` =
-  writes, `post_add_mismatch` = 0).
-  773 unconditional entries transform at any k; 198 conditional entries
-  apply only on integral results under the FLOAT32-aware exactness rule
-  (at live stored-float k=7.3: 786 static successes of 971 — honest
-  fractional refusal, never flooring; 66 of the 198 are engine-integral
+- **1010-entry certified production slice, CERTIFIED / awaiting Phase-6C
+  targeted live validation** (684 Release-1 + 31 Pantheon + 155
+  Wonder/Suleiman incl. 57 bridge helpers + 70 Governors + 68 Suzerain + 2
+  re-admitted Toqui traits rows):
+  static expectation at stored FLOAT32 k=7.3 is 801 writes / 209 refusals
+  (788 unconditional + 13 exact-integral conditional write; 209 conditional
+  refuse — honest fractional refusal, never flooring).
+  The prior 971-entry slice (773 unconditional + 198 count-like; Suzerain
+  ON: 786 writes / 185 refusals; OFF: 748 / 176 with 47 ownership skips;
+  both `post_add_match` = writes, `post_add_mismatch` = 0) stays
+  LIVE_VALIDATED for every component module in both ON and OFF states, but
+  the 1010 build itself is NOT live-validated yet.
+  66 of the baseline conditional entries are engine-integral
   entries — 31 Wonder bridge helpers, 21 Release-1 player-cities rows and
   5 Governor rows — plus 9 Bologna suzerain GP-point rows under the existing
-  GREAT_PERSON_POINTS count-like policy; see Phase 3F/3G/4B/5B). Full gate in
+  GREAT_PERSON_POINTS count-like policy, plus the Phase-6B count-like
+  additions (incl. the 3 intentional accumulation reclassifications; see
+  Phase 3F/3G/4B/5B/6B). Full gate in
   `docs/SEMANTIC_CERTIFICATION.md`, pantheon audit in
   `docs/PANTHEON_AUDIT.md`, wonder audit in `docs/WONDER_AUDIT.md`.
-  The Toqui loyalty pair (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) is temporarily
-  excluded pending stored-form re-certification (see below).
+  The Toqui loyalty pair (`TOQUI_DOMESTIC/FOREIGN_LOYALTY`) was
+  temporarily excluded in 5C and is re-admitted in 6B after the 6A.2
+  store-lookup probe (see below).
 - **Workshop release: NOT READY.** No publish until the production-candidate
   live test passes and logs are reviewed.
 
@@ -94,13 +121,14 @@ folder only; Workshop paths refused).
 ## Shared-definition ownership (Release 1 rule)
 
 25 modifier definitions are owned by both Policies and Governments
-(registry: 358 traits-only, 284 policies-only, 18 governments-only,
+(registry: 360 traits-only, 284 policies-only, 18 governments-only,
 31 pantheons-only, 154 wonders-only = 97 modifier-backed + 57 generated
-bridge helpers, 54 governors-only, 25 shared policies+governments;
-920 unique definitions, 924 entries: 735 unconditional + 189
+bridge helpers, 70 governors-only, 68 suzerain-only, 25 shared
+policies+governments;
+1006 unique definitions, 1010 entries: 788 unconditional + 222
 count-like conditional). Governor entries are governor-only: the Suleiman
 governor-title definition stays traits-owned, so Governors adds no new
-shared definitions. A definition-level mutation
+shared definitions. Phase 6B adds no new shared definition. A definition-level mutation
 is globally shared, so exact independent toggles are impossible. Conservative
 rule: **a shared definition is transformed only if ALL owning supported
 modules are enabled.** Disabling one module never leaves its mutation active
@@ -146,25 +174,26 @@ ownership counts + shared-definition count.
   unwinding only X10 hooks on failure). Upstream CE hooks are never
   disabled/removed by X10 failure paths.
 
-## Toqui loyalty stored-form hold (2026-10-08)
+## Toqui loyalty stored-form hold (2026-10-08) — LIFTED in Phase 6B
 
 Live runs showed `TOQUI_DOMESTIC_LOYALTY` / `TOQUI_FOREIGN_LOYALTY`
 (`EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE`, Amount 4 → 29.2) verifying blank
 post-Add while 610 siblings MATCH on both initial load and reload: the raw
 string reads back empty (size 0, clean — not unreadable), unique to the two
 definitions sharing that effect plus `OncePerCity` / `Domestic|ForeignCities`
-flag args. Static analysis proves in-place post-Add string emptying but not
-which engine op performs it (move/clear/realloc inside Add's store path).
-Both entries are therefore **temporarily excluded** from the certified
-registry (`excluded_effects` in `certified_overrides.yml`, rationale cites
-this hold) until the store-lookup witness proves stored MATCH or typed-value
-persistence live. Re-certification procedure: remove the exclusion entry,
-regenerate, rebuild, run once, require `MATCH via=store-lookup` for both.
+flag args. Both entries were therefore **temporarily excluded** from the
+certified registry pending the store-lookup witness. The Phase-6A.2 pressure
+probe (8-entry scratch registry, k=7.3, load AND reload) returned
+`MATCH via=store-lookup` for both carriers, lifting the hold: Phase 6B
+removed the exclusion entry, re-admitted both rows as LOYALTY from traits
+ownership (family via an exact EffectType+argument inference rule, covered
+by a regeneration test), and ships them unconditionally. Obsolete
+stored-form-hold exclusion text elsewhere is superseded by this note.
 
 ## Public-data hygiene (explicit release decision, no legal claim made)
 
 The CE-X10 tree currently carries the generated registry
-(`X10/X10ProductionRegistry.inc`: 971 entries / 967 unique definitions /
+(`X10/X10ProductionRegistry.inc`: 1010 entries / 1006 unique definitions /
 25 shared — certified ModifierIds + official values). Earlier project policy
 avoided publishing bulk extracted Firaxis data. Decision for Release 1:
 
@@ -264,6 +293,16 @@ native write path affects live tooltips.)
 Prerequisites: production DLL built, hash matches
 `spike/EXPECTED_DLL_SHA256.txt`, package assembled via
 `spike/assemble-prod-test.ps1`.
+
+Phase-6C pass criteria for the 1010 build (all modules ON, k=7.3):
+`writes=801 transform_refused=209 official_mismatch=0 post_add_match=801
+post_add_mismatch=0 post_add_unreadable=0 skipped_other=0`, including:
+Toqui 29.2 ×2 MATCH, Bishop 730.0, Owls loyalty 29.2, Preslav 14.6 ×3,
+Vatican 2920.0, Citadel 182.5, Ayutthaya 73.0, Lahore combat ≈38.10,
+Valletta discount ≈99.37; Corporate Libertarianism / Coal / Iron now
+refuse (retain vanilla 1 / 2 / 2); all 21 new count-like rows refuse;
+module OFF runs skip exactly the owned rows (governors 70, suzerain 68)
+with zero mutations. Save/reload identical.
 
 1. `pwsh -NoProfile -File spike/install-prod-test.ps1` (verifies hash,
    installs CE-X10 + X10 + X10_Probe_Test into the local Mods folder only).

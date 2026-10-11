@@ -89,6 +89,12 @@ def infer_family(modifier_type: str, effect_type: str, argument_name: str,
         return ("GREAT_PERSON_POINTS", "canonical_x10_multiply", "auto_rule")
     if arg in ("Loyalty",):
         return ("LOYALTY", "canonical_x10_multiply", "auto_rule")
+    # Exact identity-pressure rule (Phase 6B): the Toqui governor-identity
+    # pressure Amount is loyalty pressure, not a generic flat amount. Scoped
+    # to this exact EffectType + argument so sibling loyalty effects
+    # (Eleanor diminish, martial law) keep their reviewed families.
+    if arg == "Amount" and et.upper() == "EFFECT_ADJUST_GOVERNOR_IDENTITY_PRESSURE":
+        return ("LOYALTY", "canonical_x10_multiply", "auto_rule")
     if arg in ("Amenities", "Amenity", "AddAmenity"):
         return ("AMENITY", "canonical_x10_multiply", "auto_rule")
     if arg in ("Housing",):

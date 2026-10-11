@@ -130,10 +130,11 @@ class TestStrongFamilyOverride(unittest.TestCase):
             self.assertFalse(c["certified"], arg)
 
     def test_production_registry_untouched_by_new_mechanism(self):
-        # No row that ships today matches an override tuple with status ok:
-        # Ramses corroborators stay undecided, Vatican/Citadel/Ayutthaya are
-        # not production rows. (The full suite's exact-971 assertions are
-        # the primary proof; this names the reason.)
+        # Phase 6B: the override tuples now match exactly the intended
+        # production rows (Citadel, Ayutthaya, Vatican — all status ok) and
+        # nothing else: Ramses corroborators stay undecided, and no other
+        # manifest row shares these tuples. (The full suite's exact-1010
+        # assertions are the primary proof; this names the reason.)
         from civ6x10.bridge import collect_registry_rows
         from civ6x10.certification import load_rules
         from pathlib import Path
@@ -146,10 +147,17 @@ class TestStrongFamilyOverride(unittest.TestCase):
         table = {(e["effect"], e["argument"]) for e in
                  rules.get("strong_family_overrides") or []}
         self.assertEqual(len(table), 2)
-        hits = [(r["modifier_id"], r["argument_name"]) for r in rows
-                if (r.get("effect_type"), r.get("argument_name")) in table
-                and r.get("status") == "ok"]
-        self.assertEqual(hits, [])
+        hits = sorted((r["modifier_id"], r["argument_name"]) for r in rows
+                      if (r.get("effect_type"), r.get("argument_name"))
+                      in table and r.get("status") == "ok")
+        self.assertEqual(hits, [
+            ("CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS",
+             "BuildingProductionPercent"),
+            ("MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING",
+             "BuildingProductionPercent"),
+            ("MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE",
+             "Amount"),
+        ])
 
     def test_unrelated_grant_object_rows_remain_excluded(self):
         from civ6x10.certification import certify_row, load_rules

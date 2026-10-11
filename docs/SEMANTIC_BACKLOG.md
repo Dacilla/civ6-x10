@@ -4,10 +4,10 @@ Regenerate with `python -m civ6x10 build-backlog`
 (defaults: `civ6x10/rules/governor_audit.yml` +
 `civ6x10/rules/suzerain_audit.yml` → `civ6x10/rules/semantic_backlog.yml`).
 
-**RESEARCH ONLY — nothing here is production.** The 971-entry registry,
-manifests, owner bits, native code and DLL are untouched. Resolved
-candidates are a PROPOSAL for a later Phase 6B, which must land the recorded
-gate evidence atomically with the rows and re-validate.
+**Phase-6A RESEARCH — now realized by Phase 6B (see §15).** The 971-entry
+registry, manifests, owner bits, native code and DLL were untouched by the
+6A research itself. Resolved candidates were a PROPOSAL for Phase 6B, which
+landed the recorded gate evidence atomically with the rows (§15).
 
 ## 1. Imported scope (mechanically derived, no hand-copying)
 
@@ -273,9 +273,36 @@ Final hypothetical: **1010 entries / 1006 unique / 25 shared; 788
 unconditional + 222 count-like; 801 writes / 209 refusals at k=7.3**
 (derived mechanically in test, not pinned).
 
-## 15. No production changes (verified by test)
+## 15. Phase-6B production integration (CERTIFIED, awaiting 6C live validation)
 
-Registry stays 971 entries; CE fork `d17bdb6`; DLL `b6862b28…fb20d`;
-both manifests, owner bits, and controller/native config unchanged —
-asserted by `tests/test_semantic_backlog.py` (registry digest + file
-digests + `MODULE_BITS`/`REGISTRY_MODULES` guards).
+Phase 6B landed the §14 proposal atomically: 5 new `count_like_effects`
+patterns, the Valletta `discount_effects` entry, both strong-family
+overrides (already in 6A.3), and removal of the temporary Toqui exclusion —
+with the rows, in one change. Governor manifest 54→70 and Suzerain manifest
+47→68 are generated mechanically from `semantic_backlog.yml::
+proposed_production_pairs` (exact-pair dedup, fail-closed; the Sanguine
+vampire duplicate stays one row with both provenances). Toqui's LOYALTY
+family comes from an exact EffectType+argument inference rule, verified by a
+regeneration test — no hand-edited rows, no duplicates.
+
+- Registry **1010 entries / 1006 unique / 25 shared; 788 unconditional +
+  222 count-like** (kinds 973 ADDITIVE / 14 COMBAT / 23 DISCOUNT;
+  owners traits 360 / policies 284 / governments 18 / pantheons 31 /
+  wonders 154 / governors 70 / suzerain 68 + 25 shared).
+- 39 new pairs exactly (16 governors / 21 suzerain / 2 traits-Toqui;
+  35 ADDITIVE / 3 DISCOUNT / 1 COMBAT; 18 unconditional / 21 count-like).
+- **Intentional semantic correction:** `CORPORATE_LIBERTARIANISM_
+  RESOURCE_EXTRACTION`, `TRAIT_ACCUMULATE_MORE_COAL` and
+  `TRAIT_ACCUMULATE_MORE_IRON` were previously live-tested as fractional
+  writes (7.3 / 14.6 / 14.6 at k=7.3) and are now deliberately count-like
+  (exact-integral) per cross-module review — they refuse at k=7.3 and apply
+  10 / 20 / 20 at k=10. No other old entry changed semantics.
+- Static k=7.3 expectation: **801 writes / 209 refusals** (786+18−3 /
+  185+21+3); at k=10 all 1010 apply. Proven by
+  `tests/test_phase6b_production.py` on the checked-in manifests/rules.
+
+The 1010 build is **CERTIFIED, NOT live-validated**: Phase 6C must
+target-validate the 39 new rows, the 3 write→refusal corrections, Toqui
+from traits ownership, Valletta DISCOUNT, Lahore COMBAT, the two
+strong-family overrides, and module ON/OFF isolation. Prior §15 text
+("Registry stays 971…") described the pre-6B state and is superseded.

@@ -163,10 +163,10 @@ class TestBuildingYieldCertification(unittest.TestCase):
 
     def test_registry_totals(self):
         entries, report = registry_or_skip()
-        self.assertEqual(len(entries), 971)
-        self.assertEqual(report["unique_definitions"], 967)
-        self.assertEqual(report["certified_unconditional"], 773)
-        self.assertEqual(report["certified_count_like_conditional"], 198)
+        self.assertEqual(len(entries), 1010)
+        self.assertEqual(report["unique_definitions"], 1006)
+        self.assertEqual(report["certified_unconditional"], 788)
+        self.assertEqual(report["certified_count_like_conditional"], 222)
         self.assertEqual(report["unresolved_conflicts"], [])
         gated = [e for e in entries
                  if e["cert_source"].startswith(
@@ -293,10 +293,10 @@ class TestIntegralTransformMath(unittest.TestCase):
             ok += 1
         exact = [e for e in co if T.count_like_applies(float(e["official"]), K73)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(ok, 773)
+        self.assertEqual(ok, 788)
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 185)
-        self.assertEqual(ok + len(exact), 786)
+        self.assertEqual(len(refused), 209)
+        self.assertEqual(ok + len(exact), 801)
 
 
 RELEASE1_CARRIER_IDS = (
@@ -409,8 +409,8 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
         post_map = {(e["modifier_id"], e["argument"]): e
                     for e in post_base}
         self.assertEqual(set(pre_map), set(post_map))
-        self.assertEqual(len(pre_entries), 917)
-        self.assertEqual(len(post_base), 917)
+        self.assertEqual(len(pre_entries), 940)
+        self.assertEqual(len(post_base), 940)
         changed = {k for k, v in post_map.items()
                    if any(pre_map[k][f] != v[f] for f in
                           ("official", "kind", "count_like", "owners",
@@ -490,14 +490,14 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
         exact = [e for e in co
                  if T.count_like_applies(float(e["official"]), kf)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(len(entries), 971)
-        self.assertEqual(report["unique_definitions"], 967)
-        self.assertEqual(len(un), 773)
-        self.assertEqual(len(co), 198)
+        self.assertEqual(len(entries), 1010)
+        self.assertEqual(report["unique_definitions"], 1006)
+        self.assertEqual(len(un), 788)
+        self.assertEqual(len(co), 222)
         self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 185)
+        self.assertEqual(len(refused), 209)
         # writes = unconditional (all apply) + conditional integral successes
-        self.assertEqual(len(un) + len(exact), 786)
+        self.assertEqual(len(un) + len(exact), 801)
 
 
 if __name__ == "__main__":

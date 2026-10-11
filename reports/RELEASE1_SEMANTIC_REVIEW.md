@@ -23,7 +23,7 @@ Machine-readable: `data/release1_semantics.csv` (decision ledger),
 | Family | Rows |
 |---|---:|
 | SELECTOR | 238 |
-| FLAT_AMOUNT | 156 |
+| FLAT_AMOUNT | 155 |
 | UNKNOWN | 132 |
 | FLAT_YIELD | 54 |
 | BOOLEAN_UNLOCK | 6 |
@@ -34,6 +34,7 @@ Machine-readable: `data/release1_semantics.csv` (decision ledger),
 | COMBAT_STRENGTH_BONUS | 1 |
 | DEFEATED_STRENGTH_SCALING | 1 |
 | GOVERNOR_TITLES | 1 |
+| LOYALTY | 1 |
 | RANGE | 1 |
 | TOURISM | 1 |
 

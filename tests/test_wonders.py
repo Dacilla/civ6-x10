@@ -135,7 +135,8 @@ class TestWonderRegistry(unittest.TestCase):
             entries, report = build_all()
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
-        self.assertEqual(len(entries), 813)
+        # 813 Phase-3 rows plus 2 re-admitted Toqui loyalty rows (Phase 6B)
+        self.assertEqual(len(entries), 815)
         self.assertEqual(report["unresolved_conflicts"], [])
         won = [e for e in entries if e["owners"] == 16]
         self.assertEqual(len(won), 97)
@@ -206,8 +207,8 @@ class TestWonderRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         rest = [e for e in entries if not (e["owners"] & 16)]
-        self.assertEqual(len(old_entries), 716)
-        self.assertEqual(len(rest), 716)
+        self.assertEqual(len(old_entries), 718)
+        self.assertEqual(len(rest), 718)
         self.assertEqual(sorted(map(str, old_entries)),
                          sorted(map(str, rest)))
         sul = [e for e in rest

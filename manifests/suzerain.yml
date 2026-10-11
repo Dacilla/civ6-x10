@@ -67,6 +67,24 @@ suzerain:
   root_trait: MINOR_CIV_AUCKLAND_TRAIT
   root_modifier_id: MINOR_CIV_AUCKLAND_UNIQUE_INFLUENCE_BONUS_INDUSTRIAL
   multiplier: 10.0
+- object_id: CIVILIZATION_AYUTTHAYA
+  modifier_id: MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING
+  modifier_type: MODIFIER_PLAYER_CITIES_GRANT_YIELD_PER_BUILDING_COST
+  effect_type: EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST
+  argument_name: BuildingProductionPercent
+  official_value: '10'
+  semantic_family: PERCENT_BONUS
+  transformation: canonical_x10_multiply
+  generated_value: '100'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_AYUTTHAYA
+    - MINOR_CIV_AYUTTHAYA_TRAIT via MINOR_CIV_AYUTTHAYA_UNIQUE_INFLUENCE_BONUS
+  multiplier: 10.0
 - object_id: CIVILIZATION_BABYLON
   modifier_id: MINOR_CIV_BABYLON_GREAT_WORK_ARTIFACT_SCIENCE
   modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_GREATWORK_YIELD
@@ -305,6 +323,60 @@ suzerain:
   root_trait: MINOR_CIV_BUENOS_AIRES_TRAIT
   root_modifier_id: MINOR_CIV_BUENOS_AIRES_UNIQUE_INFLUENCE_BONUS
   multiplier: 10.0
+- object_id: CIVILIZATION_CARDIFF
+  modifier_id: MINOR_CIV_CARDIFF_POWER_LIGHTHOUSE
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_FREE_POWER
+  effect_type: EFFECT_ADJUST_CITY_FREE_POWER
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_CARDIFF
+    - MINOR_CIV_CARDIFF_TRAIT via MINOR_CIV_CARDIFF_UNIQUE_INFLUENCE_POWER_LIGHTHOUSE
+  multiplier: 10.0
+- object_id: CIVILIZATION_CARDIFF
+  modifier_id: MINOR_CIV_CARDIFF_POWER_SEAPORT
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_FREE_POWER
+  effect_type: EFFECT_ADJUST_CITY_FREE_POWER
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_CARDIFF
+    - MINOR_CIV_CARDIFF_TRAIT via MINOR_CIV_CARDIFF_UNIQUE_INFLUENCE_POWER_SEAPORT
+  multiplier: 10.0
+- object_id: CIVILIZATION_CARDIFF
+  modifier_id: MINOR_CIV_CARDIFF_POWER_SHIPYARD
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_FREE_POWER
+  effect_type: EFFECT_ADJUST_CITY_FREE_POWER
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_CARDIFF
+    - MINOR_CIV_CARDIFF_TRAIT via MINOR_CIV_CARDIFF_UNIQUE_INFLUENCE_POWER_SHIPYARD
+  multiplier: 10.0
 - object_id: CIVILIZATION_CHINGUETTI
   modifier_id: MINOR_CIV_CHINGUETTI_FAITH_FOLLOWERS
   modifier_type: MODIFIER_PLAYER_ADJUST_TRADE_ROUTE_YIELD_PER_FOLLOWER
@@ -355,6 +427,132 @@ suzerain:
   root_city_state: CIVILIZATION_GENEVA
   root_trait: MINOR_CIV_GENEVA_TRAIT
   root_modifier_id: MINOR_CIV_GENEVA_UNIQUE_INFLUENCE_BONUS
+  multiplier: 10.0
+- object_id: CIVILIZATION_HATTUSA
+  modifier_id: MINOR_CIV_HATTUSA_ALUMINUM_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_ALUMINUM_RESOURCE_XP2
+  multiplier: 10.0
+- object_id: CIVILIZATION_HATTUSA
+  modifier_id: MINOR_CIV_HATTUSA_COAL_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_COAL_RESOURCE_XP2
+  multiplier: 10.0
+- object_id: CIVILIZATION_HATTUSA
+  modifier_id: MINOR_CIV_HATTUSA_HORSES_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_HORSES_RESOURCE_XP2
+  multiplier: 10.0
+- object_id: CIVILIZATION_HATTUSA
+  modifier_id: MINOR_CIV_HATTUSA_IRON_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_IRON_RESOURCE_XP2
+  multiplier: 10.0
+- object_id: CIVILIZATION_HATTUSA
+  modifier_id: MINOR_CIV_HATTUSA_NITER_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_NITER_RESOURCE_XP2
+  multiplier: 10.0
+- object_id: CIVILIZATION_HATTUSA
+  modifier_id: MINOR_CIV_HATTUSA_OIL_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_OIL_RESOURCE_XP2
+  multiplier: 10.0
+- object_id: CIVILIZATION_HATTUSA
+  modifier_id: MINOR_CIV_HATTUSA_URANIUM_RESOURCE_XP2
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT_EXTRACTION
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT_EXTRACTION
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_HATTUSA
+    - MINOR_CIV_HATTUSA_TRAIT via MINOR_CIV_HATTUSA_UNIQUE_INFLUENCE_URANIUM_RESOURCE_XP2
   multiplier: 10.0
 - object_id: CIVILIZATION_HONG_KONG
   modifier_id: MINOR_CIV_HONG_KONG_PROJECT_PRODUCTION_BONUS
@@ -594,6 +792,60 @@ suzerain:
   root_trait: MINOR_CIV_PALENQUE_TRAIT
   root_modifier_id: MINOR_CIV_PALENQUE_UNIQUE_INFLUENCE_BONUS
   multiplier: 10.0
+- object_id: CIVILIZATION_PRESLAV
+  modifier_id: MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: LOYALTY
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_PRESLAV
+    - MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_ARMORY_IDENTITY_BONUS
+  multiplier: 10.0
+- object_id: CIVILIZATION_PRESLAV
+  modifier_id: MINOR_CIV_PRESLAV_BARRACKS_STABLE_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: LOYALTY
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_PRESLAV
+    - MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_BARRACKS_STABLE_IDENTITY_BONUS
+  multiplier: 10.0
+- object_id: CIVILIZATION_PRESLAV
+  modifier_id: MINOR_CIV_PRESLAV_MILITARY_ACADEMY_IDENTITY_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_IDENTITY_PER_TURN
+  effect_type: EFFECT_ADJUST_CITY_IDENTITY_PER_TURN
+  argument_name: Amount
+  official_value: '2'
+  semantic_family: LOYALTY
+  transformation: canonical_x10_multiply
+  generated_value: '20'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_PRESLAV
+    - MINOR_CIV_PRESLAV_TRAIT via MINOR_CIV_PRESLAV_UNIQUE_INFLUENCE_MILITARY_ACADEMY_IDENTITY_BONUS
+  multiplier: 10.0
 - object_id: CIVILIZATION_SAMARKAND
   modifier_id: MINOR_CIV_SAMARKAND_TRADE_GOLD_MODIFIER
   modifier_type: MODIFIER_PLAYER_ADJUST_TRADE_ROUTE_YIELD_PER_IMPROVEMENT_AT_LOCATION_BABYLON
@@ -747,6 +999,78 @@ suzerain:
   root_trait: MINOR_CIV_TARUGA_TRAIT
   root_modifier_id: MINOR_CIV_TARUGA_UNIQUE_INFLUENCE_URANIUM_RESOURCE
   multiplier: 10.0
+- object_id: CIVILIZATION_VALLETTA
+  modifier_id: MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_CASTLE_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_PURCHASE_COST
+  effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
+  argument_name: Amount
+  official_value: '50'
+  semantic_family: PERCENT_DISCOUNT
+  transformation: compound_discount
+  generated_value: '99.9'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_VALLETTA
+    - MINOR_CIV_VALLETTA_TRAIT via MINOR_CIV_VALLETTA_UNIQUE_INFLUENCE_PURCHASE_CHEAPER_CASTLE_BONUS
+  multiplier: 10.0
+- object_id: CIVILIZATION_VALLETTA
+  modifier_id: MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_STAR_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_PURCHASE_COST
+  effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
+  argument_name: Amount
+  official_value: '50'
+  semantic_family: PERCENT_DISCOUNT
+  transformation: compound_discount
+  generated_value: '99.9'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_VALLETTA
+    - MINOR_CIV_VALLETTA_TRAIT via MINOR_CIV_VALLETTA_UNIQUE_INFLUENCE_PURCHASE_CHEAPER_STAR_BONUS
+  multiplier: 10.0
+- object_id: CIVILIZATION_VALLETTA
+  modifier_id: MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_WALLS_BONUS
+  modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_BUILDING_PURCHASE_COST
+  effect_type: EFFECT_ADJUST_BUILDING_PURCHASE_COST
+  argument_name: Amount
+  official_value: '50'
+  semantic_family: PERCENT_DISCOUNT
+  transformation: compound_discount
+  generated_value: '99.9'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_VALLETTA
+    - MINOR_CIV_VALLETTA_TRAIT via MINOR_CIV_VALLETTA_UNIQUE_INFLUENCE_PURCHASE_CHEAPER_WALLS_BONUS
+  multiplier: 10.0
+- object_id: CIVILIZATION_VATICAN_CITY
+  modifier_id: MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE
+  modifier_type: MODIFIER_PLAYER_GRANT_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  effect_type: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
+  argument_name: Amount
+  official_value: '400'
+  semantic_family: LOYALTY
+  transformation: canonical_x10_multiply
+  generated_value: '4000'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_VATICAN_CITY
+    - MINOR_CIV_VATICAN_CITY_TRAIT via MINOR_CIV_VATICAN_CITY_UNIQUE_INFLUENCE_BONUS
+  multiplier: 10.0
 - object_id: CIVILIZATION_VILNIUS
   modifier_id: MINOR_CIV_VILNIUS_ALLIANCE_LEVEL_1
   modifier_type: MODIFIER_PLAYER_DISTRICTS_ADJUST_YIELD_MODIFIER
@@ -797,4 +1121,58 @@ suzerain:
   root_city_state: CIVILIZATION_VILNIUS
   root_trait: MINOR_CIV_VILNIUS_TRAIT
   root_modifier_id: MINOR_CIV_VILNIUS_UNIQUE_INFLUENCE_ALLIANCE_LEVEL_3
+  multiplier: 10.0
+- object_id: CIVILIZATION_ZANZIBAR
+  modifier_id: MINOR_CIV_ZANZIBAR_CINNAMON_RESOURCE_BONUS
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_ZANZIBAR
+    - MINOR_CIV_ZANZIBAR_TRAIT via MINOR_CIV_ZANZIBAR_UNIQUE_INFLUENCE_CINNAMON_RESOURCE_BONUS
+  multiplier: 10.0
+- object_id: CIVILIZATION_ZANZIBAR
+  modifier_id: MINOR_CIV_ZANZIBAR_CLOVES_RESOURCE_BONUS
+  modifier_type: MODIFIER_PLAYER_ADJUST_FREE_RESOURCE_IMPORT
+  effect_type: EFFECT_ADJUST_PLAYER_FREE_RESOURCE_IMPORT
+  argument_name: Amount
+  official_value: '1'
+  semantic_family: FLAT_AMOUNT
+  transformation: canonical_x10_multiply
+  generated_value: '10'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - CIVILIZATION_ZANZIBAR
+    - MINOR_CIV_ZANZIBAR_TRAIT via MINOR_CIV_ZANZIBAR_UNIQUE_INFLUENCE_CLOVES_RESOURCE_BONUS
+  multiplier: 10.0
+- object_id: UNIT_LAHORE_NIHANG
+  modifier_id: NIHANG_SUZERAIN_COMBAT_BONUS
+  modifier_type: MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH
+  effect_type: EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER
+  argument_name: Amount
+  official_value: '10'
+  semantic_family: COMBAT_STRENGTH_BONUS
+  transformation: canonical_combat_bonus
+  generated_value: '44.45'
+  status: ok
+  confidence: human_certified
+  certification_source: phase6a-semantic-backlog
+  engine_integral: false
+  backlog_sources:
+  - - suzerain
+    - UNIT_LAHORE_NIHANG
+    - PROMOTION_NIHANG_SUZERAIN_COMBAT_BONUS
   multiplier: 10.0

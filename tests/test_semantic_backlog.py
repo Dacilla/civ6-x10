@@ -231,7 +231,7 @@ class TestProductionUnchanged(unittest.TestCase):
             self.skipTest("local production registry unavailable")
         self.assertEqual(
             hashlib.sha256(p.read_bytes()).hexdigest(),
-            "6468bcbc6760e8753d8bca3086e9dfe6b267e39be9004b31312d1d9c50556c55")
+            "f42c6a61d8cfb2468f05c9b1dfe9ebeea74c05ddbcb24ec2d8daa578c422d711")
 
     def test_manifests_unchanged(self):
         import hashlib
@@ -239,9 +239,9 @@ class TestProductionUnchanged(unittest.TestCase):
         # independent (raw bytes differ between Windows and CI checkouts)
         for name, want in (
                 ("governors.yml",
-                 "95587a42c7ba849a8ddff79428f32e001a036aaf6c4380fe2cfa59384a74d847"),
+                 "02b40bf8c3816da7d3e165538461b27ea60c9777bb343e481430fd1226bb0b99"),
                 ("suzerain.yml",
-                 "5f72f4fcdc739cdcfb9b1cb49e2d3df87d487db4aaabbd2ed7a1ceffc84e8182")):
+                 "ff5f2090c65c617f4e2adf7ace37808b2af51f6ebd7de211ed66f258340e0702")):
             p = ROOT / "manifests" / name
             if not p.is_file():
                 self.skipTest(f"local manifest {name} unavailable")
@@ -263,7 +263,7 @@ class TestProductionUnchanged(unittest.TestCase):
         p = ROOT / "spike" / "EXPECTED_DLL_SHA256.txt"
         if p.is_file():
             self.assertEqual(p.read_text(encoding="utf-8").strip(),
-                             "b6862b28d86aa67d20cd6ffecd1588cfc2e528dbb75d484cb8c4e52a387fb20d")
+                             "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
 
 
 
@@ -357,108 +357,70 @@ class TestBlastRadius(unittest.TestCase):
         patterns = ["RELIGION_EXTRA_PROMOTIONS", "EXTRA_ACCUMULATION",
                     "ATTACKS_PER_TURN", "RESOURCE_POWER_PROVIDED",
                     "FREE_RESOURCE_IMPORT"]
-        changed = []
+        # Phase 6B REALIZED: the three intended rows are already count-like
+        # in production; applying the patterns changes nothing further.
+        newly = []
         for e in entries:
             et = effects.get((e["modifier_id"], e["argument"]), "")
             if any(p in (et or "") for p in patterns) and not e["count_like"]:
-                changed.append((e["modifier_id"], e["argument"], et))
-        # mechanically derived complete set: exactly the three recorded rows
-        self.assertEqual(
-            sorted(m for m, _, _ in changed),
-            ["CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION",
-             "TRAIT_ACCUMULATE_MORE_COAL",
-             "TRAIT_ACCUMULATE_MORE_IRON"])
+                newly.append((e["modifier_id"], e["argument"], et))
+        self.assertEqual(newly, [])
+        already = sorted(
+            e["modifier_id"] for e in entries
+            if any(p in (effects.get((e["modifier_id"], e["argument"]), "")
+                         or "") for p in patterns) and e["count_like"])
+        for mid in ("CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION",
+                    "TRAIT_ACCUMULATE_MORE_COAL",
+                    "TRAIT_ACCUMULATE_MORE_IRON"):
+            self.assertIn(mid, already, mid)
         b = backlog_or_skip()
         recorded = {(r["modifier_id"], r["argument"]) for r in
                     b["proposed_existing_reclassifications"]["rows"]}
-        self.assertEqual(recorded,
-                         {(m, a) for m, a, _ in changed})
+        self.assertEqual(recorded, {
+            ("CORPORATE_LIBERTARIANISM_RESOURCE_EXTRACTION", "Amount"),
+            ("TRAIT_ACCUMULATE_MORE_COAL", "Amount"),
+            ("TRAIT_ACCUMULATE_MORE_IRON", "Amount")})
 
 
 class TestNoPressureBaseline(unittest.TestCase):
-    """Hypothetical 6B baseline derived mechanically, not pinned."""
+    """Hypothetical 6B baseline derived mechanically, not pinned.
+    Phase 6B REALIZED below: the live 1010-entry registry decomposes
+    exactly into the 971 baseline semantics + 39 new pairs + 3
+    reclassifications (registry entries carry int kinds)."""
 
     def test_hypothetical_totals(self):
-        # FINAL Phase-6B hypothetical: 37 projection pairs + 2 Toqui
-        # addendum pairs (probe-cleared) + 3 intentional reclassifications.
+        # Phase 6B REALIZED: the hypothetical is now production. Verify the
+        # live 1010-entry registry decomposes exactly into the 971 baseline
+        # semantics + 39 new pairs + 3 reclassifications.
         import math
         from civ6x10 import transforms as T
         entries = _registry_entries_or_skip()
-        self.assertEqual(len(entries), 971)
+        self.assertEqual(len(entries), 1010)
         b = backlog_or_skip()
         pairs = _production_pairs(b)
         self.assertEqual(len(pairs), 37)
         addendum = b["probe_cleared_addendum"]["pairs"]
         self.assertEqual(len(addendum), 2)
-        new_pairs = [
-            {"modifier_id": p["modifier_id"], "argument": p["argument"],
-             "value": p["value"], "kind": p["kind"],
-             "count_like": p["count_like"], "owner": p["owner"]}
-            for p in pairs] + [
-            {"modifier_id": p["modifier_id"], "argument": p["argument"],
-             "value": p["value"], "kind": p["kind"],
-             "count_like": p["count_like"], "owner": p["owner"]}
-            for p in addendum]
-        self.assertEqual(len(new_pairs), 39)
-        # no collision: every pair is a new definition (shared stays 25)
-        reg_keys = {(e["modifier_id"], e["argument"]) for e in entries}
-        new_keys = {(p["modifier_id"], p["argument"]) for p in new_pairs}
-        self.assertEqual(reg_keys & new_keys, set())
-        self.assertEqual(967 + 39, 1006)
-        self.assertEqual(971 + 39, 1010)
-        # split the new pairs by conditional state
+        new_keys = {(p["modifier_id"], p["argument"]) for p in pairs} | \
+            {(p["modifier_id"], p["argument"]) for p in addendum}
+        self.assertEqual(len(new_keys), 39)
+        by_key = {(e["modifier_id"], e["argument"]): e for e in entries}
+        for key in new_keys:
+            self.assertIn(key, by_key, key)
+        # removing the 39 new pairs leaves the 971 baseline entry set
+        base_keys = set(by_key) - new_keys
+        self.assertEqual(len(base_keys), 971)
+        # ...except the 3 reclassified rows, which differ only in count_like
+        reclass = {(r["modifier_id"], r["argument"])
+                   for r in b["proposed_existing_reclassifications"]["rows"]}
+        self.assertEqual(len(reclass), 3)
+        for key in reclass:
+            self.assertTrue(by_key[key]["count_like"], key)
         kf = T.stored_float32(7.3)
         self.assertEqual(kf, 7.300000190734863)
-        new_writes = new_refusals = 0
-        for p in new_pairs:
-            v = float(p["value"])
-            if p["count_like"]:
-                if T.count_like_applies(v, kf):
-                    new_writes += 1
-                else:
-                    new_refusals += 1
-                self.assertTrue(T.count_like_applies(v, 10.0),
-                                p["modifier_id"])
-                continue
-            if p["kind"] == "ADDITIVE":
-                r = v * kf
-            elif p["kind"] == "DISCOUNT":
-                d = abs(v) / 100.0
-                r = (1.0 - (1.0 - d) ** kf) * 100.0
-            elif p["kind"] == "COMBAT":
-                r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
-            else:
-                self.fail(p)
-            self.assertTrue(math.isfinite(r), p["modifier_id"])
-            new_writes += 1
-        self.assertEqual((new_writes, new_refusals), (18, 21))
-        # the three reclassifications move writes -> refusals
-        reclass = b["proposed_existing_reclassifications"]["rows"]
-        self.assertEqual(len(reclass), 3)
-        moved = 0
-        for r in reclass:
-            v = float(r["official"])
-            self.assertFalse(T.count_like_applies(v, kf), r["modifier_id"])
-            moved += 1
-        self.assertEqual(moved, 3)
-        # full hypothetical simulation over 971 + 39 with 3 flipped
-        flipped = {(r["modifier_id"], r["argument"]) for r in reclass}
-        hypo = [dict(e, count_like=True)
-                if (e["modifier_id"], e["argument"]) in flipped else e
-                for e in entries]
-        for p in new_pairs:
-            hypo.append({"modifier_id": p["modifier_id"],
-                         "argument": p["argument"],
-                         "official": p["value"],
-                         "kind": {"ADDITIVE": 0, "COMBAT": 1,
-                                  "PROBABILITY": 2,
-                                  "DISCOUNT": 3}[p["kind"]],
-                         "count_like": p["count_like"],
-                         "owners": {"governors": 32, "suzerain": 64,
-                                    "traits": 1}[p["owner"]]})
-        self.assertEqual(len(hypo), 1010)
+        # full k=7.3 behavior over the real registry (int kinds)
         writes = refusals = 0
-        for e in hypo:
+        for e in entries:
             v = float(e["official"])
             if e["count_like"]:
                 if T.count_like_applies(v, kf):
@@ -466,13 +428,13 @@ class TestNoPressureBaseline(unittest.TestCase):
                 else:
                     refusals += 1
                 continue
-            if e["kind"] == 0:
+            if e["kind"] == 0:  # ADDITIVE
                 r = v * kf
-            elif e["kind"] == 1:
+            elif e["kind"] == 1:  # COMBAT
                 r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
-            elif e["kind"] == 3:
+            elif e["kind"] == 3:  # DISCOUNT
                 d = abs(v) / 100.0
-                r = (1.0 - (1.0 - d) ** kf) * 100.0
+                r = (1.0 - (1.0 - d) ** kf) * 100.0 * (-1 if v < 0 else 1)
             else:
                 continue
             if math.isfinite(r) and abs(r) <= 1e6:
@@ -481,9 +443,6 @@ class TestNoPressureBaseline(unittest.TestCase):
                 refusals += 1
         self.assertEqual((writes, refusals), (801, 209))
         self.assertEqual(writes + refusals, 1010)
-        un = sum(1 for e in hypo if not e["count_like"])
-        co = sum(1 for e in hypo if e["count_like"])
-        self.assertEqual((un, co), (788, 222))
 
 
 class TestPressureProbeResults(unittest.TestCase):

@@ -23,7 +23,7 @@ from civ6x10.governors import (GOVERNOR_MODULE_BIT,
 from civ6x10.production import MODULE_BITS, build_production_registry
 
 GOV_BIT = 32
-GOVERNOR_ENTRIES = 54
+GOVERNOR_ENTRIES = 70
 
 COMBAT_EFFECTS = {
     "EFFECT_ADJUST_CITY_FRIENDLY_COMBAT_BONUS",
@@ -84,21 +84,27 @@ class TestModuleOwnership(unittest.TestCase):
         audit = ROOT / "civ6x10" / "rules" / "governor_audit.yml"
         if not audit.is_file():
             self.skipTest("checked-in governor audit unavailable")
-        man = build_governor_manifest(audit)
+        man = build_governor_manifest(
+            audit, backlog_path=ROOT / "civ6x10" / "rules" /
+            "semantic_backlog.yml")
         rows = man["governors"]
         self.assertEqual(len(rows), GOVERNOR_ENTRIES)
         self.assertEqual(len({r["modifier_id"] for r in rows}), GOVERNOR_ENTRIES)
+        self.assertEqual(len({(r["modifier_id"], r["argument_name"])
+                              for r in rows}), GOVERNOR_ENTRIES)
         # families preserved verbatim from the audit
         audited = {r["modifier_id"]: r["semantic_family"]
                    for r in audited_governor_candidates(audit)}
         for r in rows:
+            if r.get("certification_source") == "phase6a-semantic-backlog":
+                continue
             self.assertEqual(r["semantic_family"], audited[r["modifier_id"]],
                              r["modifier_id"])
         self.assertEqual(
             Counter(r["semantic_family"] for r in rows),
-            {"FLAT_YIELD": 20, "PERCENT_BONUS": 12, "PRODUCTION_PERCENT": 8,
+            {"FLAT_YIELD": 20, "PERCENT_BONUS": 17, "PRODUCTION_PERCENT": 8,
              "COMBAT_STRENGTH_BONUS": 6, "AMENITY": 3, "GOLD": 2,
-             "HOUSING": 2, "APPEAL": 1})
+             "HOUSING": 2, "APPEAL": 1, "LOYALTY": 2, "FLAT_AMOUNT": 9})
 
 
 class TestGovernorRegistryIntegration(unittest.TestCase):
@@ -106,21 +112,21 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         self.entries, self.report = registry_or_skip()
 
     def test_totals(self):
-        self.assertEqual(len(self.entries), 971)
-        self.assertEqual(self.report["unique_definitions"], 967)
+        self.assertEqual(len(self.entries), 1010)
+        self.assertEqual(self.report["unique_definitions"], 1006)
         self.assertEqual(self.report["shared_definitions"], 25)
-        self.assertEqual(self.report["certified_unconditional"], 773)
-        self.assertEqual(self.report["certified_count_like_conditional"], 198)
+        self.assertEqual(self.report["certified_unconditional"], 788)
+        self.assertEqual(self.report["certified_count_like_conditional"], 222)
         self.assertEqual(self.report["unresolved_conflicts"], [])
-        self.assertEqual(self.report["ownership_counts"]["governors"], 54)
+        self.assertEqual(self.report["ownership_counts"]["governors"], 70)
 
     def test_governor_subset(self):
         gov = [e for e in self.entries if e["owners"] == GOV_BIT]
         self.assertEqual(len(gov), GOVERNOR_ENTRIES)
         self.assertEqual(len({e["modifier_id"] for e in gov}), GOVERNOR_ENTRIES)
         self.assertEqual(Counter(e["kind"] for e in gov),
-                         {"ADDITIVE": 48, "COMBAT": 6})
-        self.assertEqual(sum(1 for e in gov if e["count_like"]), 5)
+                         {"ADDITIVE": 64, "COMBAT": 6})
+        self.assertEqual(sum(1 for e in gov if e["count_like"]), 14)
         # governor-only ownership: no entry is shared with another module
         self.assertTrue(all(e["owners"] == GOV_BIT for e in gov))
 
@@ -144,7 +150,17 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
     def test_five_integral_rows_conditional(self):
         gov = {e["modifier_id"]: e for e in self.entries if e["owners"] == GOV_BIT}
         self.assertEqual({m for m, e in gov.items() if e["count_like"]},
-                         INTEGRAL_GOVERNOR_ROWS)
+                         INTEGRAL_GOVERNOR_ROWS | {
+                             "GUILDMASTER_ADDITIONAL_BUILDER_CHARGES_UNIT_MODIFIER",
+                             "SECRET_SOCIETY_GRANT_TWO_VAMPIRE_BUILDS",
+                             "SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD",
+                             "CARDINAL_PATRON_SAINT_PROMOTION",
+                             "DEFENSE_LOGISTICS_BONUS_STRATEGICS",
+                             "CITY_DEFENDER_ADJUST_ATTACKS_PER_TURN",
+                             "KHASS_ODA_BASHI_ADJUST_ALLIANCE_POINTS",
+                             "LOCAL_INFORMANTS_SPY_DEFENSE_BONUS",
+                             "INDUSTRIALIST_RESOURCE_POWER_PROVIDED",
+                         })
         for mid in INTEGRAL_GOVERNOR_ROWS:
             self.assertTrue(gov[mid]["cert_source"].startswith(
                 "curated-effect:engine-integral:"), mid)
@@ -179,15 +195,24 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
             for r in p["rows"]:
                 if r["disposition"] != "CERTIFIED_CANDIDATE":
                     forbidden.add((r["modifier_id"], r["argument"]))
+        # Phase 6B admits exactly the 16 backlog-resolved governor pairs;
+        # everything else decision-required stays out.
+        backlog = yaml.safe_load(
+            (ROOT / "civ6x10" / "rules" / "semantic_backlog.yml")
+            .read_text(encoding="utf-8"))
+        admitted = {(p["modifier_id"], p["argument"]) for p in
+                    backlog["proposed_production_pairs"]
+                    if p["owner"] == "governors"}
+        self.assertEqual(len(admitted), 16)
         gov = {(e["modifier_id"], e["argument"]) for e in self.entries
                if e["owners"] == GOV_BIT}
-        leaked = gov & forbidden
+        leaked = gov & (forbidden - admitted)
         self.assertEqual(leaked, set(), sorted(leaked))
         # and the candidate pairs themselves are exactly what shipped
         cand = {(r["modifier_id"], r["argument"])
                 for pt, p in audit["promotions"].items()
                 for r in p["rows"]
-                if r["disposition"] == "CERTIFIED_CANDIDATE"}
+                if r["disposition"] == "CERTIFIED_CANDIDATE"} | admitted
         self.assertEqual(gov, cand)
 
     def test_disabling_governors_makes_entries_inapplicable(self):
@@ -214,9 +239,9 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         rows = manifests_or_skip()
         base_rows = [r for r in rows if r.get("module") != "governors"]
         base_entries, base_report = registry_or_skip(base_rows)
-        self.assertEqual(len(base_entries), 917)
-        self.assertEqual(base_report["certified_unconditional"], 724)
-        self.assertEqual(base_report["certified_count_like_conditional"], 193)
+        self.assertEqual(len(base_entries), 940)
+        self.assertEqual(base_report["certified_unconditional"], 732)
+        self.assertEqual(base_report["certified_count_like_conditional"], 208)
         by_key = {(e["modifier_id"], e["argument"]): e for e in base_entries}
         for e in self.entries:
             if e["owners"] == GOV_BIT:
@@ -244,8 +269,8 @@ class TestGovernorTransforms(unittest.TestCase):
     def test_all_governor_rows_at_k73(self):
         un = [e for e in self.gov if not e["count_like"]]
         co = [e for e in self.gov if e["count_like"]]
-        self.assertEqual(len(un), 49)
-        self.assertEqual(len(co), 5)
+        self.assertEqual(len(un), 56)
+        self.assertEqual(len(co), 14)
         # every unconditional row transforms (finite, in range)
         for e in un:
             v = float(e["official"])
@@ -257,10 +282,10 @@ class TestGovernorTransforms(unittest.TestCase):
             else:
                 self.fail(e["kind"])
             self.assertTrue(math.isfinite(r), e)
-        # all five conditional rows refuse at 7.3
+        # all fourteen conditional rows refuse at 7.3
         for e in co:
             self.assertFalse(self._applies(e["official"], self.kf), e)
-            self.assertEqual(e["official"] in ("1", "2"), True, e)
+            self.assertEqual(e["official"] in ("1", "2", "3"), True, e)
 
     def test_all_governor_rows_at_k10(self):
         for e in self.gov:
@@ -476,7 +501,7 @@ class TestModeFloorAndCombatGate(unittest.TestCase):
                 writes += 1
             else:
                 refusals += 1
-        self.assertEqual((writes, refusals), (49, 5))
+        self.assertEqual((writes, refusals), (56, 14))
 
     def test_k73_global_totals(self):
         import math
@@ -503,9 +528,9 @@ class TestModeFloorAndCombatGate(unittest.TestCase):
                 ok += 1
         refused = sum(1 for e in entries if e["count_like"]
                       and not T.count_like_applies(float(e["official"]), kf))
-        self.assertEqual(ok + ex, 786)
-        self.assertEqual(refused, 185)
-        self.assertEqual(len(entries), 971)
+        self.assertEqual(ok + ex, 801)
+        self.assertEqual(refused, 209)
+        self.assertEqual(len(entries), 1010)
 
 
 if __name__ == "__main__":

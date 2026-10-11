@@ -24,7 +24,7 @@ from civ6x10.suzerain import (SUZERAIN_MODULE_BIT,
                               build_suzerain_manifest)
 
 SUZ_BIT = 64
-SUZERAIN_ENTRIES = 47
+SUZERAIN_ENTRIES = 68
 
 BOLOGNA_COUNT_LIKE = {
     "MINOR_CIV_BOLOGNA_GREAT_ADMIRAL_POINTS_BONUS",
@@ -48,22 +48,14 @@ NGAZARGAMU_DISCOUNT = {
 # class; the authoritative guard is exact candidate-set equality below).
 FORBIDDEN_IDS = {
     # main-graph decisions
-    "MINOR_CIV_CARDIFF_POWER_LIGHTHOUSE",
-    "MINOR_CIV_HATTUSA_COAL_RESOURCE_XP2",
-    "MINOR_CIV_ZANZIBAR_CINNAMON_RESOURCE_BONUS",
-    "MINOR_CIV_PRESLAV_ARMORY_IDENTITY_BONUS",
-    "MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE",
-    "MINOR_CIV_VALLETTA_PURCHASE_CHEAPER_WALLS_BONUS",
     "MINOR_CIV_KANDY_BETTER_RELIC_BONUS",
-    "MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING",
     # main-graph excluded magnitudes
     "MINOR_CIV_KANDY_GRANT_RELIC_BONUS",
     "MINOR_CIV_NALANDA_FREE_TECHNOLOGY_MODIFIER",
     "MINOR_CIV_MEXICO_CITY_REGIONAL_RANGE_BONUS",
     "MINOR_CIV_JERUSALEM_HOLY_SITE_UPGRADE",
     "MINOR_CIV_MOHENJO_DARO_CITIES_FRESHWATER_HOUSING_BONUS",
-    # side paths
-    "NIHANG_SUZERAIN_COMBAT_BONUS",
+    # side paths (Lahore +10 admitted in Phase 6B; intrinsics stay out)
     "NIHANG_BARRACKS_STRENGTH",
     "NIHANG_ARMORY_STRENGTH",
     "NIHANG_ACADEMY_STRENGTH",
@@ -109,7 +101,8 @@ class TestModuleOwnership(unittest.TestCase):
         audit = ROOT / "civ6x10" / "rules" / "suzerain_audit.yml"
         if not audit.is_file():
             self.skipTest("checked-in suzerain audit unavailable")
-        man = build_suzerain_manifest(audit)
+        man = build_suzerain_manifest(
+            audit, backlog_path=ROOT / "civ6x10" / "rules" / "semantic_backlog.yml")
         rows = man["suzerain"]
         self.assertEqual(len(rows), SUZERAIN_ENTRIES)
         self.assertEqual(len({r["modifier_id"] for r in rows}),
@@ -120,21 +113,29 @@ class TestModuleOwnership(unittest.TestCase):
         audited = {(r["modifier_id"], r["argument_name"]): r["semantic_family"]
                    for r in audited_suzerain_candidates(audit)}
         for r in rows:
+            if r.get("certification_source") == "phase6a-semantic-backlog":
+                continue
             self.assertEqual(r["semantic_family"],
                              audited[(r["modifier_id"], r["argument_name"])],
                              r["modifier_id"])
-        # transform mapping: discounts compound, everything else additive
+        # transform mapping: discounts compound, Lahore combat uses the
+        # combat formula, everything else additive
         for r in rows:
-            if r["modifier_id"] in NGAZARGAMU_DISCOUNT:
+            if r["modifier_id"] in NGAZARGAMU_DISCOUNT or \
+                    "VALLETTA_PURCHASE_CHEAPER" in r["modifier_id"]:
                 self.assertEqual(r["transformation"], "compound_discount",
                                  r["modifier_id"])
+            elif r["modifier_id"] == "NIHANG_SUZERAIN_COMBAT_BONUS":
+                self.assertEqual(r["transformation"],
+                                 "canonical_combat_bonus", r["modifier_id"])
             else:
                 self.assertEqual(r["transformation"],
                                  "canonical_x10_multiply", r["modifier_id"])
-        # module is set through the production path
-        for r in rows:
-            self.assertEqual(r.get("certification_source"),
-                             "phase5a.1-suzerain-audit")
+        # module is set through the production path: old rows keep the
+        # Phase-5A.1 label, Phase-6B backlog rows carry the Phase-6A label
+        sources = Counter(r.get("certification_source") for r in rows)
+        self.assertEqual(sources, {"phase5a.1-suzerain-audit": 47,
+                                   "phase6a-semantic-backlog": 21})
 
     def test_manifest_deterministic_and_checked_in(self):
         import yaml
@@ -144,7 +145,8 @@ class TestModuleOwnership(unittest.TestCase):
         checked = ROOT / "manifests" / "suzerain.yml"
         if not checked.is_file():
             self.skipTest("checked-in suzerain manifest unavailable")
-        fresh = build_suzerain_manifest(audit)
+        fresh = build_suzerain_manifest(
+            audit, backlog_path=ROOT / "civ6x10" / "rules" / "semantic_backlog.yml")
         on_disk = yaml.safe_load(checked.read_text(encoding="utf-8"))
         self.assertEqual(fresh, on_disk)
 
@@ -154,13 +156,13 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         self.entries, self.report = registry_or_skip()
 
     def test_totals(self):
-        self.assertEqual(len(self.entries), 971)
-        self.assertEqual(self.report["unique_definitions"], 967)
+        self.assertEqual(len(self.entries), 1010)
+        self.assertEqual(self.report["unique_definitions"], 1006)
         self.assertEqual(self.report["shared_definitions"], 25)
-        self.assertEqual(self.report["certified_unconditional"], 773)
-        self.assertEqual(self.report["certified_count_like_conditional"], 198)
+        self.assertEqual(self.report["certified_unconditional"], 788)
+        self.assertEqual(self.report["certified_count_like_conditional"], 222)
         self.assertEqual(self.report["unresolved_conflicts"], [])
-        self.assertEqual(self.report["ownership_counts"]["suzerain"], 47)
+        self.assertEqual(self.report["ownership_counts"]["suzerain"], 68)
 
     def test_suzerain_subset(self):
         suz = [e for e in self.entries if e["owners"] == SUZ_BIT]
@@ -168,17 +170,30 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         self.assertEqual(len({e["modifier_id"] for e in suz}),
                          SUZERAIN_ENTRIES)
         kinds = Counter(e["kind"] for e in suz)
-        self.assertEqual(kinds, {"ADDITIVE": 44, "DISCOUNT": 3})
-        self.assertEqual(sum(1 for e in suz if e["count_like"]), 9)
-        self.assertEqual(sum(1 for e in suz if not e["count_like"]), 38)
+        self.assertEqual(kinds, {"ADDITIVE": 61, "DISCOUNT": 6, "COMBAT": 1})
+        self.assertEqual(sum(1 for e in suz if e["count_like"]), 21)
+        self.assertEqual(sum(1 for e in suz if not e["count_like"]), 47)
         # suzerain-only ownership: no entry is shared with another module
         self.assertTrue(all(e["owners"] == SUZ_BIT for e in suz))
 
-    def test_nine_bologna_rows_are_the_only_count_like(self):
+    def test_bologna_plus_new_count_like_rows(self):
         suz = {e["modifier_id"]: e for e in self.entries
                if e["owners"] == SUZ_BIT}
         self.assertEqual({m for m, e in suz.items() if e["count_like"]},
-                         BOLOGNA_COUNT_LIKE)
+                         BOLOGNA_COUNT_LIKE | {
+                             "MINOR_CIV_CARDIFF_POWER_LIGHTHOUSE",
+                             "MINOR_CIV_CARDIFF_POWER_SEAPORT",
+                             "MINOR_CIV_CARDIFF_POWER_SHIPYARD",
+                             "MINOR_CIV_HATTUSA_ALUMINUM_RESOURCE_XP2",
+                             "MINOR_CIV_HATTUSA_COAL_RESOURCE_XP2",
+                             "MINOR_CIV_HATTUSA_HORSES_RESOURCE_XP2",
+                             "MINOR_CIV_HATTUSA_IRON_RESOURCE_XP2",
+                             "MINOR_CIV_HATTUSA_NITER_RESOURCE_XP2",
+                             "MINOR_CIV_HATTUSA_OIL_RESOURCE_XP2",
+                             "MINOR_CIV_HATTUSA_URANIUM_RESOURCE_XP2",
+                             "MINOR_CIV_ZANZIBAR_CINNAMON_RESOURCE_BONUS",
+                             "MINOR_CIV_ZANZIBAR_CLOVES_RESOURCE_BONUS",
+                         })
         for mid in BOLOGNA_COUNT_LIKE:
             e = suz[mid]
             self.assertEqual(e["kind"], "ADDITIVE", mid)
@@ -207,10 +222,16 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
             self.assertEqual(r["semantic_family"], "PERCENT_DISCOUNT",
                              r["modifier_id"])
 
-    def test_no_combat_or_probability_in_slice(self):
-        suz = [e for e in self.entries if e["owners"] == SUZ_BIT]
-        self.assertFalse(any(e["kind"] == "COMBAT" for e in suz))
-        self.assertFalse(any(e["kind"] == "PROBABILITY" for e in suz))
+    def test_combat_slice_is_exactly_lahore(self):
+        suz = {e["modifier_id"]: e for e in self.entries
+               if e["owners"] == SUZ_BIT}
+        combat = {m for m, e in suz.items() if e["kind"] == "COMBAT"}
+        self.assertEqual(combat, {"NIHANG_SUZERAIN_COMBAT_BONUS"})
+        e = suz["NIHANG_SUZERAIN_COMBAT_BONUS"]
+        self.assertEqual(e["official"], "10")
+        self.assertFalse(e["count_like"])
+        self.assertFalse(any(e["kind"] == "PROBABILITY"
+                             for e in suz.values()))
 
     def test_exact_candidate_pair_equality(self):
         import yaml
@@ -220,9 +241,17 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         cand = {(c["modifier_id"], c["argument"])
                 for c in audit["proposed_candidates"]}
         self.assertEqual(len(cand), 47)
+        # Phase 6B admits exactly the 21 backlog-resolved suzerain pairs more
+        backlog = yaml.safe_load(
+            (ROOT / "civ6x10" / "rules" / "semantic_backlog.yml")
+            .read_text(encoding="utf-8"))
+        extra = {(p["modifier_id"], p["argument"]) for p in
+                 backlog["proposed_production_pairs"]
+                 if p["owner"] == "suzerain"}
+        self.assertEqual(len(extra), 21)
         suz = {(e["modifier_id"], e["argument"]) for e in self.entries
                if e["owners"] == SUZ_BIT}
-        self.assertEqual(suz, cand)
+        self.assertEqual(suz, cand | extra)
 
     def test_no_decision_or_excluded_row_enters(self):
         import yaml
@@ -238,9 +267,18 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
                      if r["numeric"] and r["disposition"] == "DECISION_REQUIRED"}
         self.assertEqual(len(decisions), 21)
         self.assertLessEqual(decisions, forbidden)
+        # Phase 6B admits exactly 20 of them via the backlog (Kandy
+        # ScalingFactor stays out); everything else forbidden stays out.
+        backlog = yaml.safe_load(
+            (ROOT / "civ6x10" / "rules" / "semantic_backlog.yml")
+            .read_text(encoding="utf-8"))
+        admitted = {(p["modifier_id"], p["argument"]) for p in
+                    backlog["proposed_production_pairs"]
+                    if p["owner"] == "suzerain"}
+        self.assertEqual(len(admitted), 21)
         suz = {(e["modifier_id"], e["argument"]) for e in self.entries
                if e["owners"] == SUZ_BIT}
-        leaked = suz & forbidden
+        leaked = suz & (forbidden - admitted)
         self.assertEqual(leaked, set(), sorted(leaked))
 
     def test_no_side_path_cell_enters(self):
@@ -264,7 +302,10 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
             for m in p.get("modifiers", []):
                 side_ids.add(m["modifier_id"])
         self.assertTrue(side_ids)
-        self.assertEqual(suz_ids & side_ids, set())
+        # Lahore +10 moved side-path-decision -> candidate by explicit Phase-6A
+        # resolution (own Suzerain-gated requirement); it is the one allowed
+        # intersection. Everything else intrinsic stays out.
+        self.assertEqual(suz_ids & side_ids, {"NIHANG_SUZERAIN_COMBAT_BONUS"})
         # representative spot checks
         for mid in FORBIDDEN_IDS:
             self.assertNotIn(mid, suz_ids, mid)
@@ -277,7 +318,7 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         for e in suz:
             self.assertNotEqual(e["owners"] & enabled, e["owners"])
         others = [e for e in self.entries if e["owners"] != SUZ_BIT]
-        self.assertEqual(len(others), 924)
+        self.assertEqual(len(others), 942)
         for e in others:
             self.assertEqual(e["owners"] & SUZ_BIT, 0)
 
@@ -293,11 +334,11 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         rows = manifests_or_skip()
         base_rows = [r for r in rows if r.get("module") != "suzerain"]
         base_entries, base_report = registry_or_skip(base_rows)
-        self.assertEqual(len(base_entries), 924)
-        self.assertEqual(base_report["unique_definitions"], 920)
+        self.assertEqual(len(base_entries), 942)
+        self.assertEqual(base_report["unique_definitions"], 938)
         self.assertEqual(base_report["shared_definitions"], 25)
-        self.assertEqual(base_report["certified_unconditional"], 735)
-        self.assertEqual(base_report["certified_count_like_conditional"], 189)
+        self.assertEqual(base_report["certified_unconditional"], 741)
+        self.assertEqual(base_report["certified_count_like_conditional"], 201)
         by_key = {(e["modifier_id"], e["argument"]): e for e in base_entries}
         for e in self.entries:
             if e["owners"] == SUZ_BIT:
@@ -325,8 +366,8 @@ class TestSuzerainTransforms(unittest.TestCase):
     def test_suzerain_rows_at_k73(self):
         un = [e for e in self.suz if not e["count_like"]]
         co = [e for e in self.suz if e["count_like"]]
-        self.assertEqual(len(un), 38)
-        self.assertEqual(len(co), 9)
+        self.assertEqual(len(un), 47)
+        self.assertEqual(len(co), 21)
         for e in un:
             v = float(e["official"])
             if e["kind"] == "ADDITIVE":
@@ -334,12 +375,15 @@ class TestSuzerainTransforms(unittest.TestCase):
             elif e["kind"] == "DISCOUNT":
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** self.kf) * 100.0
+            elif e["kind"] == "COMBAT":
+                r = 25.0 * math.log(
+                    self.kf * (math.exp(v / 25.0) - 1) + 1)
             else:
                 self.fail(e["kind"])
             self.assertTrue(math.isfinite(r), e)
         for e in co:
             self.assertFalse(self._applies(e["official"], self.kf), e)
-            self.assertEqual(e["official"], "1", e)
+            self.assertIn(e["official"], ("1", "2"), e)
 
     def test_suzerain_rows_at_k10(self):
         for e in self.suz:
@@ -391,13 +435,16 @@ class TestSuzerainTransforms(unittest.TestCase):
             elif e["kind"] == "DISCOUNT":
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** self.kf) * 100.0
+            elif e["kind"] == "COMBAT":
+                r = 25.0 * math.log(
+                    self.kf * (math.exp(v / 25.0) - 1) + 1)
             else:
                 self.fail(e["kind"])
             if math.isfinite(r) and abs(r) <= 1e6:
                 writes += 1
             else:
                 refusals += 1
-        self.assertEqual((writes, refusals), (38, 9))
+        self.assertEqual((writes, refusals), (47, 21))
         ok = ex = 0
         for e in self.entries:
             v = float(e["official"])
@@ -419,9 +466,9 @@ class TestSuzerainTransforms(unittest.TestCase):
         refused = sum(1 for e in self.entries if e["count_like"]
                       and not T.count_like_applies(float(e["official"]),
                                                    self.kf))
-        self.assertEqual(ok + ex, 786)
-        self.assertEqual(refused, 185)
-        self.assertEqual(len(self.entries), 971)
+        self.assertEqual(ok + ex, 801)
+        self.assertEqual(refused, 209)
+        self.assertEqual(len(self.entries), 1010)
 
 
 if __name__ == "__main__":

@@ -12,33 +12,35 @@
 4. governors - **LIVE_VALIDATED** (Phase 4B + 4C, +54 rows for 924 total,
    owner bit 32, tag `phase4b-924-live-validated`, audit
    `docs/GOVERNOR_AUDIT.md`).
-5. **Suzerain / City-States - LIVE_VALIDATED** (Phase 5A.1 audit + Phase 5B
-   production integration + Phase 5C live validation, +47 rows for 971
-   total, owner bit 64, tag `phase5b-971-live-validated`, audit
-   `docs/SUZERAIN_AUDIT.md`). The unresolved backlog stays open:
-   21 main-graph numeric decisions, 68 side-path decisions, 175 side-path
-   exclusions, unique-improvement ownership questions and Nihang side-path
-   questions (including the Suzerain-gated `NIHANG_SUZERAIN_COMBAT_BONUS`
-   +10, the Wolin defeated-strength coefficients, Valletta building
-   discounts, Hattusa/Zanzibar resource quantities, Cardiff free power,
-   loyalty/pressure rows, Kandy `ScalingFactor` and the Ayutthaya
-   completion-grant percentage).
+5. **Suzerain / City-States - LIVE_VALIDATED as the 47-row slice**
+   (Phase 5A.1 audit + Phase 5B production integration + Phase 5C live
+   validation, +47 rows for 971 total, owner bit 64, tag
+   `phase5b-971-live-validated`, audit `docs/SUZERAIN_AUDIT.md`).
+   **Phase 6B extends Suzerain to 68 rows** (+21 backlog rows incl. Lahore
+   COMBAT and Valletta DISCOUNT x3) **and Governors to 70 rows** (+16),
+   plus 2 re-admitted Toqui traits rows: **1010 total, CERTIFIED, awaiting
+   Phase-6C targeted live validation** (801 writes / 209 refusals at k=7.3).
+   Still open: ScalingFactor rows, direct Governor IdentityPressure
+   columns, unique-improvement intrinsics, Nihang intrinsics/progression,
+   Sanguine -5, healing, Kandy scaling and other held side paths
+   (narrow improvement ownership stays adopted).
 
 ## Remaining work
 
-6. Unresolved semantic backlog (still open after Phase 5):
+6. Phase 6C targeted live validation of the 1010 build (39 new rows, 3
+   write-to-refusal corrections, Toqui-from-traits, Valletta DISCOUNT,
+   Lahore COMBAT, strong-family overrides, module ON/OFF isolation).
+7. Unresolved semantic backlog remainder (still open after Phase 6B):
    - 29 reachable + 24 direct/structural Governor decisions deliberately left
      out of Phase 4B (`docs/GOVERNOR_AUDIT.md`).
    - Regional entertainment / Sanguine / Laying-on-Hands style
      decision-required families.
-   - Loyalty / identity pressure stored-form hold (Toqui class) re-certification
-     via the store-lookup witness.
    - Negative-strength combat (canonical `b_k` transform undefined) and the
      probability family.
    - Factor-versus-percent scaling families (`ScalingFactor`, tourism,
      multiplicative mirrors).
-7. Optional later modules: beliefs, great people, promotions.
-8. **Public-data hygiene / Steam Workshop release - still pending.** Nothing is
+8. Optional later modules: beliefs, great people, promotions.
+9. **Public-data hygiene / Steam Workshop release - still pending.** Nothing is
    published to the Workshop: the local package must be re-checked for
    Firaxis-sourced data, and the AGPL-3.0 dependency on the Community
    Extension must be accepted before any publish.
