@@ -235,6 +235,9 @@ class TestResolutionMirror(unittest.TestCase):
                          ("disabled", "preset-invalid"))
 
     def test_invalid_custom_cases(self):
+        # Reader-level contract: a blank TEXT variant would reject here.
+        # Live, the setup UI inserts INT32 0 for blank (measured), which
+        # resolves as Off-equivalent via the k==0 convention.
         for bad in ("", "abc", -1, 101):
             st = VALID if isinstance(bad, (int, float)) else INVALID
             self.assertEqual(resolve((VALID, 101), (st, bad),

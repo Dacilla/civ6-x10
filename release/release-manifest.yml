@@ -103,7 +103,7 @@ workshop_items:
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt
-        sha256: 15b198454481f16731d6e3d901ea28848842b36800eae7be1d04618bccd5e459
+        sha256: e3cec0e38e54048c2a656b80165a07e4f1870e16d5e118b9c76c9a8532839209
       - stage_path: LICENSE.txt
         source: release/staging-src/controller/LICENSE.txt
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed

@@ -18,7 +18,26 @@ $ErrorActionPreference = 'Stop'
 
 $OutDir = [IO.Path]::GetFullPath($OutDir)
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$manifestJson = python -c "import yaml, json, sys; print(json.dumps(yaml.safe_load(open(sys.argv[1], encoding='utf-8'))))" $Manifest | Out-String
+
+function Find-Python {
+    $cands = @()
+    if ($env:X10_PYTHON) { $cands += @{Exe = $env:X10_PYTHON; Args = @()} }
+    $cands += @{Exe = 'py'; Args = @('-3') }
+    $cands += @{Exe = 'python'; Args = @() }
+    $cands += @{Exe = 'python3'; Args = @() }
+    foreach ($ver in @('314', '313', '312', '315')) {
+        $cands += @{Exe = "C:\Python$ver\python.exe"; Args = @() }
+    }
+    foreach ($c in $cands) {
+        try {
+            & $c.Exe @($c.Args) -c "import yaml" 2>$null
+            if ($LASTEXITCODE -eq 0) { return $c }
+        } catch { }
+    }
+    throw 'no Python with pyyaml found (set X10_PYTHON to a working python)'
+}
+$Py = Find-Python
+$manifestJson = & $Py.Exe @($Py.Args) -c "import yaml, json, sys; print(json.dumps(yaml.safe_load(open(sys.argv[1], encoding='utf-8'))))" $Manifest | Out-String
 $man = $manifestJson | ConvertFrom-Json
 
 # --- publish-ready gate: RC mode permits explicit placeholders; publish
@@ -35,7 +54,7 @@ if ($PublishReady) {
     if (-not (Test-Path $vsPath)) {
         throw "publish-ready refused: release/verified-sources.yml missing (copy the example, verify URLs)"
     }
-    $vsJson = python -c "import yaml, json, sys; print(json.dumps(yaml.safe_load(open(sys.argv[1], encoding='utf-8'))))" $vsPath | Out-String
+    $vsJson = & $Py.Exe @($Py.Args) -c "import yaml, json, sys; print(json.dumps(yaml.safe_load(open(sys.argv[1], encoding='utf-8'))))" $vsPath | Out-String
     $vs = $vsJson | ConvertFrom-Json
     if (-not $vs.verified) {
         throw "publish-ready refused: verified-sources.yml not marked verified"

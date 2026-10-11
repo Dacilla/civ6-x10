@@ -39,6 +39,7 @@ FAQ:
 - Custom shows lots of decimal places (7.3000001907349)? Civ VI
   displays the internal floating-point representation; the chosen
   multiplier still works correctly.
+- Leaving Custom blank enters 0 (Off-equivalent): X10 stays disarmed.
 - Log? %TEMP%\X10Lifecycle.log (support/troubleshooting).
 
 License: AGPL-3.0 (see LICENSE.txt). Source: see SOURCE.txt.

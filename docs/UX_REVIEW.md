@@ -280,8 +280,10 @@ Decision: keep the `text` field (option D, and the ONLY option that
 preserves malformed input for fail-closed handling). Document the
 float-display artifact in user text. Native validation behavior for the
 final control (enforced in native code, never clamp/round/silent-zero):
-blank → reject; `abc` → reject; `-1` → reject; `101` → reject;
-`0.5`/`7.3`/`100` → accept; `0` → valid (Off-equivalent, no writes).
+blank → the UI inserts INT32 0 before native sees it (measured live),
+accepted as Off-equivalent, X10 disarmed; `abc` → TEXT variant, reject;
+`-1`/`101` → INT32 out-of-range, reject; `0.5`/`7.3`/`100` → accept;
+`0` → valid (Off-equivalent, no writes).
 User fallback with no frontend error channel: Custom + invalid → X10
 does not arm + explicit lifecycle-log reason + README/FAQ states
 "Custom must be 0–100". Optional slider (`IntRange`) exists natively
