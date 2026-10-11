@@ -160,6 +160,15 @@ def tracked_files(root: Path) -> set[str]:
     return set(out.stdout.split()) if out.returncode == 0 else set()
 
 
+def measured_size(path: Path) -> int:
+    """LF-normalized size for text files (CRLF/LF checkout independent)."""
+    raw = path.read_bytes()
+    try:
+        return len(raw.decode("utf-8").replace("\r\n", "\n").encode("utf-8"))
+    except UnicodeDecodeError:
+        return len(raw)
+
+
 def classify(rel: str) -> tuple:
     for prefix, *rest in RULES:
         if rel == prefix or rel.startswith(prefix):
@@ -200,6 +209,8 @@ def build_release_surface(root: Path) -> dict:
         if extra not in tracked and (root / extra).is_file():
             paths.append(extra)
     paths = sorted(set(paths))
+    # the report never inventories itself (byte count would never converge)
+    paths = [p for p in paths if p != "reports/release_surface.json"]
     files = []
     for rel in paths:
         p = root / rel
@@ -212,7 +223,8 @@ def build_release_surface(root: Path) -> dict:
         files.append({
             "path": rel,
             "tracked": rel in tracked,
-            "bytes": p.stat().st_size,
+            "bytes": measured_size(p),
+            "size_normalization": "LF",
             "surface": surface,
             "kind": kind,
             "generated": generated,
@@ -232,7 +244,8 @@ def build_release_surface(root: Path) -> dict:
         except (UnicodeDecodeError, OSError):
             lines = None
         footprint[rel] = {
-            "bytes": p.stat().st_size,
+            "bytes": measured_size(p),
+            "bytes_normalization": "LF",
             "lines": lines,
             "uppercase_identifier_tokens": firaxis_tokens(p),
             "tracked": rel in tracked,

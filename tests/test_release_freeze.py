@@ -18,12 +18,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 ROOT = Path(__file__).resolve().parents[1]
 
 # Frozen Phase-6B/6C gameplay-production point.
+#
+# Text-file hashes are LF-NORMALIZED (universal-newlines read) so they are
+# identical on Windows (CRLF worktree) and Linux (LF checkout) CI, matching
+# the project's existing text-mode digest convention. The live-validated
+# Windows packaging bytes hash differently (bridge CRLF d0faabfa...,
+# registry CRLF f42c6a61...); SQL semantics are line-ending insensitive and
+# the 7B assembler must normalize before comparing.
 FROZEN_REGISTRY_SHA256 = (
-    "f42c6a61d8cfb2468f05c9b1dfe9ebeea74c05ddbcb24ec2d8daa578c422d711")
+    "181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208")
 FROZEN_DLL_SHA256 = (
     "e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619")
 FROZEN_BRIDGE_SHA256 = (
-    "d0faabfa29c32360dd48718383af173424a3ab51589877f3b597bbcec0e205b1")
+    "81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe")
 FROZEN_CONFIG_SHA256 = (
     "1987a11f29be4ba3434ffd416f48ed9c5a6297153dc984a821866920726d3b4b")
 FROZEN_X10_MODINFO_SHA256 = (
@@ -35,7 +42,8 @@ FROZEN_REDIRECT_SHA256 = (
 
 
 def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(
+        path.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
 
 
 class TestReleaseFreeze(unittest.TestCase):

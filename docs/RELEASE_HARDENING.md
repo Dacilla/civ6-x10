@@ -4,20 +4,21 @@ Freeze point: **civ6-x10 `2cf953e` + CE `1ce3188` + DLL
 `e33d84b83d752a9eb7b52b4740291c97183af4d079d1ca82b8bd9d92b5c4d619**
 (1010-entry registry, LIVE_VALIDATED, tag `phase6b-1010-live-validated`).
 Machine inventory: `reports/release_surface.json`
-(`python -m civ6x10 audit-release-surface`). Nothing in this document
+(`python -m civ6x10 audit-release-surface`). Text-file hashes/sizes are
+LF-normalized (CRLF/LF-checkout independent). Nothing in this document
 changes runtime behavior.
 
 ## 1. Release-surface inventory summary
 
-151 files classified, 0 unclassified:
+155 files classified, 0 unclassified (sizes LF-normalized):
 
 | surface | files | bytes | content |
 |---|---|---:|---|
-| `workshop_runtime` | 7 | 444,886 | the 7 text payload files (DLL excluded — binary, tracked separately) |
-| `corresponding_source` | 77 | ~965 KB | generator/certification code, curated rules, tests, docs, CI, license |
-| `corresponding_source_candidate` | 2 | 86,054 | tracked Governor/Suzerain manifests (decision open, §6) |
-| `corresponding_build_artifact` | 1 | 72,572 | generated `.inc` (distributed alongside DLL, not in repo main) |
-| `private` | 64 | ~6.66 MB | audits, backlog, evidence logs, local DB copies, spike work |
+| `workshop_runtime` | 7 | 439,988 | the 7 text payload files (DLL excluded — binary, tracked separately) |
+| `corresponding_source` | 81 | ~1.01 MB | generator/certification code, curated rules, tests, docs, CI, license |
+| `corresponding_source_candidate` | 2 | 83,774 | tracked Governor/Suzerain manifests (decision open, §6) |
+| `corresponding_build_artifact` | 1 | 71,543 | generated `.inc` (distributed alongside DLL, not in repo main) |
+| `private` | 64 | ~6.58 MB | audits, backlog, evidence logs, local DB copies, spike work |
 
 ### A. Workshop runtime payload (exact, from the validated assembly)
 
@@ -30,10 +31,11 @@ changes runtime behavior.
 | `X10/X10.modinfo` | 1,370 | `62d5e06a…` |
 | `X10/Config/X10Config.sql` | 2,767 | `1987a11f…` |
 | `X10/Config/Dummy.sql` | 149 | `ff629829…` |
-| `X10/Config/X10WonderBridge.sql` | 439,096 | `d0faabfa…` (pinned) |
+| `X10/Config/X10WonderBridge.sql` | 439,096 | `81c3dda2…` (LF-normalized; Windows CRLF packaging bytes `d0faabfa…`) |
 
-Full hashes in `release/release-manifest.yml` (single source of truth for
-7B assembly). The production probe (`X10_Probe_Test`) is explicitly
+Full hashes in `release/release-manifest.yml` (LF-normalized; single
+source of truth for 7B assembly — the assembler normalizes before
+comparing; Windows CRLF packaging bytes of the bridge hash `d0faabfa…`). The production probe (`X10_Probe_Test`) is explicitly
 forbidden in release and is absent from this list by construction.
 
 ### B. Public corresponding-source surface (proposed)
@@ -58,17 +60,17 @@ test-only scripts, `research/` clones, all validation evidence logs.
 
 ## 2. Firaxis-derived footprint (measured, nothing deleted in 7A)
 
-| artifact | bytes | lines | UPPER_ID tokens | tracked |
+| artifact | bytes (LF) | lines | UPPER_ID tokens | tracked |
 |---|---|---:|---:|---|
 | `suzerain_audit.yml` | 794,426 | 21,101 | 10,278 | yes |
-| `governor_audit.yml` | 286,975 | 7,501 | 3,443 | yes |
-| `semantic_backlog.yml` | 242,949 | 5,215 | 1,858 | yes |
-| `wonder_audit.yml` | 71,056 | 1,733 | 964 | yes |
+| `governor_audit.yml` | 279,474 | 7,501 | 3,443 | yes |
+| `semantic_backlog.yml` | 237,734 | 5,215 | 1,858 | yes |
+| `wonder_audit.yml` | 69,323 | 1,733 | 964 | yes |
 | `pantheon_audit.yml` | 11,815 | 281 | 160 | yes |
-| `manifests/governors.yml` | 40,821 | 1,102 | 436 | yes (exception) |
-| `manifests/suzerain.yml` | 45,233 | 1,178 | 540 | yes (exception) |
-| `X10WonderBridge.sql` | 439,096 | 4,898 | 10,916 | yes (**ships**) |
-| `X10ProductionRegistry.inc` | 72,572 | 1,029 | 1,016 | no (build artifact) |
+| `manifests/governors.yml` | 39,719 | 1,102 | 436 | yes (exception) |
+| `manifests/suzerain.yml` | 44,055 | 1,178 | 540 | yes (exception) |
+| `X10WonderBridge.sql` | 434,198 | 4,898 | 10,916 | yes (**ships**) |
+| `X10ProductionRegistry.inc` | 71,543 | 1,029 | 1,016 | no (build artifact) |
 | evidence logs (19 files) | ~4.4 MB | — | bulk dumps | yes |
 
 ("tokens" = regex `[A-Z][A-Z0-9_]{5,}`; over-counts prose constants but
