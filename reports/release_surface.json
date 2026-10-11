@@ -1162,6 +1162,48 @@
    "disposition": "publish (single source of truth for 7B assembly)"
   },
   {
+   "path": "release/GITHUB_PLAN.md",
+   "tracked": true,
+   "bytes": 2301,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "release_metadata",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored release descriptor",
+   "disposition": "publish (single source of truth for 7B assembly)"
+  },
+  {
+   "path": "release/KNOWN_ISSUES.md",
+   "tracked": true,
+   "bytes": 1119,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "release_metadata",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored release descriptor",
+   "disposition": "publish (single source of truth for 7B assembly)"
+  },
+  {
+   "path": "release/PUBLISH_CHECKLIST.md",
+   "tracked": true,
+   "bytes": 1617,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "release_metadata",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored release descriptor",
+   "disposition": "publish (single source of truth for 7B assembly)"
+  },
+  {
    "path": "release/README-public.md",
    "tracked": true,
    "bytes": 2129,
@@ -1179,6 +1221,20 @@
    "path": "release/VALIDATION.md",
    "tracked": true,
    "bytes": 2213,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "release_metadata",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored release descriptor",
+   "disposition": "publish (single source of truth for 7B assembly)"
+  },
+  {
+   "path": "release/WORKSHOP_PLAN.md",
+   "tracked": true,
+   "bytes": 2469,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1221,6 +1277,20 @@
    "path": "release/install-release-candidate.ps1",
    "tracked": true,
    "bytes": 2364,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "release_metadata",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored release descriptor",
+   "disposition": "publish (single source of truth for 7B assembly)"
+  },
+  {
+   "path": "release/publication-state.example.yml",
+   "tracked": true,
+   "bytes": 500,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1347,6 +1417,20 @@
    "path": "release/staging-src/engine/THIRD_PARTY_NOTICES.txt",
    "tracked": true,
    "bytes": 865,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "release_metadata",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored release descriptor",
+   "disposition": "publish (single source of truth for 7B assembly)"
+  },
+  {
+   "path": "release/verified-sources.example.yml",
+   "tracked": true,
+   "bytes": 270,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2438,8 +2522,8 @@
  ],
  "surface_summary": {
   "corresponding_source": {
-   "files": 99,
-   "bytes": 1134659
+   "files": 105,
+   "bytes": 1142935
   },
   "corresponding_build_artifact": {
    "files": 1,
