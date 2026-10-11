@@ -59,5 +59,5 @@ AdvancedOptions 2400-2408, en_US localization.
   `-1`/`101` (INT32 out-of-range, fail-closed); each disarmed with an
   explicit reason and zero transforms. Blank covered analytically
   (same decode-failure path as `abc`).
-- RC2 smoke (probe-free, preset x10, save/reload): pending at the time
-  of writing; expectation 1010/0 both sessions.
+- RC2 smoke (probe-free, preset x10, save/reload): PASS 1010/0 both
+  sessions, per-row identical to matrix Run A (evidence X10Lifecycle.1010-RC2-smoke-{load,reload}.log).
