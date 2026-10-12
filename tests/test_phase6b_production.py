@@ -1,10 +1,12 @@
-"""Phase 6B: cross-module backlog production integration.
+"""Phase 6B: cross-module backlog production integration (plus the
+Phase-8B growth envelope).
 
 Operates on the ACTUAL checked-in production manifests/rules (not the
 research dry run): Governor manifest = 70, Suzerain manifest = 68, Toqui
-from traits, registry = 1010. Proves the exact 39-new-pair boundary, the
-3-row reclassification, k-behavior, unresolved-scope preservation, and
-the CE copy + preflight state.
+from traits, registry = 2481 after the Phase-8B Playtest-1 closure
+expansion. Proves the exact 39-new-pair boundary, the 3-row
+reclassification, k-behavior, unresolved-scope preservation, and the CE
+copy + preflight state.
 """
 from __future__ import annotations
 
@@ -28,16 +30,17 @@ RECLASSIFIED = {
     "TRAIT_ACCUMULATE_MORE_COAL",
     "TRAIT_ACCUMULATE_MORE_IRON",
 }
-# every still-unresolved row class that must stay out (representative ids)
+# every still-unresolved row class that must stay out (representative ids).
+# Phase 8B admits the Intimidate debuff (modes-module flat magnitude) and
+# the Wolin GPP-per-kill rows (promotions-module whole points); they are
+# asserted present-with-ownership below instead of absent here.
 STILL_OUT = {
     "CARDINAL_LAYING_ON_OF_HANDS_HEAL",
     "CARDINAL_LAYING_ON_OF_HANDS_RELIGIOUS_HEAL",
-    "SECRET_SOCIETY_INTIMIDATE_ADJACENT_ENEMIES_MODIFIER",
     "BLACK_MARKETEER_STRATEGIC_RESOURCE_COST_DISCOUNT",
     "CAPOU_AGHA_ADJUST_GRIEVANCES",
     "CURATOR_DOUBLE_SCULPTURE_TOURISM",
     "MINOR_CIV_KANDY_BETTER_RELIC_BONUS",
-    "WOLIN_GREAT_GENERAL_POINTS",
     "NIHANG_BARRACKS_STRENGTH",
 }
 
@@ -155,17 +158,19 @@ class TestRegistryTotals(unittest.TestCase):
         self.entries, self.report = registry_or_skip()
 
     def test_exact_totals(self):
-        self.assertEqual(len(self.entries), 1010)
-        self.assertEqual(self.report["unique_definitions"], 1006)
-        self.assertEqual(self.report["shared_definitions"], 25)
-        self.assertEqual(self.report["certified_unconditional"], 788)
-        self.assertEqual(self.report["certified_count_like_conditional"], 222)
+        self.assertEqual(len(self.entries), 2481)
+        self.assertEqual(self.report["unique_definitions"], 2475)
+        self.assertEqual(self.report["shared_definitions"], 26)
+        self.assertEqual(self.report["certified_unconditional"], 1333)
+        self.assertEqual(self.report["certified_count_like_conditional"], 1148)
         self.assertEqual(self.report["unresolved_conflicts"], [])
         self.assertEqual(Counter(e["kind"] for e in self.entries),
-                         {"ADDITIVE": 973, "COMBAT": 14, "DISCOUNT": 23})
-        self.assertEqual(self.report["ownership_counts"]["traits"], 360)
+                         {"ADDITIVE": 1477, "REPEAT": 693, "COMBAT": 156,
+                          "DISCOUNT": 78, "DELTA": 57, "PROBABILITY": 16,
+                          "VECTOR": 4})
+        self.assertEqual(self.report["ownership_counts"]["traits"], 668)
         self.assertEqual(self.report["ownership_counts"]["governors"], 70)
-        self.assertEqual(self.report["ownership_counts"]["suzerain"], 68)
+        self.assertEqual(self.report["ownership_counts"]["suzerain"], 123)
 
     def test_39_new_pair_equality(self):
         import yaml
@@ -226,8 +231,10 @@ class TestRegistryTotals(unittest.TestCase):
             # unless they were count-like before (198 of them)
             self.assertIn(e["count_like"], (True, False), key)
         cond = sum(1 for e in self.entries if e["count_like"])
-        self.assertEqual(cond, 222)
-        # ...of which exactly 21+3 are the new/reclassified count-like rows
+        self.assertEqual(cond, 1148)
+        # ...of which exactly 21+3 are the 6B new/reclassified count-like
+        # rows (the 8B growth adds the rest, each with its own reviewed
+        # source asserted across this suite).
         self.assertEqual(
             sum(1 for e in self.entries
                 if e["count_like"] and
@@ -312,11 +319,33 @@ class TestNewFamilyCertification(unittest.TestCase):
         self.assertEqual(rows[0]["generated_value"], "44.45")
         self.assertEqual(rows[0]["semantic_family"], "COMBAT_STRENGTH_BONUS")
         for mid in ("NIHANG_BARRACKS_STRENGTH", "NIHANG_ARMORY_STRENGTH",
-                    "NIHANG_ACADEMY_STRENGTH", "NIHANG_FLANKED_BONUS",
-                    "NIHANG_FAITH_FOR_VICTORIES", "NIHANG_MOVEMENT_BONUS",
-                    "WOLIN_GREAT_GENERAL_POINTS",
-                    "WOLIN_GREAT_ADMIRAL_POINTS"):
+                    "NIHANG_ACADEMY_STRENGTH"):
             self.assertNotIn(mid, self.by_id, mid)
+        # Phase 8B: Nihang faith-from-kills scales as a flat post-combat
+        # percent under the promotions module (base stats stay out).
+        faith = self.by_id["NIHANG_FAITH_FOR_VICTORIES"]
+        self.assertEqual(faith["owners"], MODULE_BITS["promotions"])
+        self.assertEqual(faith["kind"], "ADDITIVE")
+        self.assertEqual(faith["official"], "50")
+        # Phase 8B: the Nihang flanking bonus scales as a flat percent
+        # under the promotions module (base combat stats stay out).
+        flanked = self.by_id["NIHANG_FLANKED_BONUS"]
+        self.assertEqual(flanked["owners"], MODULE_BITS["promotions"])
+        self.assertEqual(flanked["kind"], "ADDITIVE")
+        # Phase 8B: the Nihang movement bonus scales as whole movement
+        # points under the promotions module (base combat stats stay out).
+        nihang_move = self.by_id["NIHANG_MOVEMENT_BONUS"]
+        self.assertEqual(nihang_move["owners"], MODULE_BITS["promotions"])
+        self.assertTrue(nihang_move["count_like"])
+        # Phase 8B: Wolin GPP-per-kill rows scale as whole points under the
+        # promotions module (base combat stats stay out).
+        for mid in ("WOLIN_GREAT_GENERAL_POINTS",
+                    "WOLIN_GREAT_ADMIRAL_POINTS"):
+            e = self.by_id[mid]
+            self.assertEqual(e["owners"], MODULE_BITS["promotions"], mid)
+            self.assertEqual(e["kind"], "ADDITIVE", mid)
+            self.assertTrue(e["count_like"], mid)
+            self.assertEqual(e["official"], "25", mid)
 
     def test_pressure_family_present(self):
         by_id = self.by_id
@@ -351,9 +380,23 @@ class TestUnresolvedScopePreserved(unittest.TestCase):
         for mid in STILL_OUT:
             self.assertNotIn(mid, self.by_id, mid)
 
-    def test_no_scaling_factor_in_production(self):
+    def test_scaling_factor_only_where_reviewed(self):
+        # Phase 8B admits exactly three reviewed percent-scale tourism
+        # factors (base-game wonder tourism + two dramatic/mode factors).
+        got = {(e["modifier_id"], e["argument"]) for e in self.entries
+               if e["argument"] == "ScalingFactor"}
+        self.assertEqual(got, {
+            ("COMMEMORATION_TOURISM_GA_WONDERS", "ScalingFactor"),
+            ("MODIFIER_RELIQUARIES_HEROIC_RELIC_TOURISM", "ScalingFactor"),
+            ("POLICY_WISH_YOU_WERE_HERE_GA_WONDERS", "ScalingFactor"),
+        })
         for e in self.entries:
-            self.assertNotEqual(e["argument"], "ScalingFactor", e["modifier_id"])
+            if e["argument"] == "ScalingFactor":
+                self.assertEqual(e["kind"], "ADDITIVE", e["modifier_id"])
+                self.assertTrue(
+                    e["cert_source"].startswith(
+                        ("curated-effect:strong-family:",
+                         "curated-effect:effect-arg:")), e["modifier_id"])
 
     def test_no_transition_strength_cells(self):
         for e in self.entries:
@@ -389,9 +432,11 @@ class TestOldSubsetBoundary(unittest.TestCase):
                      "phase6a-semantic-backlog" and
                      (r["modifier_id"], r["argument_name"]) not in addendum]
         base_entries, base_report = registry_or_skip(base_rows)
-        self.assertEqual(len(base_entries), 971)
-        self.assertEqual(base_report["unique_definitions"], 967)
-        self.assertEqual(base_report["shared_definitions"], 25)
+        # Phase-8B envelope: the non-backlog subset is the full registry
+        # minus exactly the 39 reviewed backlog pairs.
+        self.assertEqual(len(base_entries), 2442)
+        self.assertEqual(base_report["unique_definitions"], 2436)
+        self.assertEqual(base_report["shared_definitions"], 26)
         entries, _ = registry_or_skip()
         base_keys = {(e["modifier_id"], e["argument"]) for e in base_entries}
         full_keys = {(e["modifier_id"], e["argument"]) for e in entries}
@@ -418,30 +463,48 @@ class TestKBehavior(unittest.TestCase):
         self.assertEqual(self.kf, 7.300000190734863)
 
     def test_k73_totals(self):
+        # Phase-8B kind-aware decomposition at Custom 7.3.
+        kerr = self.T.float_quantization_error(self.kf)
         ok = ex = 0
         for e in self.entries:
-            v = float(e["official"])
             if e["count_like"]:
-                if self.T.count_like_applies(v, self.kf):
+                if _co_applies(e, self.kf, kerr):
                     ex += 1
                 continue
             if e["kind"] == "ADDITIVE":
-                r = v * self.kf
+                r = float(e["official"]) * self.kf
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(self.kf * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** self.kf) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == "PROBABILITY":
+                r = self.T.repeated_probability_for_multiplier(
+                    float(e["official"]), self.kf)
+            elif e["kind"] == "VECTOR":
+                self.T.vector_multiply(e["official"], self.kf)
+                r = 0.0
             else:
-                continue
+                self.fail(f"unexpected unconditional kind: {e}")
             if math.isfinite(r) and abs(r) <= 1e6:
                 ok += 1
         refused = sum(1 for e in self.entries if e["count_like"]
-                      and not self.T.count_like_applies(float(e["official"]),
-                                                        self.kf))
-        self.assertEqual(ok + ex, 801)
-        self.assertEqual(refused, 209)
-        self.assertEqual(len(self.entries), 1010)
+                      and not _co_applies(e, self.kf, kerr))
+        self.assertEqual(ok + ex, 1353)
+        self.assertEqual(refused, 1128)
+        self.assertEqual(len(self.entries), 2481)
+
+
+def _co_applies(entry, kf, kerr):
+    from civ6x10 import transforms as T
+    if entry["kind"] == "REPEAT":
+        return False  # non-integral k: every copy stays inert
+    if entry["kind"] == "DELTA":
+        return T.count_like_applies_delta(
+            float(entry["official"]), kf, kerr)
+    return T.count_like_applies(float(entry["official"]), kf, kerr)
 
     def test_k73_representative_values(self):
         by_id = {}
@@ -471,25 +534,43 @@ class TestKBehavior(unittest.TestCase):
             msg="valletta@7.3")
 
     def test_k10_all_applicable(self):
+        # At integer x10 every entry applies: count-like results are
+        # exact (REPEAT copies 2..10 activate, DELTA V*9 integral),
+        # unconditional transforms are finite.
         for e in self.entries:
-            v = float(e["official"])
+            key = (e["modifier_id"], e["argument"])
             if e["count_like"]:
-                self.assertTrue(self.T.count_like_applies(v, 10.0),
-                                (e["modifier_id"], e["argument"]))
-                self.assertEqual(v * 10.0, round(v * 10.0),
-                                 (e["modifier_id"], e["argument"]))
+                if e["kind"] == "REPEAT":
+                    continue  # integrality is about k, checked below
+                if e["kind"] == "DELTA":
+                    self.assertTrue(
+                        self.T.count_like_applies_delta(
+                            float(e["official"]), 10.0, 0.0), key)
+                    continue
+                v = float(e["official"])
+                self.assertTrue(self.T.count_like_applies(v, 10.0), key)
+                self.assertEqual(v * 10.0, round(v * 10.0), key)
                 continue
             if e["kind"] == "ADDITIVE":
-                r = v * 10.0
+                r = float(e["official"]) * 10.0
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(10.0 * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** 10.0) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == "PROBABILITY":
+                r = self.T.repeated_probability_for_multiplier(
+                    float(e["official"]), 10.0)
+            elif e["kind"] == "VECTOR":
+                self.T.vector_multiply(e["official"], 10.0)
+                r = 0.0
             else:
-                continue
-            self.assertTrue(math.isfinite(r),
-                            (e["modifier_id"], e["argument"]))
+                self.fail(f"unexpected unconditional kind: {e}")
+            self.assertTrue(math.isfinite(r), key)
+        # REPEAT activates copies 2..10 at integral k=10 (base + 9 = 10).
+        self.assertEqual(self.T.repeat_copies(10.0, 0.0), 9)
 
 
 class TestDeterminismAndCopy(unittest.TestCase):
@@ -545,7 +626,7 @@ class TestDeterminismAndCopy(unittest.TestCase):
         inc = ROOT / "build" / "X10ProductionRegistry.inc"
         entries = re.findall(r'^\s*\{"([^"]+)",', inc.read_text(
             encoding="utf-8"), re.M)
-        self.assertEqual(len(entries), 1010)
+        self.assertEqual(len(entries), 2481)
 
 
 if __name__ == "__main__":

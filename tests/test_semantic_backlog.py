@@ -265,7 +265,7 @@ class TestProductionUnchanged(unittest.TestCase):
             self.skipTest("local production registry unavailable")
         self.assertEqual(
             hashlib.sha256(p.read_bytes()).hexdigest(),
-            "f42c6a61d8cfb2468f05c9b1dfe9ebeea74c05ddbcb24ec2d8daa578c422d711")
+            "e9333ad88887a47b9508212e7c6fa3bf21b2c8adacf31d880894684ea537b0ca")
 
     def test_manifests_unchanged(self):
         import hashlib
@@ -288,16 +288,18 @@ class TestProductionUnchanged(unittest.TestCase):
         self.assertEqual(MODULE_BITS, {"traits": 1, "policies": 2,
                                        "governments": 4, "pantheons": 8,
                                        "wonders": 16, "governors": 32,
-                                       "suzerain": 64})
+                                       "suzerain": 64, "promotions": 128,
+                                       "dedications": 256, "modes": 512,
+                                       "religion": 1024, "greatpeople": 2048,
+                                       "projects": 4096})
         from civ6x10.bridge import REGISTRY_MODULES
-        self.assertEqual(tuple(REGISTRY_MODULES),
-                         ("traits", "policies", "governments", "pantheons",
-                          "wonders", "governors", "suzerain"))
+        self.assertEqual(len(REGISTRY_MODULES), 13)
+        self.assertEqual(REGISTRY_MODULES["envoys"], "suzerain")
         import hashlib
         p = ROOT / "spike" / "EXPECTED_DLL_SHA256.txt"
         if p.is_file():
             self.assertEqual(p.read_text(encoding="utf-8").strip(),
-                             "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
+                             "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507")
 
 
 
@@ -356,6 +358,17 @@ class TestProductionProjection(unittest.TestCase):
                          22)
 
 
+def _co_applies(entry, kf, kerr):
+    from civ6x10 import transforms as T
+    kind = entry["kind"]
+    if kind in ("REPEAT", 6):
+        return False  # non-integral k: every copy stays inert
+    if kind in ("DELTA", 5):
+        return T.count_like_applies_delta(
+            float(entry["official"]), kf, kerr)
+    return T.count_like_applies(float(entry["official"]), kf, kerr)
+
+
 def _registry_entries_or_skip():
     import re
     p = ROOT / "build" / "X10ProductionRegistry.inc"
@@ -363,12 +376,13 @@ def _registry_entries_or_skip():
         raise unittest.SkipTest("local production registry unavailable")
     out = []
     for m in re.finditer(
-            r'\{"([^"]+)", "([^"]+)", "([^"]+)", (\d), (\d), (\d+)\},',
+            r'\{"([^"]+)", "([^"]*)", "([^"]*)", (\d), (\d), (\d+), (\d+), "([^"]*)"\},',
             p.read_text(encoding="utf-8")):
         out.append({"modifier_id": m.group(1), "argument": m.group(2),
                     "official": m.group(3), "kind": int(m.group(4)),
                     "count_like": bool(int(m.group(5))),
-                    "owners": int(m.group(6))})
+                    "owners": int(m.group(6)), "aux": int(m.group(7)),
+                    "target": m.group(8)})
     return out
 
 
@@ -429,7 +443,7 @@ class TestNoPressureBaseline(unittest.TestCase):
         import math
         from civ6x10 import transforms as T
         entries = _registry_entries_or_skip()
-        self.assertEqual(len(entries), 1010)
+        self.assertEqual(len(entries), 2481)
         b = backlog_or_skip()
         pairs = _production_pairs(b)
         self.assertEqual(len(pairs), 37)
@@ -441,9 +455,9 @@ class TestNoPressureBaseline(unittest.TestCase):
         by_key = {(e["modifier_id"], e["argument"]): e for e in entries}
         for key in new_keys:
             self.assertIn(key, by_key, key)
-        # removing the 39 new pairs leaves the 971 baseline entry set
+        # removing the 39 new pairs leaves the 2442-entry non-backlog set
         base_keys = set(by_key) - new_keys
-        self.assertEqual(len(base_keys), 971)
+        self.assertEqual(len(base_keys), 2442)
         # ...except the 3 reclassified rows, which differ only in count_like
         reclass = {(r["modifier_id"], r["argument"])
                    for r in b["proposed_existing_reclassifications"]["rows"]}
@@ -451,32 +465,40 @@ class TestNoPressureBaseline(unittest.TestCase):
         for key in reclass:
             self.assertTrue(by_key[key]["count_like"], key)
         kf = T.stored_float32(7.3)
+        kerr = T.float_quantization_error(kf)
         self.assertEqual(kf, 7.300000190734863)
-        # full k=7.3 behavior over the real registry (int kinds)
+        # full k=7.3 behavior over the real registry (int kinds 0..6)
         writes = refusals = 0
         for e in entries:
-            v = float(e["official"])
             if e["count_like"]:
-                if T.count_like_applies(v, kf):
+                if _co_applies(e, kf, kerr):
                     writes += 1
                 else:
                     refusals += 1
                 continue
             if e["kind"] == 0:  # ADDITIVE
-                r = v * kf
+                r = float(e["official"]) * kf
             elif e["kind"] == 1:  # COMBAT
+                v = float(e["official"])
                 r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
+            elif e["kind"] == 2:  # PROBABILITY
+                r = T.repeated_probability_for_multiplier(
+                    float(e["official"]), kf)
             elif e["kind"] == 3:  # DISCOUNT
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** kf) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == 4:  # VECTOR
+                T.vector_multiply(e["official"], kf)
+                r = 0.0
             else:
-                continue
+                self.fail(e)
             if math.isfinite(r) and abs(r) <= 1e6:
                 writes += 1
             else:
                 refusals += 1
-        self.assertEqual((writes, refusals), (801, 209))
-        self.assertEqual(writes + refusals, 1010)
+        self.assertEqual((writes, refusals), (1353, 1128))
+        self.assertEqual(writes + refusals, 2481)
 
 
 class TestPressureProbeResults(unittest.TestCase):
@@ -725,21 +747,29 @@ class TestPhase6BDryRun(unittest.TestCase):
         entries, report = build_production_registry(
             rows, sem_floor=floor, rules=rules)
         self.assertEqual(report["unresolved_conflicts"], [])
-        self.assertEqual(len(entries), 1010)
-        self.assertEqual(report["unique_definitions"], 1006)
-        self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 788)
-        self.assertEqual(report["certified_count_like_conditional"], 222)
-        self.assertEqual(report["ownership_counts"]["traits"], 360)
-        self.assertEqual(report["ownership_counts"]["policies"], 284)
+        self.assertEqual(len(entries), 2481)
+        self.assertEqual(report["unique_definitions"], 2475)
+        self.assertEqual(report["shared_definitions"], 26)
+        self.assertEqual(report["certified_unconditional"], 1333)
+        self.assertEqual(report["certified_count_like_conditional"], 1148)
+        self.assertEqual(report["ownership_counts"]["traits"], 668)
+        self.assertEqual(report["ownership_counts"]["policies"], 286)
         self.assertEqual(report["ownership_counts"]["governments"], 18)
-        self.assertEqual(report["ownership_counts"]["pantheons"], 31)
-        self.assertEqual(report["ownership_counts"]["wonders"], 154)
+        self.assertEqual(report["ownership_counts"]["pantheons"], 34)
+        self.assertEqual(report["ownership_counts"]["wonders"], 568)
         self.assertEqual(report["ownership_counts"]["governors"], 70)
-        self.assertEqual(report["ownership_counts"]["suzerain"], 68)
+        self.assertEqual(report["ownership_counts"]["suzerain"], 123)
+        self.assertEqual(report["ownership_counts"]["promotions"], 315)
+        self.assertEqual(report["ownership_counts"]["dedications"], 43)
+        self.assertEqual(report["ownership_counts"]["modes"], 181)
+        self.assertEqual(report["ownership_counts"]["religion"], 31)
+        self.assertEqual(report["ownership_counts"]["greatpeople"], 105)
+        self.assertEqual(report["ownership_counts"]["projects"], 13)
         kinds = Counter(e["kind"] for e in entries)
-        self.assertEqual(kinds, {"ADDITIVE": 973, "COMBAT": 14,
-                                 "DISCOUNT": 23})
+        self.assertEqual(kinds, {"ADDITIVE": 1477, "REPEAT": 693,
+                                 "COMBAT": 156, "DISCOUNT": 78,
+                                 "DELTA": 57, "PROBABILITY": 16,
+                                 "VECTOR": 4})
         # all 39 final pairs present with the intended shape
         by_key = {(e["modifier_id"], e["argument"]): e for e in entries}
         final_pairs = (
@@ -755,49 +785,72 @@ class TestPhase6BDryRun(unittest.TestCase):
         self.assertEqual(owners, {32: 16, 64: 21, 1: 2})
         # k=7.3 behavior
         kf = T.stored_float32(7.3)
+        kerr = T.float_quantization_error(kf)
         self.assertEqual(kf, 7.300000190734863)
         writes = refusals = 0
         for e in entries:
-            v = float(e["official"])
             if e["count_like"]:
-                if T.count_like_applies(v, kf):
+                if _co_applies(e, kf, kerr):
                     writes += 1
                 else:
                     refusals += 1
                 continue
             if e["kind"] == "ADDITIVE":
-                r = v * kf
+                r = float(e["official"]) * kf
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** kf) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == "PROBABILITY":
+                r = T.repeated_probability_for_multiplier(
+                    float(e["official"]), kf)
+            elif e["kind"] == "VECTOR":
+                T.vector_multiply(e["official"], kf)
+                r = 0.0
             else:
-                continue
+                self.fail(e)
             if math.isfinite(r) and abs(r) <= 1e6:
                 writes += 1
             else:
                 refusals += 1
-        self.assertEqual((writes, refusals), (801, 209))
-        self.assertEqual(writes + refusals, 1010)
-        # k=10: everything transform-applicable
+        self.assertEqual((writes, refusals), (1353, 1128))
+        self.assertEqual(writes + refusals, 2481)
+        # k=10: everything transform-applicable (REPEAT copies 2..10
+        # activate at integral k; DELTA V*9 integral for integral V).
         for e in entries:
-            v = float(e["official"])
+            key = (e["modifier_id"], e["argument"])
             if e["count_like"]:
-                self.assertTrue(T.count_like_applies(v, 10.0),
-                                (e["modifier_id"], e["argument"]))
+                if e["kind"] == "REPEAT":
+                    continue
+                if e["kind"] == "DELTA":
+                    self.assertTrue(
+                        T.count_like_applies_delta(
+                            float(e["official"]), 10.0, 0.0), key)
+                    continue
+                v = float(e["official"])
+                self.assertTrue(T.count_like_applies(v, 10.0), key)
                 continue
             if e["kind"] == "ADDITIVE":
-                r = v * 10.0
+                r = float(e["official"]) * 10.0
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(10.0 * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** 10.0) * 100.0
+            elif e["kind"] == "PROBABILITY":
+                r = T.repeated_probability_for_multiplier(
+                    float(e["official"]), 10.0)
+            elif e["kind"] == "VECTOR":
+                T.vector_multiply(e["official"], 10.0)
+                r = 0.0
             else:
-                continue
-            self.assertTrue(math.isfinite(r),
-                            (e["modifier_id"], e["argument"]))
+                self.fail(e)
+            self.assertTrue(math.isfinite(r), key)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

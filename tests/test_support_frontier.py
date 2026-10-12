@@ -66,8 +66,8 @@ def frontier():
 class TestFrontierArtifact(unittest.TestCase):
     def test_yml_loads_and_version(self):
         doc = frontier()
-        self.assertEqual(doc["version"], 1)
-        self.assertEqual(doc["phase"], "8A")
+        self.assertEqual(doc["version"], 2)
+        self.assertEqual(doc["phase"], "8B")
         for key in ("baseline_db", "production", "taxonomy", "game_modes",
                     "modifier_roots", "direct_tables", "beyond_request",
                     "discovery"):
@@ -81,11 +81,11 @@ class TestFrontierArtifact(unittest.TestCase):
         self.assertEqual(
             (prod["entries"], prod["unique"], prod["shared"],
              prod["unconditional"], prod["count_like"]),
-            (1010, 1006, 25, 788, 222))
-        self.assertEqual(prod["ce_commit"], "0655190")
+            (2481, 2475, 26, 1333, 1148))
+        self.assertEqual(prod["ce_commit"], "86be003")
         self.assertEqual(
             prod["dll_sha256"],
-            "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
+            "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507")
 
     def test_roots_accounted(self):
         doc = frontier()
@@ -269,6 +269,20 @@ class TestFrontierArtifact(unittest.TestCase):
             self.assertIn("### Table " + b, md)
 
 
+def _mode_manifest_pairs():
+    """(modifier_id, argument) pairs owned by the modes manifest.
+
+    Mode-overlay definitions are parsed from shipped overlays and are
+    absent from the no-overlay baseline snapshot by construction.
+    """
+    import yaml
+    p = ROOT / "manifests" / "modes.yml"
+    if not p.is_file():
+        raise unittest.SkipTest("modes manifest unavailable")
+    man = yaml.safe_load(p.read_text(encoding="utf-8"))
+    return {(r["modifier_id"], r["argument_name"]) for r in man["modes"]}
+
+
 class TestFrontierLiveCrossCheck(unittest.TestCase):
     """Needs private inputs; skips in CI and clean checkouts."""
 
@@ -287,7 +301,7 @@ class TestFrontierLiveCrossCheck(unittest.TestCase):
         if not (ROOT / "manifests" / "traits.yml").is_file():
             raise unittest.SkipTest("generated manifests unavailable")
         entries, pairs = self._production_pairs()
-        self.assertEqual(len(entries), 1010)
+        self.assertEqual(len(entries), 2481)
         doc = frontier()
         self.assertEqual(doc["pair_overlap"]["production_pairs_total"],
                          len(pairs))
@@ -318,16 +332,24 @@ class TestFrontierLiveCrossCheck(unittest.TestCase):
         finally:
             con.close()
         missing = {(m, a) for (m, a) in pairs if (m, a) not in db_args}
-        # only synthetic bridge helpers and documented mode-overlay pairs
-        # may be absent from official data
+        # Absent from official data by construction (all documented):
+        # - X10_ synthetic bridge helpers (wonder-direct bridge);
+        # - *_X10R### inert slot copies (slot-copy SQL, Phase 8B);
+        # - mode-overlay pairs (module modes, parsed from shipped mode
+        #   overlays, absent from the no-overlay baseline snapshot);
+        # - artifact-documented overlay pairs (governor mode remainder).
+        # Anything else unexplained fails.
         doc = frontier()
         overlay = set()
         for m in doc["game_modes"]:
             for p in m.get("overlay_pairs", []):
                 overlay.add((p[0], p[1]))
+        mode_pairs = _mode_manifest_pairs()
         unexplained = {(m, a) for (m, a) in missing
                        if not (isinstance(m, str) and m.startswith("X10_"))
-                       and (m, a) not in overlay}
+                       and not (isinstance(m, str) and "_X10R" in m)
+                       and (m, a) not in overlay
+                       and (m, a) not in mode_pairs}
         self.assertEqual(unexplained, set())
 
     def test_baseline_db_matches(self):

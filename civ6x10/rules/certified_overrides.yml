@@ -253,8 +253,12 @@ count_like_effects:
     rationale: "great-people points per kill are whole points (Phase 8B)"
   - pattern: EXPERIENCE_LEVEL
     rationale: "granted experience levels are whole levels (Phase 8B)"
-  - pattern: POPULATION
-    rationale: "population counts whole citizens (Phase 8B dedications)"
+  - pattern: STARTING_POPULATION
+    rationale: "starting population counts whole citizens (Phase 8B dedications)"
+  - pattern: POPULATION_AFTER_CONQUEST
+    rationale: "post-conquest population counts whole citizens (Phase 8B)"
+  - pattern: POPULATION_UNIT_CREATED
+    rationale: "created-population counts whole citizens (Phase 8B)"
 
   - pattern: RELIGION_EXTRA_PROMOTIONS
     rationale: "extra religious promotions are whole promotions (Phase 6B)"

@@ -23,7 +23,7 @@ separately in Advanced Setup.
 4. Open Advanced Setup.
 5. Choose **Bonus Multiplier** (×10 Classic is the default); choose
    **Custom** for values from 0 to 100 (decimals use a period).
-6. Leave all seven category checkboxes on, or uncheck anything you
+6. Leave all thirteen category checkboxes on, or uncheck anything you
    want to keep unchanged.
 7. Start the game.
 
@@ -52,7 +52,8 @@ the campaign.
   committed.
 - `LICENSE`, `THIRD_PARTY_NOTICES.md`, `PROVENANCE.md`.
 
-Validated release: registry 1010 entries / 1006 definitions; preset
-×10 = 1010 writes; Custom 7.3 = 801/209; Governors OFF = 745/195/70;
-Off disarmed; invalid Custom entries are rejected. Details in
-`release/VALIDATION.md`; provenance in `PROVENANCE.md`.
+Validated release: registry 2481 entries / 2475 definitions; preset
+×10 applies every entry; Custom 7.3 = 1353/1128 (exact/refused);
+Off disarmed; invalid Custom entries are rejected. Prior 1010-entry
+RC2 matrix retained as history. Details in `release/VALIDATION.md`;
+provenance in `PROVENANCE.md`.

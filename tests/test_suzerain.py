@@ -1654,11 +1654,11 @@ class SuzerainAuditRealIntegrationTest(unittest.TestCase):
         if not cov_path.is_file():
             self.skipTest("production coverage report unavailable")
         cov = json.loads(cov_path.read_text(encoding="utf-8"))
-        self.assertEqual(cov["eligible"], 1010)
-        self.assertEqual(cov["unique_definitions"], 1006)
-        self.assertEqual(cov["shared_definitions"], 25)
-        self.assertEqual(cov["certified_unconditional"], 788)
-        self.assertEqual(cov["certified_count_like_conditional"], 222)
+        self.assertEqual(cov["eligible"], 2481)
+        self.assertEqual(cov["unique_definitions"], 2475)
+        self.assertEqual(cov["shared_definitions"], 26)
+        self.assertEqual(cov["certified_unconditional"], 1333)
+        self.assertEqual(cov["certified_count_like_conditional"], 1148)
         # k=7.3 writes: the 9 Bologna +1 rows refuse because
         # stored-FLOAT32 1 x 7.3 is non-integral; the other 38 write
         k32 = struct.unpack("f", struct.pack("f", 7.3))[0]

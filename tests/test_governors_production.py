@@ -73,12 +73,19 @@ class TestModuleOwnership(unittest.TestCase):
         self.assertEqual(MODULE_BITS, {"traits": 1, "policies": 2,
                                        "governments": 4, "pantheons": 8,
                                        "wonders": 16, "governors": 32,
-                                       "suzerain": 64})
+                                       "suzerain": 64, "promotions": 128,
+                                       "dedications": 256, "modes": 512,
+                                       "religion": 1024, "greatpeople": 2048,
+                                       "projects": 4096})
 
     def test_registry_modules_include_governors(self):
+        # REGISTRY_MODULES maps manifest file -> default module tag (13
+        # files in Phase 8B); envoy rows reuse the suzerain (city-state)
+        # bit, sweep rows carry their own module.
         self.assertIn("governors", REGISTRY_MODULES)
         self.assertIn("suzerain", REGISTRY_MODULES)
-        self.assertEqual(len(REGISTRY_MODULES), 7)
+        self.assertEqual(len(REGISTRY_MODULES), 13)
+        self.assertEqual(REGISTRY_MODULES["envoys"], "suzerain")
 
     def test_manifest_shape(self):
         audit = ROOT / "civ6x10" / "rules" / "governor_audit.yml"
@@ -112,11 +119,11 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         self.entries, self.report = registry_or_skip()
 
     def test_totals(self):
-        self.assertEqual(len(self.entries), 1010)
-        self.assertEqual(self.report["unique_definitions"], 1006)
-        self.assertEqual(self.report["shared_definitions"], 25)
-        self.assertEqual(self.report["certified_unconditional"], 788)
-        self.assertEqual(self.report["certified_count_like_conditional"], 222)
+        self.assertEqual(len(self.entries), 2481)
+        self.assertEqual(self.report["unique_definitions"], 2475)
+        self.assertEqual(self.report["shared_definitions"], 26)
+        self.assertEqual(self.report["certified_unconditional"], 1333)
+        self.assertEqual(self.report["certified_count_like_conditional"], 1148)
         self.assertEqual(self.report["unresolved_conflicts"], [])
         self.assertEqual(self.report["ownership_counts"]["governors"], 70)
 
@@ -239,9 +246,10 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         rows = manifests_or_skip()
         base_rows = [r for r in rows if r.get("module") != "governors"]
         base_entries, base_report = registry_or_skip(base_rows)
-        self.assertEqual(len(base_entries), 940)
-        self.assertEqual(base_report["certified_unconditional"], 732)
-        self.assertEqual(base_report["certified_count_like_conditional"], 208)
+        self.assertEqual(len(base_entries), 2411)
+        self.assertEqual(base_report["certified_unconditional"], 1277)
+        self.assertEqual(base_report["certified_count_like_conditional"],
+                         1134)
         by_key = {(e["modifier_id"], e["argument"]): e for e in base_entries}
         for e in self.entries:
             if e["owners"] == GOV_BIT:
@@ -451,16 +459,23 @@ class TestModeFloorAndCombatGate(unittest.TestCase):
                         floor, rules)
         self.assertFalse(r["certified"], r)
 
-    def test_negative_combat_still_absent(self):
+    def test_negative_combat_scales_flat_via_modes(self):
+        # Phase 8B: the Intimidate -5 debuff is a modes-module magnitude
+        # (flat -50 at x10), never a governor row and never formula-applied.
         entries, _ = registry_or_skip()
         gov = {e["modifier_id"] for e in entries if e["owners"] == GOV_BIT}
         self.assertNotIn("SECRET_SOCIETY_INTIMIDATE_ADJACENT_ENEMIES_MODIFIER",
                          gov)
+        by_id = {e["modifier_id"]: e for e in entries}
+        intimidate = by_id["SECRET_SOCIETY_INTIMIDATE_ADJACENT_ENEMIES_MODIFIER"]
+        self.assertEqual(intimidate["owners"], MODULE_BITS["modes"])
+        self.assertEqual(intimidate["kind"], "ADDITIVE")
         import math
         from civ6x10 import transforms as T
         for k in (7.3, 10.0):
             with self.assertRaises(ValueError):
                 T.combat_bonus_for_multiplier(-5.0, k)
+        self.assertEqual(T.scale_flat(-5.0, 10.0), -50.0)
 
     def test_existing_classifications_unchanged(self):
         # No non-governor row changed kind because of the combat reordering.
@@ -504,33 +519,54 @@ class TestModeFloorAndCombatGate(unittest.TestCase):
         self.assertEqual((writes, refusals), (56, 14))
 
     def test_k73_global_totals(self):
+        # Phase 8B kind-aware decomposition at Custom 7.3: 1333 apply,
+        # 20 exact conditionals, 1128 refuse (REPEAT inert, DELTA judged
+        # on V*(k-1)). Total 1353 of 2481.
         import math
         from civ6x10 import transforms as T
         entries, _ = registry_or_skip()
         kf = T.stored_float32(7.3)
+        kerr = T.float_quantization_error(kf)
         ok = ex = 0
         for e in entries:
-            v = float(e["official"])
             if e["count_like"]:
-                if T.count_like_applies(v, kf):
+                if _co_applies(e, kf, kerr):
                     ex += 1
                 continue
             if e["kind"] == "ADDITIVE":
-                r = v * kf
+                r = float(e["official"]) * kf
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** kf) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == "PROBABILITY":
+                r = T.repeated_probability_for_multiplier(
+                    float(e["official"]), kf)
+            elif e["kind"] == "VECTOR":
+                T.vector_multiply(e["official"], kf)
+                r = 0.0
             else:
-                continue
+                self.fail(f"unexpected unconditional kind: {e}")
             if math.isfinite(r) and abs(r) <= 1e6:
                 ok += 1
         refused = sum(1 for e in entries if e["count_like"]
-                      and not T.count_like_applies(float(e["official"]), kf))
-        self.assertEqual(ok + ex, 801)
-        self.assertEqual(refused, 209)
-        self.assertEqual(len(entries), 1010)
+                      and not _co_applies(e, kf, kerr))
+        self.assertEqual(ok + ex, 1353)
+        self.assertEqual(refused, 1128)
+        self.assertEqual(len(entries), 2481)
+
+
+def _co_applies(entry, kf, kerr):
+    from civ6x10 import transforms as T
+    if entry["kind"] == "REPEAT":
+        return False
+    if entry["kind"] == "DELTA":
+        return T.count_like_applies_delta(
+            float(entry["official"]), kf, kerr)
+    return T.count_like_applies(float(entry["official"]), kf, kerr)
 
 
 if __name__ == "__main__":

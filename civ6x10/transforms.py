@@ -103,6 +103,23 @@ def count_like_applies(official: float, k_float: float,
     return tol < 0.5 and abs(v - r) <= tol
 
 
+def count_like_applies_delta(official: float, k_float: float,
+                               k_err: float | None = None) -> bool:
+    """Delta exactness (mirrors native DELTA + countLike in X10Transforms).
+
+    The applied value is official*(k-1), not official*k; exactness is
+    judged on the delta with the same FLOAT32-aware tolerance the native
+    Apply uses (|v-round| <= |official|*kErr + double-rounding).
+    """
+    import math
+    if k_err is None:
+        k_err = float_quantization_error(k_float)
+    v = official * (k_float - 1.0)
+    r = round(v)
+    tol = abs(official) * k_err + 1e-9 * max(1.0, abs(v))
+    return tol < 0.5 and abs(v - r) <= tol
+
+
 def _require_positive_multiplier(k: float) -> None:
     if not math.isfinite(k) or k < 0:
         raise ValueError(f"multiplier must be >= 0 and finite: {k}")

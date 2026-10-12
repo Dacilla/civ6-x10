@@ -65,18 +65,21 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
                           ("UpdateText", "X10Text")])
         ig = [(a.tag, a.get("id")) for a in m.find("InGameActions")]
         self.assertEqual(ig, [("UpdateDatabase", "X10Dummy"),
-                             ("UpdateDatabase", "X10WonderBridge")])
+                             ("UpdateDatabase", "X10WonderBridge"),
+                             ("UpdateDatabase", "X10SlotCopies")])
         ig_files = [[f.text for f in a.iter("File")]
                     for a in m.find("InGameActions")]
         self.assertEqual(ig_files, [["Config/Dummy.sql"],
-                                    ["Config/X10WonderBridge.sql"]])
+                                    ["Config/X10WonderBridge.sql"],
+                                    ["Config/X10SlotCopies.sql"]])
         fe_files = [[f.text for f in a.iter("File")]
                     for a in m.find("FrontEndActions")]
         self.assertEqual(fe_files, [["Config/X10Config.sql"],
                                     ["Config/X10Text.sql"]])
         files = sorted(f.text for f in m.find("Files"))
         self.assertEqual(files, [
-            "Config/Dummy.sql", "Config/X10Config.sql", "Config/X10Text.sql",
+            "Config/Dummy.sql", "Config/X10Config.sql",
+            "Config/X10SlotCopies.sql", "Config/X10Text.sql",
             "Config/X10WonderBridge.sql", "LICENSE.txt", "README.txt",
             "SOURCE.txt", "THIRD_PARTY_NOTICES.txt",
         ])
@@ -137,7 +140,8 @@ class TestManifestSurfaces(unittest.TestCase):
         self.assertEqual(
             sorted(e["stage_path"]
                    for e in items["controller"]["runtime_files"]),
-            ["Config/Dummy.sql", "Config/X10Config.sql", "Config/X10Text.sql",
+            ["Config/Dummy.sql", "Config/X10Config.sql",
+             "Config/X10SlotCopies.sql", "Config/X10Text.sql",
              "Config/X10WonderBridge.sql", "X10.modinfo"])
         self.assertTrue(man["source_release"]["build_assets"])
 
@@ -365,8 +369,8 @@ class TestFinalTransitionSurface(unittest.TestCase):
     def test_gameplay_pins_intact(self):
         man = manifest()
         self.assertEqual(man["dll_sha256"],
-                         "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
-        self.assertEqual(man["registry_entries"], 1010)
+                         "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507")
+        self.assertEqual(man["registry_entries"], 2481)
         self.assertEqual(man["release_version"], "1.0.0-rc2")
         self.assertEqual(man["modinfo_version"], 1)
 
@@ -395,20 +399,22 @@ class TestReleaseProvenanceClosure(unittest.TestCase):
 
     def test_single_dll_identity(self):
         man = manifest()
-        expect = "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14"
+        expect = "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507"
         self.assertEqual(man["dll_sha256"], expect)
         dll_entries = [
             e for e in man["workshop_items"]["engine"]["runtime_files"]
             if e.get("dll_input")]
         self.assertEqual(len(dll_entries), 1)
         self.assertEqual(dll_entries[0]["sha256"], expect)
-        self.assertEqual(man["ce_commit"], "0655190")
+        self.assertEqual(man["ce_commit"], "86be003")
 
     def test_semantic_vs_release_provenance_split(self):
         man = manifest()
-        self.assertEqual(man["semantic_registry_commit"], "2cf953e")
-        self.assertEqual(man["semantic_validation_tag"],
+        self.assertEqual(man["prior_validation_tag"],
                          "phase6b-1010-live-validated")
+        self.assertEqual(man["validation_status"],
+                         "pre-publication-gameplay-validation "
+                         "(Phase 8B Playtest-1 closure)")
         self.assertIn("controller_release_commit", man)
         self.assertRegex(man["controller_release_commit"], r"^[0-9a-f]{7,40}$")
         self.assertEqual(man["ux_validation_status"], "LIVE_VALIDATED")
@@ -420,7 +426,7 @@ class TestReleaseProvenanceClosure(unittest.TestCase):
         man = manifest()
         ce = man["ce_commit"]
         dll = man["dll_sha256"]
-        self.assertEqual(ce, "0655190")
+        self.assertEqual(ce, "86be003")
         checks = {
             "release/BUILDING.md": [ce, dll],
             "release/VALIDATION.md": [ce, dll],
@@ -552,7 +558,7 @@ class TestPublicExport(unittest.TestCase):
 
     def test_provenance_present_and_clean(self):
         prov = (self.root / "PROVENANCE.md").read_text(encoding="utf-8")
-        for needle in ("2cf953e", "phase6b-1010-live-validated",
+        for needle in ("phase6b-1010-live-validated", "86be003",
                        "1.0.0-rc2", "file-list hash"):
             self.assertIn(needle, prov)
 
@@ -663,7 +669,7 @@ class TestReleaseWordingAndPlan(unittest.TestCase):
         # old current-state phrasing named 971 as THE validated state;
         # 971 may remain only where explicitly historical
         self.assertNotIn("LIVE_VALIDATED as the 971-entry slice", readme)
-        self.assertIn("1010-entry", readme)
+        self.assertIn("2481-entry", readme)
         for rel in ("controller/X10/X10.modinfo",
                     "dependencies/CE-X10/CE-X10.modinfo"):
             self.assertNotIn("One configurable Workshop item",

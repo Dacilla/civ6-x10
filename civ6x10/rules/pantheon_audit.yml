@@ -81,9 +81,9 @@ pantheons:
       - modifier_id: FERTILITY_RITES_BUILDER_MODIFIER
         argument: Amount
         official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants one free Builder object (EFFECT_GRANT_UNIT_IN_CITY); object grants are DECISION_REQUIRED, same as excluded settler/free-unit grants"
+        disposition: CERTIFIED_COUNT_LIKE
+        mechanism: ADDITIVE
+        rationale: one free Builder is a countable one-time grant (8B, Pyramids class)
       - modifier_id: FERTILITY_RITES_GROWTH
         argument: Amount
         official: "10"
@@ -180,9 +180,9 @@ pantheons:
       - modifier_id: GOD_OF_WAR_FAITH_KILLS_MODIFIER
         argument: PercentDefeatedStrength
         official: "50"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "faith per kill scales with the overkill margin (DEFEATED_STRENGTH_SCALING), same preserved DECISION_REQUIRED as TRAIT_LEADER_FAITH_KILLS"
+        disposition: CERTIFIED_NUMERIC
+        mechanism: ADDITIVE
+        rationale: percent-of-defeated-strength faith (8B post-combat review)
   BELIEF_INITIATION_RITES:
     disposition: COMPLETE
     rows:
@@ -243,9 +243,9 @@ pantheons:
       - modifier_id: RELIGIOUS_SETTLEMENTS_SETTLER_MODIFIER
         argument: Amount
         official: "1"
-        disposition: EXCLUDED
-        mechanism: NONE
-        rationale: "grants one free Settler object; object grants are DECISION_REQUIRED"
+        disposition: CERTIFIED_COUNT_LIKE
+        mechanism: ADDITIVE
+        rationale: one free Settler is a countable one-time grant (8B)
   BELIEF_RIVER_GODDESS:
     disposition: COMPLETE
     rows:

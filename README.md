@@ -11,16 +11,14 @@ in Advanced Setup (Windows x64 + Gathering Storm, single-player).
 > keys, source symbols, log/registry filenames). The public v1.0
 > product is **Overpowered Bonuses**.
 
-> Status: **all seven modules (traits, policies, governments, pantheons,
-> wonders, governors, suzerain) are LIVE_VALIDATED in the 1010-entry
-> production state** at stored FLOAT32 k=7.3 (see
-> `docs/PRODUCTION_RELEASE.md` for per-module counters and
-> `spike/validation-evidence/` for the archived native logs; the prior
-> 971-entry slice evidence remains where explicitly historical). Phase 6C:
-> Run A 801 writes / 209 refusals, Run B 698 / 174 / 138. Phase 7C.2
-> migrates setup to a native preset/checkbox UI (same 1010 gameplay set).
-> Controller packaging is functionally complete locally; **Steam Workshop
-> release is not ready** pending the public-data hygiene step.
+> Status: **Phase 8B (Playtest-1 closure) is under pre-publication
+> gameplay validation.** The registry grew to the 2481-entry production
+> set (13 modules: traits, policies, governments, pantheons, wonders,
+> governors, suzerain/city-state, promotions, dedications, modes,
+> religion, greatpeople, projects; see `docs/PHASE_8B.md`). The prior
+> 1010-entry state remains where explicitly historical (RC2 matrix,
+> `spike/validation-evidence/`). **Steam Workshop release is not
+> ready** pending Playtest-2 validation.
 
 ## Architecture status
 
@@ -30,8 +28,8 @@ in Advanced Setup (Windows x64 + Gathering Storm, single-player).
 | Semantic transforms (canonical ×10, combat/probability/discount) | working / per-family certified |
 | Semantic certification gate (sem floor + curated overrides) | working |
 | Community Extension dependency | implemented (CE-X10 engine mod) |
-| Arbitrary multiplier (e.g. 7.3×, 0 = Off) | **LIVE_VALIDATED** |
-| Module ownership (bitmask, shared-definition rule) | 7 modules, all LIVE_VALIDATED (bit 64 = suzerain) |
+| Arbitrary multiplier (e.g. 7.3×, 0 = Off) | **under 8B validation** |
+| Module ownership (bitmask, shared-definition rule) | 13 modules (bit 4096 = projects) |
 | Controller packaging | local production candidate assembled (`spike/assemble-prod-test.ps1`) |
 | Steam Workshop release | not ready |
 

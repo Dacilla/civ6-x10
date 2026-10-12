@@ -29,24 +29,26 @@ modinfo_version: 1
 platform: Windows x64
 requires_gathering_storm: true
 requires_secret_societies_for_mode_definitions: true
-semantic_registry_commit: 2cf953e
+semantic_registry_commit: PENDING_8B_COMMIT
 semantic_validation_tag: phase6b-1010-live-validated
+prior_validation_tag: phase6b-1010-live-validated
+validation_status: pre-publication-gameplay-validation (Phase 8B Playtest-1 closure)
 controller_release_commit: f5e2d174506ab721f3cad316f883c1adecf57c43
 release_source_head: c88c9b328feb1a5f6d78251cd609bed62bf1a1bf
 ux_validation_status: LIVE_VALIDATED
 ux_validation_dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
-ce_commit: 0655190
+ce_commit: 86be003
 ce_branch: x10-lifecycle-log
 ce_fork_url: https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
 upstream_url: https://github.com/Wild-W/CivilizationVI_CommunityExtension
 public_source_url: https://github.com/Dacilla/civ6-overpowered-bonuses
-dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
-registry_sha256: 181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208
-registry_entries: 1010
-registry_unique_definitions: 1006
-registry_shared_definitions: 25
-registry_unconditional: 788
-registry_count_like: 222
+dll_sha256: 85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507
+registry_sha256: 90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c
+registry_entries: 2481
+registry_unique_definitions: 2475
+registry_shared_definitions: 26
+registry_unconditional: 1333
+registry_count_like: 1148
 live_validation_tag: phase6b-1010-live-validated
 live_run_a: {writes: 801, refused: 209}
 live_run_b: {writes: 698, refused: 174, skipped: 138}
@@ -58,6 +60,12 @@ modules:
   wonders: {bit: 16, default: on}
   governors: {bit: 32, default: on}
   suzerain: {bit: 64, default: on}
+  promotions: {bit: 128, default: on}
+  dedications: {bit: 256, default: on}
+  modes: {bit: 512, default: on}
+  religion: {bit: 1024, default: on}
+  greatpeople: {bit: 2048, default: on}
+  projects: {bit: 4096, default: on}
 
 workshop_items:
   engine:
@@ -77,7 +85,7 @@ workshop_items:
         sha256: 8a48ba744fd5c06503eaff885d69cde3441cdf331ee6558867f9e8afa28d62fe
       - stage_path: Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
         dll_input: true
-        sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
+        sha256: 85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/engine/README.txt
@@ -101,19 +109,22 @@ workshop_items:
     runtime_files:
       - stage_path: X10.modinfo
         source: controller/X10/X10.modinfo
-        sha256: 9a03f7b0c933c432883f714de67cb5caf6818eaf8fd496a992163b290ba8b88e
+        sha256: 42e9fade427519d47371430dc5c37421d5e480ecc895a9bd009aebcc6e18d824
       - stage_path: Config/X10Config.sql
         source: controller/X10/Config/X10Config.sql
-        sha256: b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464
+        sha256: f08ffe9e1255035cc111ec14210b5fb9ea5b936a484d3fede6157b50803db860
       - stage_path: Config/X10Text.sql
         source: controller/X10/Config/X10Text.sql
-        sha256: 3ffcfc94c4894be955616a92a55d48d8a32e0c409c160673858e23570a4b6812
+        sha256: 7ea76dd8d0e67bbbf1626daa4a8a169a7e67729ac5ff7ee14f768dbfc93bb770
       - stage_path: Config/Dummy.sql
         source: controller/X10/Config/Dummy.sql
         sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
+      - stage_path: Config/X10SlotCopies.sql
+        source: controller/X10/Config/X10SlotCopies.sql
+        sha256: fff3c68ca2bac3480d9749eced3c7c2d72cfc00a1179350375f7611a95691813
       - stage_path: Config/X10WonderBridge.sql
         source: controller/X10/Config/X10WonderBridge.sql
-        sha256: 81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe
+        sha256: d5e9556dc63a05da086b7604851bfa468cec593aa8f1dcb336e63e7e16aaf34e
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt
@@ -134,7 +145,7 @@ source_release:
   build_assets:
     - asset_path: X10ProductionRegistry.inc
       source: build/X10ProductionRegistry.inc
-      sha256: 181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208
+      sha256: 90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c
       entries: 1010
     - asset_path: release-manifest.yml
       source: release/release-manifest.yml

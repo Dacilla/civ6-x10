@@ -1,17 +1,17 @@
 {
  "generated_by": "civ6x10.release_surface (Phase 7C.3 provenance)",
  "freeze": {
-  "semantic_registry_commit": "2cf953e",
+  "semantic_registry_commit": "PENDING_8B_COMMIT",
   "controller_release_commit": "f5e2d174506ab721f3cad316f883c1adecf57c43",
-  "ce_commit": "0655190",
-  "dll_sha256": "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14",
+  "ce_commit": "86be003",
+  "dll_sha256": "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507",
   "ux_validation_status": "LIVE_VALIDATED",
   "registry": {
-   "entries": 1010,
-   "unique": 1006,
-   "shared": 25,
-   "unconditional": 788,
-   "count_like": 222
+   "entries": 2481,
+   "unique": 2475,
+   "shared": 26,
+   "unconditional": 1333,
+   "count_like": 1148
   }
  },
  "files": [
@@ -74,7 +74,7 @@
   {
    "path": "README.md",
    "tracked": true,
-   "bytes": 2962,
+   "bytes": 2792,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -102,7 +102,7 @@
   {
    "path": "build/X10ProductionRegistry.inc",
    "tracked": false,
-   "bytes": 71543,
+   "bytes": 221214,
    "size_normalization": "LF",
    "surface": "corresponding_build_artifact",
    "kind": "generated_derived_registry",
@@ -158,7 +158,7 @@
   {
    "path": "civ6x10/bridge.py",
    "tracked": true,
-   "bytes": 22984,
+   "bytes": 25255,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -172,7 +172,7 @@
   {
    "path": "civ6x10/certification.py",
    "tracked": true,
-   "bytes": 17835,
+   "bytes": 24859,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -186,7 +186,7 @@
   {
    "path": "civ6x10/cli.py",
    "tracked": true,
-   "bytes": 16887,
+   "bytes": 17450,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -215,6 +215,20 @@
    "path": "civ6x10/database.py",
    "tracked": true,
    "bytes": 941,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "authored_source",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": true,
+   "audit_only": false,
+   "provenance": "authored generator/certification code",
+   "disposition": "publish (AGPL corresponding source core)"
+  },
+  {
+   "path": "civ6x10/eight_b.py",
+   "tracked": true,
+   "bytes": 51699,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -270,7 +284,7 @@
   {
    "path": "civ6x10/modules/__init__.py",
    "tracked": true,
-   "bytes": 5953,
+   "bytes": 7171,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -368,7 +382,7 @@
   {
    "path": "civ6x10/production.py",
    "tracked": true,
-   "bytes": 9892,
+   "bytes": 12379,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -382,7 +396,7 @@
   {
    "path": "civ6x10/release_surface.py",
    "tracked": true,
-   "bytes": 14854,
+   "bytes": 15216,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -410,7 +424,7 @@
   {
    "path": "civ6x10/rules/certified_overrides.yml",
    "tracked": true,
-   "bytes": 20239,
+   "bytes": 46040,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_curated_rules",
@@ -466,7 +480,7 @@
   {
    "path": "civ6x10/rules/pantheon_audit.yml",
    "tracked": true,
-   "bytes": 11815,
+   "bytes": 11689,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "bulk_audit",
@@ -508,7 +522,7 @@
   {
    "path": "civ6x10/rules/support_frontier.yml",
    "tracked": true,
-   "bytes": 2117530,
+   "bytes": 2117731,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "frontier_research",
@@ -550,7 +564,7 @@
   {
    "path": "civ6x10/rules/wonder_audit.yml",
    "tracked": true,
-   "bytes": 69323,
+   "bytes": 69217,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "bulk_audit",
@@ -578,7 +592,7 @@
   {
    "path": "civ6x10/semantics.py",
    "tracked": true,
-   "bytes": 6178,
+   "bytes": 6235,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -606,7 +620,7 @@
   {
    "path": "civ6x10/transforms.py",
    "tracked": true,
-   "bytes": 3995,
+   "bytes": 7654,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -662,7 +676,21 @@
   {
    "path": "controller/X10/Config/X10Config.sql",
    "tracked": true,
-   "bytes": 4316,
+   "bytes": 5469,
+   "size_normalization": "LF",
+   "surface": "workshop_runtime",
+   "kind": "authored_source",
+   "generated": false,
+   "runtime_required": true,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored",
+   "disposition": "ship (modinfo/config sources are the controller)"
+  },
+  {
+   "path": "controller/X10/Config/X10SlotCopies.sql",
+   "tracked": true,
+   "bytes": 1192903,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -676,7 +704,7 @@
   {
    "path": "controller/X10/Config/X10Text.sql",
    "tracked": true,
-   "bytes": 3466,
+   "bytes": 4901,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -690,7 +718,7 @@
   {
    "path": "controller/X10/Config/X10WonderBridge.sql",
    "tracked": true,
-   "bytes": 434198,
+   "bytes": 411083,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "generated_guarded_bridge",
@@ -704,7 +732,7 @@
   {
    "path": "controller/X10/X10.modinfo",
    "tracked": true,
-   "bytes": 1845,
+   "bytes": 1993,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -1166,7 +1194,7 @@
   {
    "path": "manifests/traits.yml",
    "tracked": false,
-   "bytes": 620185,
+   "bytes": 620422,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "generated_derived_manifest",
@@ -1180,7 +1208,7 @@
   {
    "path": "manifests/wonders.yml",
    "tracked": false,
-   "bytes": 120970,
+   "bytes": 120998,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "generated_derived_manifest",
@@ -1208,7 +1236,7 @@
   {
    "path": "release/BUILDING.md",
    "tracked": true,
-   "bytes": 2255,
+   "bytes": 2354,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1292,7 +1320,7 @@
   {
    "path": "release/README-public.md",
    "tracked": true,
-   "bytes": 2641,
+   "bytes": 2689,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1306,7 +1334,7 @@
   {
    "path": "release/VALIDATION.md",
    "tracked": true,
-   "bytes": 4558,
+   "bytes": 5645,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1390,7 +1418,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 6878,
+   "bytes": 7431,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1432,7 +1460,7 @@
   {
    "path": "release/staging-src/controller/SOURCE.txt",
    "tracked": true,
-   "bytes": 803,
+   "bytes": 885,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1836,9 +1864,79 @@
    "disposition": "keep private; never package"
   },
   {
+   "path": "spike/8b/dedications_disposition.txt",
+   "tracked": true,
+   "bytes": 63,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "spike_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "mixed spike work area",
+   "disposition": "triage per file; never package wholesale"
+  },
+  {
+   "path": "spike/8b/envoys_disposition.txt",
+   "tracked": true,
+   "bytes": 5995,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "spike_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "mixed spike work area",
+   "disposition": "triage per file; never package wholesale"
+  },
+  {
+   "path": "spike/8b/modes_disposition.txt",
+   "tracked": true,
+   "bytes": 3999,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "spike_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "mixed spike work area",
+   "disposition": "triage per file; never package wholesale"
+  },
+  {
+   "path": "spike/8b/promotions_disposition.txt",
+   "tracked": true,
+   "bytes": 413,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "spike_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "mixed spike work area",
+   "disposition": "triage per file; never package wholesale"
+  },
+  {
+   "path": "spike/8b/sweep_disposition.txt",
+   "tracked": true,
+   "bytes": 4066,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "spike_scratch",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "mixed spike work area",
+   "disposition": "triage per file; never package wholesale"
+  },
+  {
    "path": "spike/EXPECTED_DLL_SHA256.txt",
    "tracked": true,
-   "bytes": 64,
+   "bytes": 65,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "build_pin",
@@ -2790,7 +2888,7 @@
   {
    "path": "tests/test_building_yield_integral.py",
    "tracked": true,
-   "bytes": 22397,
+   "bytes": 24955,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2846,7 +2944,7 @@
   {
    "path": "tests/test_governors_production.py",
    "tracked": true,
-   "bytes": 24989,
+   "bytes": 26891,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2874,7 +2972,7 @@
   {
    "path": "tests/test_pantheons.py",
    "tracked": true,
-   "bytes": 10977,
+   "bytes": 11372,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2888,7 +2986,21 @@
   {
    "path": "tests/test_phase6b_production.py",
    "tracked": true,
-   "bytes": 25203,
+   "bytes": 29614,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "test_fixture",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored tests + small regression constants",
+   "disposition": "publish; scrub bulk inventories if any found (see footprint)"
+  },
+  {
+   "path": "tests/test_playtest1_regressions.py",
+   "tracked": true,
+   "bytes": 4437,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2916,7 +3028,7 @@
   {
    "path": "tests/test_production.py",
    "tracked": true,
-   "bytes": 18338,
+   "bytes": 19912,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2930,7 +3042,7 @@
   {
    "path": "tests/test_production_config.py",
    "tracked": true,
-   "bytes": 26457,
+   "bytes": 27604,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2944,7 +3056,7 @@
   {
    "path": "tests/test_release_candidate.py",
    "tracked": true,
-   "bytes": 32524,
+   "bytes": 32838,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2958,7 +3070,7 @@
   {
    "path": "tests/test_release_freeze.py",
    "tracked": true,
-   "bytes": 13517,
+   "bytes": 14526,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2986,7 +3098,7 @@
   {
    "path": "tests/test_semantic_backlog.py",
    "tracked": true,
-   "bytes": 35360,
+   "bytes": 38010,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3000,7 +3112,7 @@
   {
    "path": "tests/test_semantics.py",
    "tracked": true,
-   "bytes": 18539,
+   "bytes": 21904,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3014,7 +3126,7 @@
   {
    "path": "tests/test_strong_family_override.py",
    "tracked": true,
-   "bytes": 9041,
+   "bytes": 9999,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3028,7 +3140,7 @@
   {
    "path": "tests/test_support_frontier.py",
    "tracked": true,
-   "bytes": 15383,
+   "bytes": 16406,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3042,7 +3154,7 @@
   {
    "path": "tests/test_suzerain.py",
    "tracked": true,
-   "bytes": 88427,
+   "bytes": 88429,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3056,7 +3168,7 @@
   {
    "path": "tests/test_suzerain_production.py",
    "tracked": true,
-   "bytes": 21552,
+   "bytes": 24128,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3112,7 +3224,7 @@
   {
    "path": "tests/test_wonders.py",
    "tracked": true,
-   "bytes": 11612,
+   "bytes": 11934,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3126,20 +3238,20 @@
  ],
  "surface_summary": {
   "corresponding_source": {
-   "files": 111,
-   "bytes": 1239012
+   "files": 113,
+   "bytes": 1364495
   },
   "corresponding_build_artifact": {
    "files": 1,
-   "bytes": 71543
+   "bytes": 221214
   },
   "private": {
-   "files": 102,
-   "bytes": 14808754
+   "files": 107,
+   "bytes": 14823525
   },
   "workshop_runtime": {
-   "files": 8,
-   "bytes": 445807
+   "files": 9,
+   "bytes": 1618331
   }
  },
  "firaxis_footprint": {
@@ -3165,23 +3277,23 @@
    "tracked": true
   },
   "civ6x10/rules/pantheon_audit.yml": {
-   "bytes": 11815,
+   "bytes": 11689,
    "bytes_normalization": "LF",
    "lines": 281,
-   "uppercase_identifier_tokens": 160,
+   "uppercase_identifier_tokens": 157,
    "tracked": true
   },
   "civ6x10/rules/wonder_audit.yml": {
-   "bytes": 69323,
+   "bytes": 69217,
    "bytes_normalization": "LF",
-   "lines": 1733,
-   "uppercase_identifier_tokens": 964,
+   "lines": 1729,
+   "uppercase_identifier_tokens": 954,
    "tracked": true
   },
   "civ6x10/rules/support_frontier.yml": {
-   "bytes": 2117530,
+   "bytes": 2117731,
    "bytes_normalization": "LF",
-   "lines": 78977,
+   "lines": 78980,
    "uppercase_identifier_tokens": 19603,
    "tracked": true
   },
@@ -3207,17 +3319,17 @@
    "tracked": true
   },
   "controller/X10/Config/X10WonderBridge.sql": {
-   "bytes": 434198,
+   "bytes": 411083,
    "bytes_normalization": "LF",
-   "lines": 4898,
-   "uppercase_identifier_tokens": 10916,
+   "lines": 4613,
+   "uppercase_identifier_tokens": 10352,
    "tracked": true
   },
   "build/X10ProductionRegistry.inc": {
-   "bytes": 71543,
+   "bytes": 221214,
    "bytes_normalization": "LF",
-   "lines": 1029,
-   "uppercase_identifier_tokens": 1016,
+   "lines": 2505,
+   "uppercase_identifier_tokens": 3879,
    "tracked": false
   }
  },

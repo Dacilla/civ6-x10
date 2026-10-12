@@ -17,7 +17,7 @@
 - [ ] `release/verified-sources.yml` completed from the example and URLs verified
 - [ ] publish-ready assembler rerun (`-PublishReady`, no RC flag): passes
 - [ ] no `PLANNED-PLACEHOLDER` markers anywhere staged
-- [ ] DLL hash exact (`3b6dc3d2…ab14`, RC2 config-reader build)
+- [ ] DLL hash exact (`85ea8752…8507`, Phase-8B coverage build)
 - [ ] final CHECKSUMS.sha256 generated
 - [ ] no probe content
 - [ ] engine/controller Mod IDs correct

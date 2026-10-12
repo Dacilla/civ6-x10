@@ -21,7 +21,10 @@ TEXT = ROOT / "controller" / "X10" / "Config" / "X10Text.sql"
 MODULE_IDS = ["X10_MODULE_TRAITS", "X10_MODULE_POLICIES",
               "X10_MODULE_GOVERNMENTS", "X10_MODULE_PANTHEONS",
               "X10_MODULE_WONDERS", "X10_MODULE_GOVERNORS",
-              "X10_MODULE_SUZERAIN"]
+              "X10_MODULE_SUZERAIN", "X10_MODULE_PROMOTIONS",
+              "X10_MODULE_DEDICATIONS", "X10_MODULE_MODES",
+              "X10_MODULE_RELIGION", "X10_MODULE_GREATPEOPLE",
+              "X10_MODULE_PROJECTS"]
 
 
 def config_rows():
@@ -36,14 +39,15 @@ def config_rows():
 
 
 class TestProductionSetupLayout(unittest.TestCase):
-    def test_nine_params_advanced_options(self):
+    def test_fifteen_params_advanced_options(self):
+        # Phase 8B: preset + custom + 13 module checkboxes.
         rows = config_rows()
-        self.assertEqual(len(rows), 9)
+        self.assertEqual(len(rows), 15)
         for r in rows:
             self.assertEqual(r[8].strip("'"), "AdvancedOptions", r)
         self.assertEqual([int(r[9]) for r in rows],
                          [2400, 2401, 2402, 2403, 2404, 2405, 2406, 2407,
-                          2408])
+                          2408, 2409, 2410, 2411, 2412, 2413, 2414])
 
     def test_preset_row(self):
         rows = config_rows()
@@ -97,7 +101,7 @@ class TestProductionSetupLayout(unittest.TestCase):
         # below); raw X10_* keys appear solely as ConfigurationIds
         names = re.findall(
             r"\('X10\w+', '(LOC_[^']+)', '(LOC_[^']+)'", text)
-        self.assertEqual(len(names), 9)
+        self.assertEqual(len(names), 15)
         for name, desc in names:
             self.assertTrue(name.startswith("LOC_X10_"), name)
             self.assertTrue(desc.startswith("LOC_X10_"), desc)
@@ -122,10 +126,16 @@ class TestProductionLocCoverage(unittest.TestCase):
         keys = sorted(set(re.findall(r"LOC_X10_[A-Z0-9_]+", cfg)))
         self.assertEqual(keys, [
             "LOC_X10_CUSTOM_DESC", "LOC_X10_CUSTOM_NAME",
+            "LOC_X10_MOD_DEDICATIONS_DESC", "LOC_X10_MOD_DEDICATIONS_NAME",
             "LOC_X10_MOD_GOVERNMENTS_DESC", "LOC_X10_MOD_GOVERNMENTS_NAME",
             "LOC_X10_MOD_GOVERNORS_DESC", "LOC_X10_MOD_GOVERNORS_NAME",
+            "LOC_X10_MOD_GREATPEOPLE_DESC", "LOC_X10_MOD_GREATPEOPLE_NAME",
+            "LOC_X10_MOD_MODES_DESC", "LOC_X10_MOD_MODES_NAME",
             "LOC_X10_MOD_PANTHEONS_DESC", "LOC_X10_MOD_PANTHEONS_NAME",
             "LOC_X10_MOD_POLICIES_DESC", "LOC_X10_MOD_POLICIES_NAME",
+            "LOC_X10_MOD_PROJECTS_DESC", "LOC_X10_MOD_PROJECTS_NAME",
+            "LOC_X10_MOD_PROMOTIONS_DESC", "LOC_X10_MOD_PROMOTIONS_NAME",
+            "LOC_X10_MOD_RELIGION_DESC", "LOC_X10_MOD_RELIGION_NAME",
             "LOC_X10_MOD_SUZERAIN_DESC", "LOC_X10_MOD_SUZERAIN_NAME",
             "LOC_X10_MOD_TRAITS_DESC", "LOC_X10_MOD_TRAITS_NAME",
             "LOC_X10_MOD_WONDERS_DESC", "LOC_X10_MOD_WONDERS_NAME",
@@ -207,8 +217,14 @@ class TestDisplayCopyLint(unittest.TestCase):
                       "Affects: Civilization & Leader Traits",
                       "Affects: Policy Cards", "Affects: Governments",
                       "Affects: Pantheons", "Affects: Wonders",
-                      "Affects: Governors & Secret Societies",
-                      "Affects: City-State Suzerain Bonuses",
+                       "Affects: Governors & Secret Societies",
+                      "Affects: City-State Bonuses",
+                      "Affects: Unit Promotions & Abilities",
+                      "Affects: Age Dedications",
+                      "Affects: Game Modes",
+                      "Affects: Religion Beliefs",
+                      "Affects: Great People",
+                      "Affects: City Projects",
                       "×10 Classic", "Custom..."):
             self.assertIn(label, text, label)
 
@@ -344,7 +360,7 @@ class TestPublicBranding(unittest.TestCase):
         text = TEXT.read_text(encoding="utf-8")
         names = re.findall(r"\('en_US', 'LOC_X10_\w+_NAME', '(.*?)'\)",
                            text)
-        self.assertEqual(len(names), 9)
+        self.assertEqual(len(names), 15)
         for label in names:
             self.assertNotIn("X10", label, label)
             self.assertFalse(label.startswith("Overpowered Bonuses"),
@@ -398,7 +414,8 @@ class TestPublicBranding(unittest.TestCase):
     def test_internal_ids_not_renamed(self):
         cfg = CONFIG.read_text(encoding="utf-8")
         for needle in ("X10_MULTIPLIER_PRESET", "X10_MULTIPLIER",
-                       "X10_MODULE_TRAITS", "X10_MODULE_SUZERAIN"):
+                       "X10_MODULE_TRAITS", "X10_MODULE_SUZERAIN",
+                       "X10_MODULE_PROMOTIONS", "X10_MODULE_PROJECTS"):
             self.assertIn(needle, cfg, needle)
         self.assertTrue(
             (ROOT / "controller" / "X10" / "Config" / "X10Text.sql"
@@ -452,7 +469,8 @@ class TestProductionModinfo7C2(unittest.TestCase):
         self.assertEqual(
             [(a.tag, a.get("id")) for a in m.find("InGameActions")],
             [("UpdateDatabase", "X10Dummy"),
-             ("UpdateDatabase", "X10WonderBridge")])
+             ("UpdateDatabase", "X10WonderBridge"),
+             ("UpdateDatabase", "X10SlotCopies")])
 
 
 # --- Resolution mirror (spec-derived from X10Write.cpp) --------------------
@@ -573,7 +591,7 @@ class TestResolutionMirror(unittest.TestCase):
             self.assertIn(needle, text)
 
 
-class TestRegistryStill1010(unittest.TestCase):
+class TestRegistry2481Playtest2Baseline(unittest.TestCase):
     def test_counts(self):
         from civ6x10.bridge import collect_registry_rows
         from civ6x10.production import build_production_registry
@@ -582,10 +600,10 @@ class TestRegistryStill1010(unittest.TestCase):
                 collect_registry_rows(ROOT))
         except FileNotFoundError:
             raise unittest.SkipTest("local-only registry inputs unavailable")
-        self.assertEqual(len(entries), 1010)
-        self.assertEqual(report["unique_definitions"], 1006)
-        self.assertEqual(report["certified_unconditional"], 788)
-        self.assertEqual(report["certified_count_like_conditional"], 222)
+        self.assertEqual(len(entries), 2481)
+        self.assertEqual(report["unique_definitions"], 2475)
+        self.assertEqual(report["certified_unconditional"], 1333)
+        self.assertEqual(report["certified_count_like_conditional"], 1148)
 
 
 if __name__ == "__main__":

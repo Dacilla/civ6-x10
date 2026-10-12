@@ -276,17 +276,24 @@ def build_release_surface(root: Path) -> dict:
         surfaces.setdefault(f["surface"], {"files": 0, "bytes": 0})
         surfaces[f["surface"]]["files"] += 1
         surfaces[f["surface"]]["bytes"] += f["bytes"]
+    import yaml
+    man = yaml.safe_load(
+        (root / "release" / "release-manifest.yml").read_text(
+            encoding="utf-8"))
     return {
         "generated_by": "civ6x10.release_surface (Phase 7C.3 provenance)",
         "freeze": {
-            "semantic_registry_commit": "2cf953e",
+            "semantic_registry_commit": man.get("semantic_registry_commit"),
             "controller_release_commit":
-                "f5e2d174506ab721f3cad316f883c1adecf57c43",
-            "ce_commit": "0655190",
-            "dll_sha256": "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14",
-            "ux_validation_status": "LIVE_VALIDATED",
-            "registry": {"entries": 1010, "unique": 1006, "shared": 25,
-                         "unconditional": 788, "count_like": 222},
+                man.get("controller_release_commit"),
+            "ce_commit": man.get("ce_commit"),
+            "dll_sha256": man.get("dll_sha256"),
+            "ux_validation_status": man.get("ux_validation_status"),
+            "registry": {"entries": man.get("registry_entries"),
+                         "unique": man.get("registry_unique_definitions"),
+                         "shared": man.get("registry_shared_definitions"),
+                         "unconditional": man.get("registry_unconditional"),
+                         "count_like": man.get("registry_count_like")},
         },
         "files": files,
         "surface_summary": surfaces,

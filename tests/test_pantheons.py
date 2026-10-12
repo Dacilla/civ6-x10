@@ -139,21 +139,23 @@ class TestPantheonRegistry(unittest.TestCase):
             entries, report = build_all()
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
-        # Four-module build (wonders land in test_wonders.py): 715 shipped
-        # rows plus Suleiman governor titles, newly certified by the narrow
-        # Delta rule, plus 2 re-admitted Toqui loyalty rows (Phase 6B).
-        self.assertEqual(len(entries), 718)
+        # Four-module build (wonders land in test_wonders.py): 718
+        # Phase-6B rows plus 16 Phase-8B magnitudes (pantheon one-time
+        # grants, God-of-War post-combat, trait grants/spies/vectors).
+        self.assertEqual(len(entries), 734)
         self.assertEqual(report["unresolved_conflicts"], [])
         pan = [e for e in entries if e["owners"] == 8]
-        self.assertEqual(len(pan), 31)
+        self.assertEqual(len(pan), 34)
         kinds = {e["kind"] for e in pan}
         self.assertEqual(kinds, {"ADDITIVE"})
         cl = [e for e in pan if e["count_like"]]
-        self.assertEqual(len(cl), 3)
+        self.assertEqual(len(cl), 5)
         self.assertEqual({e["modifier_id"] for e in cl},
                          {"DIVINE_SPARK_HOLY_SITE_MODIFIER",
                           "DIVINE_SPARK_SCIENTIST_MODIFIER",
-                          "DIVINE_SPARK_WRITER_MODIFIER"})
+                          "DIVINE_SPARK_WRITER_MODIFIER",
+                          "FERTILITY_RITES_BUILDER_MODIFIER",
+                          "RELIGIOUS_SETTLEMENTS_SETTLER_MODIFIER"})
 
     def test_pantheon_ownership_bit(self):
         from civ6x10.production import MODULE_BITS
@@ -162,6 +164,8 @@ class TestPantheonRegistry(unittest.TestCase):
             entries, report = build_all()
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
+        # The 4-module slice holds 25 shared definitions; the 26th
+        # lives in the new-module union (greatpeople+promotions).
         self.assertEqual(report["shared_definitions"], 25)
         for e in entries:
             if e["owners"] & 8:
@@ -210,8 +214,8 @@ class TestPantheonRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         rest = [e for e in entries if not (e["owners"] & 8)]
-        self.assertEqual(len(old_entries), 687)
-        self.assertEqual(len(rest), 687)
+        self.assertEqual(len(old_entries), 700)
+        self.assertEqual(len(rest), 700)
         self.assertEqual(
             sorted(map(str, old_entries)), sorted(map(str, rest)))
 
@@ -232,7 +236,7 @@ class TestPantheonRegistry(unittest.TestCase):
         kf = T.stored_float32(7.3)
         pan = [e for e in entries if e["owners"] == 8]
         un = [e for e in pan if not e["count_like"]]
-        self.assertEqual(len(un), 28)
+        self.assertEqual(len(un), 29)
         for k in (1.0, 10.0, 4.25, kf):
             for e in un:
                 r = float(e["official"]) * k
@@ -256,7 +260,9 @@ class TestPantheonRegistry(unittest.TestCase):
             if e["owners"] == 8 and e["count_like"])
         self.assertEqual(sparks, ["DIVINE_SPARK_HOLY_SITE_MODIFIER",
                                   "DIVINE_SPARK_SCIENTIST_MODIFIER",
-                                  "DIVINE_SPARK_WRITER_MODIFIER"])
+                                  "DIVINE_SPARK_WRITER_MODIFIER",
+                                  "FERTILITY_RITES_BUILDER_MODIFIER",
+                                  "RELIGIOUS_SETTLEMENTS_SETTLER_MODIFIER"])
         for e in entries:
             if e["modifier_id"] in sparks:
                 self.assertEqual(e["official"], "1")

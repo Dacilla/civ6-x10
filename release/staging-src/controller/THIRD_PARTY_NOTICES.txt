@@ -3,7 +3,7 @@ Overpowered Bonuses - third-party notices
 
 Native transformation engine (required dependency item "Overpowered Bonuses CE Engine"):
   fork https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
-  branch x10-lifecycle-log, commit 0655190, based on upstream
+  branch x10-lifecycle-log, commit 86be003, based on upstream
   Wild-W/CivilizationVI_CommunityExtension (AGPL-3.0).
 
 Raw Firaxis game database/data files are never redistributed. This item

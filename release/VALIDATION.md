@@ -1,12 +1,36 @@
-# X10 v1.0.0-rc2 — validation summary (compact public evidence)
+# X10 validation summary (compact public evidence)
 
 No raw log dumps are included. Full native logs remain in the private
 development workspace; their SHA-256 hashes are recorded below so the
 summaries stay checkable.
 
-RC2 — not RC1 — is the final validated candidate: RC2 carries the new
-preset/custom/bool configuration path (DLL `3b6dc3d2…ab14`, CE
-`0655190`) over the unchanged 1010-entry gameplay set.
+## Phase 8B — under pre-publication gameplay validation
+
+The Playtest-1 closure expansion grew the registry to 2481 entries
+(2475 unique definitions, 26 shared; 1333 unconditional + 1148
+count-like) with three new native kinds (VECTOR/DELTA/REPEAT), six new
+modules (promotions, dedications, modes, religion, greatpeople,
+projects), and a new native build:
+
+- CE fork branch `phase-8b-coverage`, commit `86be003`
+- DLL SHA-256:
+  `85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507`
+
+Static gate expectation at Custom 7.3: 1333 apply + 20 exact
+conditionals = 1353 of 2481; 1128 refuse safely (never floored).
+The live validation matrix below (RC2, 1010 set) is retained as the
+prior validated point; the 8B matrix (preset x10 all-ON, Custom 7.3,
+per-module OFF, invalid Custom, save/reload, plus focused live checks
+for Jebel/Petra/Pyramids/Potala/Colosseum/Eiffel/Discipline/Monument)
+is recorded in `docs/PHASE_8B.md` as it completes. No public release
+is cut from the 8B tree until that matrix is green.
+
+## RC2 record v1.0.0-rc2 (prior validated point, 1010 set)
+
+RC2 — not RC1 — was the final validated candidate before Phase 8B:
+RC2 carries the new preset/custom/bool configuration path (DLL
+`3b6dc3d2…ab14`, CE `0655190`) over the unchanged 1010-entry
+gameplay set.
 
 ### Semantic validation (registry freeze `2cf953e`)
 
