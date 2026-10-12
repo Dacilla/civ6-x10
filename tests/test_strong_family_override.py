@@ -146,7 +146,10 @@ class TestStrongFamilyOverride(unittest.TestCase):
         rules = load_rules()
         table = {(e["effect"], e["argument"]) for e in
                  rules.get("strong_family_overrides") or []}
-        self.assertEqual(len(table), 2 + 20)
+        # 2 (6B) + 33 reviewed 8B tuples (grants, spatial budgets,
+        # post-combat percents, tourism factor, air slots, papal
+        # pressure, yield bursts).
+        self.assertEqual(len(table), 35)
         hits = sorted((r["modifier_id"], r["argument_name"]) for r in rows
                       if (r.get("effect_type"), r.get("argument_name"))
                       in table and r.get("status") == "ok")

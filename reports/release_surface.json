@@ -968,6 +968,34 @@
    "disposition": "publish; audit docs under review for bulk tables (see footprint)"
   },
   {
+   "path": "docs/PHASE_8B.md",
+   "tracked": true,
+   "bytes": 11868,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "authored_docs",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored analysis (quotes official IDs/values in prose)",
+   "disposition": "publish; audit docs under review for bulk tables (see footprint)"
+  },
+  {
+   "path": "docs/PLAYTEST_2_CHECKLIST.md",
+   "tracked": true,
+   "bytes": 3118,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "authored_docs",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored analysis (quotes official IDs/values in prose)",
+   "disposition": "publish; audit docs under review for bulk tables (see footprint)"
+  },
+  {
    "path": "docs/PRODUCTION_RELEASE.md",
    "tracked": true,
    "bytes": 21685,
@@ -1250,7 +1278,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 1872,
+   "bytes": 2664,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1558,7 +1586,7 @@
   {
    "path": "release/workshop-controller.md",
    "tracked": true,
-   "bytes": 1966,
+   "bytes": 2055,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2998,6 +3026,20 @@
    "disposition": "publish; scrub bulk inventories if any found (see footprint)"
   },
   {
+   "path": "tests/test_phase8b_gates.py",
+   "tracked": true,
+   "bytes": 8408,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "test_fixture",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored tests + small regression constants",
+   "disposition": "publish; scrub bulk inventories if any found (see footprint)"
+  },
+  {
    "path": "tests/test_playtest1_regressions.py",
    "tracked": true,
    "bytes": 4437,
@@ -3112,7 +3154,7 @@
   {
    "path": "tests/test_semantics.py",
    "tracked": true,
-   "bytes": 21904,
+   "bytes": 23100,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3126,7 +3168,7 @@
   {
    "path": "tests/test_strong_family_override.py",
    "tracked": true,
-   "bytes": 9999,
+   "bytes": 10162,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3196,7 +3238,7 @@
   {
    "path": "tests/test_ux_prototype.py",
    "tracked": true,
-   "bytes": 7663,
+   "bytes": 7713,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3238,8 +3280,8 @@
  ],
  "surface_summary": {
   "corresponding_source": {
-   "files": 113,
-   "bytes": 1364495
+   "files": 116,
+   "bytes": 1390179
   },
   "corresponding_build_artifact": {
    "files": 1,

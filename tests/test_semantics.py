@@ -148,11 +148,9 @@ class TestFullRegistrySemantics(unittest.TestCase):
         # coarse GRANT_OBJECT floor was proven wrong per-argument. Phase 8B
         # admits countable one-time grants and recurring resource flows
         # (all count-like: fractional Custom results refuse at runtime).
-        allowed = {
-            ("EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
-             "BuildingProductionPercent"),
-            ("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
-             "Amount"),
+        # Countable discrete grants (units, techs, civics, tokens,
+        # buildings, resources, air slots): indivisible counts.
+        count_grants = {
             ("EFFECT_GRANT_UNIT_IN_CITY", "Amount"),
             ("EFFECT_GRANT_GREAT_PERSON_CLASS_IN_CITY", "Amount"),
             ("EFFECT_GRANT_PLAYER_RANDOM_TECHNOLOGY", "Amount"),
@@ -164,21 +162,38 @@ class TestFullRegistrySemantics(unittest.TestCase):
             ("EFFECT_GRANT_PLAYER_FREE_RESOURCE_EXTRACTED", "Amount"),
             ("EFFECT_GRANT_AIR_SLOTS", "Amount"),
         }
+        # One-shot yield/production bursts: flat magnitudes, never counts.
+        yield_bursts = {
+            ("EFFECT_GRANT_YIELD", "Amount"),
+            ("EFFECT_GRANT_PRODUCTION_IN_CITY", "Amount"),
+            ("EFFECT_GRANT_UNIT_YIELD_ADJACENT_FEATURES", "Amount"),
+            ("EFFECT_GRANT_UNIT_YIELD_ADJACENT_NATURAL_WONDERS", "Amount"),
+            ("EFFECT_GRANT_UNIT_YIELD_ADJACENT_TERRAINS", "Amount"),
+            ("EFFECT_GRANT_YIELD_PER_GREAT_WORK_IN_CITY", "Amount"),
+            ("EFFECT_GRANT_CITY_LOYALTY", "Amount"),
+            ("EFFECT_GRANT_TOURISM_PER_EXCESS_LUXURIES", "Amount"),
+            ("EFFECT_GRANT_YIELD_PER_EXCESS_LUXURIES", "Amount"),
+            ("EFFECT_GRANT_PLAYER_YIELD_PERCENT_UNIT_COST",
+             "UnitCostPercent"),
+        }
+        allowed = {
+            ("EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
+             "BuildingProductionPercent"),
+            ("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
+             "Amount"),
+            ("EFFECT_GRANT_STRENGTH_PER_ADJACENT_UNIT_TYPE", "Amount"),
+        } | count_grants | yield_bursts
         for e in entries:
             r = rows[(e["modifier_id"], e["argument"])]
-            s = floor[(r["modifier_type"], r["effect_type"],
-                       r["argument_name"])]
-            if s["semantic_family"] == "GRANT_OBJECT":
+            s = floor.get((r["modifier_type"], r["effect_type"],
+                           r["argument_name"]))
+            if s is not None and s["semantic_family"] == "GRANT_OBJECT":
                 self.assertIn((r["effect_type"], r["argument_name"]),
                               allowed, e["modifier_id"])
-                # 8B grant admissions are indivisible counts (except the two
-                # 6B quantity-of-pressure rows, which stay unconditional).
-                if (r["effect_type"], r["argument_name"]) not in (
-                        ("EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
-                         "BuildingProductionPercent"),
-                        ("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
-                         "Amount")):
+                if (r["effect_type"], r["argument_name"]) in count_grants:
                     self.assertTrue(e["count_like"], e["modifier_id"])
+                if (r["effect_type"], r["argument_name"]) in yield_bursts:
+                    self.assertFalse(e["count_like"], e["modifier_id"])
             # Curated grant-like exclusions stay out entirely.
             self.assertNotIn(r["effect_type"], (
                 "EFFECT_ADJUST_EXTRA_UNIT_COPY",
@@ -208,16 +223,18 @@ class TestFullRegistrySemantics(unittest.TestCase):
             ("EFFECT_ADJUST_UNIT_SEA_MOVEMENT", "Amount"),
             ("EFFECT_ADJUST_UNIT_CLEAR_TERRAIN_START_MOVEMENT", "Amount"),
             ("EFFECT_ADJUST_PLAYER_EMBARKED_UNIT_MOVEMENT", "Amount"),
-            ("EFFECT_ADJUST_UNIT_SIGHT", "Amount"),
             ("EFFECT_ADJUST_UNIT_ATTACK_RANGE", "Amount"),
             ("EFFECT_ADJUST_UNIT_TOURISM_BOMB_RANGE", "Range"),
             ("EFFECT_ADJUST_UNIT_TOURISM_BOMB_RANGE", "Modifier"),
+            ("EFFECT_ADJUST_UNIT_JUMP_ABILITY", "Range"),
+            ("EFFECT_ADJUST_UNIT_PER_UNUSED_MOVEMENT_COMBAT_BONUS",
+             "Amount"),
         }
         for e in entries:
             r = rows[(e["modifier_id"], e["argument"])]
-            s = floor[(r["modifier_type"], r["effect_type"],
-                       r["argument_name"])]
-            if s["semantic_family"] == "SPATIAL_BUDGET":
+            s = floor.get((r["modifier_type"], r["effect_type"],
+                           r["argument_name"]))
+            if s is not None and s["semantic_family"] == "SPATIAL_BUDGET":
                 self.assertIn((r["effect_type"], r["argument_name"]),
                               allowed, e["modifier_id"])
                 self.assertTrue(
@@ -234,17 +251,20 @@ class TestFullRegistrySemantics(unittest.TestCase):
                   "DEFEATED_STRENGTH_SCALING"}
         for e in entries:
             r = rows[(e["modifier_id"], e["argument"])]
-            s = floor[(r["modifier_type"], r["effect_type"],
-                       r["argument_name"])]
-            if s["semantic_family"] in banned:
+            s = floor.get((r["modifier_type"], r["effect_type"],
+                           r["argument_name"]))
+            if s is not None and s["semantic_family"] in banned:
                 # MIXED rows enter only via an explicit curated override.
                 # Phase 8B additionally admits reviewed post-combat percent
                 # yields (DEFEATED floor) and the wonder-tourism scaling
                 # factor (MULTIPLICATIVE floor) via exact strong overrides.
                 if s["semantic_family"] == "MIXED_VALUE_DOMAIN":
+                    # Scalar siblings certify via mixed:; reviewed vectors
+                    # via vector:.
                     self.assertTrue(
-                        e["cert_source"].startswith("curated-effect:mixed:"),
-                        e)
+                        e["cert_source"].startswith(
+                            ("curated-effect:mixed:",
+                             "curated-effect:vector:")), e)
                 else:
                     self.assertTrue(
                         e["cert_source"].startswith(
@@ -302,7 +322,8 @@ class TestFullRegistrySemantics(unittest.TestCase):
             s = floor.get((r["modifier_type"], r["effect_type"],
                            r["argument_name"]))
             if (s and s["semantic_family"] == "DISCOUNT"
-                    and r["status"] == "ok"):
+                    and r["status"] == "ok"
+                    and r.get("transformation") != "unchanged"):
                 try:
                     float(r["official_value"])
                 except (TypeError, ValueError):

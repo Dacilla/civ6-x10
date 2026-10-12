@@ -254,12 +254,12 @@ class TestProductionTransforms(unittest.TestCase):
                 self.fail(f"unexpected unconditional kind: {e}")
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 1324)
+        self.assertEqual(ok, 1333)
         exact = [e for e in co if _applies_at_k73(e, kf, kerr)]
         refused = [e for e in co if e not in exact]
         self.assertEqual(len(exact), 20)
         self.assertEqual(len(refused), 1128)
-        # Static expectation: 1324 unconditional + 21 conditional = 1345
+        # Static expectation: 1333 unconditional + 20 conditional = 1353
         # of 2481 apply at Custom 7.3; the rest refuse safely.
         self.assertEqual(ok + len(exact), 1353)
 
