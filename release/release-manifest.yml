@@ -37,12 +37,12 @@ controller_release_commit: f5e2d174506ab721f3cad316f883c1adecf57c43
 release_source_head: c88c9b328feb1a5f6d78251cd609bed62bf1a1bf
 ux_validation_status: LIVE_VALIDATED
 ux_validation_dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
-ce_commit: 86be003
+ce_commit: 29e8b7f
 ce_branch: x10-lifecycle-log
 ce_fork_url: https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
 upstream_url: https://github.com/Wild-W/CivilizationVI_CommunityExtension
 public_source_url: https://github.com/Dacilla/civ6-overpowered-bonuses
-dll_sha256: 85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507
+dll_sha256: e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c
 registry_sha256: 90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c
 registry_entries: 2481
 registry_unique_definitions: 2475
@@ -85,7 +85,7 @@ workshop_items:
         sha256: 8a48ba744fd5c06503eaff885d69cde3441cdf331ee6558867f9e8afa28d62fe
       - stage_path: Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
         dll_input: true
-        sha256: 85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507
+        sha256: e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/engine/README.txt
@@ -95,10 +95,10 @@ workshop_items:
         sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/engine/THIRD_PARTY_NOTICES.txt
-        sha256: 5e3247fa3eb799683be4199751759bc707423f500b98fcb6cd0460133eee4a10
+        sha256: 9dfaa869a43129aa2c057f4ac5ecf61ed0bdc1cccf9f222735fc022682c87037
       - stage_path: SOURCE.txt
         source: release/staging-src/engine/SOURCE.txt
-        sha256: 0fd4e1e689ee3b9c3a12770058b0f9a99f346c7f5b90a81da2ed6004bc22db21
+        sha256: 1b0416e31030eb66cd87365d358642c0c03aa80ec5802418e654336ae75695fc
         has_planned_placeholder: true
   controller:
     name: Overpowered Bonuses
@@ -134,10 +134,10 @@ workshop_items:
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/controller/THIRD_PARTY_NOTICES.txt
-        sha256: 2191300b05e5554e5e851aef5cf03a82f93aeab75462a0efa5a7483d77aaa7be
+        sha256: a88f382c107409f60a048db1ddfbdb449bc915d6814a34f90927720aa212a05d
       - stage_path: SOURCE.txt
         source: release/staging-src/controller/SOURCE.txt
-        sha256: 955ff1072d7b96dde06232cf25ccc2f9ae5a45ebcc554a77ac9709acb832e681
+        sha256: 6de1fccb21119687031eaec8246787d38d3dc484cbbb44c1d991edcba0a0c020
         has_planned_placeholder: true
 
 source_release:

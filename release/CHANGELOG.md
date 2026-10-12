@@ -10,7 +10,7 @@
 - Non-destructive wonder bridge (DELTA): direct tables keep official
   values (vanilla UI truthful); helpers contribute `official*(k-1)`.
 - New native kinds VECTOR/DELTA/REPEAT; 13-module owner mask (new CE
-  build `85ea8752…8507`, CE `86be003`).
+  build `e0486aee...0ea06c`, CE `29e8b7f`).
 - Setup grows to thirteen checkboxes; City-State module broadened to
   Envoy + Suzerain bonuses. No Workshop upload yet.
 

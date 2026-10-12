@@ -1,8 +1,8 @@
 # Phase 8B — Playtest-1 closure + core coverage expansion
 
 Registry: 1010 → **2481 entries** (2475 unique definitions, 26 shared;
-1333 unconditional + 1148 count-like). Native: CE `86be003`, DLL
-`85ea8752…8507` (new kinds VECTOR/DELTA/REPEAT, 13-module mask).
+1333 unconditional + 1148 count-like). Native: CE `29e8b7f`, DLL
+`e0486aee...0ea06c` (new kinds VECTOR/DELTA/REPEAT, 13-module mask).
 Status: static gates green; **under pre-publication gameplay validation**
 (Playtest-2 matrix pending — this build is installed, not yet run).
 

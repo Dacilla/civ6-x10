@@ -149,7 +149,7 @@ class TestProductionUntouched(unittest.TestCase):
             self.skipTest("expected DLL hash unavailable")
         self.assertEqual(
             pin.read_text(encoding="utf-8").strip().lower(),
-            "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507")
+            "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
 
     def test_scratch_pin_distinct(self):
         pin = ROOT / "spike" / "UX_PROBE_DLL_SHA256.txt"
@@ -159,7 +159,7 @@ class TestProductionUntouched(unittest.TestCase):
         self.assertRegex(scratch, r"^[0-9a-f]{64}$")
         self.assertNotEqual(
             scratch,
-            "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
+            "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
 
     def test_modinfo_gameplay_nodes_stable(self):
         import xml.etree.ElementTree as ET

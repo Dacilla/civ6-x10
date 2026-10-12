@@ -1,7 +1,7 @@
 """Phase 7A: release-freeze invariant for the validated gameplay state.
 
 Pins the Phase-8B production point
-(registry 90d72d69 + CE 86be003 + DLL 85ea8752...8507): registry digest/counts,
+(registry 90d72d69 + CE 29e8b7f + DLL e0486aee...0ea06c): registry digest/counts,
 manifests, owner bits, CE include, DLL pin, bridge/config hashes,
 controller toggles. Phase 7A may change docs/tests/release tooling, but
 production runtime files must stay byte-identical.
@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FROZEN_REGISTRY_SHA256 = (
     "90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c")
 FROZEN_DLL_SHA256 = (
-    "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507")
+    "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
 FROZEN_BRIDGE_SHA256 = (
     "d5e9556dc63a05da086b7604851bfa468cec593aa8f1dcb336e63e7e16aaf34e")
 FROZEN_CONFIG_SHA256 = (
@@ -173,7 +173,7 @@ class TestReleaseFreeze(unittest.TestCase):
                if a["asset_path"] == "X10ProductionRegistry.inc"][0]
         self.assertEqual(reg["sha256"], FROZEN_REGISTRY_SHA256)
         self.assertEqual(man["registry_entries"], 2481)
-        self.assertEqual(man["ce_commit"], "86be003")
+        self.assertEqual(man["ce_commit"], "29e8b7f")
         self.assertEqual(man["semantic_validation_tag"],
                          "phase6b-1010-live-validated")
         self.assertEqual(man["prior_validation_tag"],

@@ -369,7 +369,7 @@ class TestFinalTransitionSurface(unittest.TestCase):
     def test_gameplay_pins_intact(self):
         man = manifest()
         self.assertEqual(man["dll_sha256"],
-                         "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507")
+                         "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
         self.assertEqual(man["registry_entries"], 2481)
         self.assertEqual(man["release_version"], "1.0.0-rc2")
         self.assertEqual(man["modinfo_version"], 1)
@@ -399,14 +399,14 @@ class TestReleaseProvenanceClosure(unittest.TestCase):
 
     def test_single_dll_identity(self):
         man = manifest()
-        expect = "85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507"
+        expect = "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c"
         self.assertEqual(man["dll_sha256"], expect)
         dll_entries = [
             e for e in man["workshop_items"]["engine"]["runtime_files"]
             if e.get("dll_input")]
         self.assertEqual(len(dll_entries), 1)
         self.assertEqual(dll_entries[0]["sha256"], expect)
-        self.assertEqual(man["ce_commit"], "86be003")
+        self.assertEqual(man["ce_commit"], "29e8b7f")
 
     def test_semantic_vs_release_provenance_split(self):
         man = manifest()
@@ -426,7 +426,7 @@ class TestReleaseProvenanceClosure(unittest.TestCase):
         man = manifest()
         ce = man["ce_commit"]
         dll = man["dll_sha256"]
-        self.assertEqual(ce, "86be003")
+        self.assertEqual(ce, "29e8b7f")
         checks = {
             "release/BUILDING.md": [ce, dll],
             "release/VALIDATION.md": [ce, dll],
@@ -558,7 +558,7 @@ class TestPublicExport(unittest.TestCase):
 
     def test_provenance_present_and_clean(self):
         prov = (self.root / "PROVENANCE.md").read_text(encoding="utf-8")
-        for needle in ("phase6b-1010-live-validated", "86be003",
+        for needle in ("phase6b-1010-live-validated", "29e8b7f",
                        "1.0.0-rc2", "file-list hash"):
             self.assertIn(needle, prov)
 

@@ -1,7 +1,7 @@
 # Playtest-2 checklist (human — game runs + log capture)
 
 Build installed: `X10` + `CE-X10` in Civ VI Mods (8B tree), DLL
-`85ea8752…8507`. Disable upstream Community Extension and any other
+`e0486aee...0ea06c`. Disable upstream Community Extension and any other
 GameCore replacement. Standard setup for every run unless noted:
 Gathering Storm, ROME (Trajan), Small map, 2 AI, Secret Societies ON
 (so mode payloads are present).

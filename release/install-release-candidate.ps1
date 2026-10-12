@@ -6,7 +6,7 @@
 # Workshop Community Extension directory. Human smoke test only.
 param(
     [string]$StageDir = (Join-Path $PSScriptRoot 'out' '1.0.0-rc2' 'workshop'),
-    [string]$ExpectedDllHash = '85ea875229ba644a65f00a96373162a8311e0d9f0d12281d7b407bd264c38507'
+    [string]$ExpectedDllHash = 'e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c'
 )
 $ErrorActionPreference = 'Stop'
 
