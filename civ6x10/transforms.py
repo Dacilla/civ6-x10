@@ -106,3 +106,88 @@ def count_like_applies(official: float, k_float: float,
 def _require_positive_multiplier(k: float) -> None:
     if not math.isfinite(k) or k < 0:
         raise ValueError(f"multiplier must be >= 0 and finite: {k}")
+
+
+def parse_vector(value: str) -> list[float] | None:
+    """Strict comma-separated numeric vector parse (Phase 8B).
+
+    Returns the element list, or None for malformed/mixed content. A
+    single scalar is NOT a vector (returns None): vector handling
+    requires at least two elements. Whitespace around elements is
+    tolerated (official data mixes '2,2,1' and '1, 1' styles); empty
+    elements, non-numeric elements, and non-finite values fail closed.
+    """
+    if not isinstance(value, str) or "," not in value:
+        return None
+    parts = value.split(",")
+    if len(parts) < 2:
+        return None
+    out: list[float] = []
+    for p in parts:
+        p = p.strip()
+        if not p:
+            return None
+        try:
+            v = float(p)
+        except (TypeError, ValueError):
+            return None
+        if not math.isfinite(v):
+            return None
+        out.append(v)
+    return out
+
+
+def vector_multiply(value: str, k: float) -> str:
+    """Element-wise additive scaling of a certified numeric vector.
+
+    Each magnitude scales by k (same semantics as scale_flat); the
+    paired selector list is untouched by callers. Raises ValueError on
+    malformed input or refusal-worthy k. Formatting mirrors the
+    manifest _fmt convention (integral values print without decimals).
+    """
+    _require_positive_multiplier(k)
+    vec = parse_vector(value)
+    if vec is None:
+        raise ValueError(f"not a certified numeric vector: {value!r}")
+    return ",".join(_fmt_num(v * k) for v in vec)
+
+
+def _fmt_num(v: float) -> str:
+    if abs(v - round(v)) < 1e-9:
+        return str(int(round(v)))
+    s = f"{v:.6g}"
+    return s
+
+
+def bridge_delta(official: float, k: float) -> float:
+    """Additional multiplied delta for non-destructive bridge helpers.
+
+    The direct table keeps its official value V (vanilla UI stays
+    truthful); the helper contributes V*(k-1) so the total is V*k.
+    At k=1 the delta is exactly 0 (helper inert). Raises ValueError
+    for invalid k; callers apply the count-like exactness gate.
+    """
+    _require_positive_multiplier(k)
+    return official * (k - 1.0)
+
+
+def repeat_copies(k_float: float, k_err: float | None = None,
+                  maximum: int = 99) -> int | None:
+    """Number of additional slot-copy definitions to activate (Phase 8B).
+
+    Implicit-+1 bonus-slot effects (Potala Palace et al) carry no numeric
+    argument, so scaling means activating (k-1) pre-inserted inert copies.
+    Returns the copy count for integral k in [1, maximum], else None
+    (refuse: fractional k keeps the single vanilla slot, never a rounded
+    count). Uses the same FLOAT32-aware exactness as count_like_applies.
+    """
+    if k_err is None:
+        k_err = float_quantization_error(k_float)
+    r = round(k_float)
+    tol = k_err + 1e-9 * max(1.0, abs(k_float))
+    if not (tol < 0.5 and abs(k_float - r) <= tol):
+        return None
+    n = int(r)
+    if n < 1 or n > 1 + maximum:
+        return None
+    return n - 1
