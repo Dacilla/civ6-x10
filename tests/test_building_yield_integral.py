@@ -318,7 +318,7 @@ class TestIntegralTransformMath(unittest.TestCase):
             ok += 1
         exact = [e for e in co if _applies_co(e, K73, kerr)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(ok, 1324)
+        self.assertEqual(ok, 1333)
         self.assertEqual(len(exact), 20)
         self.assertEqual(len(refused), 1128)
         self.assertEqual(ok + len(exact), 1353)

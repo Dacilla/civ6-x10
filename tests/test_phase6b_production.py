@@ -327,11 +327,11 @@ class TestNewFamilyCertification(unittest.TestCase):
         self.assertEqual(faith["owners"], MODULE_BITS["promotions"])
         self.assertEqual(faith["kind"], "ADDITIVE")
         self.assertEqual(faith["official"], "50")
-        # Phase 8B: the Nihang flanking bonus scales as a flat percent
-        # under the promotions module (base combat stats stay out).
+        # Phase 8B: the Nihang flanking bonus is combat strength when
+        # flanked, scaled by the nonlinear formula under promotions.
         flanked = self.by_id["NIHANG_FLANKED_BONUS"]
         self.assertEqual(flanked["owners"], MODULE_BITS["promotions"])
-        self.assertEqual(flanked["kind"], "ADDITIVE")
+        self.assertEqual(flanked["kind"], "COMBAT")
         # Phase 8B: the Nihang movement bonus scales as whole movement
         # points under the promotions module (base combat stats stay out).
         nihang_move = self.by_id["NIHANG_MOVEMENT_BONUS"]

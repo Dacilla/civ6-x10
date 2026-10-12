@@ -967,6 +967,12 @@ def build_mode_manifest_rows(db, bundle) -> tuple[list[dict], list[str]]:
 
 def write_mode_manifest(rows: list[dict]) -> Path:
     import yaml
+    # Modes manifest keeps magnitudes only: mode overlays duplicate base
+    # definitions (same ModifierId, selector arguments), and unchanged
+    # rows would fake multi-module ownership at the manifest level while
+    # never entering production. The disposition notes file keeps the
+    # reviewed-but-unscaled record.
+    rows = [r for r in rows if r.get("transformation") != "unchanged"]
     path = ROOT / "manifests" / "modes.yml"
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         yaml.safe_dump({"modes": rows}, fh, sort_keys=False,

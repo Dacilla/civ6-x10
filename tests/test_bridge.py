@@ -187,11 +187,11 @@ class TestBridgeMechanics(unittest.TestCase):
         self.assertEqual(n, 0)
 
     def test_k1_and_off_invariant(self):
-        # Real controller behavior: the bridge zeroes the direct cell, so
-        # the gameplay total is 0 + helper(k). k=0 (native Off) and module
-        # OFF leave the helper at official V (native never arms writes);
-        # k=1 is identity; k>1 scales. Total is vanilla V in every
-        # non-scaling case, kV when ON.
+        # Phase-8B non-destructive delta: the direct cell keeps V and the
+        # helper is stored inert (0). k=0 (native Off) and module OFF leave
+        # the helper at 0 (native never arms writes); k=1 is identity
+        # (delta 0); integral k>1 contributes V*(k-1) for a total of kV.
+        # Fractional deltas refuse (count-like), leaving direct V alone.
         try:
             rows = build_wonder_direct(local_db())
         except FileNotFoundError:
@@ -199,18 +199,24 @@ class TestBridgeMechanics(unittest.TestCase):
         sql = emit_bridge_sql(rows)
         for r in rows:
             hid = helper_id(r)
-            self.assertIn("'%s', 'Amount', 'ARGTYPE_IDENTITY', '%s'" % (
-                hid, r["value"]), sql)
-            self.assertIn("SET %s = 0" % r["value_column"], sql)
+            self.assertIn("'%s', 'Amount', 'ARGTYPE_IDENTITY', '0'" % hid,
+                          sql)
+            self.assertNotIn("SET %s = 0" % r["value_column"], sql)
             v = float(r["value"])
-            direct_after_bridge = 0.0
+            direct_after_bridge = v
             for k in (0.0, 1.0, 7.3, 10.0, 4.25):
-                helper = v if k in (0.0, 1.0) else T.scale_flat(v, k)
+                if k in (0.0, 1.0):
+                    helper = 0.0
+                elif T.count_like_applies_delta(v, k):
+                    helper = v * (k - 1.0)
+                else:
+                    helper = 0.0  # refused: helper stays inert
                 total = direct_after_bridge + helper
-                want = v if k in (0.0, 1.0) else v * k
+                want = v if k in (0.0, 1.0) else (
+                    v * k if T.count_like_applies_delta(v, k) else v)
                 self.assertAlmostEqual(total, want, msg=(hid, k))
-            # Module OFF with k>1 configured: native unarmed, helper stays V.
-            self.assertAlmostEqual(direct_after_bridge + v, v)
+            # Module OFF with k>1 configured: native unarmed, helper stays 0.
+            self.assertAlmostEqual(direct_after_bridge + 0.0, v)
 
     def test_bridged_scale_at_arbitrary_k(self):
         import math
@@ -225,13 +231,21 @@ class TestBridgeMechanics(unittest.TestCase):
         entries, report = build_production_registry(helpers)
         self.assertEqual(report["unresolved_conflicts"], [])
         self.assertEqual(len(entries), 57)
+        self.assertTrue(all(e["kind"] == "DELTA" for e in entries))
         kf = T.stored_float32(7.3)
+        kerr = T.float_quantization_error(kf)
         for k in (1.0, 10.0, 4.25, kf):
             for e in entries:
-                if e["count_like"]:
+                v = float(e["official"])
+                if k == 1.0:
+                    self.assertEqual(v * (k - 1.0), 0.0, e)
                     continue
-                self.assertTrue(
-                    math.isfinite(float(e["official"]) * k), (e, k))
+                kk = kf if k == kf else k
+                ke = kerr if k == kf else 0.0
+                applies = T.count_like_applies_delta(v, kk, ke)
+                if applies:
+                    self.assertTrue(
+                        math.isfinite(v * (kk - 1.0)), (e, k))
 
     def test_structural_absent_from_sql_and_registry(self):
         try:
@@ -346,12 +360,14 @@ class TestBridgeMechanics(unittest.TestCase):
             ]
             from civ6x10.bridge import emit_bridge_sql as emit
             db.executescript(emit(direct))
+            # Non-destructive: direct cells keep official values; helpers
+            # start inert (0).
             self.assertEqual(
-                db.execute("SELECT Housing FROM Buildings WHERE BuildingType='BUILDING_X'").fetchone()[0], 0)
+                db.execute("SELECT Housing FROM Buildings WHERE BuildingType='BUILDING_X'").fetchone()[0], 2)
             self.assertEqual(
-                db.execute("SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType='BUILDING_X'").fetchone()[0], 0)
+                db.execute("SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType='BUILDING_X'").fetchone()[0], 10)
             self.assertEqual(
-                db.execute("SELECT Value FROM ModifierArguments WHERE ModifierId='X10_X_HOUSING' AND Name='Amount'").fetchone()[0], "2")
+                db.execute("SELECT Value FROM ModifierArguments WHERE ModifierId='X10_X_HOUSING' AND Name='Amount'").fetchone()[0], "0")
             n0 = db.execute("SELECT COUNT(*) FROM Modifiers").fetchone()[0]
             db.executescript(emit(direct))  # idempotent reapply
             self.assertEqual(
@@ -371,7 +387,7 @@ class TestBridgeMechanics(unittest.TestCase):
             housed = db.execute("SELECT Housing FROM Buildings WHERE BuildingType='BUILDING_X'").fetchone()[0]
             self.assertEqual(kept, 99)
             self.assertEqual(missing, 0)
-            self.assertEqual(housed, 0)  # undrifted cell still bridges
+            self.assertEqual(housed, 2)  # undrifted cell keeps V, helper inert
             db.close()
 
     def test_bridge_sql_shipped_in_controller_package(self):
@@ -433,7 +449,7 @@ PORTUGAL_CELLS = [
 def diag(db, hid):
     return db.execute(
         "SELECT expected, observed, helper_exists, attached, amount_exists,"
-        " zeroed, origin FROM X10BridgeDiag WHERE helper_id=?",
+        " preserved, origin FROM X10BridgeDiag WHERE helper_id=?",
         (hid,)).fetchone()
 
 
@@ -458,12 +474,13 @@ class TestBridgeTriggers(unittest.TestCase):
                           ("X10_TORRE_DE_BELEM_GPP_ADMIRAL", "1")):
             self.assertEqual(
                 db.execute("SELECT COUNT(*) FROM Modifiers WHERE ModifierId=?", (hid,)).fetchone()[0], 1, hid)
+            # Helpers start inert (0); the direct cell keeps its value.
             self.assertEqual(
                 db.execute("SELECT Value FROM ModifierArguments WHERE ModifierId=? AND Name='Amount'", (hid,)).fetchone()[0],
-                want, hid)
-            self.assertEqual(diag(db, hid)[1:], ("0", 1, 1, 1, 1, "trigger"), hid)
+                "0", hid)
+            self.assertEqual(diag(db, hid)[1:], (want, 1, 1, 1, 1, "trigger"), hid)
         self.assertEqual(
-            db.execute("SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType='BUILDING_ETEMENANKI'").fetchone()[0], 0)
+            db.execute("SELECT YieldChange FROM Building_YieldChanges WHERE BuildingType='BUILDING_ETEMENANKI'").fetchone()[0], 2)
         db.close()
 
     def test_late_drift_records_mismatch(self):
@@ -513,7 +530,7 @@ class TestBridgeTriggers(unittest.TestCase):
         db.execute("INSERT INTO Building_YieldChanges VALUES ('BUILDING_B','YIELD_GOLD',99)")
         db.commit()
         db.executescript(emit(cells))
-        self.assertEqual(diag(db, "X10_A_YIELD_GOLD")[1:], ("0", 1, 1, 1, 1, "immediate"))
+        self.assertEqual(diag(db, "X10_A_YIELD_GOLD")[1:], ("10", 1, 1, 1, 1, "immediate"))
         self.assertEqual(diag(db, "X10_B_YIELD_GOLD")[1:],
                          ("99", 0, 0, 0, 0, "immediate"))
         self.assertEqual(

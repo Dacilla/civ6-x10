@@ -184,15 +184,15 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIn("MH_DisableHook(created[i])", t)
 
     def test_pantheon_module_bit_wired(self):
-        # Pantheons are a supported module (bit 8): native slots, mask,
-        # config default ON. Governors (bit 32) and suzerain (bit 64) are
-        # covered by their own tests; every module is now supported.
+        # Pantheons are a supported module (bit 8): loop-built native
+        # mask, config default ON. All thirteen modules ride the same
+        # loop (no per-bit statements to drift).
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[3]", w)
-        self.assertIn("mask |= 8", w)
+        self.assertIn("s_modEnabled[13]", w)
+        self.assertIn("mask |= (1 << i)", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("pantheons", true)', lc)
-        self.assertIn("bool mods[7]", lc)
+        self.assertIn("bool mods[13]", lc)
         self.assertNotIn('"pantheons", "governors"',
                          lc.replace(" ", "").replace("\n", ""))
         # every module is supported: no unsupported-module warn loop remains
@@ -210,14 +210,14 @@ class TestWriteProbeRegressions(unittest.TestCase):
         self.assertIsNotNone(m)
 
     def test_wonder_module_bit_wired(self):
-        # Wonders are the fifth supported module (bit 16): native slots,
+        # Wonders are a supported module (bit 16): loop-built native
         # mask, config default ON, and no unsupported warning for wonders.
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[7]", w)
-        self.assertIn("mask |= 16", w)
+        self.assertIn("s_modEnabled[13]", w)
+        self.assertIn("mask |= (1 << i)", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("wonders", true)', lc)
-        self.assertIn("bool mods[7]", lc)
+        self.assertIn("bool mods[13]", lc)
         flat = lc.replace(" ", "").replace("\n", "")
         self.assertNotIn('"wonders","suzerain"', flat)
         self.assertNotIn('{"suzerain"}', flat)
@@ -236,17 +236,13 @@ class TestWriteProbeRegressions(unittest.TestCase):
         # mask, config default ON, and no unsupported warning for governors.
         # Suzerain (bit 64) is covered by its own test.
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[7]", w)
-        self.assertIn(
-            "static bool s_modEnabled[7] = {true, true, true, true, true, "
-            "true, true};",
-            w)
-        self.assertIn("for (int i = 0; i < 7; i++) s_modEnabled[i] = mods[i];",
+        self.assertIn("s_modEnabled[13]", w)
+        self.assertIn("for (int i = 0; i < 13; i++) s_modEnabled[i] = mods[i];",
                       w)
-        self.assertIn("mask |= 32", w)
+        self.assertIn("mask |= (1 << i)", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("governors", true)', lc)
-        self.assertIn("bool mods[7]", lc)
+        self.assertIn("bool mods[13]", lc)
         flat = lc.replace(" ", "").replace("\n", "")
         self.assertIn('ModuleEnabled("governors",true)', flat)
         self.assertNotIn('{"suzerain"}', flat)
@@ -270,11 +266,14 @@ class TestWriteProbeRegressions(unittest.TestCase):
         # Nihang stats, resource quantities and other granted mechanics stay
         # unscaled by explicit audit decision.
         w = self._code(self._fork("X10Write.cpp"))
-        self.assertIn("s_modEnabled[7]", w)
-        self.assertIn("mask |= 64", w)
+        self.assertIn("s_modEnabled[13]", w)
+        self.assertIn("mask |= (1 << i)", w)
         lc = self._fork("X10Lifecycle.cpp")
         self.assertIn('ModuleEnabled("suzerain", true)', lc)
-        self.assertIn("bool mods[7]", lc)
+        self.assertIn("bool mods[13]", lc)
+        for mod in ("promotions", "dedications", "modes", "religion",
+                    "greatpeople", "projects"):
+            self.assertIn(f'ModuleEnabled("{mod}", true)', lc)
         flat = lc.replace(" ", "").replace("\n", "")
         self.assertNotIn("unsupported", flat.lower())
         self.assertNotIn("ignored", flat)
