@@ -29,12 +29,12 @@ modinfo_version: 1
 platform: Windows x64
 requires_gathering_storm: true
 requires_secret_societies_for_mode_definitions: true
-semantic_registry_commit: PENDING_8B_COMMIT
+semantic_registry_commit: 4de62e0
 semantic_validation_tag: phase6b-1010-live-validated
 prior_validation_tag: phase6b-1010-live-validated
 validation_status: pre-publication-gameplay-validation (Phase 8B Playtest-1 closure)
-controller_release_commit: f5e2d174506ab721f3cad316f883c1adecf57c43
-release_source_head: c88c9b328feb1a5f6d78251cd609bed62bf1a1bf
+controller_release_commit: 4de62e0
+release_source_head: 4de62e0
 ux_validation_status: LIVE_VALIDATED
 ux_validation_dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
 ce_commit: 29e8b7f

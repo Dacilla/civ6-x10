@@ -1,8 +1,8 @@
 {
  "generated_by": "civ6x10.release_surface (Phase 7C.3 provenance)",
  "freeze": {
-  "semantic_registry_commit": "PENDING_8B_COMMIT",
-  "controller_release_commit": "f5e2d174506ab721f3cad316f883c1adecf57c43",
+  "semantic_registry_commit": "4de62e0",
+  "controller_release_commit": "4de62e0",
   "ce_commit": "29e8b7f",
   "dll_sha256": "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c",
   "ux_validation_status": "LIVE_VALIDATED",
@@ -1446,7 +1446,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 7431,
+   "bytes": 7355,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -3281,7 +3281,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 116,
-   "bytes": 1391483
+   "bytes": 1391407
   },
   "corresponding_build_artifact": {
    "files": 1,
