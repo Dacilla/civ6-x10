@@ -228,7 +228,7 @@
   {
    "path": "civ6x10/eight_b.py",
    "tracked": true,
-   "bytes": 51699,
+   "bytes": 52093,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -2902,7 +2902,7 @@
   {
    "path": "tests/test_bridge.py",
    "tracked": true,
-   "bytes": 27780,
+   "bytes": 28639,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2986,7 +2986,7 @@
   {
    "path": "tests/test_live_package.py",
    "tracked": true,
-   "bytes": 21767,
+   "bytes": 21810,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3014,7 +3014,7 @@
   {
    "path": "tests/test_phase6b_production.py",
    "tracked": true,
-   "bytes": 29614,
+   "bytes": 29612,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3281,7 +3281,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 116,
-   "bytes": 1390179
+   "bytes": 1391473
   },
   "corresponding_build_artifact": {
    "files": 1,
