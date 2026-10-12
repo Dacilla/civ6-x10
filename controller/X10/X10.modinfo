@@ -28,12 +28,16 @@
     <UpdateDatabase id="X10WonderBridge">
       <File>Config/X10WonderBridge.sql</File>
     </UpdateDatabase>
+    <UpdateDatabase id="X10SlotCopies">
+      <File>Config/X10SlotCopies.sql</File>
+    </UpdateDatabase>
   </InGameActions>
   <Files>
     <File>Config/X10Config.sql</File>
     <File>Config/X10Text.sql</File>
     <File>Config/Dummy.sql</File>
     <File>Config/X10WonderBridge.sql</File>
+    <File>Config/X10SlotCopies.sql</File>
     <File>README.txt</File>
     <File>LICENSE.txt</File>
     <File>THIRD_PARTY_NOTICES.txt</File>
