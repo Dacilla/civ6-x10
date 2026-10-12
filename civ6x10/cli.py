@@ -108,6 +108,15 @@ def cmd_generate_registry(args) -> int:
     return 0
 
 
+def cmd_build_8b_manifests(args) -> int:
+    import json
+    from .eight_b import build_all
+    report = build_all()
+    print(json.dumps({k: v for k, v in report.items()
+                      if not k.endswith("_notes_file")}, indent=1))
+    return 0
+
+
 def cmd_verify(args) -> int:
     import yaml
     from .validation import validate
@@ -309,6 +318,11 @@ def main(argv=None) -> int:
     p.add_argument("--out", default=str(ROOT / "civ6x10" / "rules" /
                                         "semantic_backlog.yml"))
     p.set_defaults(fn=cmd_build_backlog)
+    p = sub.add_parser("build-8b-manifests",
+                               help="Phase 8B manifest/SQL builders "
+                                    "(vectors patch, slots, envoys, "
+                                    "promotions, dedications, modes, sweep)")
+    p.set_defaults(fn=cmd_build_8b_manifests)
     p = sub.add_parser("generate-registry")
     p.add_argument("--out", default=str(ROOT / "build" / "X10ProductionRegistry.inc"))
     p.set_defaults(fn=cmd_generate_registry)

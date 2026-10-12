@@ -168,13 +168,21 @@ def load_direct_csv(path: str | Path) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
-REGISTRY_MODULES = ("traits", "policies", "governments", "pantheons",
-                    "wonders", "governors", "suzerain")
+# Manifest file -> default module tag. Files whose rows carry their own
+# "module" key (slots: wonders/traits per copy; sweeps: religion,
+# greatpeople, projects) keep it; the default applies otherwise.
+REGISTRY_MODULES = {"traits": "traits", "policies": "policies",
+                    "governments": "governments", "pantheons": "pantheons",
+                    "wonders": "wonders", "governors": "governors",
+                    "suzerain": "suzerain", "envoys": "suzerain",
+                    "promotions": "promotions",
+                    "dedications": "dedications", "modes": "modes",
+                    "slots": "wonders", "sweep": None}
 
 
 def collect_registry_rows(root: str | Path) -> list[dict]:
-    """All production input rows: 7 manifests (traits, policies, governments,
-pantheons, wonders, governors, suzerain) + generated bridge helpers.
+    """All production input rows: base manifests + 8B manifests (envoys,
+promotions, dedications, modes, slots, sweep) + generated bridge helpers.
 
     Single source shared by the CLI and the test-suite so the shipped
     registry can never silently diverge from what tests certify.
@@ -182,12 +190,21 @@ pantheons, wonders, governors, suzerain) + generated bridge helpers.
     import yaml
     root = Path(root)
     rows: list[dict] = []
-    for module in REGISTRY_MODULES:  # 7 supported modules (suzerain=bit 64)
-        man = yaml.safe_load(
-            open(root / "manifests" / f"{module}.yml", encoding="utf-8"))
-        for r in man[module]:
+    for manifest, default_module in REGISTRY_MODULES.items():
+        path = root / "manifests" / f"{manifest}.yml"
+        if not path.is_file():
+            if manifest in ("traits", "policies", "governments", "pantheons",
+                            "wonders", "governors", "suzerain"):
+                raise FileNotFoundError(f"missing base manifest: {path}")
+            continue  # 8B manifests are written by build-8b-manifests
+        man = yaml.safe_load(open(path, encoding="utf-8"))
+        for r in man[manifest]:
             r = dict(r)
-            r["module"] = module
+            if not r.get("module"):
+                if default_module is None:
+                    raise KeyError(
+                        f"sweep row without module: {r.get('modifier_id')}")
+                r["module"] = default_module
             rows.append(r)
     direct_csv = root / "data" / "local" / "wonder_direct.csv"
     if direct_csv.is_file():

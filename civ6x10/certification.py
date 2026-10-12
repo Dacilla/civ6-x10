@@ -386,6 +386,20 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
                 "source": "curated-effect:discount-excluded:" + et}
     if sf == "COMBAT_STRENGTH_BONUS":
         if proven:
+            # The tenfold-damage formula is undefined for penalties: a
+            # negative official is a debuff magnitude, scaled flat
+            # (Phase 8B: -5 defending penalty -> -50 at x10, never naive
+            # formula application and never silent refusal).
+            try:
+                official_num = float(
+                    manifest_row.get("official_value") or "")
+            except (TypeError, ValueError):
+                official_num = 0.0
+            if official_num < 0:
+                return {**base, "certified": True, "kind": "ADDITIVE",
+                        "count_like": False,
+                        "source": "formula-derived:negative-combat-flat",
+                        "resolution": "certified"}
             return {**base, "certified": True, "kind": "COMBAT",
                     "count_like": False,
                     "source": "formula-derived:COMBAT_STRENGTH_BONUS",

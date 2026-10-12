@@ -91,7 +91,7 @@ combat_effects:
     rationale: "combat-strength points for adjacent levied units (+3)"
   - effect: EFFECT_ADJUST_NUMBER_ALLIES_UNIT_COMBAT_BONUS
     rationale: "combat-strength points per ally (+3)"
-  - effect: EFFECT_ADJUST_UNIT_PER_UNUSED_MOVEMENT_COMBAT_MODIFIER
+  - effect: EFFECT_ADJUST_UNIT_PER_UNUSED_MOVEMENT_COMBAT_BONUS
     rationale: "combat-strength points per unused movement (+3); the movement count is a filter"
 
 # Discount-effect audit (one-time effect-level review). Percent-suffixed
@@ -334,6 +334,96 @@ strong_family_overrides:
       and Ayutthaya +10 with Ramses signed -15/+30 siblings prove a scalar
       percent-of-building-cost parameter; object selectors and IncludeWonder
       are separate arguments and do not ride along (Phase 6A evidence)"
+  # Phase 8B one-shot yield bursts (Great Person activations, city
+  # projects, papal pressure). Each Amount is a countable flat quantity of
+  # yield/pressure/production granted by one activation or completion --
+  # the same "genuine countable quantity" logic as the wonder grants.
+  # Eureka/tech-boost objects, relics, envoy grants, and -1 sentinels stay
+  # excluded (established precedent); plot-coupled resource grants and
+  # regional-range auras are deferred with reasons in docs/PHASE_8B.md.
+  - effect: EFFECT_GRANT_YIELD
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_YIELD
+    kind: ADDITIVE
+    count_like: false
+    rationale: "one-shot Great Person yield bursts (Adam Smith 500 gold,
+      Colaeus 100 faith); flat magnitudes; 8B audit"
+  - effect: EFFECT_GRANT_PRODUCTION_IN_CITY
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_AMOUNT
+    kind: ADDITIVE
+    count_like: false
+    rationale: "one-shot Great Person production bursts (Sagan 3000);
+      flat magnitudes; 8B audit"
+  - effect: EFFECT_GRANT_UNIT_YIELD_ADJACENT_FEATURES
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_YIELD
+    kind: ADDITIVE
+    count_like: false
+    rationale: "one-shot adjacency science (Janaki Ammal 400); 8B audit"
+  - effect: EFFECT_GRANT_UNIT_YIELD_ADJACENT_NATURAL_WONDERS
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_YIELD
+    kind: ADDITIVE
+    count_like: false
+    rationale: "one-shot natural-wonder science (Darwin 500); 8B audit"
+  - effect: EFFECT_GRANT_UNIT_YIELD_ADJACENT_TERRAINS
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_YIELD
+    kind: ADDITIVE
+    count_like: false
+    rationale: "one-shot terrain science (Galileo 250); 8B audit"
+  - effect: EFFECT_GRANT_YIELD_PER_GREAT_WORK_IN_CITY
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_YIELD
+    kind: ADDITIVE
+    count_like: false
+    rationale: "per-great-work science burst (Leakey 350); 8B audit"
+  - effect: EFFECT_GRANT_CITY_LOYALTY
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_AMOUNT
+    kind: ADDITIVE
+    count_like: false
+    rationale: "city-project loyalty (Bread and Circuses 20); loyalty is
+      float-safe; 8B audit"
+  - effect: EFFECT_GRANT_TOURISM_PER_EXCESS_LUXURIES
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_AMOUNT
+    kind: ADDITIVE
+    count_like: false
+    rationale: "city-project tourism (Court Festival 50); 8B audit"
+  - effect: EFFECT_GRANT_YIELD_PER_EXCESS_LUXURIES
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_YIELD
+    kind: ADDITIVE
+    count_like: false
+    rationale: "city-project culture (Court Festival 50); 8B audit"
+  - effect: EFFECT_ENABLE_RELIGION_AWARDS_ENVOY_RELIGIOUS_PRESSURE
+    argument: Amount
+    expected_floor_family: BOOLEAN_UNLOCK
+    proposed_family: FLAT_AMOUNT
+    kind: ADDITIVE
+    count_like: false
+    rationale: "one-time adoption pressure burst (Papal Primacy 200); the
+      BOOLEAN floor read the adoption trigger, but Amount is a pressure
+      quantity; 8B audit"
+  - effect: EFFECT_GRANT_PLAYER_YIELD_PERCENT_UNIT_COST
+    argument: UnitCostPercent
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: PERCENT_BONUS
+    kind: ADDITIVE
+    count_like: false
+    rationale: "gold as percent of unit cost (MacGregor Commandante 50);
+      percent magnitude; 8B audit"
   - effect: EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED
     argument: Amount
     expected_floor_family: GRANT_OBJECT
@@ -446,13 +536,6 @@ strong_family_overrides:
     kind: ADDITIVE
     count_like: true
     rationale: "whole embarked movement points (dedication +2); 8B audit"
-  - effect: EFFECT_ADJUST_UNIT_SIGHT
-    argument: Amount
-    expected_floor_family: SPATIAL_BUDGET
-    proposed_family: FLAT_AMOUNT
-    kind: ADDITIVE
-    count_like: true
-    rationale: "sight counts whole tiles (promotion +1/+2); 8B audit"
   - effect: EFFECT_ADJUST_UNIT_ATTACK_RANGE
     argument: Amount
     expected_floor_family: SPATIAL_BUDGET
@@ -474,6 +557,29 @@ strong_family_overrides:
     kind: ADDITIVE
     count_like: false
     rationale: "tourism-bomb range penalty (-50); flat magnitude; 8B audit"
+  - effect: EFFECT_ADJUST_UNIT_PER_UNUSED_MOVEMENT_COMBAT_BONUS
+    argument: Amount
+    expected_floor_family: SPATIAL_BUDGET
+    proposed_family: FLAT_AMOUNT
+    kind: COMBAT
+    count_like: false
+    rationale: "combat-strength points per unused movement (Carolean +3);
+      SPATIAL floor is the movement-count filter, not the bonus; 8B audit"
+  - effect: EFFECT_GRANT_STRENGTH_PER_ADJACENT_UNIT_TYPE
+    argument: Amount
+    expected_floor_family: GRANT_OBJECT
+    proposed_family: FLAT_AMOUNT
+    kind: COMBAT
+    count_like: false
+    rationale: "combat-strength points per adjacent Llanero (+2); the unit
+      count is a filter, the bonus is combat points; 8B audit"
+  - effect: EFFECT_ADJUST_UNIT_JUMP_ABILITY
+    argument: Range
+    expected_floor_family: SPATIAL_BUDGET
+    proposed_family: RANGE
+    kind: ADDITIVE
+    count_like: true
+    rationale: "GDR jump distance counts whole tiles (5); 8B audit"
   # Phase 8B air slots (whole hangar slots, like great-work slots).
   - effect: EFFECT_GRANT_AIR_SLOTS
     argument: Amount
@@ -612,3 +718,175 @@ certified_effect_args:
     family: DISCOUNT
     rationale: "percent-scale offensive-operation-time reduction (25);
       compound discount"
+  # Phase 8B game-mode magnitudes. Every entry is scoped by modifier_type
+  # (the same EffectType often has different semantics on base-game
+  # carriers, which keep their own floor path). Mode-only carriers have no
+  # clean-DB floor row, so these entries are the positive evidence.
+  - effect: EFFECT_ADJUST_BUILDING_PRODUCTION
+    argument: Amount
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_BUILDING_PRODUCTION
+    kind: DISCOUNT
+    family: DISCOUNT
+    rationale: "industry building-production discount 30 (Monopolies);
+      percent-scale; compound discount"
+  - effect: EFFECT_ADJUST_CITY_HOUSING_FROM_GREAT_WORKS
+    argument: Amount
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_CITY_HOUSING_FROM_GREAT_WORKS
+    kind: ADDITIVE
+    family: HOUSING
+    rationale: "industry city housing from great works (Monopolies 3)"
+  - effect: EFFECT_ADJUST_CITY_ALL_MILITARY_UNITS_PRODUCTION
+    argument: Amount
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_MILITARY_UNITS_PRODUCTION
+    kind: DISCOUNT
+    family: DISCOUNT
+    rationale: "industry military-unit production discount 30 (Monopolies);
+      percent-scale; compound discount"
+  - effect: EFFECT_ADJUST_UNIT_PRODUCTION
+    argument: Amount
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_UNIT_PRODUCTION
+    kind: DISCOUNT
+    family: DISCOUNT
+    rationale: "industry civilian-unit production discount 30 (Monopolies);
+      percent-scale; compound discount"
+  - effect: EFFECT_ADJUST_UNIT_PURCHASE_COST
+    argument: Amount
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_UNIT_PURCHASE_COST
+    kind: DISCOUNT
+    family: DISCOUNT
+    rationale: "hero temple-recall faith-cost discount 15 (Heroes);
+      percent-scale; compound discount"
+  - effect: EFFECT_ADJUST_BUILDING_SPREAD_CHARGES
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_TRAINED_UNITS_ADJUST_RELIGIOUS_CHARGES
+    kind: ADDITIVE
+    family: CHARGES
+    rationale: "dramatic-age evangelist charges +2; whole charges"
+  - effect: EFFECT_ADJUST_UNIT_DIRECT_LOYALTY_DAMAGE
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_UNITS_ADJUST_DIRECT_LOYALTY_DAMAGE
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    rationale: "rock-band loyalty damage (Spread Chaos 2); flat magnitude"
+  - effect: EFFECT_ADJUST_UNIT_DIRECT_LOYALTY_DAMAGE
+    argument: Amount
+    modifier_type: MODIFIER_UNIT_ADJUST_DIRECT_LOYALTY_DAMAGE
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    rationale: "spy loyalty damage (Spread Dissent 10); flat magnitude"
+  - effect: EFFECT_ADJUST_WONDER_YIELD_CHANGE
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_WONDER_YIELD_CHANGE
+    kind: ADDITIVE
+    family: FLAT_YIELD
+    rationale: "dramatic-age wonder culture (Mandala 4)"
+  - effect: EFFECT_ADJUST_IDENTITY_PER_TURN_FROM_NEARBY_WONDERS
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_ADJUST_IDENTITY_PER_TURN_FROM_NEARBY_WONDERS
+    kind: ADDITIVE
+    family: LOYALTY
+    rationale: "dramatic-age wonder loyalty pressure (Mandala 2)"
+  - effect: EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_CURRENT_CIVIC
+    argument: Amount
+    modifier_type: MODIFIER_ALL_PLAYERS_ADJUST_ERA_SCORE_PER_CURRENT_CIVIC
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    count_like: true
+    rationale: "dramatic-age era score per civic (1); whole points"
+  - effect: EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_CURRENT_TECH
+    argument: Amount
+    modifier_type: MODIFIER_ALL_PLAYERS_ADJUST_ERA_SCORE_PER_CURRENT_TECH
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    count_like: true
+    rationale: "dramatic-age era score per tech (1); whole points"
+  - effect: EFFECT_ADJUST_PLAYER_ERA_SCORE_PER_UNIT_PROMOTION_EARNED
+    argument: Amount
+    modifier_type: MODIFIER_ALL_PLAYERS_ADJUST_ERA_SCORE_PER_UNIT_PROMOTION_EARNED
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    count_like: true
+    rationale: "dramatic-age era score per promotion (1); whole points"
+  - effect: EFFECT_GRANT_UNIT_IN_CITY
+    argument: Amount
+    modifier_type: MODIFIER_EMERGENCY_CAPITALS_GRANT_UNIT
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    count_like: true
+    rationale: "apocalypse emergency-reward Soothsayer (one-time
+      countable grant, Pyramids class)"
+  - effect: EFFECT_GRANT_YIELD_PER_RESOURCE_IN_CITY
+    argument: Amount
+    modifier_type: MODIFIER_GRANT_YIELD_PER_RESOURCE_TYPE_IN_CITY
+    kind: ADDITIVE
+    family: FLAT_YIELD
+    rationale: "secret-society project-completion ley-line science burst
+      (500); one-shot yield magnitude"
+  - effect: EFFECT_ADJUST_UNIT_DISASTER_CHARGES
+    argument: Amount
+    modifier_type: MODIFIER_UNIT_ADJUST_DISASTER_CHARGES
+    kind: ADDITIVE
+    family: CHARGES
+    count_like: true
+    rationale: "apocalypse Soothsayer charges (1); whole charges"
+  - effect: EFFECT_ADJUST_UNIT_PROPERTY
+    argument: Amount
+    modifier_type: MODIFIER_ALL_UNITS_ADJUST_PROPERTY
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    rationale: "vampire pillage healing (50); flat heal magnitude (resurrect
+      flags on other carriers stay unchanged)"
+  - effect: EFFECT_ADJUST_PLAYER_PROPERTY
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_ADJUST_PROPERTY
+    kind: ADDITIVE
+    family: DURATION
+    count_like: true
+    rationale: "hero lifespan turns (20); whole-turn duration"
+  - effect: EFFECT_ADJUST_CITY_PROPERTY
+    argument: Amount
+    modifier_type: MODIFIER_SINGLE_CITY_ADJUST_PROPERTY
+    kind: ADDITIVE
+    family: DURATION
+    count_like: true
+    rationale: "hero shrine-city extra lifespan (10); whole-turn duration"
+  - effect: EFFECT_ADJUST_PLAYER_TRADE_ROUTES_CITY_STATE_YIELD
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_ADJUST_TRADE_ROUTES_CITY_STATE_YIELD
+    kind: ADDITIVE
+    family: FLAT_YIELD
+    rationale: "dramatic-age city-state trade yields (Popular Front 4)"
+  - effect: EFFECT_ADJUST_ALL_DISTRICTS_PRODUCTION
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_ALL_DISTRICTS_PRODUCTION
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    rationale: "dramatic-age district production (Culture Industry 25)"
+  - effect: EFFECT_ADJUST_CITY_TOURISM
+    argument: ScalingFactor
+    modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_TOURISM
+    kind: ADDITIVE
+    family: PERCENT_BONUS
+    rationale: "dramatic-age wonder tourism factor (Wish You Were Here 150);
+      percent-scale like the base-game tourism factor"
+  - effect: EFFECT_ADJUST_CITY_YIELD_PER_DISTRICT
+    argument: Amount
+    modifier_type: MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_PER_DISTRICT
+    kind: ADDITIVE
+    family: FLAT_YIELD
+    rationale: "dramatic-age culture per district (Culture Industry 1)"
+  - effect: EFFECT_ADJUST_RELIGIOUS_COMBAT_LOSS
+    argument: ReductionPercent
+    modifier_type: MODIFIER_PLAYER_RELIGION_ADJUST_COMBAT_LOSS
+    kind: DISCOUNT
+    family: DISCOUNT
+    rationale: "monastic-isolation religious combat-loss reduction (100);
+      percent-scale; compound discount (100 is the immunity fixed point)"
+  - effect: EFFECT_ADJUST_UNIT_PROPERTY
+    argument: Amount
+    modifier_type: MODIFIER_UNIT_ADJUST_PROPERTY
+    kind: ADDITIVE
+    family: FLAT_AMOUNT
+    rationale: "hero per-turn/discovery magnitudes (Mulan +1 strength per
+      turn, Sinbad 400 discovery gold); boolean flags on this carrier
+      (resurrect, auto-fortify) are force-unchanged by modifier ID"

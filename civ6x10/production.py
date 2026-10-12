@@ -50,7 +50,8 @@ CERTIFIED_KINDS = frozenset({"ADDITIVE", "COMBAT", "PROBABILITY", "DISCOUNT",
 # generation fails instead of silently choosing one.
 MODULE_BITS = {"traits": 1, "policies": 2, "governments": 4, "pantheons": 8,
                "wonders": 16, "governors": 32, "suzerain": 64,
-               "promotions": 128, "dedications": 256, "modes": 512}
+               "promotions": 128, "dedications": 256, "modes": 512,
+               "religion": 1024, "greatpeople": 2048, "projects": 4096}
 
 
 # Indivisible-count families: native may apply them only for exact integer
@@ -104,9 +105,17 @@ def build_production_registry(manifest_rows: list[dict],
         if r["transformation"] == "vector_multiply":
             # Positional numeric lists are non-numeric by design; the gate
             # validates strict all-numeric parsing (fail closed on malformed).
-            from .transforms import parse_vector
+            # Length gate: the native writer stores replacements inline
+            # (SSO, <16 chars, see X10Compat.h ssoInlineThreshold) and
+            # refuses heap writes by design. A vector whose k=100 output
+            # cannot fit can never apply at any k>1 (k=1 disarms), so it is
+            # excluded here with reason instead of shipping a dead entry.
+            from .transforms import parse_vector, vector_multiply
             if parse_vector(r["official_value"] or "") is None:
                 excluded["value:vector-malformed"] += 1
+                continue
+            if len(vector_multiply(r["official_value"], 100.0)) >= 16:
+                excluded["value:vector-too-long"] += 1
                 continue
         elif r["transformation"] == "repeat_count":
             # Implicit-+1 slot grants carry a slot-type reference, never a
@@ -227,7 +236,8 @@ def emit_cxx(entries: list[dict]) -> str:
         "// (see civ6x10/rules/certified_overrides.yml + conflict ledger).",
         "// owners bitmask: 1=traits 2=policies 4=governments 8=pantheons"
         " 16=wonders 32=governors 64=suzerain(city-state) 128=promotions"
-        " 256=dedications 512=modes.",
+        " 256=dedications 512=modes 1024=religion 2048=greatpeople"
+        " 4096=projects.",
         "// A shared entry applies only when ALL owning modules are enabled.",
         "// aux/target carry REPEAT slot-copy metadata (copy index N activates",
         "// iff N <= integral k; target is the real slot type; inert default",

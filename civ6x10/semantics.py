@@ -16,6 +16,7 @@ SELECTOR_ARGS = {
     "ImprovementType", "ResourceType", "UnitType", "PromotionClass",
     "DomainType", "FeatureType", "TerrainType", "CivicType", "TechType",
     "BeliefType", "PolicyType", "GovernmentType", "UnitAbilityType",
+    "YieldTypeToGrant", "YieldTypeToMirror", "NewOwner",
     "UnitTag", "Tag", "CollectionType", "EffectType", "PrereqCivic",
     "PrereqTech", "LocationText", "Description", "Name",
 }

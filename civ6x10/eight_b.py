@@ -45,6 +45,30 @@ def open_db() -> sqlite3.Connection:
     return db
 
 
+def base_covered_keys() -> tuple[set, dict]:
+    """(modifier_id, argument) keys already owned by base manifests.
+
+    A mode/sweep/promotion row repeating a base-covered key is the SAME
+    official definition, not new coverage: the base module owns it, so the
+    new row is skipped (recorded) instead of unioning owners (which would
+    wrongly gate base behavior behind the new module). Genuine disagreements
+    (same key, different official) still fail loud in production.
+    """
+    import yaml
+    keys: set = set()
+    owners: dict = {}
+    for module in ("traits", "policies", "governments", "pantheons",
+                   "wonders", "governors", "suzerain"):
+        path = ROOT / "manifests" / f"{module}.yml"
+        if not path.is_file():
+            continue
+        doc = yaml.safe_load(open(path, encoding="utf-8"))
+        for r in doc[module]:
+            keys.add((r["modifier_id"], r["argument_name"]))
+            owners[(r["modifier_id"], r["argument_name"])] = module
+    return keys, owners
+
+
 def manifest_rows_for_modifier(db: sqlite3.Connection, modifier_id: str,
                                object_id: str) -> list[dict]:
     """Raw inventory rows (one per ModifierArgument) for a ModifierId."""
@@ -370,3 +394,779 @@ def write_envoy_manifest(rows: list[dict]) -> Path:
         yaml.safe_dump({"envoys": rows}, fh, sort_keys=False,
                        allow_unicode=True)
     return path
+
+
+# (effect, argument) -> (family, transformation) patches applied to
+# build_manifest output for rows the heuristic leaves undecided. Only
+# reviewed magnitudes are listed; everything else undecided stays out,
+# and boolean flags are normalized to unchanged (reviewed, not scaled).
+PROMOTION_PATCHES = {
+    # Spy chances/times: curated probability/discount evidence.
+    ("EFFECT_ADJUST_UNIT_SPY_OPERATION_CHANCE", "Amount"):
+        ("PROBABILITY", "repeated_probability"),
+    ("EFFECT_ADJUST_UNIT_SPY_OPERATION_TIME", "ReductionPercent"):
+        ("DISCOUNT", "compound_discount"),
+    ("EFFECT_ADJUST_UNIT_SPY_ESTABLISH_TIME", "ReductionPercent"):
+        ("DISCOUNT", "compound_discount"),
+    ("EFFECT_ADJUST_UNIT_SPY_OFFENSIVE_OPERATION_TIME", "ReductionPercent"):
+        ("DISCOUNT", "compound_discount"),
+    # Post-combat percent yields share the reviewed percent semantics.
+    ("EFFECT_ADJUST_UNIT_POST_COMBAT_YIELD", "PercentDefeatedStrength"):
+        ("DEFEATED_STRENGTH_SCALING", "canonical_x10_multiply"),
+    # WMD protection percents are flat magnitudes.
+    ("EFFECT_ADJUST_UNIT_WMD_PROTECTION", "Blast"):
+        ("PERCENT_BONUS", "canonical_x10_multiply"),
+    ("EFFECT_ADJUST_UNIT_WMD_PROTECTION", "Fallout"):
+        ("PERCENT_BONUS", "canonical_x10_multiply"),
+    # Coastal-raid loot gold is a flat magnitude.
+    ("EFFECT_ADJUST_UNIT_RAIDING", "Bonus"):
+        ("FLAT_AMOUNT", "canonical_x10_multiply"),
+    # Tourism-bomb range penalty is a flat magnitude (SPATIAL floor is
+    # the range filter, reviewed 8B).
+    ("EFFECT_ADJUST_UNIT_TOURISM_BOMB_RANGE", "Modifier"):
+        ("FLAT_AMOUNT", "canonical_x10_multiply"),
+    # Great-People-points per kill are whole points (count-like).
+    ("EFFECT_ADJUST_GREAT_PEOPLE_POINTS_PER_KILL_BY_DEFEATED_STRENGTH",
+     "Amount"):
+        ("GREAT_PERSON_POINTS", "canonical_x10_multiply"),
+}
+
+# Status-ok rows that must stay unscaled (reviewed non-magnitudes the
+# heuristic calls ok, e.g. spy Offensive flags).
+FORCE_UNCHANGED = {
+    ("EFFECT_ADJUST_UNIT_SPY_OPERATION_CHANCE", "Offensive"),
+}
+
+# Reviewed non-magnitudes (boolean/capability flags, era filters):
+# normalized to unchanged so the ledger records the decision instead of
+# "undecided".
+NON_MAGNITUDE_ARGS = {
+    "Ignore", "Exert", "CanMove", "CanAttack", "CanFight", "CanRaid",
+    "CanCapture", "CanDrop", "CanSee", "SeeHidden", "Hidden", "Disable",
+    "Enable", "Bypass", "Enter", "Converts", "Convert", "NoSpread",
+    "NoReduction", "UseAdvancedPillaging", "UseAdvancedCoastalRaid",
+    "LandVictorySpread", "Offensive", "Defense", "EscortMobility",
+    "ForceRetreat", "RelicSource", "AllowUniqueOverride",
+    "StartEra", "EndEra", "IsWonder", "BoostsWonders", "EntireCity",
+    "Key", "Max", "ForeignCities", "NotSpecialty", "Intercontinental",
+    "Neutralize", "KeepOverflow", "UniqueOverride", "DistanceChange",
+    "SpreadMultiplier", "TechEnabledSpreadMultiplier",
+}
+
+# Mode magnitudes with reviewed per-modifier disposition. PROPERTY-keyed
+# mechanics (resurrect flags, teleport enables, favor multipliers) are
+# capabilities/settings, never magnitudes; hero era-strength progression
+# is a base combat stat, never a bonus.
+MODE_FORCE_UNCHANGED_IDS = {
+    "POLICY_POPULAR_FRONT_ALLIANCE_FAVOR",
+    "SECRET_SOCIETIES_ATTACH_PLAYER_CASTLES_TELEPORT",
+    "GOVERNOR_PROMOTION_OWLS_OF_MINERVA_1_ENVOY_FROM_TRADE_ROUTE",
+    "MODIFIER_QUESTING_KNIGHT_ERA_STRENGTH",
+    "MODIFIER_HUNAHPU_RESURRECT_KILL",
+    "MODIFIER_MULAN_FORTIFY",
+    "TRAIT_GOLDEN_AGE_UNLOCK_DARK_POLICIES",
+    "POLICY_SAKDINA_PROJECT_POINTS_MULTIPLIER",
+}
+
+MODE_PATCHES = {
+    # Dramatic-age wonder tourism factor shares the reviewed percent
+    # semantics of the base-game tourism factor.
+    ("EFFECT_ADJUST_CITY_TOURISM", "ScalingFactor"):
+        ("PERCENT_BONUS", "canonical_x10_multiply"),
+}
+
+# Base unit stats and ambiguous progression knobs: excluded with reason
+# (documented in docs/PHASE_8B.md), never patched in.
+PROMOTION_EXCLUDED_MODIFIERS = {
+    # Base combat strength is a stat, not a bonus (§8/§10).
+    "MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH",
+}
+
+
+def _promotion_name(db, link_table, modifier_id):
+    id_col = "UnitPromotionType" if "Promotion" in link_table \
+        else "UnitAbilityType"
+    name_col = "UnitPromotionType" if "Promotion" in link_table \
+        else "UnitAbilityType"
+    rows = db.execute(
+        f"SELECT {id_col} FROM {link_table} WHERE ModifierId = ?",
+        (modifier_id,)).fetchall()
+    return sorted(r[0] for r in rows)
+
+
+def build_promotion_manifest_rows(db) -> tuple[list[dict], list[str]]:
+    """Sweep promotion + ability modifiers with per-row disposition."""
+    from .modules import build_manifest, apply_transform, apply_dynamic
+    rows: list[dict] = []
+    notes: list[str] = []
+    seen_mods: dict[str, str] = {}
+    for link in ("UnitPromotionModifiers", "UnitAbilityModifiers"):
+        for (mid,) in db.execute(
+                f"SELECT DISTINCT ModifierId FROM {link}").fetchall():
+            try:
+                raws = manifest_rows_for_modifier(db, mid, link)
+            except KeyError:
+                notes.append(f"{link}: {mid} has no Modifiers row (skip)")
+                continue
+            mtype = raws[0]["modifier_type"] if raws else "?"
+            if mtype in PROMOTION_EXCLUDED_MODIFIERS:
+                notes.append(
+                    f"{link}: {mid} ({mtype}) excluded: base unit stat")
+                continue
+            names = _promotion_name(db, link, mid)
+            for r in raws:
+                r["promotion_names"] = names
+                r["promotion_link"] = link
+            for h in build_manifest(raws, "object_id"):
+                key = (h["effect_type"], h["argument_name"])
+                if key in PROMOTION_PATCHES:
+                    # Reviewed disposition overrides the heuristic, even
+                    # when the heuristic already yields status ok (e.g.
+                    # Wolin GPP-per-kill is GREAT_PERSON_POINTS, not a
+                    # defeated-strength factor).
+                    fam, tr = PROMOTION_PATCHES[key]
+                    h["semantic_family"] = fam
+                    h["transformation"] = tr
+                    h["generated_value"], h["status"] = \
+                        apply_transform(tr, h["official_value"])
+                    h["confidence"] = "human_certified_8b_promotion"
+                    h["module"] = "promotions"
+                    if h["status"] == "ok":
+                        rows.append(h)
+                        continue
+                    notes.append(f"{link}: {mid} {key} patch failed (out)")
+                    continue
+                if key in FORCE_UNCHANGED and h["status"] == "ok":
+                    h["transformation"] = "unchanged"
+                    h["generated_value"] = h["official_value"]
+                    h["confidence"] = "human_certified_8b_reviewed"
+                    h["module"] = "promotions"
+                    rows.append(h)
+                    continue
+                if key == ("EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+                           "Amount") and h["status"] != "ok":
+                    # Negative combat officials are debuff magnitudes: the
+                    # tenfold formula is undefined for them, so they scale
+                    # flat (certified ADDITIVE by the negative-combat gate).
+                    try:
+                        neg = float(h["official_value"]) < 0
+                    except (TypeError, ValueError):
+                        neg = False
+                    if neg:
+                        h["semantic_family"] = "FLAT_AMOUNT"
+                        h["transformation"] = "canonical_x10_multiply"
+                        h["generated_value"], h["status"] = \
+                            apply_transform("canonical_x10_multiply",
+                                            h["official_value"])
+                        h["confidence"] = "human_certified_8b_promotion"
+                        h["module"] = "promotions"
+                        if h["status"] == "ok":
+                            rows.append(h)
+                            continue
+                        notes.append(f"{link}: {mid} {key} patch failed")
+                        continue
+                if h["transformation"] == "unchanged":
+                    h["confidence"] = "human_certified_8b_reviewed"
+                    h["module"] = "promotions"
+                    rows.append(h)
+                    continue
+                if h["status"] != "ok":
+                    if h["argument_name"] in NON_MAGNITUDE_ARGS:
+                        h["transformation"] = "unchanged"
+                        h["generated_value"] = h["official_value"]
+                        h["status"] = "ok"
+                        h["confidence"] = \
+                            "human_certified_8b_boolean"
+                        h["module"] = "promotions"
+                        rows.append(h)
+                        continue
+                    notes.append(
+                        f"{link}: {mid} {key} status {h['status']} (out)")
+                    continue
+                h["module"] = "promotions"
+                if h["confidence"] == "auto_rule":
+                    h["confidence"] = "human_certified_8b_promotion"
+                rows.append(h)
+    return rows, notes
+
+
+def write_promotion_manifest(rows: list[dict]) -> Path:
+    import yaml
+    path = ROOT / "manifests" / "promotions.yml"
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        yaml.safe_dump({"promotions": rows}, fh, sort_keys=False,
+                       allow_unicode=True)
+    return path
+
+
+DEDICATION_PATCHES = {
+    # Wonder-tourism scaling factor is percent-scale (reviewed 8B).
+    ("EFFECT_ADJUST_CITY_TOURISM", "ScalingFactor"):
+        ("PERCENT_BONUS", "canonical_x10_multiply"),
+    # Spy time reductions share the promotion disposition.
+    ("EFFECT_ADJUST_UNIT_SPY_ESTABLISH_TIME", "ReductionPercent"):
+        ("DISCOUNT", "compound_discount"),
+    ("EFFECT_ADJUST_UNIT_SPY_OFFENSIVE_OPERATION_TIME", "ReductionPercent"):
+        ("DISCOUNT", "compound_discount"),
+}
+
+# Commemoration ATTACH wrappers resolve one hop to their leaf magnitudes.
+# Wrappers themselves are attach metadata, never magnitudes.
+DEDICATION_ATTACH_TABLE = "CommemorationModifiers"
+
+
+def build_dedication_manifest_rows(db) -> tuple[list[dict], list[str]]:
+    """Sweep commemoration modifiers (+ one ATTACH hop) with disposition."""
+    from .modules import build_manifest, apply_transform
+    rows: list[dict] = []
+    notes: list[str] = []
+    mids = [r[0] for r in db.execute(
+        "SELECT DISTINCT ModifierId FROM CommemorationModifiers").fetchall()]
+    # One ATTACH hop: wrapper targets join the sweep with provenance.
+    extra: dict[str, str] = {}
+    for mid in list(mids):
+        m = db.execute(
+            "SELECT ModifierType FROM Modifiers WHERE ModifierId = ?",
+            (mid,)).fetchone()
+        if m is None:
+            continue
+        eff = db.execute(
+            "SELECT EffectType FROM DynamicModifiers WHERE ModifierType = ?",
+            (m["ModifierType"],)).fetchall()
+        if any(e[0] == "EFFECT_ATTACH_MODIFIER" for e in eff):
+            tgt = db.execute(
+                "SELECT Value FROM ModifierArguments WHERE ModifierId = ?"
+                " AND Name = 'ModifierId'", (mid,)).fetchone()
+            if tgt is not None:
+                extra[tgt["Value"]] = mid
+    # Sweep each modifier (wrappers resolve via `extra` provenance below).
+    for mid in mids + [t for t in extra if t not in mids]:
+        try:
+            raws = manifest_rows_for_modifier(db, mid, "Commemoration")
+        except KeyError:
+            notes.append(f"dedications: {mid} has no Modifiers row (skip)")
+            continue
+        ctype = db.execute(
+            "SELECT CommemorationType FROM CommemorationModifiers"
+            " WHERE ModifierId = ?", (mid,)).fetchone()
+        ctype = ctype[0] if ctype else f"attach-target-of-{extra.get(mid, '?')}"
+        for r in raws:
+            r["root_commemoration"] = ctype
+        for h in build_manifest(raws, "object_id"):
+            key = (h["effect_type"], h["argument_name"])
+            if key in DEDICATION_PATCHES:
+                fam, tr = DEDICATION_PATCHES[key]
+                h["semantic_family"] = fam
+                h["transformation"] = tr
+                h["generated_value"], h["status"] = \
+                    apply_transform(tr, h["official_value"])
+                h["confidence"] = "human_certified_8b_dedication"
+                h["module"] = "dedications"
+                if h["status"] == "ok":
+                    rows.append(h)
+                    continue
+                notes.append(f"dedications: {mid} {key} patch failed")
+                continue
+            if h["transformation"] == "unchanged":
+                h["confidence"] = "human_certified_8b_reviewed"
+                h["module"] = "dedications"
+                rows.append(h)
+                continue
+            if h["status"] != "ok":
+                if h["argument_name"] in NON_MAGNITUDE_ARGS:
+                    h["transformation"] = "unchanged"
+                    h["generated_value"] = h["official_value"]
+                    h["status"] = "ok"
+                    h["confidence"] = "human_certified_8b_boolean"
+                    h["module"] = "dedications"
+                    rows.append(h)
+                    continue
+                notes.append(
+                    f"dedications: {mid} {key} status {h['status']} (out)")
+                continue
+            h["module"] = "dedications"
+            if h["confidence"] == "auto_rule":
+                h["confidence"] = "human_certified_8b_dedication"
+            rows.append(h)
+    return rows, notes
+
+
+def write_dedication_manifest(rows: list[dict]) -> Path:
+    import yaml
+    path = ROOT / "manifests" / "dedications.yml"
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        yaml.safe_dump({"dedications": rows}, fh, sort_keys=False,
+                       allow_unicode=True)
+    return path
+
+
+import re
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+# Civ VI install root (read-only parsing of shipped mode overlays).
+INSTALL_ROOT = Path(
+    "C:/Program Files (x86)/Steam/steamapps/common"
+    "/Sid Meier's Civilization VI")
+
+# Mode overlay files actually parsed (from spike/8a-frontier/modes.json;
+# Data-layer gameplay files only, not Text/UI).
+MODE_FILES = {
+    "monopolies": [
+        "DLC/KublaiKhan_Vietnam/Data/KublaiKhan_Vietnam_Monopolies_MODE.xml",
+        "DLC/KublaiKhan_Vietnam/Data/KublaiKhan_Vietnam_Monopolies_XP1_MODE.xml",
+        "DLC/KublaiKhan_Vietnam/Data/KublaiKhan_Vietnam_Monopolies_XP2_MODE.xml",
+        "DLC/KublaiKhan_Vietnam/Data/KublaiKhan_Vietnam_Monopolies_GranColombiaMaya_MODE.xml",
+    ],
+    "heroes": [
+        "DLC/Babylon/Data/Babylon_Heroes_MODE.xml",
+        "DLC/Babylon/Data/Babylon_Heroes_XP1_MODE.xml",
+        "DLC/Babylon/Data/Babylon_Heroes_XP2_MODE.xml",
+        "DLC/Babylon/Data/Babylon_Heroes_IndonesiaKhmer_MODE.xml",
+        "DLC/Babylon/Data/Babylon_Heroes_IndonesiaKhmer_XP1_MODE.xml",
+        "DLC/Babylon/Data/Babylon_Heroes_IndonesiaKhmer_XP2_MODE.xml",
+        "DLC/Babylon/Data/Babylon_Heroes_Poland_MODE.xml",
+        "DLC/Babylon/Data/Babylon_Heroes_SecretSocieties_MODE.xml",
+    ],
+    "dramatic": [
+        "DLC/Byzantium_Gaul/Data/Byzantium_Gaul_DramaticAges_MODE.xml",
+        "DLC/Byzantium_Gaul/Data/Byzantium_Gaul_DramaticAges_Georgia_MODE.xml",
+        "DLC/Byzantium_Gaul/Data/Byzantium_Gaul_DramaticAges_Expansion1_MODE.xml",
+        "DLC/Byzantium_Gaul/Data/Byzantium_Gaul_DramaticAges_Expansion2_MODE.xml",
+    ],
+    "secretsocieties": [
+        "DLC/Ethiopia/Data/Ethiopia_SecretSocieties_MODE.xml",
+        "DLC/Ethiopia/Data/Ethiopia_SecretSocieties_Expansion1_MODE.xml",
+        "DLC/Ethiopia/Data/Ethiopia_SecretSocieties_Expansion2_MODE.xml",
+        "DLC/Ethiopia/Data/Ethiopia_SecretSocieties_GranColombiaMaya_MODE.xml",
+        "DLC/Byzantium_Gaul/Data/Byzantium_Gaul_SecretSocieties_MODE.xml",
+    ],
+    "apocalypse": [
+        "DLC/GranColombia_Maya/Data/GranColombia_Maya_Emergencies_MODE.xml",
+        "DLC/GranColombia_Maya/Data/GranColombia_Maya_RandomEvents_MODE.xml",
+        "DLC/GranColombia_Maya/Data/GranColombia_Maya_RandomEvents_Vikings_MODE.xml",
+        "DLC/GranColombia_Maya/Data/GranColombia_Maya_UnitOperations_MODE.xml",
+        "DLC/GranColombia_Maya/Data/GranColombia_Maya_UnitPromotions_MODE.xml",
+        "DLC/GranColombia_Maya/Data/GranColombia_Maya_Units_MODE.xml",
+    ],
+    "zombie": [
+        "DLC/VikingsLandmarks/Data/VikingsLandmarks_TowerDefense_MODE.xml",
+    ],
+    "barbarians": [
+        "DLC/Portugal/Data/Portugal_Barbarians_MODE.xml",
+    ],
+    "shuffle": [
+        "DLC/TreeRandomizer/Data/TreeRandomizer_Technologies_MODE.xml",
+        "DLC/TreeRandomizer/Data/TreeRandomizer_Civics_MODE.xml",
+        "DLC/TreeRandomizer/Data/TreeRandomizer_Expansion2_MODE.xml",
+    ],
+}
+
+# Attach tables swept for mode magnitudes (link table -> object id column).
+MODE_ATTACH_TABLES = {
+    "BuildingModifiers": "BuildingType",
+    "PolicyModifiers": "PolicyType",
+    "TraitModifiers": "TraitType",
+    "ProjectCompletionModifiers": "ProjectType",
+    "GreatWorkModifiers": "GreatWorkType",
+    "UnitAbilityModifiers": "UnitAbilityType",
+    "GameModifiers": "Game",
+}
+
+
+def _row_dict(elem):
+    out = {}
+    # Attribute-style rows (<Row ModifierId="..." .../>) and element-style
+    # rows (<Row><ModifierId>...</ModifierId></Row>) both occur in shipped
+    # overlays; attributes win on collision (they carry the full row).
+    for k, v in elem.attrib.items():
+        out[k] = v.strip()
+    # Attribute casing varies by file (ModifierID vs ModifierId).
+    if "ModifierID" in out and "ModifierId" not in out:
+        out["ModifierId"] = out.pop("ModifierID")
+    for child in elem:
+        tag = child.tag
+        if tag in ("Row", "Update", "Delete", "Replace"):
+            continue
+        text = child.text.strip() if child.text and child.text.strip() \
+            else ""
+        out.setdefault(tag, text)
+    return out
+
+
+def parse_mode_file(relpath):
+    """Parse one overlay file into modifier tables (read-only)."""
+    path = INSTALL_ROOT / relpath
+    if not path.is_file():
+        return None
+    try:
+        root = ET.parse(str(path)).getroot()
+    except ET.ParseError:
+        return None
+    data = {"modifiers": {}, "args": {}, "dynamic": {}, "attach": {}}
+    gameinfo = root.find("GameInfo")
+    if gameinfo is None:
+        gameinfo = root
+    for table in gameinfo:
+        name = table.tag
+        if name == "Modifiers":
+            for row in list(table.findall("Row")) + \
+                    list(table.findall("Update")):
+                d = _row_dict(row)
+                if d.get("ModifierId"):
+                    data["modifiers"][d["ModifierId"]] = d
+        elif name == "ModifierArguments":
+            for row in list(table.findall("Row")) + \
+                    list(table.findall("Update")):
+                d = _row_dict(row)
+                if d.get("ModifierId"):
+                    data["args"].setdefault(
+                        d["ModifierId"], []).append(d)
+        elif name == "DynamicModifiers":
+            for row in table.findall("Row"):
+                d = _row_dict(row)
+                if d.get("ModifierType"):
+                    data["dynamic"][d["ModifierType"]] = d
+        elif name in MODE_ATTACH_TABLES:
+            for row in table.findall("Row"):
+                d = _row_dict(row)
+                if d.get("ModifierId"):
+                    data["attach"].setdefault(
+                        d["ModifierId"], []).append(
+                            (name, d))
+    return data
+
+
+def collect_mode_data():
+    """Parse all configured overlay files -> per-mode data bundles."""
+    bundle = {}
+    for mode, files in MODE_FILES.items():
+        mods, args, dyn, attach = {}, {}, {}, {}
+        for rel in files:
+            data = parse_mode_file(rel)
+            if data is None:
+                continue
+            mods.update(data["modifiers"])
+            for k, v in data["args"].items():
+                args.setdefault(k, []).extend(v)
+            dyn.update(data["dynamic"])
+            for k, v in data["attach"].items():
+                attach.setdefault(k, []).extend(v)
+        bundle[mode] = {"modifiers": mods, "args": args, "dynamic": dyn,
+                        "attach": attach}
+    return bundle
+
+
+def mode_official_leak(db, modifier_ids):
+    """ModifierIds that ALSO exist in the clean official DB (leak risk)."""
+    leaked = []
+    for mid in modifier_ids:
+        if db.execute("SELECT 1 FROM Modifiers WHERE ModifierId = ?",
+                      (mid,)).fetchone():
+            leaked.append(mid)
+    return leaked
+
+
+def build_mode_manifest_rows(db, bundle) -> tuple[list[dict], list[str]]:
+    """Manifest rows for mode magnitudes with explicit disposition."""
+    from .modules import build_manifest, apply_transform
+    rows: list[dict] = []
+    notes: list[str] = []
+    for mode, data in bundle.items():
+        leaked = set(mode_official_leak(db, data["modifiers"]))
+        for mid, m in data["modifiers"].items():
+            if mid in leaked:
+                notes.append(
+                    f"modes/{mode}: {mid} shared with standard game "
+                    "(excluded: mode leakage risk)")
+                continue
+            mtype = m.get("ModifierType", "")
+            dyn = data["dynamic"].get(mtype, {})
+            effect = dyn.get("EffectType", "")
+            if not effect:
+                # Unknown carrier (base-game DynamicModifiers may define
+                # it): resolve from the clean DB when possible.
+                base = db.execute(
+                    "SELECT EffectType FROM DynamicModifiers"
+                    " WHERE ModifierType = ?", (mtype,)).fetchone()
+                effect = base[0] if base else ""
+            if not effect:
+                notes.append(
+                    f"modes/{mode}: {mid} carrier {mtype} has no known "
+                    "EffectType (out)")
+                continue
+            obj = f"mode:{mode}"
+            att = data["attach"].get(mid)
+            if att:
+                table, link = att[0]
+                idcol = MODE_ATTACH_TABLES[table]
+                obj = link.get(idcol, obj)
+            raws = []
+            for a in data["args"].get(mid, []):
+                raws.append({
+                    "object_id": obj,
+                    "modifier_id": mid,
+                    "modifier_type": mtype,
+                    "effect_type": effect,
+                    "argument_name": a.get("Name", ""),
+                    "official_value": a.get("Value", ""),
+                    "argument_value": a.get("Value", ""),
+                    "mode": mode,
+                    "mode_subject": m.get("SubjectRequirementSetId", ""),
+                })
+            for h in build_manifest(raws, "object_id"):
+                key = (h["effect_type"], h["argument_name"])
+                if key in MODE_PATCHES:
+                    fam, tr = MODE_PATCHES[key]
+                    h["semantic_family"] = fam
+                    h["transformation"] = tr
+                    h["generated_value"], h["status"] = \
+                        apply_transform(tr, h["official_value"])
+                    h["confidence"] = "human_certified_8b_mode"
+                if mid in MODE_FORCE_UNCHANGED_IDS and h["status"] == "ok":
+                    h["transformation"] = "unchanged"
+                    h["generated_value"] = h["official_value"]
+                    h["confidence"] = "human_certified_8b_mode_excluded"
+                if key == ("EFFECT_ADJUST_PLAYER_STRENGTH_MODIFIER",
+                           "Amount") and h["status"] != "ok":
+                    # Negative combat officials are debuff magnitudes
+                    # (Intimidate -5 scales flat, like promotions).
+                    try:
+                        neg = float(h["official_value"]) < 0
+                    except (TypeError, ValueError):
+                        neg = False
+                    if neg:
+                        h["semantic_family"] = "FLAT_AMOUNT"
+                        h["transformation"] = "canonical_x10_multiply"
+                        h["generated_value"], h["status"] = \
+                            apply_transform("canonical_x10_multiply",
+                                            h["official_value"])
+                        h["confidence"] = "human_certified_8b_mode"
+                h["module"] = "modes"
+                if h["confidence"] == "auto_rule":
+                    h["confidence"] = "human_certified_8b_mode"
+                h["certification_source"] = f"phase8b-mode-audit:{mode}"
+                if h["transformation"] == "unchanged":
+                    rows.append(h)
+                    continue
+                if h["status"] != "ok":
+                    if h["argument_name"] in NON_MAGNITUDE_ARGS:
+                        h["transformation"] = "unchanged"
+                        h["generated_value"] = h["official_value"]
+                        h["status"] = "ok"
+                        rows.append(h)
+                        continue
+                    notes.append(
+                        f"modes/{mode}: {mid} "
+                        f"({h['effect_type']}, {h['argument_name']}) "
+                        f"status {h['status']} (out)")
+                    continue
+                rows.append(h)
+    return rows, notes
+
+
+def write_mode_manifest(rows: list[dict]) -> Path:
+    import yaml
+    path = ROOT / "manifests" / "modes.yml"
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        yaml.safe_dump({"modes": rows}, fh, sort_keys=False,
+                       allow_unicode=True)
+    return path
+
+
+def write_sweep_manifest(rows: list[dict]) -> Path:
+    import yaml
+    path = ROOT / "manifests" / "sweep.yml"
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        yaml.safe_dump({"sweep": rows}, fh, sort_keys=False,
+                       allow_unicode=True)
+    return path
+
+
+def build_all(write: bool = True) -> dict:
+    """Run every 8B manifest/SQL builder. Returns step -> counts/paths.
+
+    Patches existing wonders/traits vector rows in place (re-run after any
+    base-manifest regen), then writes slots/envoys/promotions/dedications/
+    modes/sweep manifests + the slot-copies SQL.
+    """
+    from .bridge import collect_registry_rows  # noqa (cycle guard note)
+    db = open_db()
+    report: dict = {}
+    report["vectors"] = patch_vector_manifests()
+    slot_rows = build_slot_manifest_rows()
+    report["slots_sql"] = str(write_slot_sql())
+    envoy_rows, envoy_notes = build_envoy_manifest_rows(db)
+    report["envoys_notes"] = len(envoy_notes)
+    promo_rows, promo_notes = build_promotion_manifest_rows(db)
+    report["promotions_notes"] = len(promo_notes)
+    dedi_rows, dedi_notes = build_dedication_manifest_rows(db)
+    report["dedications_notes"] = len(dedi_notes)
+    bundle = collect_mode_data()
+    mode_rows, mode_notes = build_mode_manifest_rows(db, bundle)
+    report["modes_notes"] = len(mode_notes)
+    sweep_rows, sweep_notes = build_core_sweep_rows(db)
+    covered, _owners = base_covered_keys()
+    for name, rowset in (("slots", slot_rows), ("envoys", envoy_rows),
+                         ("promotions", promo_rows),
+                         ("dedications", dedi_rows), ("modes", mode_rows),
+                         ("sweep", sweep_rows)):
+        kept = [h for h in rowset
+                if (h["modifier_id"], h["argument_name"]) not in covered]
+        report[f"{name}_base_covered_skipped"] = len(rowset) - len(kept)
+        if name == "slots":
+            slot_rows = kept
+        elif name == "envoys":
+            envoy_rows = kept
+        elif name == "promotions":
+            promo_rows = kept
+        elif name == "dedications":
+            dedi_rows = kept
+        elif name == "modes":
+            mode_rows = kept
+        elif name == "sweep":
+            sweep_rows = kept
+    report["slots_manifest"] = str(write_slots_manifest(slot_rows))
+    report["slots_rows"] = len(slot_rows)
+    report["envoys_manifest"] = str(write_envoy_manifest(envoy_rows))
+    report["envoys_rows"] = len(envoy_rows)
+    report["promotions_manifest"] = str(
+        write_promotion_manifest(promo_rows))
+    report["promotions_rows"] = len(promo_rows)
+    report["dedications_manifest"] = str(
+        write_dedication_manifest(dedi_rows))
+    report["dedications_rows"] = len(dedi_rows)
+    report["modes_manifest"] = str(write_mode_manifest(mode_rows))
+    report["modes_rows"] = len(mode_rows)
+    report["sweep_manifest"] = str(write_sweep_manifest(sweep_rows))
+    report["sweep_rows"] = len(sweep_rows)
+    report["sweep_notes"] = len(sweep_notes)
+    if write:
+        report["envoy_notes_file"] = str(_write_notes("envoys", envoy_notes))
+        report["promotion_notes_file"] = str(
+            _write_notes("promotions", promo_notes))
+        report["dedication_notes_file"] = str(
+            _write_notes("dedications", dedi_notes))
+        report["mode_notes_file"] = str(_write_notes("modes", mode_notes))
+        report["sweep_notes_file"] = str(_write_notes("sweep", sweep_notes))
+    db.close()
+    return report
+
+
+def _write_notes(name: str, notes: list[str]) -> Path:
+    path = ROOT / "spike" / "8b" / f"{name}_disposition.txt"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(f"# Phase 8B {name} disposition notes (reviewed exclusions)\n")
+        for n in sorted(set(notes)):
+            fh.write(f"- {n}\n")
+    return path
+
+
+# attach table -> (id column, module tag, provenance label)
+SWEEP_TABLES = {
+    "BeliefModifiers": ("BeliefType", "religion", "belief"),
+    "GreatPersonIndividualActionModifiers": ("GreatPersonIndividualType",
+                                             "greatpeople",
+                                             "greatperson-active"),
+    "GreatPersonIndividualBirthModifiers": ("GreatPersonIndividualType",
+                                            "greatpeople",
+                                            "greatperson-birth"),
+    "ProjectCompletionModifiers": ("ProjectType", "projects", "project"),
+}
+
+# Reviewed sweep patches (family, transformation) by (effect, argument).
+SWEEP_PATCHES = {
+    ("EFFECT_ADJUST_RELIGIOUS_COMBAT_LOSS", "ReductionPercent"):
+        ("DISCOUNT", "compound_discount"),
+    ("EFFECT_GRANT_PLAYER_YIELD_PERCENT_UNIT_COST", "UnitCostPercent"):
+        ("PERCENT_BONUS", "canonical_x10_multiply"),
+}
+
+
+def _belief_class(db, belief):
+    r = db.execute("SELECT BeliefClassType FROM Beliefs WHERE BeliefType = ?",
+                   (belief,)).fetchone()
+    return r[0] if r else ""
+
+
+def build_core_sweep_rows(db) -> tuple[list[dict], list[str]]:
+    """Sweep belief/great-person/project modifiers with disposition."""
+    from .modules import build_manifest, apply_transform
+    rows: list[dict] = []
+    notes: list[str] = []
+    for table, (idcol, module, label) in SWEEP_TABLES.items():
+        try:
+            links = db.execute(
+                f"SELECT {idcol}, ModifierId FROM {table}").fetchall()
+        except Exception as e:
+            notes.append(f"sweep: {table} unreadable ({e})")
+            continue
+        for (obj, mid) in links:
+            if table == "BeliefModifiers" and \
+                    _belief_class(db, obj) == "BELIEF_CLASS_PANTHEON":
+                continue  # pantheons module owns these already
+            # One ATTACH hop: belief/founder wrappers (Tithe, Defender,
+            # Choral Music) carry the magnitude on a leaf modifier.
+            sweep_ids = [(mid, None)]
+            mtype = db.execute(
+                "SELECT ModifierType FROM Modifiers WHERE ModifierId = ?",
+                (mid,)).fetchone()
+            if mtype is not None:
+                effs = db.execute(
+                    "SELECT EffectType FROM DynamicModifiers"
+                    " WHERE ModifierType = ?", (mtype[0],)).fetchall()
+                if any(e[0] == "EFFECT_ATTACH_MODIFIER" for e in effs):
+                    tgt = db.execute(
+                        "SELECT Value FROM ModifierArguments"
+                        " WHERE ModifierId = ? AND Name = 'ModifierId'",
+                        (mid,)).fetchone()
+                    if tgt is not None:
+                        sweep_ids.append((tgt[0], mid))
+            for sid, wrapper in sweep_ids:
+                try:
+                    raws = manifest_rows_for_modifier(db, sid, obj)
+                except KeyError:
+                    notes.append(
+                        f"sweep: {sid} has no Modifiers row (skip)")
+                    continue
+                if wrapper is not None:
+                    for r in raws:
+                        r["root_wrapper"] = wrapper
+                for h in build_manifest(raws, "object_id"):
+                    h["sweep_table"] = table
+                    h["sweep_label"] = label
+                    key = (h["effect_type"], h["argument_name"])
+                    if key in SWEEP_PATCHES:
+                        fam, tr = SWEEP_PATCHES[key]
+                        h["semantic_family"] = fam
+                        h["transformation"] = tr
+                        h["generated_value"], h["status"] = \
+                            apply_transform(tr, h["official_value"])
+                        h["confidence"] = "human_certified_8b_sweep"
+                        h["module"] = module
+                        if h["status"] == "ok":
+                            rows.append(h)
+                            continue
+                        notes.append(
+                            f"sweep: {obj} {sid} {key} patch failed")
+                        continue
+                    h["module"] = module
+                    if h["transformation"] == "unchanged":
+                        h["confidence"] = "human_certified_8b_reviewed"
+                        rows.append(h)
+                        continue
+                    if h["status"] != "ok":
+                        if h["argument_name"] in NON_MAGNITUDE_ARGS:
+                            h["transformation"] = "unchanged"
+                            h["generated_value"] = h["official_value"]
+                            h["status"] = "ok"
+                            h["confidence"] = "human_certified_8b_reviewed"
+                            rows.append(h)
+                            continue
+                        notes.append(
+                            f"sweep: {obj} {sid} ({h['effect_type']}, "
+                            f"{h['argument_name']}) status {h['status']} (out)")
+                        continue
+                    rows.append(h)
+    return rows, notes
