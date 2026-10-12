@@ -93,12 +93,12 @@ class TestProductionRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         entries, report = build_production_registry(rows)
-        self.assertEqual(len(entries), 1010)
-        self.assertEqual(report["eligible"], 1010)
-        self.assertEqual(report["unique_definitions"], 1006)
-        self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 788)
-        self.assertEqual(report["certified_count_like_conditional"], 222)
+        self.assertEqual(len(entries), 2481)
+        self.assertEqual(report["eligible"], 2481)
+        self.assertEqual(report["unique_definitions"], 2475)
+        self.assertEqual(report["shared_definitions"], 26)
+        self.assertEqual(report["certified_unconditional"], 1333)
+        self.assertEqual(report["certified_count_like_conditional"], 1148)
         self.assertEqual(report["unresolved_conflicts"], [])
         ids = {e["modifier_id"] for e in entries}
         for mid in ("TRAIT_LINCOLN_INDUSTRIAL_ZONE_LOYALTY",
@@ -122,7 +122,8 @@ class TestProductionRegistry(unittest.TestCase):
         keys = [(e["modifier_id"], e["argument"]) for e in entries]
         self.assertEqual(len(keys), len(set(keys)))
         kinds = {e["kind"] for e in entries}
-        self.assertEqual(kinds, {"ADDITIVE", "COMBAT", "DISCOUNT"})
+        self.assertEqual(kinds, {"ADDITIVE", "COMBAT", "PROBABILITY",
+                                 "DISCOUNT", "VECTOR", "DELTA", "REPEAT"})
 
 
 class TestProductionTransforms(unittest.TestCase):
@@ -172,10 +173,13 @@ class TestProductionTransforms(unittest.TestCase):
             self.skipTest("manifests unavailable (run review locally)")
         from civ6x10.production import build_production_registry
         entries, _ = build_production_registry(rows)
-        neg = [e for e in entries if float(e["official"]) < 0]
-        self.assertEqual(len(neg), 43)
-        for e in entries:
-            v = float(e["official"])
+        # REPEAT (SLOT_NONE) and VECTOR officials are non-numeric by design.
+        num = [e for e in entries if _numeric_official(e) is not None]
+        self.assertEqual(len(entries) - len(num), 697)  # 693 REPEAT + 4 VECTOR
+        neg = [e for e in num if _numeric_official(e) < 0]
+        self.assertEqual(len(neg), 58)
+        for e in num:
+            v = _numeric_official(e)
             if e["kind"] == "ADDITIVE":
                 self.assertEqual(T.scale_flat(v, 7.3), v * 7.3)
             elif e["kind"] == "DISCOUNT":
@@ -185,7 +189,7 @@ class TestProductionTransforms(unittest.TestCase):
                     T.compound_discount_for_multiplier(v, 7.3),
                     (1.0 - (1.0 - d) ** 7.3) * 100.0 * (-1 if v < 0 else 1))
         discs = [e for e in entries if e["kind"] == "DISCOUNT"]
-        self.assertEqual(len(discs), 23)
+        self.assertEqual(len(discs), 78)
         # Flat gold-per-unit maintenance is ADDITIVE, not a percent discount:
         # 1 -> 7.3, 2 -> 14.6, -2 -> -14.6 at k=7.3.
         by_id = {}
@@ -206,13 +210,14 @@ class TestProductionTransforms(unittest.TestCase):
     def test_full_registry_transforms_at_k73(self):
         # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
         # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
-        # live against loaded definitions):
-        #   788 unconditional entries: every one transforms;
-        #   222 conditional entries: 13 exact-integral apply,
-        #   209 fractional refuse safely (never floored).
-        # Static successful transforms: 788 + 13 = 801 < registry size 1010
-        # (Toqui loyalty pair temporarily excluded pending stored-form
-        # re-certification).
+        # live against loaded definitions). Phase 8B decomposition:
+        #   1324 unconditional: every one transforms (ADDITIVE/COMBAT/
+        #     DISCOUNT/PROBABILITY/VECTOR; vectors parse element-wise);
+        #   1157 conditional: 21 exact-integral apply (20 ADDITIVE +
+        #     1 DELTA: Panama 10 x 6.3 = 63), 1136 refuse safely — 387
+        #     ADDITIVE fractions, 693 REPEAT copies (non-integral k keeps
+        #     the single vanilla slot), 56 DELTA fractions (direct value
+        #     stands alone). Never floored, never rounded.
         import math
         try:
             rows = load_manifests()
@@ -221,34 +226,64 @@ class TestProductionTransforms(unittest.TestCase):
         from civ6x10.production import build_production_registry
         entries, report = build_production_registry(rows)
         kf = T.stored_float32(7.3)
+        kerr = T.float_quantization_error(kf)
         self.assertEqual(kf, 7.300000190734863)  # live representation
-        self.assertEqual(len(entries), 1010)
+        self.assertEqual(len(entries), 2481)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        self.assertEqual(len(un), 788)
-        self.assertEqual(len(co), 222)
+        self.assertEqual(len(un), 1333)
+        self.assertEqual(len(co), 1148)
         ok = 0
         for e in un:
-            v = float(e["official"])
             if e["kind"] == "ADDITIVE":
-                r = v * kf
+                r = float(e["official"]) * kf
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(kf * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** kf) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == "PROBABILITY":
+                r = T.repeated_probability_for_multiplier(
+                    float(e["official"]), kf)
+            elif e["kind"] == "VECTOR":
+                T.vector_multiply(e["official"], kf)  # parses element-wise
+                r = 0.0
             else:
-                continue
+                self.fail(f"unexpected unconditional kind: {e}")
             self.assertTrue(math.isfinite(r) and abs(r) <= 1000000, e)
             ok += 1
-        self.assertEqual(ok, 788)
-        exact = [e for e in co
-                 if T.count_like_applies(float(e["official"]), kf)]
+        self.assertEqual(ok, 1333)
+        exact = [e for e in co if _applies_at_k73(e, kf, kerr)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 209)
-        # Static expectation: 788 unconditional + 13 conditional = 801 of 1010 certified.
-        self.assertEqual(ok + len(exact), 801)
+        self.assertEqual(len(exact), 20)
+        self.assertEqual(len(refused), 1128)
+        # Static expectation: 1333 unconditional + 20 conditional = 1353
+        # of 2481 apply at Custom 7.3; the rest refuse safely.
+        self.assertEqual(ok + len(exact), 1353)
+
+
+
+def _applies_at_k73(entry, kf, kerr):
+    """Count-like exactness at stored-FLOAT32 7.3, per native kind."""
+    from civ6x10 import transforms as T
+    kind = entry["kind"]
+    if kind == "REPEAT":
+        return False  # non-integral k: every copy stays inert
+    if kind == "DELTA":
+        return T.count_like_applies_delta(
+            float(entry["official"]), kf, kerr)
+    return T.count_like_applies(float(entry["official"]), kf, kerr)
+
+
+
+def _numeric_official(entry):
+    """float(official) or None for VECTOR/REPEAT non-numeric officials."""
+    try:
+        return float(entry["official"])
+    except (TypeError, ValueError):
+        return None
 
     def test_verifier_key_capacity(self):
         # Exact live fixture: the 66-char Magnificences ID truncated to

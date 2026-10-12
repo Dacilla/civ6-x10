@@ -24,7 +24,17 @@ from civ6x10.suzerain import (SUZERAIN_MODULE_BIT,
                               build_suzerain_manifest)
 
 SUZ_BIT = 64
-SUZERAIN_ENTRIES = 68
+SUZERAIN_ENTRIES = 68  # unique-Suzerain manifest (suzerain.yml)
+ENVOY_ENTRIES = 55  # generic 1/3/6-envoy tiers (envoys.yml, same bit)
+
+
+def envoy_ids():
+    import yaml
+    man = yaml.safe_load(
+        (ROOT / "manifests" / "envoys.yml").read_text(encoding="utf-8"))
+    return {(r["modifier_id"], r["argument_name"]) for r in man["envoys"]
+            if r.get("status") == "ok"
+            and r.get("transformation") != "unchanged"}
 
 BOLOGNA_COUNT_LIKE = {
     "MINOR_CIV_BOLOGNA_GREAT_ADMIRAL_POINTS_BONUS",
@@ -88,14 +98,16 @@ class TestModuleOwnership(unittest.TestCase):
         self.assertEqual(MODULE_BITS, {"traits": 1, "policies": 2,
                                        "governments": 4, "pantheons": 8,
                                        "wonders": 16, "governors": 32,
-                                       "suzerain": 64})
+                                       "suzerain": 64, "promotions": 128,
+                                       "dedications": 256, "modes": 512,
+                                       "religion": 1024, "greatpeople": 2048,
+                                       "projects": 4096})
 
     def test_registry_modules_include_suzerain(self):
         self.assertIn("suzerain", REGISTRY_MODULES)
-        self.assertEqual(len(REGISTRY_MODULES), 7)
-        self.assertEqual(tuple(REGISTRY_MODULES),
-                         ("traits", "policies", "governments", "pantheons",
-                          "wonders", "governors", "suzerain"))
+        self.assertIn("envoys", REGISTRY_MODULES)
+        self.assertEqual(len(REGISTRY_MODULES), 13)
+        self.assertEqual(REGISTRY_MODULES["envoys"], "suzerain")
 
     def test_manifest_shape(self):
         audit = ROOT / "civ6x10" / "rules" / "suzerain_audit.yml"
@@ -156,30 +168,39 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         self.entries, self.report = registry_or_skip()
 
     def test_totals(self):
-        self.assertEqual(len(self.entries), 1010)
-        self.assertEqual(self.report["unique_definitions"], 1006)
-        self.assertEqual(self.report["shared_definitions"], 25)
-        self.assertEqual(self.report["certified_unconditional"], 788)
-        self.assertEqual(self.report["certified_count_like_conditional"], 222)
+        self.assertEqual(len(self.entries), 2481)
+        self.assertEqual(self.report["unique_definitions"], 2475)
+        self.assertEqual(self.report["shared_definitions"], 26)
+        self.assertEqual(self.report["certified_unconditional"], 1333)
+        self.assertEqual(self.report["certified_count_like_conditional"], 1148)
         self.assertEqual(self.report["unresolved_conflicts"], [])
-        self.assertEqual(self.report["ownership_counts"]["suzerain"], 68)
+        # 68 unique-Suzerain + 55 generic envoy tiers share bit 64.
+        self.assertEqual(self.report["ownership_counts"]["suzerain"], 123)
 
     def test_suzerain_subset(self):
+        # Phase 8B: the City-State module covers unique-Suzerain bonuses
+        # (68, suzerain.yml) plus generic envoy tiers (55, envoys.yml).
         suz = [e for e in self.entries if e["owners"] == SUZ_BIT]
-        self.assertEqual(len(suz), SUZERAIN_ENTRIES)
+        self.assertEqual(len(suz), SUZERAIN_ENTRIES + ENVOY_ENTRIES)
         self.assertEqual(len({e["modifier_id"] for e in suz}),
-                         SUZERAIN_ENTRIES)
+                         SUZERAIN_ENTRIES + ENVOY_ENTRIES)
         kinds = Counter(e["kind"] for e in suz)
-        self.assertEqual(kinds, {"ADDITIVE": 61, "DISCOUNT": 6, "COMBAT": 1})
-        self.assertEqual(sum(1 for e in suz if e["count_like"]), 21)
-        self.assertEqual(sum(1 for e in suz if not e["count_like"]), 47)
+        self.assertEqual(kinds, {"ADDITIVE": 116, "DISCOUNT": 6, "COMBAT": 1})
+        self.assertEqual(sum(1 for e in suz if e["count_like"]), 53)
+        self.assertEqual(sum(1 for e in suz if not e["count_like"]), 70)
         # suzerain-only ownership: no entry is shared with another module
         self.assertTrue(all(e["owners"] == SUZ_BIT for e in suz))
+        envoy_keys = {(e["modifier_id"], e["argument"]) for e in suz} \
+            & envoy_ids()
+        self.assertEqual(len(envoy_keys), ENVOY_ENTRIES)
 
     def test_bologna_plus_new_count_like_rows(self):
         suz = {e["modifier_id"]: e for e in self.entries
                if e["owners"] == SUZ_BIT}
-        self.assertEqual({m for m, e in suz.items() if e["count_like"]},
+        unique_cl = {m for m, e in suz.items()
+                     if e["count_like"]
+                     and (m, e["argument"]) not in envoy_ids()}
+        self.assertEqual(unique_cl,
                          BOLOGNA_COUNT_LIKE | {
                              "MINOR_CIV_CARDIFF_POWER_LIGHTHOUSE",
                              "MINOR_CIV_CARDIFF_POWER_SEAPORT",
@@ -194,6 +215,15 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
                              "MINOR_CIV_ZANZIBAR_CINNAMON_RESOURCE_BONUS",
                              "MINOR_CIV_ZANZIBAR_CLOVES_RESOURCE_BONUS",
                          })
+        # Envoy-tier count-like rows are the engine-integral building
+        # yields (Eiffel-class refusal at fractional Custom).
+        envoy_cl = [(m, e) for m, e in suz.items()
+                    if e["count_like"]
+                    and (m, e["argument"]) in envoy_ids()]
+        self.assertEqual(len(envoy_cl), 32)
+        for m, e in envoy_cl:
+            self.assertTrue(e["cert_source"].startswith(
+                "curated-effect:engine-integral:"), m)
         for mid in BOLOGNA_COUNT_LIKE:
             e = suz[mid]
             self.assertEqual(e["kind"], "ADDITIVE", mid)
@@ -251,7 +281,8 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         self.assertEqual(len(extra), 21)
         suz = {(e["modifier_id"], e["argument"]) for e in self.entries
                if e["owners"] == SUZ_BIT}
-        self.assertEqual(suz, cand | extra)
+        # Phase 8B: generic envoy tiers join the unique-Suzerain pairs.
+        self.assertEqual(suz, cand | extra | envoy_ids())
 
     def test_no_decision_or_excluded_row_enters(self):
         import yaml
@@ -318,7 +349,7 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         for e in suz:
             self.assertNotEqual(e["owners"] & enabled, e["owners"])
         others = [e for e in self.entries if e["owners"] != SUZ_BIT]
-        self.assertEqual(len(others), 942)
+        self.assertEqual(len(others), 2358)
         for e in others:
             self.assertEqual(e["owners"] & SUZ_BIT, 0)
 
@@ -334,11 +365,12 @@ class TestSuzerainRegistryIntegration(unittest.TestCase):
         rows = manifests_or_skip()
         base_rows = [r for r in rows if r.get("module") != "suzerain"]
         base_entries, base_report = registry_or_skip(base_rows)
-        self.assertEqual(len(base_entries), 942)
-        self.assertEqual(base_report["unique_definitions"], 938)
-        self.assertEqual(base_report["shared_definitions"], 25)
-        self.assertEqual(base_report["certified_unconditional"], 741)
-        self.assertEqual(base_report["certified_count_like_conditional"], 201)
+        self.assertEqual(len(base_entries), 2358)
+        self.assertEqual(base_report["unique_definitions"], 2352)
+        self.assertEqual(base_report["shared_definitions"], 26)
+        self.assertEqual(base_report["certified_unconditional"], 1263)
+        self.assertEqual(base_report["certified_count_like_conditional"],
+                         1095)
         by_key = {(e["modifier_id"], e["argument"]): e for e in base_entries}
         for e in self.entries:
             if e["owners"] == SUZ_BIT:
@@ -364,10 +396,13 @@ class TestSuzerainTransforms(unittest.TestCase):
         return self.T.count_like_applies(float(official), k)
 
     def test_suzerain_rows_at_k73(self):
+        # 70 unconditional apply; all 53 conditionals refuse at 7.3
+        # (unique 1s/2s plus envoy 1/2/3/4/6 building yields — every
+        # product is fractional, so the Eiffel-class refusal holds).
         un = [e for e in self.suz if not e["count_like"]]
         co = [e for e in self.suz if e["count_like"]]
-        self.assertEqual(len(un), 47)
-        self.assertEqual(len(co), 21)
+        self.assertEqual(len(un), 70)
+        self.assertEqual(len(co), 53)
         for e in un:
             v = float(e["official"])
             if e["kind"] == "ADDITIVE":
@@ -383,7 +418,7 @@ class TestSuzerainTransforms(unittest.TestCase):
             self.assertTrue(math.isfinite(r), e)
         for e in co:
             self.assertFalse(self._applies(e["official"], self.kf), e)
-            self.assertIn(e["official"], ("1", "2"), e)
+            self.assertIn(e["official"], ("1", "2", "3", "4", "6"), e)
 
     def test_suzerain_rows_at_k10(self):
         for e in self.suz:
@@ -444,31 +479,48 @@ class TestSuzerainTransforms(unittest.TestCase):
                 writes += 1
             else:
                 refusals += 1
-        self.assertEqual((writes, refusals), (47, 21))
+        self.assertEqual((writes, refusals), (70, 53))
         ok = ex = 0
+        kerr = T.float_quantization_error(self.kf)
         for e in self.entries:
-            v = float(e["official"])
             if e["count_like"]:
-                if T.count_like_applies(v, self.kf):
+                if _co_applies(e, self.kf, kerr):
                     ex += 1
                 continue
             if e["kind"] == "ADDITIVE":
-                r = v * self.kf
+                r = float(e["official"]) * self.kf
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(self.kf * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** self.kf) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == "PROBABILITY":
+                r = T.repeated_probability_for_multiplier(
+                    float(e["official"]), self.kf)
+            elif e["kind"] == "VECTOR":
+                T.vector_multiply(e["official"], self.kf)
+                r = 0.0
             else:
-                continue
+                self.fail(f"unexpected unconditional kind: {e}")
             if math.isfinite(r) and abs(r) <= 1e6:
                 ok += 1
         refused = sum(1 for e in self.entries if e["count_like"]
-                      and not T.count_like_applies(float(e["official"]),
-                                                   self.kf))
-        self.assertEqual(ok + ex, 801)
-        self.assertEqual(refused, 209)
-        self.assertEqual(len(self.entries), 1010)
+                      and not _co_applies(e, self.kf, kerr))
+        self.assertEqual(ok + ex, 1353)
+        self.assertEqual(refused, 1128)
+        self.assertEqual(len(self.entries), 2481)
+
+
+def _co_applies(entry, kf, kerr):
+    from civ6x10 import transforms as T
+    if entry["kind"] == "REPEAT":
+        return False
+    if entry["kind"] == "DELTA":
+        return T.count_like_applies_delta(
+            float(entry["official"]), kf, kerr)
+    return T.count_like_applies(float(entry["official"]), kf, kerr)
 
 
 if __name__ == "__main__":

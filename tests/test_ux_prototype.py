@@ -132,24 +132,24 @@ class TestProductionUntouched(unittest.TestCase):
     def test_controller_sql_hashes(self):
         self.assertEqual(
             norm_hash(ROOT / "controller" / "X10" / "Config" / "X10Config.sql"),
-            "b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464")
+            "f08ffe9e1255035cc111ec14210b5fb9ea5b936a484d3fede6157b50803db860")
         self.assertEqual(
             norm_hash(ROOT / "controller" / "X10" / "Config" /
                       "X10WonderBridge.sql"),
-            "81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe")
+            "d5e9556dc63a05da086b7604851bfa468cec593aa8f1dcb336e63e7e16aaf34e")
 
     def test_registry_and_dll_freeze(self):
         inc = ROOT / "build" / "X10ProductionRegistry.inc"
         if not inc.is_file():
             self.skipTest("local production registry unavailable")
         self.assertEqual(norm_hash(inc),
-                         "181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208")
+                         "90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c")
         pin = ROOT / "spike" / "EXPECTED_DLL_SHA256.txt"
         if not pin.is_file():
             self.skipTest("expected DLL hash unavailable")
         self.assertEqual(
             pin.read_text(encoding="utf-8").strip().lower(),
-            "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
+            "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
 
     def test_scratch_pin_distinct(self):
         pin = ROOT / "spike" / "UX_PROBE_DLL_SHA256.txt"
@@ -159,7 +159,7 @@ class TestProductionUntouched(unittest.TestCase):
         self.assertRegex(scratch, r"^[0-9a-f]{64}$")
         self.assertNotEqual(
             scratch,
-            "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
+            "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
 
     def test_modinfo_gameplay_nodes_stable(self):
         import xml.etree.ElementTree as ET
@@ -168,7 +168,8 @@ class TestProductionUntouched(unittest.TestCase):
         self.assertEqual(
             [(a.tag, a.get("id")) for a in m.find("InGameActions")],
             [("UpdateDatabase", "X10Dummy"),
-             ("UpdateDatabase", "X10WonderBridge")])
+             ("UpdateDatabase", "X10WonderBridge"),
+             ("UpdateDatabase", "X10SlotCopies")])
         deps = [d.get("id") for d in m.find("Dependencies")]
         self.assertEqual(deps, ["4873eb62-8ccc-4574-b784-dda455e74e68",
                                 PROD_ENGINE_ID])

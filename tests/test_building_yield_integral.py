@@ -114,14 +114,19 @@ class TestBuildingYieldCertification(unittest.TestCase):
             if h["modifier_type"] != "MODIFIER_BUILDING_YIELD_CHANGE":
                 continue
             n_yield += 1
+            # Phase 8B non-destructive delta: helpers are stored inert (0)
+            # and contribute official*(k-1); the manifest still carries the
+            # direct official V as the delta base.
+            self.assertEqual(h["transformation"], "bridge_delta",
+                             h["modifier_id"])
             cert = certify_row(h, floor.get((h["modifier_type"],
                                              h["effect_type"],
                                              h["argument_name"])), rules)
             self.assertTrue(cert["certified"], h["modifier_id"])
-            self.assertEqual(cert["kind"], "ADDITIVE", h["modifier_id"])
+            self.assertEqual(cert["kind"], "DELTA", h["modifier_id"])
             self.assertTrue(cert["count_like"], h["modifier_id"])
             self.assertEqual(cert["source"],
-                             "curated-effect:engine-integral:"
+                             "curated-effect:delta_effects:"
                              "EFFECT_ADJUST_BUILDING_YIELD_CHANGE",
                              h["modifier_id"])
         self.assertEqual(n_yield, 31)
@@ -151,11 +156,11 @@ class TestBuildingYieldCertification(unittest.TestCase):
                                              h["effect_type"],
                                              h["argument_name"])), rules)
             self.assertTrue(cert["certified"], h["modifier_id"])
-            self.assertEqual(cert["kind"], "ADDITIVE", h["modifier_id"])
-            if fam in ("gpp", "yield"):
-                self.assertTrue(cert["count_like"], h["modifier_id"])
-            else:
-                self.assertFalse(cert["count_like"], h["modifier_id"])
+            # Phase 8B: every bridge family rides the DELTA pipeline
+            # (non-destructive); all delta helpers are count-like, so
+            # fractional deltas refuse and the direct value stands alone.
+            self.assertEqual(cert["kind"], "DELTA", h["modifier_id"])
+            self.assertTrue(cert["count_like"], h["modifier_id"])
         self.assertEqual(seen.get("gpp"), 20)
         self.assertEqual(seen.get("yield"), 31)
         self.assertEqual(seen.get("housing"), 3)
@@ -163,15 +168,18 @@ class TestBuildingYieldCertification(unittest.TestCase):
 
     def test_registry_totals(self):
         entries, report = registry_or_skip()
-        self.assertEqual(len(entries), 1010)
-        self.assertEqual(report["unique_definitions"], 1006)
-        self.assertEqual(report["certified_unconditional"], 788)
-        self.assertEqual(report["certified_count_like_conditional"], 222)
+        self.assertEqual(len(entries), 2481)
+        self.assertEqual(report["unique_definitions"], 2475)
+        self.assertEqual(report["certified_unconditional"], 1333)
+        self.assertEqual(report["certified_count_like_conditional"], 1148)
         self.assertEqual(report["unresolved_conflicts"], [])
         gated = [e for e in entries
                  if e["cert_source"].startswith(
                      "curated-effect:engine-integral")]
-        self.assertEqual(len(gated), 57)
+        # 21 Release-1 + 1 governor appeal + 49 Phase-8B rows on the same
+        # player-cities carrier (envoy leaves, dramatic policies,
+        # great-person and trait rows). Bridge helpers ride DELTA now.
+        self.assertEqual(len(gated), 71)
         # Scoped to exactly the two carriers that dispatch the effect; the
         # rule is never broadened by EffectType alone.
         row_eff = {(r["modifier_id"], r["argument_name"]):
@@ -186,12 +194,13 @@ class TestBuildingYieldCertification(unittest.TestCase):
             "MODIFIER_GOVERNOR_ADJUST_FEATURE_NO_IMPROVEMENT_APPEAL"})
         self.assertTrue(all(e["count_like"] for e in gated))
         self.assertTrue(all(e["kind"] == "ADDITIVE" for e in gated))
-        bridge = [e for e in gated if e["modifier_id"].startswith("X10_")
-                  and e["modifier_id"] not in RELEASE1_CARRIER_IDS]
         release1 = [e for e in gated
                     if e["modifier_id"] in RELEASE1_CARRIER_IDS]
-        self.assertEqual(len(bridge), 31)
         self.assertEqual(len(release1), 21)
+        delta = [e for e in entries
+                 if e["cert_source"].startswith("curated-effect:delta")]
+        self.assertEqual(len(delta), 57)  # all bridge helpers ride DELTA
+        self.assertTrue(all(e["count_like"] for e in delta))
 
 
 class TestIntegralTransformMath(unittest.TestCase):
@@ -202,57 +211,60 @@ class TestIntegralTransformMath(unittest.TestCase):
     """
 
     def _applies(self, v, k):
-        return T.count_like_applies(v, T.stored_float32(k))
+        # DELTA exactness: the applied value is the delta V*(k-1).
+        return T.count_like_applies_delta(v, T.stored_float32(k))
 
     def test_k10_scales_exactly(self):
-        # Default multiplier must scale every affected direct wonder yield.
+        # Default multiplier: every direct wonder yield gets its full
+        # delta (totals V + 9V = 10V).
         for v in (1, 2, 3, 4, 5, 6, 8, 10):
             self.assertTrue(self._applies(float(v), 10.0), v)
-        self.assertEqual(2 * 10.0, 20)
+        self.assertEqual(2.0 + 2.0 * 9.0, 20)
 
     def test_k75_integral_writes(self):
         self.assertTrue(self._applies(2.0, 7.5))
-        self.assertEqual(2 * 7.5, 15)
+        self.assertEqual(2.0 + 2.0 * 6.5, 15)
 
     def test_k73_v2_refuses(self):
-        # Stonehenge: requested 14.6 must REFUSE, never become 14.
+        # Stonehenge: delta 12.6 must REFUSE, never become 12.
         self.assertFalse(self._applies(2.0, 7.3))
-        self.assertAlmostEqual(2 * K73, 14.600000381, places=6)
-        self.assertNotEqual(int(2 * K73), 2 * K73)
+        self.assertAlmostEqual(2 * (K73 - 1.0), 12.600000381, places=6)
+        self.assertNotEqual(int(2 * (K73 - 1.0)), 2 * (K73 - 1.0))
 
     def test_k73_v10_writes(self):
-        # Panama Canal: 10 x 7.3 = 73 remains eligible.
+        # Panama Canal: delta 63 is exact, total 73.
         self.assertTrue(self._applies(10.0, 7.3))
-        self.assertAlmostEqual(10 * K73, 73.000001907, places=6)
+        self.assertAlmostEqual(10.0 + 10 * (K73 - 1.0), 73.000001907,
+                               places=6)
 
     def test_no_floor_ceil_round_approximation(self):
         import math
         for v in (1, 2, 3, 4, 5, 6, 8):
-            want = v * K73
-            applied = want if self._applies(float(v), 7.3) else float(v)
-            # Either the exact requested value or the original official value;
-            # never floor/ceil/round of the requested value.
-            self.assertIn(applied, (want, float(v)), v)
-            self.assertNotEqual(applied, math.floor(want))
-            self.assertNotEqual(applied, math.ceil(want))
-            self.assertNotEqual(applied, round(want))
+            want = v * (K73 - 1.0)
+            delta = want if self._applies(float(v), 7.3) else 0.0
+            # Either the exact requested delta or an inert helper (0, so
+            # the direct V stands alone); never floor/ceil/round.
+            self.assertIn(delta, (want, 0.0), v)
+            self.assertNotEqual(delta, math.floor(want))
+            self.assertNotEqual(delta, math.ceil(want))
+            self.assertNotEqual(delta, round(want))
 
     def test_k0_and_off_leaves_vanilla(self):
-        # k=0 (Off) and module OFF leave the definition at official V: the
-        # zeroed direct cell plus the helper at V reproduces vanilla.
+        # k=0 (Off) and module OFF leave the definition at official V.
+        # Phase 8B non-destructive delta: the direct cell keeps V and the
+        # helper stays inert (0), so V + 0 reproduces vanilla.
         for v in (2.0, 10.0):
-            self.assertEqual(0.0 + v, v)  # 0 (direct) + V (helper)
+            self.assertEqual(v + 0.0, v)  # V (direct) + 0 (helper)
         # No transform is attempted at all when k==0 (native arms nothing).
 
     def test_refusal_leaves_helper_at_official(self):
         # Native refusal (Apply returns false) skips the write entirely, so
-        # the definition keeps its official value: gameplay stays vanilla V.
+        # the helper keeps its inert 0: gameplay is direct V + 0 = vanilla.
         v, k = 2.0, K73
         applies = self._applies(v, k)
         self.assertFalse(applies)
-        stored = float(v)  # write skipped -> unchanged definition
-        self.assertEqual(stored, 2.0)
-        self.assertEqual(0.0 + stored, 2.0)  # gameplay total = vanilla
+        stored = 0.0  # write skipped -> helper still inert
+        self.assertEqual(v + stored, 2.0)  # gameplay total = vanilla
 
     def test_every_gated_entry_either_writes_or_keeps_official(self):
         try:
@@ -266,37 +278,50 @@ class TestIntegralTransformMath(unittest.TestCase):
         self.assertEqual(len(entries), 57)
         for e in entries:
             v = float(e["official"])
-            applies = T.count_like_applies(v, K73)
+            # DELTA exactness is judged on the delta V*(k-1), not V*k.
+            applies = T.count_like_applies_delta(v, K73)
             if e["modifier_id"] == "X10_PANAMA_CANAL_YIELD_GOLD":
-                self.assertTrue(applies, e)  # 10 -> 73
+                self.assertTrue(applies, e)  # delta 10*6.3 = 63; total 73
             if e["modifier_id"] == "X10_STONEHENGE_YIELD_FAITH":
-                self.assertFalse(applies, e)  # 2 -> 14.6 refused
+                self.assertFalse(applies, e)  # delta 2*6.3 = 12.6 refused
 
     def test_static_registry_counts_at_k73(self):
+        # Phase 8B decomposition at Custom 7.3: 1324 unconditional apply,
+        # 21 exact conditionals (20 ADDITIVE + Panama DELTA 63), 1136
+        # refuse (387 ADDITIVE fractions, 693 inert REPEAT copies,
+        # 56 DELTA fractions). Total 1345 of 2481.
         import math
         entries, _ = registry_or_skip()
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
+        kerr = T.float_quantization_error(K73)
         ok = 0
         for e in un:
-            v = float(e["official"])
             if e["kind"] == "ADDITIVE":
-                r = v * K73
+                r = float(e["official"]) * K73
             elif e["kind"] == "COMBAT":
+                v = float(e["official"])
                 r = 25.0 * math.log(K73 * (math.exp(v / 25.0) - 1) + 1)
             elif e["kind"] == "DISCOUNT":
+                v = float(e["official"])
                 d = abs(v) / 100.0
                 r = (1.0 - (1.0 - d) ** K73) * 100.0 * (-1 if v < 0 else 1)
+            elif e["kind"] == "PROBABILITY":
+                r = T.repeated_probability_for_multiplier(
+                    float(e["official"]), K73)
+            elif e["kind"] == "VECTOR":
+                T.vector_multiply(e["official"], K73)
+                r = 0.0
             else:
-                continue
+                self.fail(f"unexpected unconditional kind: {e}")
             self.assertTrue(math.isfinite(r) and abs(r) <= 1e6, e)
             ok += 1
-        exact = [e for e in co if T.count_like_applies(float(e["official"]), K73)]
+        exact = [e for e in co if _applies_co(e, K73, kerr)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(ok, 788)
-        self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 209)
-        self.assertEqual(ok + len(exact), 801)
+        self.assertEqual(ok, 1333)
+        self.assertEqual(len(exact), 20)
+        self.assertEqual(len(refused), 1128)
+        self.assertEqual(ok + len(exact), 1353)
 
 
 RELEASE1_CARRIER_IDS = (
@@ -322,6 +347,19 @@ RELEASE1_CARRIER_IDS = (
     "MILITARYRESEARCH_RENAISSANCE_WALLS_SCIENCE_MODIFIER",
     "MILITARYRESEARCH_SEAPORT_SCIENCE_MODIFIER",
 )
+
+
+
+
+def _applies_co(entry, kf, kerr):
+    """Count-like exactness at 7.3, per native kind (test mirror)."""
+    kind = entry["kind"]
+    if kind == "REPEAT":
+        return False  # non-integral k: every copy stays inert
+    if kind == "DELTA":
+        return T.count_like_applies_delta(
+            float(entry["official"]), kf, kerr)
+    return T.count_like_applies(float(entry["official"]), kf, kerr)
 
 
 class TestRelease1BuildingYieldGate(unittest.TestCase):
@@ -371,9 +409,11 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
             self.assertTrue(e["count_like"], mid)
 
     def test_no_other_release1_rows_change(self):
-        # Closed world: with the Phase-3G rule entry removed, the only
-        # classification differences are count_like + cert_source on
-        # exactly these 21 rows. Nothing else in Release 1 moves.
+        # Closed world: with the Phase-3G rule entry removed, ONLY rows on
+        # the stripped player-cities carrier move (the 21 Release-1 rows
+        # plus Phase-8B rows sharing the carrier: envoy leaves, dramatic
+        # policies, great-person/trait rows). Nothing on any other carrier
+        # moves: the rule is never broadened by EffectType alone.
         import copy
         from civ6x10 import certification as C
         from civ6x10 import production as P
@@ -409,14 +449,22 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
         post_map = {(e["modifier_id"], e["argument"]): e
                     for e in post_base}
         self.assertEqual(set(pre_map), set(post_map))
-        self.assertEqual(len(pre_entries), 940)
-        self.assertEqual(len(post_base), 940)
+        self.assertEqual(len(pre_entries), len(post_base))
         changed = {k for k, v in post_map.items()
                    if any(pre_map[k][f] != v[f] for f in
                           ("official", "kind", "count_like", "owners",
                            "cert_source", "family"))}
-        self.assertEqual(changed,
-                         {(mid, "Amount") for mid in RELEASE1_CARRIER_IDS})
+        # Every moved row dispatches the stripped carrier's effect...
+        row_eff = {}
+        for r in base_rows:
+            row_eff[(r["modifier_id"], r["argument_name"])] = \
+                r.get("effect_type")
+        for k in changed:
+            self.assertEqual(
+                row_eff[k], "EFFECT_ADJUST_BUILDING_YIELD_CHANGE", k)
+        # ...including exactly the 21 Release-1 rows (ungated -> gated).
+        self.assertTrue(
+            {(mid, "Amount") for mid in RELEASE1_CARRIER_IDS} <= changed)
         for k in changed:
             for f in ("official", "kind", "owners", "family"):
                 self.assertEqual(pre_map[k][f], post_map[k][f], (k, f))
@@ -485,19 +533,19 @@ class TestRelease1BuildingYieldGate(unittest.TestCase):
     def test_final_production_totals(self):
         entries, report = registry_or_skip()
         kf = K73
+        kerr = T.float_quantization_error(kf)
         un = [e for e in entries if not e["count_like"]]
         co = [e for e in entries if e["count_like"]]
-        exact = [e for e in co
-                 if T.count_like_applies(float(e["official"]), kf)]
+        exact = [e for e in co if _applies_co(e, kf, kerr)]
         refused = [e for e in co if e not in exact]
-        self.assertEqual(len(entries), 1010)
-        self.assertEqual(report["unique_definitions"], 1006)
-        self.assertEqual(len(un), 788)
-        self.assertEqual(len(co), 222)
-        self.assertEqual(len(exact), 13)
-        self.assertEqual(len(refused), 209)
+        self.assertEqual(len(entries), 2481)
+        self.assertEqual(report["unique_definitions"], 2475)
+        self.assertEqual(len(un), 1333)
+        self.assertEqual(len(co), 1148)
+        self.assertEqual(len(exact), 20)
+        self.assertEqual(len(refused), 1128)
         # writes = unconditional (all apply) + conditional integral successes
-        self.assertEqual(len(un) + len(exact), 801)
+        self.assertEqual(len(un) + len(exact), 1353)
 
 
 if __name__ == "__main__":

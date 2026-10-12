@@ -1,17 +1,20 @@
-version: 1
-phase: 8A
+version: 2
+phase: 8B
 baseline_db:
   bytes: 10207232
   sha256: 8d8149338398195dda727318ab168ce420419d60e04ea9ad9ad4c133786c27a1
   tables: 428
 production:
-  entries: 1010
-  unique: 1006
-  shared: 25
-  unconditional: 788
-  count_like: 222
-  ce_commit: 0655190
-  dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
+  entries: 2481
+  unique: 2475
+  shared: 26
+  unconditional: 1333
+  count_like: 1148
+  ce_commit: 29e8b7f
+  dll_sha256: e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c
+  prior_1010: {entries: 1010, unique: 1006, shared: 25, unconditional: 788,
+    count_like: 222, ce_commit: 0655190,
+    dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14}
 taxonomy:
 - ALREADY_SUPPORTED
 - EXISTING_AUDIT_EXCLUDED
@@ -91,7 +94,7 @@ discovery:
     outside the supplied category lists, plus review of every modifier-root table
     for systems the prompt did not name
 pair_overlap:
-  production_pairs_total: 1010
+  production_pairs_total: 2481
   production_pairs_found_in_db: 931
   production_pairs_missing_explained:
   - kind: synthetic_bridge_helpers

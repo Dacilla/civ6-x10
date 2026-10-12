@@ -6,12 +6,13 @@ A publish-ready build must fail on this marker (assembler enforces).
 
 Controller / release source (planned):
   https://github.com/Dacilla/civ6-overpowered-bonuses  [PLANNED-PLACEHOLDER]
-  semantic registry freeze 2cf953e (1010 entries; validated by tag
-  phase6b-1010-live-validated)
+  semantic registry: Phase-8B 2481-entry set (prior 1010-entry freeze 2cf953e
+  validated by tag phase6b-1010-live-validated; 8B under pre-publication
+  gameplay validation)
   controller runtime tree: see controller_release_commit in
   release-manifest.yml
-  UX validation: LIVE_VALIDATED (preset/Custom/Off matrix + RC2 smoke)
+  UX validation: PRE-PUBLICATION (Phase 8B; prior RC2 matrix LIVE_VALIDATED)
 
 Engine dependency source (exact, available now):
   https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
-  branch x10-lifecycle-log, commit 0655190
+  branch x10-lifecycle-log, commit 29e8b7f

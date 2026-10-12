@@ -94,7 +94,7 @@ class TestWonderAudit(unittest.TestCase):
             key = (e["modifier_id"], e["argument"])
             self.assertIn(key, audited, key)
             self.assertGreater(len(audited[key]["rationale"]), 20, key)
-        self.assertEqual(n, 97)
+        self.assertEqual(n, 115)
 
     def test_audit_excluded_absent_from_registry(self):
         audit = load_audit()
@@ -135,19 +135,21 @@ class TestWonderRegistry(unittest.TestCase):
             entries, report = build_all()
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
-        # 813 Phase-3 rows plus 2 re-admitted Toqui loyalty rows (Phase 6B)
-        self.assertEqual(len(entries), 815)
+        # Phase-8B slice: 815 Phase-3/6B rows plus 34 reviewed wonder
+        # magnitudes (discrete grants, Petra/Halicarnassus vectors,
+        # embarked movement).
+        self.assertEqual(len(entries), 849)
         self.assertEqual(report["unresolved_conflicts"], [])
         won = [e for e in entries if e["owners"] == 16]
-        self.assertEqual(len(won), 97)
+        self.assertEqual(len(won), 115)
         kinds = {e["kind"] for e in won}
-        self.assertEqual(kinds, {"ADDITIVE", "DISCOUNT"})
+        self.assertEqual(kinds, {"ADDITIVE", "DISCOUNT", "VECTOR"})
         discs = sorted(e["modifier_id"] for e in won
                        if e["kind"] == "DISCOUNT")
         self.assertEqual(discs, ["MEENAKSHITEMPLE_GURU_DISCOUNT",
                                  "ORACLE_PATRONAGE_FAITH_DISCOUNT"])
         cl = [e for e in won if e["count_like"]]
-        self.assertEqual(len(cl), 23)
+        self.assertEqual(len(cl), 39)
 
     def test_wonder_ownership_bit(self):
         from civ6x10.production import MODULE_BITS
@@ -207,8 +209,8 @@ class TestWonderRegistry(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("manifests unavailable (run review locally)")
         rest = [e for e in entries if not (e["owners"] & 16)]
-        self.assertEqual(len(old_entries), 718)
-        self.assertEqual(len(rest), 718)
+        self.assertEqual(len(old_entries), 734)
+        self.assertEqual(len(rest), 734)
         self.assertEqual(sorted(map(str, old_entries)),
                          sorted(map(str, rest)))
         sul = [e for e in rest
@@ -235,15 +237,18 @@ class TestWonderRegistry(unittest.TestCase):
         kf = T.stored_float32(7.3)
         won = [e for e in entries if e["owners"] == 16]
         un = [e for e in won if not e["count_like"]]
-        self.assertEqual(len(un), 74)
+        self.assertEqual(len(un), 76)
         for k in (1.0, 10.0, 4.25, kf):
             for e in un:
-                v = float(e["official"])
                 if e["kind"] == "DISCOUNT":
+                    v = float(e["official"])
                     d = abs(v) / 100.0
                     r = (1.0 - (1.0 - d) ** k) * 100.0 * (-1 if v < 0 else 1)
+                elif e["kind"] == "VECTOR":
+                    T.vector_multiply(e["official"], k)
+                    r = 0.0
                 else:
-                    r = v * k
+                    r = float(e["official"]) * k
                 self.assertTrue(math.isfinite(r) and abs(r) <= 1000000,
                                 (e, k))
         # k=1 identity spot check on a wonder row.
@@ -261,9 +266,10 @@ class TestWonderRegistry(unittest.TestCase):
         kf = T.stored_float32(7.3)
         won_cl = sorted(e["modifier_id"] for e in entries
                         if e["owners"] == 16 and e["count_like"])
-        # 23 wonder-owned conditionals: charges, appeal, capacity,
-        # population, DVP, era score, Casa titles, Oracle GPP, free power.
-        self.assertEqual(len(won_cl), 23)
+        # 39 wonder-owned conditionals: charges, appeal, capacity,
+        # population, DVP, era score, Casa titles, Oracle GPP, free power,
+        # plus the Phase-8B discrete grants and embarked movement.
+        self.assertEqual(len(won_cl), 39)
         exact = [m for m in won_cl
                  if T.count_like_applies(
                      float([e for e in entries

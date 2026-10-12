@@ -163,6 +163,10 @@ def _strong_family_override(modifier_type: str, effect_type: str,
     family, or any sibling argument never certifies through this path.
     `excluded_effects` is consulted before this function is ever reached,
     so a deliberately excluded EffectType cannot be re-admitted here.
+
+    Entries may carry `count_like: true` for indivisible-count magnitudes
+    (Phase 8B discrete grants / resource flows): the runtime integral
+    gate then applies. Default false preserves all pre-8B behavior.
     """
     for entry in rules.get("strong_family_overrides") or []:
         if entry.get("effect") != effect_type:
@@ -178,6 +182,82 @@ def _strong_family_override(modifier_type: str, effect_type: str,
                     "resolution": "conflict:strong-override-family-mismatch:"
                                   + str(proposed_family)}
         return {"certified": True, "kind": entry.get("kind"),
+                "count_like": bool(entry.get("count_like", False)),
+                "resolution": "certified"}
+    return None
+
+
+def _vector_override(effect_type: str, argument_name: str,
+                     official_value: str, rules: dict) -> dict | None:
+    """Certification for explicitly-reviewed vector-valued arguments.
+
+    Vector (comma-list) magnitudes never reach the scalar floor logic:
+    the official value is non-numeric by design. Each entry names one
+    EffectType whose positional numeric lists were reviewed (Phase 8B):
+    every element must parse as finite, the paired selector list is
+    untouched, malformed/mixed lists fail closed. Unlisted effects fall
+    through untouched (scalar path excludes them as non-numeric).
+    """
+    from .transforms import parse_vector
+    for entry in rules.get("vector_overrides") or []:
+        if entry.get("effect") != effect_type:
+            continue
+        if entry.get("argument", "Amount") != argument_name:
+            continue
+        if parse_vector(official_value or "") is None:
+            return {"certified": False,
+                    "resolution": "conflict:vector-malformed:" + effect_type}
+        return {"certified": True, "kind": entry.get("kind", "VECTOR"),
+                "source": "curated-effect:vector:" + effect_type,
+                "resolution": "certified"}
+    return None
+
+
+def _transformation_override(manifest_row: dict, rules: dict,
+                             key: str) -> dict | None:
+    """Certification for explicit 8B pipeline transformations.
+
+    `key` names a rules list (`delta_effects`, `repeat_effects`); each
+    entry names one reviewed (effect, argument) tuple plus its native
+    kind. Anything unlisted falls through untouched.
+    """
+    et = (manifest_row.get("effect_type") or "").strip()
+    arg = (manifest_row.get("argument_name") or "").strip()
+    for entry in rules.get(key) or []:
+        if entry.get("effect") != et:
+            continue
+        if entry.get("argument", "Amount") != arg:
+            continue
+        return {"certified": True, "kind": entry.get("kind"),
+                "count_like": bool(entry.get("count_like", True)),
+                "source": "curated-effect:" + key + ":" + et,
+                "resolution": "certified"}
+    return None
+
+
+def _effect_arg_override(modifier_type: str, effect_type: str,
+                         argument_name: str, rules: dict) -> dict | None:
+    """Curated (effect, argument[, modifier_type]) certification.
+
+    For carriers with no semantic-floor row at all (promotion/ability and
+    game-mode carriers absent from the clean-DB floor): each entry is
+    positive human evidence with its own rationale, the same trust class
+    as combat_effects. Excluded EffectTypes keep precedence (checked by
+    the caller before the floor logic); unlisted tuples fall through to
+    the ordinary conflict path.
+    """
+    for entry in rules.get("certified_effect_args") or []:
+        if entry.get("effect") != effect_type:
+            continue
+        if entry.get("argument", "Amount") != argument_name:
+            continue
+        if entry.get("modifier_type") and \
+                entry["modifier_type"] != modifier_type:
+            continue
+        return {"certified": True, "kind": entry.get("kind", "ADDITIVE"),
+                "family": entry.get("family", "FLAT_AMOUNT"),
+                "count_like": bool(entry.get("count_like", False)),
+                "source": "curated-effect:effect-arg:" + effect_type,
                 "resolution": "certified"}
     return None
 
@@ -210,6 +290,14 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
         # failing closed. Unlisted tuples still fail closed.
         mode = mode_floor_for(mt, et, arg)
         if mode is None:
+            # Promotion/ability/mode carriers: curated per-effect evidence
+            # (Phase 8B). Anything unlisted still fails closed below.
+            curated = _effect_arg_override(mt, et, arg, rules)
+            if curated is not None:
+                return {**base, "certified": True, "kind": curated["kind"],
+                        "count_like": curated["count_like"],
+                        "source": curated["source"],
+                        "resolution": "certified"}
             return {**base, "resolution": "conflict:no-sem-floor-row",
                     "source": "none"}
         sem_row = {"semantic_family": mode.get("semantic_family"),
@@ -233,9 +321,47 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
             return {**base, "resolution": strong["resolution"],
                     "source": "none"}
         return {**base, "certified": True, "kind": strong["kind"],
-                "count_like": False,
+                "count_like": bool(strong.get("count_like", False)),
                 "source": "curated-effect:strong-family:" + et,
                 "resolution": "certified"}
+
+    # Curated per-effect evidence for heuristic-only floors (Phase 8B):
+    # an AUTO_PATTERN / NEEDS_REVIEW floor row is never proof by itself,
+    # but a certified_effect_args entry naming this exact tuple is positive
+    # human evidence (same trust class as combat_effects). Proven floors
+    # never reach this branch, so pre-8B certifications are untouched.
+    if not proven:
+        curated = _effect_arg_override(mt, et, arg, rules)
+        if curated is not None:
+            return {**base, "certified": True, "kind": curated["kind"],
+                    "count_like": curated["count_like"],
+                    "source": curated["source"],
+                    "resolution": "certified"}
+
+    # Explicit 8B pipeline transformations (checked after excluded_effects;
+    # each consults its own reviewed allowlist; unlisted tuples fall through
+    # to the ordinary floor logic, which excludes/fails them as before).
+    transformation = (manifest_row.get("transformation") or "").strip()
+    if transformation == "vector_multiply":
+        vectored = _vector_override(
+            et, arg, manifest_row.get("official_value") or "", rules)
+        if vectored is not None:
+            if not vectored["certified"]:
+                return {**base, "resolution": vectored["resolution"],
+                        "source": "none"}
+            return {**base, "certified": True, "kind": vectored["kind"],
+                    "count_like": False,
+                    "source": vectored["source"],
+                    "resolution": "certified"}
+    if transformation in ("bridge_delta", "repeat_count"):
+        key = "delta_effects" if transformation == "bridge_delta" \
+            else "repeat_effects"
+        pipelined = _transformation_override(manifest_row, rules, key)
+        if pipelined is not None:
+            return {**base, "certified": True, "kind": pipelined["kind"],
+                    "count_like": pipelined["count_like"],
+                    "source": pipelined["source"],
+                    "resolution": "certified"}
 
     if sf == "DISCOUNT":
         # AUTO_PATTERN / NEEDS_REVIEW floor rows cannot certify a special
@@ -260,6 +386,20 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
                 "source": "curated-effect:discount-excluded:" + et}
     if sf == "COMBAT_STRENGTH_BONUS":
         if proven:
+            # The tenfold-damage formula is undefined for penalties: a
+            # negative official is a debuff magnitude, scaled flat
+            # (Phase 8B: -5 defending penalty -> -50 at x10, never naive
+            # formula application and never silent refusal).
+            try:
+                official_num = float(
+                    manifest_row.get("official_value") or "")
+            except (TypeError, ValueError):
+                official_num = 0.0
+            if official_num < 0:
+                return {**base, "certified": True, "kind": "ADDITIVE",
+                        "count_like": False,
+                        "source": "formula-derived:negative-combat-flat",
+                        "resolution": "certified"}
             return {**base, "certified": True, "kind": "COMBAT",
                     "count_like": False,
                     "source": "formula-derived:COMBAT_STRENGTH_BONUS",

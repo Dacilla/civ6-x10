@@ -5,19 +5,19 @@ in ModifierArguments (Building_YieldChanges, Building_GreatPersonPoints,
 Buildings.Housing, Buildings.Entertainment). The native engine only
 transforms populated definitions, so each certifiable direct scalar V is
 bridged:
-  authoritative direct value V
-    -> generated guarded SQL zeroes the direct cell AND creates one helper
-       modifier carrying Amount=V attached to the wonder
-    -> the helper flows through the existing native registry
-       (official-mismatch guard, FLOAT32 k, count rules, store lookup)
+  authoritative direct value V (PRESERVED: vanilla UI keeps reading it)
+    -> generated guarded SQL creates one helper modifier carrying
+       Amount=0 (inert) attached to the wonder
+    -> the native DELTA kind contributes V*(k-1) through the existing
+       registry machinery (zero-match guard, FLOAT32 k, count rules)
 
-Invariant (no new native arithmetic required):
-  module OFF or k=1:  0 + V = vanilla (helper passes through untransformed)
-  module ON at k:     0 + kV = semantic multiplier.
+Invariant (Phase 8B non-destructive delta):
+  module OFF or k=1:  V + 0 = vanilla (helper inert)
+  module ON at k:     V + (k-1)V = semantic multiplier.
 
 Every statement is guarded on the audited official value: drift (or another
-mod) means zeroing never fires AND the helper is never created, leaving
-vanilla untouched while the dormant registry row can never match at runtime.
+mod) means the helper is never created, leaving vanilla untouched while
+the dormant registry row can never match at runtime.
 Helper IDs are deterministic (X10_<BUILDING>_<TAG>) from this generator,
 never handwritten; zero official X10_-prefixed collisions exist.
 """
@@ -168,13 +168,21 @@ def load_direct_csv(path: str | Path) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
-REGISTRY_MODULES = ("traits", "policies", "governments", "pantheons",
-                    "wonders", "governors", "suzerain")
+# Manifest file -> default module tag. Files whose rows carry their own
+# "module" key (slots: wonders/traits per copy; sweeps: religion,
+# greatpeople, projects) keep it; the default applies otherwise.
+REGISTRY_MODULES = {"traits": "traits", "policies": "policies",
+                    "governments": "governments", "pantheons": "pantheons",
+                    "wonders": "wonders", "governors": "governors",
+                    "suzerain": "suzerain", "envoys": "suzerain",
+                    "promotions": "promotions",
+                    "dedications": "dedications", "modes": "modes",
+                    "slots": "wonders", "sweep": None}
 
 
 def collect_registry_rows(root: str | Path) -> list[dict]:
-    """All production input rows: 7 manifests (traits, policies, governments,
-pantheons, wonders, governors, suzerain) + generated bridge helpers.
+    """All production input rows: base manifests + 8B manifests (envoys,
+promotions, dedications, modes, slots, sweep) + generated bridge helpers.
 
     Single source shared by the CLI and the test-suite so the shipped
     registry can never silently diverge from what tests certify.
@@ -182,12 +190,21 @@ pantheons, wonders, governors, suzerain) + generated bridge helpers.
     import yaml
     root = Path(root)
     rows: list[dict] = []
-    for module in REGISTRY_MODULES:  # 7 supported modules (suzerain=bit 64)
-        man = yaml.safe_load(
-            open(root / "manifests" / f"{module}.yml", encoding="utf-8"))
-        for r in man[module]:
+    for manifest, default_module in REGISTRY_MODULES.items():
+        path = root / "manifests" / f"{manifest}.yml"
+        if not path.is_file():
+            if manifest in ("traits", "policies", "governments", "pantheons",
+                            "wonders", "governors", "suzerain"):
+                raise FileNotFoundError(f"missing base manifest: {path}")
+            continue  # 8B manifests are written by build-8b-manifests
+        man = yaml.safe_load(open(path, encoding="utf-8"))
+        for r in man[manifest]:
             r = dict(r)
-            r["module"] = module
+            if not r.get("module"):
+                if default_module is None:
+                    raise KeyError(
+                        f"sweep row without module: {r.get('modifier_id')}")
+                r["module"] = default_module
             rows.append(r)
     direct_csv = root / "data" / "local" / "wonder_direct.csv"
     if direct_csv.is_file():
@@ -218,8 +235,17 @@ def _extra_value(extra: str, keys: dict, row: dict) -> str:
 
 
 def build_bridge_helpers(direct_rows: list[dict]) -> list[dict]:
-    """Manifest-shaped helper rows (module=wonders) for bridged direct cells."""
+    """Manifest-shaped helper rows (module=wonders) for bridged direct cells.
+
+    Phase 8B (non-destructive delta): the direct table keeps its official
+    value V (vanilla UI stays truthful); the helper is stored as Amount=0
+    and the native DELTA kind contributes V*(k-1), for a total of V*k.
+    The manifest official_value stays V (the delta base); transformation
+    is bridge_delta; generated_value is the k=10 delta (9V).
+    """
     from .modules import build_manifest
+    from .transforms import bridge_delta
+    from .modules import _fmt
     spec_by_family = {s["family"]: s for s in BRIDGES}
     raws = []
     for r in direct_rows:
@@ -249,7 +275,20 @@ def build_bridge_helpers(direct_rows: list[dict]) -> list[dict]:
             })
     # id_col="building_type" fills object_id; effect_type preset survives
     # review._join_effect's setdefault.
-    return build_manifest(raws, "building_type")
+    out = build_manifest(raws, "building_type")
+    # Convert Amount helper rows to the non-destructive delta pipeline.
+    # Selector/extra-arg rows (BuildingType, YieldType, ...) are unchanged:
+    # they are attach metadata, never magnitudes.
+    for h in out:
+        if h["argument_name"] == "Amount" and h["status"] == "ok":
+            try:
+                v = float(h["official_value"])
+            except (TypeError, ValueError):
+                continue
+            h["transformation"] = "bridge_delta"
+            h["generated_value"] = _fmt(bridge_delta(v, 10.0))
+            h["confidence"] = "human_certified_8b_delta"
+    return out
 
 
 def _baseline_pred(row: dict) -> str:
@@ -292,6 +331,10 @@ def _new_key_pred(row: dict, keys: dict) -> str:
 
 def _helper_inserts(spec: dict, hid: str, row: dict, keys: dict, base: str) -> list[str]:
     # Immediate-path statements: created only under the baseline EXISTS guard.
+    # Phase 8B (non-destructive delta): the helper Amount is stored as '0'
+    # (inert until the native DELTA kind contributes official*(k-1)); the
+    # direct cell is NEVER zeroed, so vanilla UI keeps reading the truthful
+    # official value. Module-off / invalid-k sessions see direct V + 0.
     stmts = [(
         "INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly,"
         " Permanent, Repeatable)\n"
@@ -309,11 +352,11 @@ def _helper_inserts(spec: dict, hid: str, row: dict, keys: dict, base: str) -> l
             row["source_table"], base))
     stmts.append(
         "INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
-        "SELECT '%s', 'Amount', 'ARGTYPE_IDENTITY', '%s'\n"
+        "SELECT '%s', 'Amount', 'ARGTYPE_IDENTITY', '0'\n"
         "WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
         " WHERE ModifierId = '%s' AND Name = 'Amount')\n"
         "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-            hid, row["value"], hid, row["source_table"], base))
+            hid, hid, row["source_table"], base))
     for extra in spec["extra_args"]:
         stmts.append(
             "INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
@@ -346,10 +389,10 @@ def _helper_inserts_trigger(spec: dict, hid: str, row: dict, keys: dict) -> list
                          hid, guard))
     stmts.append(
         "  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
-        "  SELECT '%s', 'Amount', 'ARGTYPE_IDENTITY', '%s'\n"
+        "  SELECT '%s', 'Amount', 'ARGTYPE_IDENTITY', '0'\n"
         "  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments"
         " WHERE ModifierId = '%s' AND Name = 'Amount')\n"
-        "    AND %s;" % (hid, row["value"], hid, guard))
+        "    AND %s;" % (hid, hid, guard))
     for extra in spec["extra_args"]:
         stmts.append(
             "  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)\n"
@@ -371,19 +414,21 @@ DIAG_DDL = """CREATE TABLE IF NOT EXISTS X10BridgeDiag (
   helper_exists INTEGER NOT NULL DEFAULT 0,
   attached INTEGER NOT NULL DEFAULT 0,
   amount_exists INTEGER NOT NULL DEFAULT 0,
-  zeroed INTEGER NOT NULL DEFAULT 0,
+  preserved INTEGER NOT NULL DEFAULT 0,
   origin TEXT NOT NULL DEFAULT 'bridge-time'
 );"""
 
 
 def _diag_insert(hid: str, row: dict, keys: dict) -> str:
     # Unconditional single-row readback: distinguishes absent (observed NULL),
-    # drifted (observed != expected), and bridged (observed 0 + helper) states.
+    # drifted (observed != expected), and delta-armed (direct preserved at V
+    # + inert helper Amount=0) states. `preserved` replaces the Phase-7
+    # `zeroed` flag: direct V intact AND helper present.
     keypred = _key_pred(row, keys)
     return (
         "INSERT OR REPLACE INTO X10BridgeDiag\n"
         "  (helper_id, source_table, source_key, expected, observed,"
-        " helper_exists, attached, amount_exists, zeroed, origin)\n"
+        " helper_exists, attached, amount_exists, preserved, origin)\n"
         "SELECT '%s', '%s', '%s', '%s',\n"
         "  (SELECT %s FROM %s WHERE %s),\n"
         "  EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = '%s'),\n"
@@ -391,13 +436,14 @@ def _diag_insert(hid: str, row: dict, keys: dict) -> str:
         " AND ModifierId = '%s'),\n"
         "  EXISTS(SELECT 1 FROM ModifierArguments WHERE ModifierId = '%s'"
         " AND Name = 'Amount'),\n"
-        "  EXISTS(SELECT 1 FROM %s WHERE %s AND %s = 0)\n"
+        "  EXISTS(SELECT 1 FROM %s WHERE %s AND %s = %s)\n"
         "    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = '%s'),\n"
         "  'immediate';" % (
             hid, row["source_table"], row["key"], row["value"],
             row["value_column"], row["source_table"], keypred,
             hid, row["building_type"], hid, hid,
-            row["source_table"], keypred, row["value_column"], hid))
+            row["source_table"], keypred, row["value_column"], row["value"],
+            hid))
 
 
 def _diag_trigger_update(hid: str, row: dict, origin: str) -> str:
@@ -410,35 +456,33 @@ def _diag_trigger_update(hid: str, row: dict, origin: str) -> str:
         " WHERE BuildingType = '%s' AND ModifierId = '%s'),\n"
         "  amount_exists = EXISTS(SELECT 1 FROM ModifierArguments"
         " WHERE ModifierId = '%s' AND Name = 'Amount'),\n"
-        "  zeroed = EXISTS(SELECT 1 FROM %s WHERE rowid = NEW.rowid"
-        " AND %s = 0)\n"
+        "  preserved = EXISTS(SELECT 1 FROM %s WHERE rowid = NEW.rowid"
+        " AND %s = %s)\n"
         "    AND EXISTS(SELECT 1 FROM Modifiers WHERE ModifierId = '%s'),\n"
         "  origin = '%s'\n"
         "WHERE helper_id = '%s';" % (
             row["value_column"], row["source_table"], hid,
             row["building_type"], hid, hid,
-            row["source_table"], row["value_column"], hid, origin, hid))
+            row["source_table"], row["value_column"], row["value"],
+            hid, origin, hid))
 
 
 def _materialize_trigger(spec: dict, hid: str, row: dict, keys: dict) -> str:
     # Phase 3D: deferred guarded path for rows inserted AFTER the bridge ran
     # (proven live: Portugal-pack rows arrive after X10WonderBridge executes).
-    # WHEN encodes the identical baseline predicate against the arriving row;
-    # zeroing stays conditional on helper existence. Same fail-closed rules,
+    # WHEN encodes the identical baseline predicate against the arriving row.
+    # Phase 8B: no zeroing (non-destructive delta) -- the helper starts inert
+    # (Amount=0) and the direct cell is left intact. Same fail-closed rules,
     # just deferred. Trigger names are deterministic (X10_TRG_<id-suffix>).
     tname = "X10_TRG_" + hid[len("X10_"):]
     body = _helper_inserts_trigger(spec, hid, row, keys)
-    zero = (
-        "  UPDATE %s SET %s = 0 WHERE rowid = NEW.rowid\n"
-        "    AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s');"
-        % (row["source_table"], row["value_column"], hid))
     diag = "\n".join("  " + ln for ln in _diag_trigger_update(
         hid, row, "trigger").split("\n"))
     return (
         "CREATE TRIGGER IF NOT EXISTS %s\n"
-        "AFTER INSERT ON %s\nFOR EACH ROW\nWHEN %s\nBEGIN\n%s\n%s\n%s\nEND;"
+        "AFTER INSERT ON %s\nFOR EACH ROW\nWHEN %s\nBEGIN\n%s\n%s\nEND;"
         % (tname, row["source_table"], _new_baseline_pred(row, keys),
-           "\n".join(body), zero, diag))
+           "\n".join(body), diag))
 
 
 def _drift_trigger(hid: str, row: dict, keys: dict) -> str:
@@ -460,23 +504,25 @@ def _drift_trigger(hid: str, row: dict, keys: dict) -> str:
 
 
 def emit_bridge_sql(direct_rows: list[dict]) -> str:
-    """Guarded helper-creation + direct-zeroing SQL (deterministic).
+    """Guarded helper-creation SQL (deterministic, non-destructive).
 
     Two execution paths share identical predicates:
     - immediate: rows present when the bridge runs (base/expansion content);
     - deferred triggers: rows inserted AFTER the bridge runs (proven live:
-      DLC-pack rows arrive later). WHEN encodes the baseline; zeroing stays
-      conditional on helper existence. A diagnostics table records per-cell
-      state for the local-only probe dump.
+      DLC-pack rows arrive later). WHEN encodes the baseline. Phase 8B: the
+      direct cell is NEVER zeroed (vanilla UI keeps reading the truthful
+      official value); the helper starts inert (Amount=0) and the native
+      DELTA kind contributes official*(k-1). A diagnostics table records
+      per-cell state for the local-only probe dump.
     """
     spec_by_family = {s["family"]: s for s in BRIDGES}
     chunks = [
         "-- GENERATED by civ6x10.bridge from audited direct wonder values.",
         "-- Do not hand-edit. Regenerate: python -m civ6x10 generate-bridge-sql",
         "-- Each helper is created ONLY when the direct cell still holds its",
-        "-- audited official value, and each direct cell is zeroed ONLY when",
-        "-- it holds that value AND its helper exists. Drift leaves vanilla",
-        "-- untouched and the dormant registry row can never match at runtime.",
+        "-- audited official value. The direct cell is NEVER zeroed (Phase 8B",
+        "-- non-destructive delta): drift leaves vanilla untouched and the",
+        "-- dormant registry row can never match at runtime.",
         "-- Helpers run InGame (UpdateDatabase) before native populate.",
         "-- Phase 3D: AFTER INSERT triggers replicate the same guarded logic",
         "-- for rows inserted after this script runs (DLC load order);",
@@ -494,11 +540,6 @@ def emit_bridge_sql(direct_rows: list[dict]) -> str:
         chunks.append("-- %s %s=%s (bridged)" % (
             r["building_type"], r["value_column"], r["value"]))
         chunks.extend(_helper_inserts(spec, hid, r, keys, base))
-        vcol = r["value_column"]
-        chunks.append(
-            "UPDATE %s SET %s = 0\nWHERE %s\n"
-            "  AND EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s');"
-            % (r["source_table"], vcol, base, hid))
         chunks.append(_diag_insert(hid, r, keys))
         chunks.append("")
         trigs.append("-- %s deferred triggers (late-arriving source rows)" % hid)

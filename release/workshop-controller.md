@@ -7,8 +7,9 @@ Description:
 
 > Turn Civilization VI bonuses up until balance stops mattering.
 > Overpowered Bonuses lets you multiply bonuses across Traits, Policy
-> Cards, Governments, Pantheons, Wonders, Governors, and City-State
-> Suzerain bonuses.
+> Cards, Governments, Pantheons, Wonders, Governors, City-State
+> bonuses, Unit Promotions, Age Dedications, Game Modes, Religion
+> Beliefs, Great People, and City Projects.
 >
 > Choose presets from ×2 to ×100, or enter a custom multiplier. Each
 > category can be enabled or disabled separately in Advanced Setup.
@@ -26,7 +27,7 @@ Description:
 >
 > OPTIONS
 > Multiplier presets Off through ×100, plus Custom for any value from
-> 0 to 100. Seven category checkboxes, all on by default. See
+> 0 to 100. Thirteen category checkboxes, all on by default. See
 > KNOWN_ISSUES in the release source for the full list.
 >
 > HOW SCALING WORKS

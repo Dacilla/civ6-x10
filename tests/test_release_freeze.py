@@ -1,7 +1,7 @@
 """Phase 7A: release-freeze invariant for the validated gameplay state.
 
-Pins the Phase-6B/6C validated production point
-(2cf953e + CE 1ce3188 + DLL e33d84b8...d619): registry digest/counts,
+Pins the Phase-8B production point
+(registry 90d72d69 + CE 29e8b7f + DLL e0486aee...0ea06c): registry digest/counts,
 manifests, owner bits, CE include, DLL pin, bridge/config hashes,
 controller toggles. Phase 7A may change docs/tests/release tooling, but
 production runtime files must stay byte-identical.
@@ -26,15 +26,15 @@ ROOT = Path(__file__).resolve().parents[1]
 # registry CRLF f42c6a61...); SQL semantics are line-ending insensitive and
 # the 7B assembler must normalize before comparing.
 FROZEN_REGISTRY_SHA256 = (
-    "181ab439f98c40e85b0cd178a3cc0cd8da7a3f1a20c0c779300f923792315208")
+    "90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c")
 FROZEN_DLL_SHA256 = (
-    "3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14")
+    "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
 FROZEN_BRIDGE_SHA256 = (
-    "81c3dda2f80625acf55bb9c3f99b8850b4c5ebe2109b9e26193ddd8497950fbe")
+    "d5e9556dc63a05da086b7604851bfa468cec593aa8f1dcb336e63e7e16aaf34e")
 FROZEN_CONFIG_SHA256 = (
-    "b70945dfda6d35872f38c725bb022ccb7e50ef6ae75cf1dd4df6bf72e2e80464")
+    "f08ffe9e1255035cc111ec14210b5fb9ea5b936a484d3fede6157b50803db860")
 FROZEN_X10_MODINFO_SHA256 = (
-    "9a03f7b0c933c432883f714de67cb5caf6818eaf8fd496a992163b290ba8b88e")
+    "42e9fade427519d47371430dc5c37421d5e480ecc895a9bd009aebcc6e18d824")
 FROZEN_ENGINE_MODINFO_SHA256 = (
     "d6fab98698576f28b27ba31df811a7ef60a502672c32812ed186a8ce7833b2d7")
 FROZEN_REDIRECT_SHA256 = (
@@ -59,14 +59,17 @@ class TestReleaseFreeze(unittest.TestCase):
                 collect_registry_rows(ROOT))
         except FileNotFoundError:
             self.skipTest("local-only registry inputs unavailable")
-        self.assertEqual(len(entries), 1010)
-        self.assertEqual(report["unique_definitions"], 1006)
-        self.assertEqual(report["shared_definitions"], 25)
-        self.assertEqual(report["certified_unconditional"], 788)
-        self.assertEqual(report["certified_count_like_conditional"], 222)
+        self.assertEqual(len(entries), 2481)
+        self.assertEqual(report["unique_definitions"], 2475)
+        self.assertEqual(report["shared_definitions"], 26)
+        self.assertEqual(report["certified_unconditional"], 1333)
+        self.assertEqual(report["certified_count_like_conditional"], 1148)
         self.assertEqual(report["ownership_counts"]["governors"], 70)
-        self.assertEqual(report["ownership_counts"]["suzerain"], 68)
-        self.assertEqual(report["ownership_counts"]["traits"], 360)
+        self.assertEqual(report["ownership_counts"]["suzerain"], 123)
+        self.assertEqual(report["ownership_counts"]["traits"], 668)
+        self.assertEqual(report["ownership_counts"]["promotions"], 315)
+        self.assertEqual(report["ownership_counts"]["dedications"], 43)
+        self.assertEqual(report["ownership_counts"]["modes"], 181)
 
     def test_manifest_counts(self):
         import yaml
@@ -86,10 +89,12 @@ class TestReleaseFreeze(unittest.TestCase):
         self.assertEqual(MODULE_BITS, {"traits": 1, "policies": 2,
                                        "governments": 4, "pantheons": 8,
                                        "wonders": 16, "governors": 32,
-                                       "suzerain": 64})
-        self.assertEqual(tuple(REGISTRY_MODULES),
-                         ("traits", "policies", "governments", "pantheons",
-                          "wonders", "governors", "suzerain"))
+                                       "suzerain": 64, "promotions": 128,
+                                       "dedications": 256, "modes": 512,
+                                       "religion": 1024, "greatpeople": 2048,
+                                       "projects": 4096})
+        self.assertEqual(len(REGISTRY_MODULES), 13)
+        self.assertEqual(REGISTRY_MODULES["envoys"], "suzerain")
 
     def test_ce_include_byte_identical(self):
         src = ROOT / "build" / "X10ProductionRegistry.inc"
@@ -125,7 +130,7 @@ class TestReleaseFreeze(unittest.TestCase):
                 self.skipTest(f"{rel} unavailable")
             self.assertEqual(sha256(p), want, rel)
 
-    def test_seven_toggles_default_on(self):
+    def test_thirteen_toggles_default_on(self):
         import re
         p = ROOT / "controller" / "X10" / "Config" / "X10Config.sql"
         if not p.is_file():
@@ -136,10 +141,17 @@ class TestReleaseFreeze(unittest.TestCase):
         self.assertEqual(names, ["X10_MODULE_TRAITS", "X10_MODULE_POLICIES",
                                  "X10_MODULE_GOVERNMENTS",
                                  "X10_MODULE_PANTHEONS", "X10_MODULE_WONDERS",
-                                 "X10_MODULE_GOVERNORS", "X10_MODULE_SUZERAIN"])
+                                 "X10_MODULE_GOVERNORS", "X10_MODULE_SUZERAIN",
+                                 "X10_MODULE_PROMOTIONS",
+                                 "X10_MODULE_DEDICATIONS", "X10_MODULE_MODES",
+                                 "X10_MODULE_RELIGION",
+                                 "X10_MODULE_GREATPEOPLE",
+                                 "X10_MODULE_PROJECTS"])
         # native bool checkboxes, default ON
         for mod in ("TRAITS", "POLICIES", "GOVERNMENTS", "PANTHEONS",
-                    "WONDERS", "GOVERNORS", "SUZERAIN"):
+                    "WONDERS", "GOVERNORS", "SUZERAIN", "PROMOTIONS",
+                    "DEDICATIONS", "MODES", "RELIGION", "GREATPEOPLE",
+                    "PROJECTS"):
             self.assertIn(f"'bool', '1', 0,\n   'Game', 'X10_MODULE_{mod}'",
                           text.replace("\r\n", "\n"), mod)
 
@@ -160,11 +172,15 @@ class TestReleaseFreeze(unittest.TestCase):
         reg = [a for a in man["source_release"]["build_assets"]
                if a["asset_path"] == "X10ProductionRegistry.inc"][0]
         self.assertEqual(reg["sha256"], FROZEN_REGISTRY_SHA256)
-        self.assertEqual(man["registry_entries"], 1010)
-        self.assertEqual(man["semantic_registry_commit"], "2cf953e")
-        self.assertEqual(man["ce_commit"], "0655190")
+        self.assertEqual(man["registry_entries"], 2481)
+        self.assertEqual(man["ce_commit"], "29e8b7f")
         self.assertEqual(man["semantic_validation_tag"],
                          "phase6b-1010-live-validated")
+        self.assertEqual(man["prior_validation_tag"],
+                         "phase6b-1010-live-validated")
+        self.assertEqual(man["validation_status"],
+                         "pre-publication-gameplay-validation "
+                         "(Phase 8B Playtest-1 closure)")
         self.assertIn("X10_Probe_Test", man["forbidden_in_release"])
         self.assertIn("probe.lua", man["forbidden_in_release"])
         self.assertEqual(man["release_version"], "1.0.0-rc2")
@@ -191,7 +207,7 @@ class TestReleaseFreeze(unittest.TestCase):
         self.assertEqual(len(man["workshop_items"]["controller"]
                              ["runtime_files"]
                              + man["workshop_items"]["controller"]
-                             ["auxiliary_files"]), 9)
+                             ["auxiliary_files"]), 10)
 
 
 class TestReleaseSurfaceInventory(unittest.TestCase):

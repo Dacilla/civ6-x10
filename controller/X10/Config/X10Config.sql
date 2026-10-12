@@ -6,11 +6,12 @@
 --                          UNSET preset falls back to it; default '10')
 --   X10_MODULE_*          (native bool checkboxes; legacy INT32 0/1 still
 --                          accepted by the reader; all default ON)
--- Shared-definition ownership (Release 1 rule, unchanged): 25 modifier
--- definitions are owned by both Policies and Governments. Per-entry owners
--- bitmask in the generated registry: 1=traits 2=policies 4=governments
--- 8=pantheons 16=wonders 32=governors 64=suzerain. A shared definition is
--- transformed ONLY if ALL owning supported modules are enabled.
+-- Shared-definition ownership (unchanged rule): a shared definition is
+-- transformed ONLY if ALL owning supported modules are enabled. Per-entry
+-- owners bitmask in the generated registry: 1=traits 2=policies
+-- 4=governments 8=pantheons 16=wonders 32=governors 64=suzerain
+-- (city-state) 128=promotions 256=dedications 512=modes 1024=religion
+-- 2048=greatpeople 4096=projects.
 -- Preset DefaultValue is SQLite INTEGER 10 (not TEXT): the setup driver
 -- only coerces bool/int/uint domains and ==-compares custom-domain
 -- defaults, so a text default can never match and the UI falls back to
@@ -58,6 +59,30 @@ VALUES
   ('X10ModuleSuzerain', 'LOC_X10_MOD_SUZERAIN_NAME', 'LOC_X10_MOD_SUZERAIN_DESC',
    'bool', '1', 0,
    'Game', 'X10_MODULE_SUZERAIN', 'AdvancedOptions', 2408,
+   1, 1, 0, 0, 0, 0, 0),
+  ('X10ModulePromotions', 'LOC_X10_MOD_PROMOTIONS_NAME', 'LOC_X10_MOD_PROMOTIONS_DESC',
+   'bool', '1', 0,
+   'Game', 'X10_MODULE_PROMOTIONS', 'AdvancedOptions', 2409,
+   1, 1, 0, 0, 0, 0, 0),
+  ('X10ModuleDedications', 'LOC_X10_MOD_DEDICATIONS_NAME', 'LOC_X10_MOD_DEDICATIONS_DESC',
+   'bool', '1', 0,
+   'Game', 'X10_MODULE_DEDICATIONS', 'AdvancedOptions', 2410,
+   1, 1, 0, 0, 0, 0, 0),
+  ('X10ModuleModes', 'LOC_X10_MOD_MODES_NAME', 'LOC_X10_MOD_MODES_DESC',
+   'bool', '1', 0,
+   'Game', 'X10_MODULE_MODES', 'AdvancedOptions', 2411,
+   1, 1, 0, 0, 0, 0, 0),
+  ('X10ModuleReligion', 'LOC_X10_MOD_RELIGION_NAME', 'LOC_X10_MOD_RELIGION_DESC',
+   'bool', '1', 0,
+   'Game', 'X10_MODULE_RELIGION', 'AdvancedOptions', 2412,
+   1, 1, 0, 0, 0, 0, 0),
+  ('X10ModuleGreatPeople', 'LOC_X10_MOD_GREATPEOPLE_NAME', 'LOC_X10_MOD_GREATPEOPLE_DESC',
+   'bool', '1', 0,
+   'Game', 'X10_MODULE_GREATPEOPLE', 'AdvancedOptions', 2413,
+   1, 1, 0, 0, 0, 0, 0),
+  ('X10ModuleProjects', 'LOC_X10_MOD_PROJECTS_NAME', 'LOC_X10_MOD_PROJECTS_DESC',
+   'bool', '1', 0,
+   'Game', 'X10_MODULE_PROJECTS', 'AdvancedOptions', 2414,
    1, 1, 0, 0, 0, 0, 0);
 
 INSERT OR IGNORE INTO DomainValues

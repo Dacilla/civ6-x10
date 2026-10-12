@@ -191,9 +191,9 @@ wonders:
     - modifier_id: BOLSHOI_THEATRE_FREE_CIVICS
       argument: Amount
       official: '2'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants two free civics (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: two free Civics are countable one-time grants (8B)
     direct:
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_MUSICIAN
@@ -367,10 +367,10 @@ wonders:
     - modifier_id: COLOSSUS_GRANT_TRADER
       argument: Amount
       official: '1'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants one free Trader unit (GRANT_OBJECT floor); object grants are
-        DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: one free Trader is a countable one-time grant (8B); exact-integral
+        Custom only
     direct:
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_ADMIRAL
@@ -627,10 +627,10 @@ wonders:
     - modifier_id: GREATLIGHTHOUSE_ADJUST_EMBARKED_MOVEMENT
       argument: Amount
       official: '1'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: +1 embarked movement is a spatial budget (SPATIAL_BUDGET floor);
-        not a magnitude
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: whole embarked-movement points (8B spatial-budget review); exact-integral
+        Custom only
     direct:
     - table: Building_YieldChanges
       key: YIELD_GOLD
@@ -775,10 +775,10 @@ wonders:
     - modifier_id: HALICARNASSUS_MAUSOLEUM_YIELD_MODIFIER
       argument: Amount
       official: 1,1,1
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: vector-valued Amount (one per yield) is non-numeric; undecided, never
-        split or scaled
+      disposition: CERTIFIED_NUMERIC
+      mechanism: VECTOR
+      rationale: positional yield vector 1,1,1; native VECTOR kind scales each element
+        (8B)
     - modifier_id: HALICARNASSUS_MAUSOLEUM_YIELD_MODIFIER
       argument: Amount
       official: 1,1,1
@@ -848,11 +848,10 @@ wonders:
     - modifier_id: JEBELBARKAL_GRANT_FOUR_IRON_PER_TURN
       argument: Amount
       official: '6'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: 'deliberate floor boundary: EFFECT_GRANT_FREE_RESOURCE_EXTRACTED
-        is GRANT_OBJECT in the sem floor while adjust-style extraction is a flow;
-        grants stay excluded without positive proof (see docs)'
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: 'recurring per-turn resource flow, not a one-time grant (RunOnce=0):
+        6 becomes 60 at x10 (8B)'
     direct:
     - table: Building_YieldChanges
       key: YIELD_FAITH
@@ -961,10 +960,9 @@ wonders:
     - modifier_id: KILWA_THREE_INFLUENCE_TOKENS
       argument: Amount
       official: '3'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants three influence tokens (GRANT_OBJECT floor); token grants
-        are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: three envoy tokens are a countable one-time grant (8B, RunOnce)
   BUILDING_KOTOKU_IN:
     disposition: PARTIAL
     rows:
@@ -977,10 +975,9 @@ wonders:
     - modifier_id: KOTOKU_GRANTMONKS
       argument: Amount
       official: '4'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants four Warrior Monks (GRANT_OBJECT floor); object grants are
-        DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: four Warrior Monks are a countable one-time grant (8B)
   BUILDING_MACHU_PICCHU:
     disposition: COMPLETE
     rows:
@@ -1095,9 +1092,10 @@ wonders:
     - modifier_id: MAHABODHITEMPLE_APOSTLE
       argument: Amount
       official: '2'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants two Apostles (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: two Apostles are a countable one-time grant (8B); exact-integral
+        Custom only
     - modifier_id: MAHABODHI_DIPLOVP
       argument: Amount
       official: '2'
@@ -1121,9 +1119,9 @@ wonders:
     - modifier_id: MEENAKSHITEMPLE_FREE_GURU
       argument: Amount
       official: '2'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants two Gurus (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: two Gurus are a countable one-time grant (8B)
     - modifier_id: MEENAKSHITEMPLE_GURU_DISCOUNT
       argument: Amount
       official: '30'
@@ -1277,10 +1275,10 @@ wonders:
     - modifier_id: OXFORD_UNIVERSITY_FREE_TECHS
       argument: Amount
       official: '2'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants two free technologies (GRANT_OBJECT floor); object grants
-        are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: two free Technologies are countable one-time grants (8B); engine
+        picks random unresearched techs
     direct:
     - table: Building_GreatPersonPoints
       key: GREAT_PERSON_CLASS_SCIENTIST
@@ -1322,10 +1320,10 @@ wonders:
     - modifier_id: PETRA_YIELD_MODIFIER
       argument: Amount
       official: 2,2,1
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: vector-valued Amount (one per yield) is non-numeric; undecided, never
-        split or scaled
+      disposition: CERTIFIED_NUMERIC
+      mechanism: VECTOR
+      rationale: positional yield vector FOOD+2/GOLD+2/PRODUCTION+1; native VECTOR
+        kind scales each element (8B)
   BUILDING_POTALA_PALACE:
     disposition: PARTIAL
     rows:
@@ -1373,9 +1371,10 @@ wonders:
     - modifier_id: PYRAMID_GRANT_BUILDERS
       argument: Amount
       official: '1'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants one free Builder (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: 'one free Builder is a countable one-time grant (8B: Pyramids gives
+        10 at x10); exact-integral Custom only'
     direct:
     - table: Building_YieldChanges
       key: YIELD_CULTURE
@@ -1430,22 +1429,21 @@ wonders:
     - modifier_id: STAUEZEUS_GRANT_ARCHERS
       argument: Amount
       official: '3'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants three Archers (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: three Archers are a countable one-time grant (8B)
     - modifier_id: STAUEZEUS_GRANT_BATTERINGRAM
       argument: Amount
       official: '1'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants one Battering Ram (GRANT_OBJECT floor); object grants are
-        DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: one Battering Ram is a countable one-time grant (8B)
     - modifier_id: STAUEZEUS_GRANT_SPEARMEN
       argument: Amount
       official: '3'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants three Spearmen (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: three Spearmen are a countable one-time grant (8B)
     direct:
     - table: Building_YieldChanges
       key: YIELD_GOLD
@@ -1462,16 +1460,15 @@ wonders:
     - modifier_id: STONEHENGE_ALTERNATE_GRANT_APOSTLE
       argument: Amount
       official: '1'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants one Apostle (GRANT_OBJECT floor); object grants are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: fallback Apostle is a countable one-time grant (8B)
     - modifier_id: STONEHENGE_GRANT_PROPHET
       argument: Amount
       official: '1'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants one Great Prophet (GRANT_OBJECT floor); object grants are
-        DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: one Great Prophet is a countable one-time grant (8B)
     direct:
     - table: Building_YieldChanges
       key: YIELD_FAITH
@@ -1609,10 +1606,9 @@ wonders:
     - modifier_id: TORREDEBELEM_CHEAPEST_BUILDING
       argument: Amount
       official: '1'
-      disposition: EXCLUDED
-      mechanism: NONE
-      rationale: grants the cheapest building (GRANT_OBJECT floor); object grants
-        are DECISION_REQUIRED
+      disposition: CERTIFIED_COUNT_LIKE
+      mechanism: ADDITIVE
+      rationale: one cheapest building is a countable one-time grant (8B)
     - modifier_id: TORREDEBELEM_TRADE_GOLD_LUXURIES
       argument: Amount
       official: '2'

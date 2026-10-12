@@ -8,11 +8,11 @@ Upstream foundation:
 
 X10 native transformation engine fork:
   https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
-  branch x10-lifecycle-log, commit 0655190
+  branch x10-lifecycle-log, commit 29e8b7f
 
 Distributed binary:
   Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
-  SHA-256 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
+  SHA-256 e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c
 
 The engine applies certified numeric-definition transformations at
 definition-population time under the X10 controller's configuration.

@@ -9,7 +9,7 @@ Controller / release source (planned):
 
 Engine source (exact, available now):
   https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
-  branch x10-lifecycle-log, commit 0655190
+  branch x10-lifecycle-log, commit 29e8b7f
   (contains the exact X10/X10ProductionRegistry.inc used by the DLL)
 
 Upstream project:

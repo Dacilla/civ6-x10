@@ -1,0 +1,4 @@
+# Phase 8B promotions disposition notes (reviewed exclusions)
+- UnitAbilityModifiers: NIHANG_ACADEMY_STRENGTH (MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH) excluded: base unit stat
+- UnitAbilityModifiers: NIHANG_ARMORY_STRENGTH (MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH) excluded: base unit stat
+- UnitAbilityModifiers: NIHANG_BARRACKS_STRENGTH (MODIFIER_UNIT_ADJUST_BASE_COMBAT_STRENGTH) excluded: base unit stat
