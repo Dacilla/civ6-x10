@@ -25,6 +25,9 @@ TRANSFORM_KIND = {
     "canonical_combat_bonus": "COMBAT",
     "repeated_probability": "PROBABILITY",
     "compound_discount": "DISCOUNT",
+    "vector_multiply": "VECTOR",
+    "bridge_delta": "DELTA",
+    "repeat_count": "REPEAT",
 }
 
 # Families eligible for native transformation (automatic, reviewed).
@@ -39,13 +42,15 @@ ELIGIBLE_FAMILIES = frozenset({
 })
 
 # Certified native kinds (closed world: the gate emits only these).
-CERTIFIED_KINDS = frozenset({"ADDITIVE", "COMBAT", "PROBABILITY", "DISCOUNT"})
+CERTIFIED_KINDS = frozenset({"ADDITIVE", "COMBAT", "PROBABILITY", "DISCOUNT",
+                              "VECTOR", "DELTA", "REPEAT"})
 
 # Module ownership bits. A generated entry carries the UNION of owning
 # modules; duplicates must agree on official/transform/family/count-like or
 # generation fails instead of silently choosing one.
 MODULE_BITS = {"traits": 1, "policies": 2, "governments": 4, "pantheons": 8,
-               "wonders": 16, "governors": 32, "suzerain": 64}
+               "wonders": 16, "governors": 32, "suzerain": 64,
+               "promotions": 128, "dedications": 256, "modes": 512}
 
 
 # Indivisible-count families: native may apply them only for exact integer
@@ -96,11 +101,25 @@ def build_production_registry(manifest_rows: list[dict],
         if r["transformation"] == "unchanged":
             excluded["selector-or-unchanged"] += 1
             continue
-        try:
-            float(r["official_value"])
-        except (TypeError, ValueError):
-            excluded["value:non-numeric"] += 1
-            continue
+        if r["transformation"] == "vector_multiply":
+            # Positional numeric lists are non-numeric by design; the gate
+            # validates strict all-numeric parsing (fail closed on malformed).
+            from .transforms import parse_vector
+            if parse_vector(r["official_value"] or "") is None:
+                excluded["value:vector-malformed"] += 1
+                continue
+        elif r["transformation"] == "repeat_count":
+            # Implicit-+1 slot grants carry a slot-type reference, never a
+            # number; the gate allowlists the exact (effect, argument).
+            if not str(r["official_value"] or "").startswith("SLOT_"):
+                excluded["value:repeat-not-slot"] += 1
+                continue
+        else:
+            try:
+                float(r["official_value"])
+            except (TypeError, ValueError):
+                excluded["value:non-numeric"] += 1
+                continue
         sem_row = sem_floor.get(
             (r.get("modifier_type", "").strip(),
              r.get("effect_type", "").strip(),
@@ -129,6 +148,8 @@ def build_production_registry(manifest_rows: list[dict],
         module = r.get("module", "")
         count_like = bool(cert["count_like"])
         kind = cert["kind"]
+        aux = int(r.get("copy_index") or 0)
+        target = str(r.get("repeat_target") or "")
         if key not in seen:
             seen[key] = {
                 "owners": MODULE_BITS.get(module, 0),
@@ -140,13 +161,17 @@ def build_production_registry(manifest_rows: list[dict],
                 "family": cert["proposed_family"],
                 "count_like": count_like,
                 "cert_source": cert["source"],
+                "aux": aux,
+                "target": target,
             }
         else:
             prev = seen[key]
             if (prev["official"] != r["official_value"]
                     or prev["kind"] != kind
                     or prev["family"] != cert["proposed_family"]
-                    or prev["count_like"] != count_like):
+                    or prev["count_like"] != count_like
+                    or prev["aux"] != aux
+                    or prev["target"] != target):
                 raise RegistryConflict(
                     f"duplicate {key} disagrees: {prev} vs {r}")
             prev["owners"] |= MODULE_BITS.get(module, 0)
@@ -201,25 +226,33 @@ def emit_cxx(entries: list[dict]) -> str:
         "// admitted only via sem-floor agreement or curated override",
         "// (see civ6x10/rules/certified_overrides.yml + conflict ledger).",
         "// owners bitmask: 1=traits 2=policies 4=governments 8=pantheons"
-        " 16=wonders 32=governors 64=suzerain.",
+        " 16=wonders 32=governors 64=suzerain(city-state) 128=promotions"
+        " 256=dedications 512=modes.",
         "// A shared entry applies only when ALL owning modules are enabled.",
+        "// aux/target carry REPEAT slot-copy metadata (copy index N activates",
+        "// iff N <= integral k; target is the real slot type; inert default",
+        "// is SLOT_GREAT_PERSON). Zero/empty for all other kinds.",
         "#pragma once",
         "struct X10RegistryEntry {",
         "    const char* modifierId;",
         "    const char* argument;",
         "    const char* official;",
-        "    int kind; // 0=ADDITIVE 1=COMBAT 2=PROBABILITY 3=DISCOUNT",
+        "    int kind; // 0=ADDITIVE 1=COMBAT 2=PROBABILITY 3=DISCOUNT 4=VECTOR 5=DELTA 6=REPEAT",
         "    int countLike; // runtime integral-result check required",
         "    int owners; // module bitmask",
+        "    int aux; // REPEAT copy index (0 otherwise)",
+        "    const char* target; // REPEAT activation slot type (\"\" otherwise)",
         "};",
         "static const X10RegistryEntry kX10ProductionRegistry[] = {",
     ]
-    kind_id = {"ADDITIVE": 0, "COMBAT": 1, "PROBABILITY": 2, "DISCOUNT": 3}
+    kind_id = {"ADDITIVE": 0, "COMBAT": 1, "PROBABILITY": 2, "DISCOUNT": 3,
+               "VECTOR": 4, "DELTA": 5, "REPEAT": 6}
     for e in entries:
         lines.append(
             f'    {{"{e["modifier_id"]}", "{e["argument"]}", '
             f'"{e["official"]}", {kind_id[e["kind"]]}, '
-            f'{"1" if e["count_like"] else "0"}, {e["owners"]}}},')
+            f'{"1" if e["count_like"] else "0"}, {e["owners"]}, '
+            f'{e.get("aux", 0)}, "{e.get("target", "")}"}},')
     lines.append("};")
     lines.append(f"static const int kX10ProductionRegistryCount = {len(entries)};")
     return "\n".join(lines) + "\n"

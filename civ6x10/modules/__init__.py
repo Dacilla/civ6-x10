@@ -40,6 +40,24 @@ def apply_transform(transform: str, official: str) -> tuple[str, str]:
         return ("", "undecided")
     if transform == "canonical_x10_multiply":
         return (_fmt(canonical_x10_multiply(v)), "ok")
+    if transform == "vector_multiply":
+        from ..transforms import parse_vector, vector_multiply
+        if parse_vector(official) is None:
+            return ("", "undecided")
+        try:
+            return (vector_multiply(official, 10.0), "ok")
+        except ValueError:
+            return ("", "undecided")
+    if transform == "bridge_delta":
+        from ..transforms import bridge_delta
+        try:
+            return (_fmt(bridge_delta(v, 10.0)), "ok")
+        except ValueError:
+            return ("", "undecided")
+    if transform == "repeat_count":
+        # Implicit-+1 slot grants: the manifest value is the total slot
+        # count at k=10 (base + 9 activated copies), never a rounded guess.
+        return ("10", "ok")
     if transform == "canonical_combat_bonus":
         try:
             return (_fmt(canonical_combat_bonus(v)), "ok")
@@ -133,6 +151,18 @@ def apply_dynamic(transform: str, family: str, official: str,
             return (_fmt(repeated_probability_for_multiplier(v, k)), "ok")
         if transform == "compound_discount":
             return (_fmt(compound_discount_for_multiplier(v, k)), "ok")
+        if transform == "vector_multiply":
+            from ..transforms import vector_multiply
+            return (vector_multiply(official, k), "ok")
+        if transform == "bridge_delta":
+            from ..transforms import bridge_delta
+            return (_fmt(bridge_delta(v, k)), "ok")
+        if transform == "repeat_count":
+            from ..transforms import repeat_copies
+            n = repeat_copies(k)
+            if n is None:
+                return ("", "undecided")
+            return (str(n + 1), "ok")
     except ValueError:
         return ("", "undecided")
     return ("", "undecided")
