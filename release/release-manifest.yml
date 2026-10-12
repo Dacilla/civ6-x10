@@ -95,10 +95,10 @@ workshop_items:
         sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/engine/THIRD_PARTY_NOTICES.txt
-        sha256: cdbf1a1b53cef36c2d4e7ec896562f4337c0ad2e881649a8d5b98c930a70ec4a
+        sha256: 5e3247fa3eb799683be4199751759bc707423f500b98fcb6cd0460133eee4a10
       - stage_path: SOURCE.txt
         source: release/staging-src/engine/SOURCE.txt
-        sha256: 49cfb8a36e525ac3a5e67b35993b13fb63de0b7d0584f75c43d96fab7d1250c2
+        sha256: 0fd4e1e689ee3b9c3a12770058b0f9a99f346c7f5b90a81da2ed6004bc22db21
         has_planned_placeholder: true
   controller:
     name: Overpowered Bonuses
@@ -134,10 +134,10 @@ workshop_items:
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/controller/THIRD_PARTY_NOTICES.txt
-        sha256: 6088ac7073d1c4efacf1d9e2a6ad0d198ca754b6f39a738849aa59b2315c6004
+        sha256: 2191300b05e5554e5e851aef5cf03a82f93aeab75462a0efa5a7483d77aaa7be
       - stage_path: SOURCE.txt
         source: release/staging-src/controller/SOURCE.txt
-        sha256: df87439293cbd37be272b32897a87fb16023a06546a0fbb9280622d1cab07dea
+        sha256: 955ff1072d7b96dde06232cf25ccc2f9ae5a45ebcc554a77ac9709acb832e681
         has_planned_placeholder: true
 
 source_release:

@@ -1,5 +1,19 @@
 # Changelog
 
+## Phase 8B Playtest-1 closure (under pre-publication gameplay validation, not published)
+
+- Registry 1010 → 2481 entries (2475 unique, 26 shared; 1333
+  unconditional + 1148 count-like): wonder one-time grants, Jebel
+  per-turn iron, Petra-style vectors, bonus policy slots (REPEAT +
+  Reserve fillers), generic envoy tiers, promotions & abilities,
+  dedications, game modes, religion beliefs, Great People, projects.
+- Non-destructive wonder bridge (DELTA): direct tables keep official
+  values (vanilla UI truthful); helpers contribute `official*(k-1)`.
+- New native kinds VECTOR/DELTA/REPEAT; 13-module owner mask (new CE
+  build `85ea8752…8507`, CE `86be003`).
+- Setup grows to thirteen checkboxes; City-State module broadened to
+  Envoy + Suzerain bonuses. No Workshop upload yet.
+
 ## v1.0.0-rc2 (release candidate, not published)
 
 - Native preset/custom/bool config readers; setup migrates to Advanced
