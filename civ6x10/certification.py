@@ -325,6 +325,19 @@ def certify_row(manifest_row: dict, sem_row: dict | None,
                 "source": "curated-effect:strong-family:" + et,
                 "resolution": "certified"}
 
+    # Curated per-effect evidence for heuristic-only floors (Phase 8B):
+    # an AUTO_PATTERN / NEEDS_REVIEW floor row is never proof by itself,
+    # but a certified_effect_args entry naming this exact tuple is positive
+    # human evidence (same trust class as combat_effects). Proven floors
+    # never reach this branch, so pre-8B certifications are untouched.
+    if not proven:
+        curated = _effect_arg_override(mt, et, arg, rules)
+        if curated is not None:
+            return {**base, "certified": True, "kind": curated["kind"],
+                    "count_like": curated["count_like"],
+                    "source": curated["source"],
+                    "resolution": "certified"}
+
     # Explicit 8B pipeline transformations (checked after excluded_effects;
     # each consults its own reviewed allowlist; unlisted tuples fall through
     # to the ordinary floor logic, which excludes/fails them as before).

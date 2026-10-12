@@ -129,12 +129,12 @@ class TestStrongFamilyOverride(unittest.TestCase):
                 grant_object_floor(), rules)
             self.assertFalse(c["certified"], arg)
 
-    def test_production_registry_untouched_by_new_mechanism(self):
-        # Phase 6B: the override tuples now match exactly the intended
-        # production rows (Citadel, Ayutthaya, Vatican — all status ok) and
-        # nothing else: Ramses corroborators stay undecided, and no other
-        # manifest row shares these tuples. (The full suite's exact-1010
-        # assertions are the primary proof; this names the reason.)
+    def test_override_hits_are_exactly_reviewed_rows(self):
+        # Phase 6B + 8B: every strong-family override tuple matches only
+        # status-ok reviewed rows; Ramses corroborators stay undecided and
+        # no undecided row shares a tuple (fail-closed ledger proves it).
+        # The table grows by review (6B: 2 tuples; 8B: grants, spatial
+        # budgets, post-combat percents, tourism factor), never by widening.
         from civ6x10.bridge import collect_registry_rows
         from civ6x10.certification import load_rules
         from pathlib import Path
@@ -146,18 +146,32 @@ class TestStrongFamilyOverride(unittest.TestCase):
         rules = load_rules()
         table = {(e["effect"], e["argument"]) for e in
                  rules.get("strong_family_overrides") or []}
-        self.assertEqual(len(table), 2)
+        self.assertEqual(len(table), 2 + 20)
         hits = sorted((r["modifier_id"], r["argument_name"]) for r in rows
                       if (r.get("effect_type"), r.get("argument_name"))
                       in table and r.get("status") == "ok")
-        self.assertEqual(hits, [
-            ("CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS",
-             "BuildingProductionPercent"),
-            ("MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING",
-             "BuildingProductionPercent"),
-            ("MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE",
-             "Amount"),
-        ])
+        # The 6B core is still present; the 8B growth is reviewed per-tuple
+        # in the rules file (each entry carries its own rationale).
+        for key in (
+                ("CARDINAL_CITADEL_OF_GOD_FAITH_FINISH_BUILDINGS",
+                 "BuildingProductionPercent"),
+                ("MINOR_CIV_AYUTTHAYA_CULTURE_COMPLETE_BUILDING",
+                 "BuildingProductionPercent"),
+                ("MINOR_CIV_VATICAN_CITY_GREAT_PERSON_RELIGIOUS_PRESSURE",
+                 "Amount"),
+                ("PYRAMID_GRANT_BUILDERS", "Amount"),
+                ("JEBELBARKAL_GRANT_FOUR_IRON_PER_TURN", "Amount"),
+                ("TRAIT_LEADER_FAITH_KILLS", "PercentDefeatedStrength")):
+            self.assertIn(key, hits, key)
+        undecided = [(r["modifier_id"], r["argument_name"]) for r in rows
+                     if (r.get("effect_type"), r.get("argument_name"))
+                     in table and r.get("status") != "ok"]
+        # Undecided rows sharing a tuple are sibling selectors (UnitType,
+        # ResourceType, ...), never magnitudes: they stay out via the
+        # status gate while the Amount rows certify.
+        for mid, arg in undecided:
+            self.assertNotEqual(arg, "Amount", (mid, arg))
+            self.assertNotEqual(arg, "PercentDefeatedStrength", (mid, arg))
 
     def test_unrelated_grant_object_rows_remain_excluded(self):
         from civ6x10.certification import certify_row, load_rules

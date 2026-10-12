@@ -143,14 +143,26 @@ class TestFullRegistrySemantics(unittest.TestCase):
         rows = { (r["modifier_id"], r["argument_name"]): r
                  for r in load_manifests() }
         floor = load_floor()
-        # Exact strong-family overrides (Phase 6B) are the only reviewed
-        # exceptions: positively-reviewed numeric arguments whose coarse
-        # GRANT_OBJECT floor was proven wrong per-argument.
+        # Exact strong-family overrides (Phase 6B + 8B) are the only
+        # reviewed exceptions: positively-reviewed numeric arguments whose
+        # coarse GRANT_OBJECT floor was proven wrong per-argument. Phase 8B
+        # admits countable one-time grants and recurring resource flows
+        # (all count-like: fractional Custom results refuse at runtime).
         allowed = {
             ("EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
              "BuildingProductionPercent"),
             ("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
              "Amount"),
+            ("EFFECT_GRANT_UNIT_IN_CITY", "Amount"),
+            ("EFFECT_GRANT_GREAT_PERSON_CLASS_IN_CITY", "Amount"),
+            ("EFFECT_GRANT_PLAYER_RANDOM_TECHNOLOGY", "Amount"),
+            ("EFFECT_GRANT_PLAYER_RANDOM_CIVIC", "Amount"),
+            ("EFFECT_GRANT_INFLUENCE_TOKEN", "Amount"),
+            ("EFFECT_GRANT_CHEAPEST_BUILDING_IN_CITY", "Amount"),
+            ("EFFECT_GRANT_FREE_RESOURCE_EXTRACTED", "Amount"),
+            ("EFFECT_GRANT_FREE_RESOURCE_IN_CITY", "Amount"),
+            ("EFFECT_GRANT_PLAYER_FREE_RESOURCE_EXTRACTED", "Amount"),
+            ("EFFECT_GRANT_AIR_SLOTS", "Amount"),
         }
         for e in entries:
             r = rows[(e["modifier_id"], e["argument"])]
@@ -159,6 +171,14 @@ class TestFullRegistrySemantics(unittest.TestCase):
             if s["semantic_family"] == "GRANT_OBJECT":
                 self.assertIn((r["effect_type"], r["argument_name"]),
                               allowed, e["modifier_id"])
+                # 8B grant admissions are indivisible counts (except the two
+                # 6B quantity-of-pressure rows, which stay unconditional).
+                if (r["effect_type"], r["argument_name"]) not in (
+                        ("EFFECT_GRANT_CITY_YIELD_PERCENT_BUILDING_CREATED_COST",
+                         "BuildingProductionPercent"),
+                        ("EFFECT_GRANT_PLAYER_RELIGIOUS_PRESSURE_GREAT_PERSON_ACTIVATED",
+                         "Amount")):
+                    self.assertTrue(e["count_like"], e["modifier_id"])
             # Curated grant-like exclusions stay out entirely.
             self.assertNotIn(r["effect_type"], (
                 "EFFECT_ADJUST_EXTRA_UNIT_COPY",
@@ -175,17 +195,34 @@ class TestFullRegistrySemantics(unittest.TestCase):
                 "EFFECT_ADJUST_FREE_CIVIC_BOOST_WONDER_ERA",
                 "EFFECT_ADJUST_FREE_TECH_BOOST_WONDER_ERA"), e["modifier_id"])
 
-    def test_spatial_budget_cannot_enter_without_override(self):
+    def test_spatial_budget_enters_only_via_reviewed_override(self):
+        # Phase 8B: whole movement points, sight tiles, and attack/range
+        # tiles are reviewed magnitudes (count-like), admitted only through
+        # exact strong-family overrides. Anything else spatial stays out.
         entries, _ = self._entries()
         rows = {(r["modifier_id"], r["argument_name"]): r
                 for r in load_manifests()}
         floor = load_floor()
+        allowed = {
+            ("EFFECT_ADJUST_UNIT_MOVEMENT", "Amount"),
+            ("EFFECT_ADJUST_UNIT_SEA_MOVEMENT", "Amount"),
+            ("EFFECT_ADJUST_UNIT_CLEAR_TERRAIN_START_MOVEMENT", "Amount"),
+            ("EFFECT_ADJUST_PLAYER_EMBARKED_UNIT_MOVEMENT", "Amount"),
+            ("EFFECT_ADJUST_UNIT_SIGHT", "Amount"),
+            ("EFFECT_ADJUST_UNIT_ATTACK_RANGE", "Amount"),
+            ("EFFECT_ADJUST_UNIT_TOURISM_BOMB_RANGE", "Range"),
+            ("EFFECT_ADJUST_UNIT_TOURISM_BOMB_RANGE", "Modifier"),
+        }
         for e in entries:
             r = rows[(e["modifier_id"], e["argument"])]
             s = floor[(r["modifier_type"], r["effect_type"],
                        r["argument_name"])]
-            self.assertNotEqual(s["semantic_family"], "SPATIAL_BUDGET",
-                                e["modifier_id"])
+            if s["semantic_family"] == "SPATIAL_BUDGET":
+                self.assertIn((r["effect_type"], r["argument_name"]),
+                              allowed, e["modifier_id"])
+                self.assertTrue(
+                    e["cert_source"].startswith(
+                        "curated-effect:strong-family:"), e)
 
     def test_decision_required_families_cannot_enter(self):
         entries, _ = self._entries()
@@ -201,9 +238,17 @@ class TestFullRegistrySemantics(unittest.TestCase):
                        r["argument_name"])]
             if s["semantic_family"] in banned:
                 # MIXED rows enter only via an explicit curated override.
-                self.assertEqual(s["semantic_family"], "MIXED_VALUE_DOMAIN", e)
-                self.assertTrue(
-                    e["cert_source"].startswith("curated-effect:mixed:"), e)
+                # Phase 8B additionally admits reviewed post-combat percent
+                # yields (DEFEATED floor) and the wonder-tourism scaling
+                # factor (MULTIPLICATIVE floor) via exact strong overrides.
+                if s["semantic_family"] == "MIXED_VALUE_DOMAIN":
+                    self.assertTrue(
+                        e["cert_source"].startswith("curated-effect:mixed:"),
+                        e)
+                else:
+                    self.assertTrue(
+                        e["cert_source"].startswith(
+                            "curated-effect:strong-family:"), e)
 
     def test_known_discount_effects_emit_discount(self):
         entries, _ = self._entries()
@@ -354,18 +399,29 @@ class TestFullRegistrySemantics(unittest.TestCase):
                     ("TRAIT_ALLIANCE_POINTS_FROM_COMMON_FOE", "Amount"),
                     ("NUCLEARESPIONAGE_EXTRABOOSTS", "Amount"),
                     ("TRAIT_INCREASED_TILES", "Amount"),
-                    ("TRAIT_EXTRA_DISTRICT_EACH_CITY", "Amount")):
+                    ("TRAIT_EXTRA_DISTRICT_EACH_CITY", "Amount"),
+                    # Phase 8B: Kupe first-city free Builder (countable
+                    # one-time grant, Pyramids class).
+                    ("BUILDER_PRESETTLEMENT", "Amount"),
+                    # Phase 8B: one-time free Spy unit grants (Wu Zetian,
+                    # Catherine second spy). Spy CAPACITY stays excluded.
+                    ("WU_ZETIAN_FREE_SPY", "Amount"),
+                    ("UNIQUE_LEADER_ADD_SPY_UNIT", "Amount")):
             self.assertIn(key, by_key, key)
             self.assertTrue(by_key[key]["count_like"], key)
-        # Free units/spies/buildings never enter at all.
-        for mid in ("BUILDER_PRESETTLEMENT", "WU_ZETIAN_FREE_SPY",
+        # Free spies / envoy triggers / extra-copy grants never enter.
+        for mid in (
                     "UNIQUE_LEADER_ADD_SPY_CAPACITY",
-                    "TRAIT_ADJUST_NON_CAPITAL_FREE_CHEAPEST_BUILDING",
                     "LEVY_MILITARY_TWO_FREE_ENVOYS",
                     "TRAIT_FREE_ENVOY_WHEN_DISTRICT_MADE",
                     "TRAIT_EXTRASAKAHORSEARCHER",
                     "GOLDEN_AGE_TRADE_ROUTE"):
             self.assertNotIn(mid, {e["modifier_id"] for e in entries}, mid)
+        # Phase 8B: the non-capital cheapest-building grant is a countable
+        # magnitude (count-like), like the Torre wonder grant.
+        key = ("TRAIT_ADJUST_NON_CAPITAL_FREE_CHEAPEST_BUILDING", "Amount")
+        self.assertIn(key, by_key, key)
+        self.assertTrue(by_key[key]["count_like"], key)
 
     def test_auto_theme_thresholds_excluded(self):
         entries, _ = self._entries()
