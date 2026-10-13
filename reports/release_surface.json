@@ -1,8 +1,8 @@
 {
  "generated_by": "civ6x10.release_surface (Phase 7C.3 provenance)",
  "freeze": {
-  "semantic_registry_commit": "4de62e0",
-  "controller_release_commit": "4de62e0",
+  "semantic_registry_commit": "0a65b96",
+  "controller_release_commit": "0a65b96",
   "ce_commit": "1e89e1b",
   "dll_sha256": "ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744",
   "ux_validation_status": "LIVE_VALIDATED",
@@ -3026,6 +3026,20 @@
    "disposition": "publish; scrub bulk inventories if any found (see footprint)"
   },
   {
+   "path": "tests/test_phase8b1_counts.py",
+   "tracked": true,
+   "bytes": 11867,
+   "size_normalization": "LF",
+   "surface": "corresponding_source",
+   "kind": "test_fixture",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored tests + small regression constants",
+   "disposition": "publish; scrub bulk inventories if any found (see footprint)"
+  },
+  {
    "path": "tests/test_phase8b_gates.py",
    "tracked": true,
    "bytes": 9339,
@@ -3280,8 +3294,8 @@
  ],
  "surface_summary": {
   "corresponding_source": {
-   "files": 116,
-   "bytes": 1411482
+   "files": 117,
+   "bytes": 1423349
   },
   "corresponding_build_artifact": {
    "files": 1,
