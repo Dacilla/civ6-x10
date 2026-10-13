@@ -1,5 +1,23 @@
 # Changelog
 
+## Phase 8B.1 pre-Playtest-2 correction (under pre-publication gameplay validation, not published)
+
+- Policy-slot fillers re-typed per slot (MILITARY 200 / DIPLOMATIC 100
+  / ECONOMIC 200 / WILDCARD 200; the 8B wildcard-only design could not
+  fill typed bonus slots); filler LOC key fixed; slotting stays manual.
+- Secret Society bonuses re-homed to Game Modes (22 rows, bit 32→512);
+  Governors setup label simplified. Registry totals unchanged (2481).
+- Playtest-2 expectations corrected from the registry: ×10 writes 1851
+  (+630 idle, refused 0); Custom 7.3 writes 1353 / refused 1128; Petra
+  at 7.3 is 14.6,14.6,7.3.
+- BRS/EPC preview claim retracted: previews read gameplay SQLite and
+  show vanilla values while gameplay scales (P1 known incompatibility,
+  preview-only); no shim shipped.
+- Colosseum DELTA kept with corrected scope evidence (culture
+  host-only; loyalty regional automatic; entertainment aura vanilla).
+- New CE build `ced8f017...b744` (CE `1e89e1b`); all pins re-pinned.
+  Prior RC2 history (DLL `3b6dc3d2…ab14`, 1010 set) preserved as-is.
+
 ## Phase 8B Playtest-1 closure (under pre-publication gameplay validation, not published)
 
 - Registry 1010 → 2481 entries (2475 unique, 26 shared; 1333
