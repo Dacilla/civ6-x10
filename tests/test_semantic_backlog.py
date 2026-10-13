@@ -265,7 +265,7 @@ class TestProductionUnchanged(unittest.TestCase):
             self.skipTest("local production registry unavailable")
         self.assertEqual(
             hashlib.sha256(p.read_bytes()).hexdigest(),
-            "e9333ad88887a47b9508212e7c6fa3bf21b2c8adacf31d880894684ea537b0ca")
+            "2874fb46a85fa17db8a9ef404c18d7c1d194b58c2d45e801234e31263513dde2")
 
     def test_manifests_unchanged(self):
         import hashlib
@@ -273,7 +273,7 @@ class TestProductionUnchanged(unittest.TestCase):
         # independent (raw bytes differ between Windows and CI checkouts)
         for name, want in (
                 ("governors.yml",
-                 "02b40bf8c3816da7d3e165538461b27ea60c9777bb343e481430fd1226bb0b99"),
+                 "52d9d27bc5a709a414d025356af2f3b9f36ff1862722d6179b2a6110111d754e"),
                 ("suzerain.yml",
                  "ff5f2090c65c617f4e2adf7ace37808b2af51f6ebd7de211ed66f258340e0702")):
             p = ROOT / "manifests" / name
@@ -299,7 +299,7 @@ class TestProductionUnchanged(unittest.TestCase):
         p = ROOT / "spike" / "EXPECTED_DLL_SHA256.txt"
         if p.is_file():
             self.assertEqual(p.read_text(encoding="utf-8").strip(),
-                             "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
+                             "ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744")
 
 
 
@@ -699,7 +699,14 @@ def _dry_run_inputs():
     # 37 projection pairs as manifest rows (module = proposed owner).
     # The 2 Toqui pairs are NOT appended: they come from the EXISTING
     # traits rows above, so no second source is ever invented.
+    # Phase 8B.1: an appended pair already present in the manifests takes
+    # the CURRENT manifest module (e.g. the society backlog pairs are
+    # modes-owned now); appending a stale owner would synthetically
+    # union owners and fake shared definitions.
+    current_module = {(r["modifier_id"], r["argument_name"]): r.get("module")
+                      for r in rows}
     for p in backlog["proposed_production_pairs"]:
+        key = (p["modifier_id"], p["argument"])
         out.append({
             "object_id": p["modifier_id"],
             "modifier_id": p["modifier_id"],
@@ -715,7 +722,7 @@ def _dry_run_inputs():
             "generated_value": "",
             "status": "ok",
             "confidence": "human_certified",
-            "module": p["owner"],
+            "module": current_module.get(key) or p["owner"],
         })
     return out, floor, rules, backlog
 
@@ -757,11 +764,11 @@ class TestPhase6BDryRun(unittest.TestCase):
         self.assertEqual(report["ownership_counts"]["governments"], 18)
         self.assertEqual(report["ownership_counts"]["pantheons"], 34)
         self.assertEqual(report["ownership_counts"]["wonders"], 568)
-        self.assertEqual(report["ownership_counts"]["governors"], 70)
+        self.assertEqual(report["ownership_counts"]["governors"], 48)
         self.assertEqual(report["ownership_counts"]["suzerain"], 123)
         self.assertEqual(report["ownership_counts"]["promotions"], 315)
         self.assertEqual(report["ownership_counts"]["dedications"], 43)
-        self.assertEqual(report["ownership_counts"]["modes"], 181)
+        self.assertEqual(report["ownership_counts"]["modes"], 203)
         self.assertEqual(report["ownership_counts"]["religion"], 31)
         self.assertEqual(report["ownership_counts"]["greatpeople"], 105)
         self.assertEqual(report["ownership_counts"]["projects"], 13)
@@ -780,9 +787,10 @@ class TestPhase6BDryRun(unittest.TestCase):
         self.assertEqual(len(final_pairs), 39)
         for key in final_pairs:
             self.assertIn(key, by_key, key)
-        # owner split of the 39
+        # owner split of the 39 (7 society backlog pairs modes-owned since
+        # 8B.1)
         owners = Counter(by_key[k]["owners"] for k in final_pairs)
-        self.assertEqual(owners, {32: 16, 64: 21, 1: 2})
+        self.assertEqual(owners, {32: 9, 64: 21, 1: 2, 512: 7})
         # k=7.3 behavior
         kf = T.stored_float32(7.3)
         kerr = T.float_quantization_error(kf)

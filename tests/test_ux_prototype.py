@@ -143,13 +143,13 @@ class TestProductionUntouched(unittest.TestCase):
         if not inc.is_file():
             self.skipTest("local production registry unavailable")
         self.assertEqual(norm_hash(inc),
-                         "90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c")
+                         "28c987493717c2e107a9e8bf2669372267651104d1931e2a4b2eebbeff3d4203")
         pin = ROOT / "spike" / "EXPECTED_DLL_SHA256.txt"
         if not pin.is_file():
             self.skipTest("expected DLL hash unavailable")
         self.assertEqual(
             pin.read_text(encoding="utf-8").strip().lower(),
-            "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
+            "ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744")
 
     def test_scratch_pin_distinct(self):
         pin = ROOT / "spike" / "UX_PROBE_DLL_SHA256.txt"
@@ -159,7 +159,7 @@ class TestProductionUntouched(unittest.TestCase):
         self.assertRegex(scratch, r"^[0-9a-f]{64}$")
         self.assertNotEqual(
             scratch,
-            "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
+            "ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744")
 
     def test_modinfo_gameplay_nodes_stable(self):
         import xml.etree.ElementTree as ET

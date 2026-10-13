@@ -23,7 +23,7 @@ from civ6x10.governors import (GOVERNOR_MODULE_BIT,
 from civ6x10.production import MODULE_BITS, build_production_registry
 
 GOV_BIT = 32
-GOVERNOR_ENTRIES = 70
+GOVERNOR_ENTRIES = 48
 
 COMBAT_EFFECTS = {
     "EFFECT_ADJUST_CITY_FRIENDLY_COMBAT_BONUS",
@@ -109,9 +109,9 @@ class TestModuleOwnership(unittest.TestCase):
                              r["modifier_id"])
         self.assertEqual(
             Counter(r["semantic_family"] for r in rows),
-            {"FLAT_YIELD": 20, "PERCENT_BONUS": 17, "PRODUCTION_PERCENT": 8,
-             "COMBAT_STRENGTH_BONUS": 6, "AMENITY": 3, "GOLD": 2,
-             "HOUSING": 2, "APPEAL": 1, "LOYALTY": 2, "FLAT_AMOUNT": 9})
+            {"FLAT_YIELD": 10, "PERCENT_BONUS": 9, "PRODUCTION_PERCENT": 8,
+             "COMBAT_STRENGTH_BONUS": 6, "AMENITY": 2, "GOLD": 2,
+             "HOUSING": 2, "APPEAL": 1, "LOYALTY": 1, "FLAT_AMOUNT": 7})
 
 
 class TestGovernorRegistryIntegration(unittest.TestCase):
@@ -125,15 +125,15 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         self.assertEqual(self.report["certified_unconditional"], 1333)
         self.assertEqual(self.report["certified_count_like_conditional"], 1148)
         self.assertEqual(self.report["unresolved_conflicts"], [])
-        self.assertEqual(self.report["ownership_counts"]["governors"], 70)
+        self.assertEqual(self.report["ownership_counts"]["governors"], 48)
 
     def test_governor_subset(self):
         gov = [e for e in self.entries if e["owners"] == GOV_BIT]
         self.assertEqual(len(gov), GOVERNOR_ENTRIES)
         self.assertEqual(len({e["modifier_id"] for e in gov}), GOVERNOR_ENTRIES)
         self.assertEqual(Counter(e["kind"] for e in gov),
-                         {"ADDITIVE": 64, "COMBAT": 6})
-        self.assertEqual(sum(1 for e in gov if e["count_like"]), 14)
+                         {"ADDITIVE": 42, "COMBAT": 6})
+        self.assertEqual(sum(1 for e in gov if e["count_like"]), 12)
         # governor-only ownership: no entry is shared with another module
         self.assertTrue(all(e["owners"] == GOV_BIT for e in gov))
 
@@ -155,12 +155,12 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         self.assertEqual(sum(1 for e in gov.values() if e["kind"] == "COMBAT"), 6)
 
     def test_five_integral_rows_conditional(self):
+        # Phase 8B.1: the two Sanguine vampire-build rows are modes-owned
+        # now; the remaining 12 conditional governors rows are pinned.
         gov = {e["modifier_id"]: e for e in self.entries if e["owners"] == GOV_BIT}
         self.assertEqual({m for m, e in gov.items() if e["count_like"]},
                          INTEGRAL_GOVERNOR_ROWS | {
                              "GUILDMASTER_ADDITIONAL_BUILDER_CHARGES_UNIT_MODIFIER",
-                             "SECRET_SOCIETY_GRANT_TWO_VAMPIRE_BUILDS",
-                             "SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD",
                              "CARDINAL_PATRON_SAINT_PROMOTION",
                              "DEFENSE_LOGISTICS_BONUS_STRATEGICS",
                              "CITY_DEFENDER_ADJUST_ATTACKS_PER_TURN",
@@ -215,12 +215,62 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
                if e["owners"] == GOV_BIT}
         leaked = gov & (forbidden - admitted)
         self.assertEqual(leaked, set(), sorted(leaked))
-        # and the candidate pairs themselves are exactly what shipped
+        # and the candidate pairs themselves are exactly what shipped:
+        # audit candidates + admitted backlog MINUS the 22 society pairs
+        # (modes-owned since 8B.1; canonical list lives in
+        # tests/test_phase8b1_counts.py).
         cand = {(r["modifier_id"], r["argument"])
                 for pt, p in audit["promotions"].items()
                 for r in p["rows"]
                 if r["disposition"] == "CERTIFIED_CANDIDATE"} | admitted
-        self.assertEqual(gov, cand)
+        society = {
+            ("GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_AMENITY_FROM_COUNTERSPY",
+             "Amount"),
+            ("GOVERNOR_PROMOTION_OWLS_OF_MINERVA_3_LOYALTY_FROM_COUNTERSPY",
+             "Amount"),
+            ("GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_GOLD_INTEREST",
+             "Percent"),
+            ("GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_CULTURE",
+             "Percent"),
+            ("GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_FAITH",
+             "Percent"),
+            ("GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_GOLD",
+             "Percent"),
+            ("GOVERNOR_PROMOTION_OWLS_OF_MINERVA_4_SPY_SUCCESS_GRANTS_SCIENCE",
+             "Percent"),
+            ("GOVERNOR_PROMOTION_VOIDSINGERS_2_CULTURE_FROM_FAITH",
+             "Amount"),
+            ("GOVERNOR_PROMOTION_VOIDSINGERS_2_GOLD_FROM_FAITH",
+             "Amount"),
+            ("GOVERNOR_PROMOTION_VOIDSINGERS_2_SCIENCE_FROM_FAITH",
+             "Amount"),
+            ("HERMETIC_ORDER_COMANDANTE_GENERAL_LEY_LINE_SCIENCE",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_ADMIRAL_LEY_LINE_SCIENCE",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_ARTIST_LEY_LINE_CULTURE",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_ENGINEER_LEY_LINE_PRODUCTION",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_GENERAL_LEY_LINE_SCIENCE",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_MERCHANT_LEY_LINE_GOLD",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_MUSICIAN_LEY_LINE_CULTURE",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_PROPHET_LEY_LINE_FAITH",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_SCIENTIST_LEY_LINE_SCIENCE",
+             "Amount"),
+            ("HERMETIC_ORDER_GREAT_WRITER_LEY_LINE_CULTURE",
+             "Amount"),
+            ("SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD",
+             "Amount"),
+            ("SECRET_SOCIETY_GRANT_TWO_VAMPIRE_BUILDS",
+             "Amount"),
+        }
+        self.assertTrue(society <= cand, sorted(society - cand))
+        self.assertEqual(gov, cand - society)
 
     def test_disabling_governors_makes_entries_inapplicable(self):
         gov = [e for e in self.entries if e["owners"] == GOV_BIT]
@@ -246,10 +296,10 @@ class TestGovernorRegistryIntegration(unittest.TestCase):
         rows = manifests_or_skip()
         base_rows = [r for r in rows if r.get("module") != "governors"]
         base_entries, base_report = registry_or_skip(base_rows)
-        self.assertEqual(len(base_entries), 2411)
-        self.assertEqual(base_report["certified_unconditional"], 1277)
+        self.assertEqual(len(base_entries), 2433)
+        self.assertEqual(base_report["certified_unconditional"], 1297)
         self.assertEqual(base_report["certified_count_like_conditional"],
-                         1134)
+                         1136)
         by_key = {(e["modifier_id"], e["argument"]): e for e in base_entries}
         for e in self.entries:
             if e["owners"] == GOV_BIT:
@@ -277,8 +327,8 @@ class TestGovernorTransforms(unittest.TestCase):
     def test_all_governor_rows_at_k73(self):
         un = [e for e in self.gov if not e["count_like"]]
         co = [e for e in self.gov if e["count_like"]]
-        self.assertEqual(len(un), 56)
-        self.assertEqual(len(co), 14)
+        self.assertEqual(len(un), 36)
+        self.assertEqual(len(co), 12)
         # every unconditional row transforms (finite, in range)
         for e in un:
             v = float(e["official"])
@@ -290,7 +340,7 @@ class TestGovernorTransforms(unittest.TestCase):
             else:
                 self.fail(e["kind"])
             self.assertTrue(math.isfinite(r), e)
-        # all fourteen conditional rows refuse at 7.3
+        # all twelve conditional rows refuse at 7.3
         for e in co:
             self.assertFalse(self._applies(e["official"], self.kf), e)
             self.assertEqual(e["official"] in ("1", "2", "3"), True, e)
@@ -516,7 +566,7 @@ class TestModeFloorAndCombatGate(unittest.TestCase):
                 writes += 1
             else:
                 refusals += 1
-        self.assertEqual((writes, refusals), (56, 14))
+        self.assertEqual((writes, refusals), (36, 12))
 
     def test_k73_global_totals(self):
         # Phase 8B kind-aware decomposition at Custom 7.3: 1333 apply,

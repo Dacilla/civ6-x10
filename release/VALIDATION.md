@@ -12,9 +12,9 @@ count-like) with three new native kinds (VECTOR/DELTA/REPEAT), six new
 modules (promotions, dedications, modes, religion, greatpeople,
 projects), and a new native build:
 
-- CE fork branch `phase-8b-coverage`, commit `29e8b7f`
+- CE fork branch `phase-8b-coverage`, commit `1e89e1b`
 - DLL SHA-256:
-  `e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c`
+  `ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744`
 
 Static gate expectation at Custom 7.3: 1333 apply + 20 exact
 conditionals = 1353 of 2481; 1128 refuse safely (never floored).
@@ -29,7 +29,7 @@ is cut from the 8B tree until that matrix is green.
 
 RC2 — not RC1 — was the final validated candidate before Phase 8B:
 RC2 carries the new preset/custom/bool configuration path (DLL
-`e0486aee…a06c`, CE `0655190`) over the unchanged 1010-entry
+`3b6dc3d2…ab14`, CE `0655190`) over the unchanged 1010-entry
 gameplay set.
 
 ### Semantic validation (registry freeze `2cf953e`)
@@ -60,7 +60,7 @@ gameplay set.
 
 - CE fork commit: `0655190` (branch `x10-lifecycle-log`)
 - DLL SHA-256:
-  `e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c`
+  `3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14`
 - Controller runtime: `release/release-manifest.yml`
   `controller_release_commit`
 - Run A — preset ×10 Classic, all ON (load+reload):
@@ -89,7 +89,7 @@ Private archived evidence (hashes only):
 - `X10Probe.1010-6C-runB.log`:
   `f4868369b112926e435340435e34207fa964016fb6fad02e3ba93bcf62030082`
 
-## 7C.2 UX validation matrix (RC2, DLL `e0486aee...a06c`, same 1010 set)
+## 7C.2 UX validation matrix (RC2, DLL `3b6dc3d2...ab14`, same 1010 set)
 
 Setup UI: preset dropdown `X10_MULTIPLIER_PRESET`, custom
 `X10_MULTIPLIER` text, seven bool `X10_MODULE_*` checkboxes,

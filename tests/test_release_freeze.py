@@ -1,7 +1,7 @@
 """Phase 7A: release-freeze invariant for the validated gameplay state.
 
-Pins the Phase-8B production point
-(registry 90d72d69 + CE 29e8b7f + DLL e0486aee...0ea06c): registry digest/counts,
+Pins the Phase-8B.1 production point
+(registry 28c98749 + CE 1e89e1b + DLL ced8f017...b744): registry digest/counts,
 manifests, owner bits, CE include, DLL pin, bridge/config hashes,
 controller toggles. Phase 7A may change docs/tests/release tooling, but
 production runtime files must stay byte-identical.
@@ -26,9 +26,9 @@ ROOT = Path(__file__).resolve().parents[1]
 # registry CRLF f42c6a61...); SQL semantics are line-ending insensitive and
 # the 7B assembler must normalize before comparing.
 FROZEN_REGISTRY_SHA256 = (
-    "90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c")
+    "28c987493717c2e107a9e8bf2669372267651104d1931e2a4b2eebbeff3d4203")
 FROZEN_DLL_SHA256 = (
-    "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
+    "ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744")
 FROZEN_BRIDGE_SHA256 = (
     "d5e9556dc63a05da086b7604851bfa468cec593aa8f1dcb336e63e7e16aaf34e")
 FROZEN_CONFIG_SHA256 = (
@@ -64,16 +64,16 @@ class TestReleaseFreeze(unittest.TestCase):
         self.assertEqual(report["shared_definitions"], 26)
         self.assertEqual(report["certified_unconditional"], 1333)
         self.assertEqual(report["certified_count_like_conditional"], 1148)
-        self.assertEqual(report["ownership_counts"]["governors"], 70)
+        self.assertEqual(report["ownership_counts"]["governors"], 48)
         self.assertEqual(report["ownership_counts"]["suzerain"], 123)
         self.assertEqual(report["ownership_counts"]["traits"], 668)
         self.assertEqual(report["ownership_counts"]["promotions"], 315)
         self.assertEqual(report["ownership_counts"]["dedications"], 43)
-        self.assertEqual(report["ownership_counts"]["modes"], 181)
+        self.assertEqual(report["ownership_counts"]["modes"], 203)
 
     def test_manifest_counts(self):
         import yaml
-        for name, module, want in (("governors.yml", "governors", 70),
+        for name, module, want in (("governors.yml", "governors", 48),
                                    ("suzerain.yml", "suzerain", 68)):
             p = ROOT / "manifests" / name
             if not p.is_file():
@@ -173,7 +173,7 @@ class TestReleaseFreeze(unittest.TestCase):
                if a["asset_path"] == "X10ProductionRegistry.inc"][0]
         self.assertEqual(reg["sha256"], FROZEN_REGISTRY_SHA256)
         self.assertEqual(man["registry_entries"], 2481)
-        self.assertEqual(man["ce_commit"], "29e8b7f")
+        self.assertEqual(man["ce_commit"], "1e89e1b")
         self.assertEqual(man["semantic_validation_tag"],
                          "phase6b-1010-live-validated")
         self.assertEqual(man["prior_validation_tag"],

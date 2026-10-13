@@ -1,4 +1,4 @@
-# Release manifest (Phase 7C.3) — single source of truth for release assembly.
+# Release manifest (Phase 8B pre-publication) — single source of truth for release assembly.
 #
 # Provenance split (do not conflate):
 # - semantic_registry_commit: froze the 1010 gameplay semantic registry
@@ -37,13 +37,13 @@ controller_release_commit: 4de62e0
 release_source_head: 4de62e0
 ux_validation_status: LIVE_VALIDATED
 ux_validation_dll_sha256: 3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14
-ce_commit: 29e8b7f
+ce_commit: 1e89e1b
 ce_branch: x10-lifecycle-log
 ce_fork_url: https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
 upstream_url: https://github.com/Wild-W/CivilizationVI_CommunityExtension
 public_source_url: https://github.com/Dacilla/civ6-overpowered-bonuses
-dll_sha256: e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c
-registry_sha256: 90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c
+dll_sha256: ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744
+registry_sha256: 28c987493717c2e107a9e8bf2669372267651104d1931e2a4b2eebbeff3d4203
 registry_entries: 2481
 registry_unique_definitions: 2475
 registry_shared_definitions: 26
@@ -85,7 +85,7 @@ workshop_items:
         sha256: 8a48ba744fd5c06503eaff885d69cde3441cdf331ee6558867f9e8afa28d62fe
       - stage_path: Binaries/Win64/GameCore_XP2_CE_FinalRelease.dll
         dll_input: true
-        sha256: e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c
+        sha256: ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/engine/README.txt
@@ -95,10 +95,10 @@ workshop_items:
         sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/engine/THIRD_PARTY_NOTICES.txt
-        sha256: 9dfaa869a43129aa2c057f4ac5ecf61ed0bdc1cccf9f222735fc022682c87037
+        sha256: 05abcda15a4a40ba95629bddb824e9a028cc0b4f09090f16c91320fff72bc5ab
       - stage_path: SOURCE.txt
         source: release/staging-src/engine/SOURCE.txt
-        sha256: 1b0416e31030eb66cd87365d358642c0c03aa80ec5802418e654336ae75695fc
+        sha256: a9b92c1d7bb4a0e6fa9324baff760bb0bbd5c0f7c61cb29850d7f8c42b6f48b6
         has_planned_placeholder: true
   controller:
     name: Overpowered Bonuses
@@ -115,13 +115,13 @@ workshop_items:
         sha256: f08ffe9e1255035cc111ec14210b5fb9ea5b936a484d3fede6157b50803db860
       - stage_path: Config/X10Text.sql
         source: controller/X10/Config/X10Text.sql
-        sha256: 7ea76dd8d0e67bbbf1626daa4a8a169a7e67729ac5ff7ee14f768dbfc93bb770
+        sha256: 3239a2bfc320051107946dbb89dc43e320158e246c80b48f6a9ea78cdf19d0a0
       - stage_path: Config/Dummy.sql
         source: controller/X10/Config/Dummy.sql
         sha256: ff62982921729946ee5e149ea5a28f39a0c441dd4431e8928e18522dce756d4e
       - stage_path: Config/X10SlotCopies.sql
         source: controller/X10/Config/X10SlotCopies.sql
-        sha256: fff3c68ca2bac3480d9749eced3c7c2d72cfc00a1179350375f7611a95691813
+        sha256: cbcac764361b697113adfe420e0c490712cf49e0d299e1b0accdb75f422702c6
       - stage_path: Config/X10WonderBridge.sql
         source: controller/X10/Config/X10WonderBridge.sql
         sha256: d5e9556dc63a05da086b7604851bfa468cec593aa8f1dcb336e63e7e16aaf34e
@@ -134,10 +134,10 @@ workshop_items:
         sha256: 8d56b405468aad11f87ab5763f901e276e08d9646ff5c8481b1762b6b789e9ed
       - stage_path: THIRD_PARTY_NOTICES.txt
         source: release/staging-src/controller/THIRD_PARTY_NOTICES.txt
-        sha256: a88f382c107409f60a048db1ddfbdb449bc915d6814a34f90927720aa212a05d
+        sha256: c1f7c00e08c66c1ea53480be6a1002f1f18e30355b96d1daf7ab80ff09ae4c57
       - stage_path: SOURCE.txt
         source: release/staging-src/controller/SOURCE.txt
-        sha256: 6de1fccb21119687031eaec8246787d38d3dc484cbbb44c1d991edcba0a0c020
+        sha256: 2db6350e790a17227e5da5f0e24134c57f6c909edb41576fb05954e1bc1f76cd
         has_planned_placeholder: true
 
 source_release:
@@ -145,8 +145,8 @@ source_release:
   build_assets:
     - asset_path: X10ProductionRegistry.inc
       source: build/X10ProductionRegistry.inc
-      sha256: 90d72d69d0883c574c6fef0aeaf278750d7c889be8c94f7885ee805959afb01c
-      entries: 1010
+      sha256: 28c987493717c2e107a9e8bf2669372267651104d1931e2a4b2eebbeff3d4203
+      entries: 2481
     - asset_path: release-manifest.yml
       source: release/release-manifest.yml
     - asset_path: VALIDATION.md

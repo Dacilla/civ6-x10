@@ -210,14 +210,14 @@ class TestProductionTransforms(unittest.TestCase):
     def test_full_registry_transforms_at_k73(self):
         # Honest static expectation at the LIVE stored-FLOAT32 k=7.3
         # (raw 9a99e940 -> 7.300000190734863; runtime mismatch checks happen
-        # live against loaded definitions). Phase 8B decomposition:
-        #   1324 unconditional: every one transforms (ADDITIVE/COMBAT/
+        # live against loaded definitions). Phase 8B.1 mechanical
+        # decomposition (see tests/test_phase8b1_counts.py):
+        #   1333 unconditional: every one transforms (ADDITIVE/COMBAT/
         #     DISCOUNT/PROBABILITY/VECTOR; vectors parse element-wise);
-        #   1157 conditional: 21 exact-integral apply (20 ADDITIVE +
-        #     1 DELTA: Panama 10 x 6.3 = 63), 1136 refuse safely — 387
-        #     ADDITIVE fractions, 693 REPEAT copies (non-integral k keeps
-        #     the single vanilla slot), 56 DELTA fractions (direct value
-        #     stands alone). Never floored, never rounded.
+        #   1148 conditional: 20 exact-integral apply (19 ADDITIVE +
+        #     1 DELTA: Panama 10 x 6.3 = 63), 1128 refuse safely — 435
+        #     count-like fractions + 693 REPEAT copies (non-integral k keeps
+        #     the single vanilla slot). Never floored, never rounded.
         import math
         try:
             rows = load_manifests()

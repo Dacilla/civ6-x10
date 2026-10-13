@@ -3,8 +3,8 @@
  "freeze": {
   "semantic_registry_commit": "4de62e0",
   "controller_release_commit": "4de62e0",
-  "ce_commit": "29e8b7f",
-  "dll_sha256": "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c",
+  "ce_commit": "1e89e1b",
+  "dll_sha256": "ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744",
   "ux_validation_status": "LIVE_VALIDATED",
   "registry": {
    "entries": 2481,
@@ -102,7 +102,7 @@
   {
    "path": "build/X10ProductionRegistry.inc",
    "tracked": false,
-   "bytes": 221214,
+   "bytes": 221236,
    "size_normalization": "LF",
    "surface": "corresponding_build_artifact",
    "kind": "generated_derived_registry",
@@ -228,7 +228,7 @@
   {
    "path": "civ6x10/eight_b.py",
    "tracked": true,
-   "bytes": 52093,
+   "bytes": 55153,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -256,7 +256,7 @@
   {
    "path": "civ6x10/governors.py",
    "tracked": true,
-   "bytes": 73427,
+   "bytes": 75578,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -690,7 +690,7 @@
   {
    "path": "controller/X10/Config/X10SlotCopies.sql",
    "tracked": true,
-   "bytes": 1192903,
+   "bytes": 1500421,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -704,7 +704,7 @@
   {
    "path": "controller/X10/Config/X10Text.sql",
    "tracked": true,
-   "bytes": 4901,
+   "bytes": 4842,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -970,7 +970,7 @@
   {
    "path": "docs/PHASE_8B.md",
    "tracked": true,
-   "bytes": 11870,
+   "bytes": 20170,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -984,7 +984,7 @@
   {
    "path": "docs/PLAYTEST_2_CHECKLIST.md",
    "tracked": true,
-   "bytes": 3120,
+   "bytes": 5513,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1166,7 +1166,7 @@
   {
    "path": "manifests/governors.yml",
    "tracked": true,
-   "bytes": 39719,
+   "bytes": 26601,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "generated_derived_manifest",
@@ -1334,7 +1334,7 @@
   {
    "path": "release/PUBLISH_CHECKLIST.md",
    "tracked": true,
-   "bytes": 1881,
+   "bytes": 2168,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1446,7 +1446,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 7355,
+   "bytes": 7369,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2916,7 +2916,7 @@
   {
    "path": "tests/test_building_yield_integral.py",
    "tracked": true,
-   "bytes": 24955,
+   "bytes": 25047,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2972,7 +2972,7 @@
   {
    "path": "tests/test_governors_production.py",
    "tracked": true,
-   "bytes": 26891,
+   "bytes": 29177,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3014,7 +3014,7 @@
   {
    "path": "tests/test_phase6b_production.py",
    "tracked": true,
-   "bytes": 29612,
+   "bytes": 29676,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3028,7 +3028,7 @@
   {
    "path": "tests/test_phase8b_gates.py",
    "tracked": true,
-   "bytes": 8408,
+   "bytes": 9339,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3084,7 +3084,7 @@
   {
    "path": "tests/test_production_config.py",
    "tracked": true,
-   "bytes": 27604,
+   "bytes": 27585,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3140,7 +3140,7 @@
   {
    "path": "tests/test_semantic_backlog.py",
    "tracked": true,
-   "bytes": 38010,
+   "bytes": 38526,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3281,19 +3281,19 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 116,
-   "bytes": 1391407
+   "bytes": 1411482
   },
   "corresponding_build_artifact": {
    "files": 1,
-   "bytes": 221214
+   "bytes": 221236
   },
   "private": {
    "files": 107,
-   "bytes": 14823525
+   "bytes": 14810407
   },
   "workshop_runtime": {
    "files": 9,
-   "bytes": 1618331
+   "bytes": 1925790
   }
  },
  "firaxis_footprint": {
@@ -3347,10 +3347,10 @@
    "tracked": true
   },
   "manifests/governors.yml": {
-   "bytes": 39719,
+   "bytes": 26601,
    "bytes_normalization": "LF",
-   "lines": 1102,
-   "uppercase_identifier_tokens": 436,
+   "lines": 748,
+   "uppercase_identifier_tokens": 295,
    "tracked": true
   },
   "manifests/suzerain.yml": {
@@ -3368,7 +3368,7 @@
    "tracked": true
   },
   "build/X10ProductionRegistry.inc": {
-   "bytes": 221214,
+   "bytes": 221236,
    "bytes_normalization": "LF",
    "lines": 2505,
    "uppercase_identifier_tokens": 3879,

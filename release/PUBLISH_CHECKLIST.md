@@ -17,7 +17,7 @@
 - [ ] `release/verified-sources.yml` completed from the example and URLs verified
 - [ ] publish-ready assembler rerun (`-PublishReady`, no RC flag): passes
 - [ ] no `PLANNED-PLACEHOLDER` markers anywhere staged
-- [ ] DLL hash exact (`e0486aee...0ea06c`, Phase-8B coverage build)
+- [ ] DLL hash exact (`ced8f017...b744`, Phase-8B.1 coverage build)
 - [ ] final CHECKSUMS.sha256 generated
 - [ ] no probe content
 - [ ] engine/controller Mod IDs correct
@@ -36,8 +36,13 @@
 - [ ] engine configured as Steam Required Item
 - [ ] subscribing to the controller pulls the engine automatically
 - [ ] exactly the two staged folders install (no duplicates/old copies)
-- [ ] launch smoke test + save/reload: lifecycle 1010/0, reload identical
-  (Custom 7.3 = 801/209 retained as a secondary spot check, not primary)
+- [ ] launch smoke test + save/reload: lifecycle `writes=1851
+  transform_refused=0 official_mismatch=0 post_add_match=1851
+  post_add_mismatch=0 post_add_unreadable=0 skipped_other=0
+  repeat_idle=630` at preset ×10, reload identical
+  (Custom 7.3 = 1353/1128 retained as a secondary spot check, not primary;
+  the old RC2 1010/0 smoke with DLL `3b6dc3d2...ab14` stays a historical
+  record only, not the expectation for this tree)
 
 ## Before making anything public
 - [ ] EXPLICIT HUMAN APPROVAL (never automatic)

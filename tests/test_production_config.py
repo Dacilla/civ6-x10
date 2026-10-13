@@ -217,7 +217,7 @@ class TestDisplayCopyLint(unittest.TestCase):
                       "Affects: Civilization & Leader Traits",
                       "Affects: Policy Cards", "Affects: Governments",
                       "Affects: Pantheons", "Affects: Wonders",
-                       "Affects: Governors & Secret Societies",
+                       "Affects: Governors",
                       "Affects: City-State Bonuses",
                       "Affects: Unit Promotions & Abilities",
                       "Affects: Age Dedications",

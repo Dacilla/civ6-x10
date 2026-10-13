@@ -286,10 +286,11 @@ class TestIntegralTransformMath(unittest.TestCase):
                 self.assertFalse(applies, e)  # delta 2*6.3 = 12.6 refused
 
     def test_static_registry_counts_at_k73(self):
-        # Phase 8B decomposition at Custom 7.3: 1324 unconditional apply,
-        # 21 exact conditionals (20 ADDITIVE + Panama DELTA 63), 1136
-        # refuse (387 ADDITIVE fractions, 693 inert REPEAT copies,
-        # 56 DELTA fractions). Total 1345 of 2481.
+        # Phase 8B.1 mechanical decomposition at Custom 7.3, derived from
+        # the registry (see tests/test_phase8b1_counts.py): 1333
+        # unconditional apply, 20 exact conditionals (19 ADDITIVE + Panama
+        # DELTA 63), 1128 refuse (435 count-like fractions + 693 REPEAT
+        # copies, all inert at non-integral k). Total 1353 of 2481.
         import math
         entries, _ = registry_or_skip()
         un = [e for e in entries if not e["count_like"]]

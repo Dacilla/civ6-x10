@@ -9,7 +9,7 @@ byte-verifiable engine binary.
 
 1. Checkout the engine source (exact, available now):
    `https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10`
-   branch `phase-8b-coverage` (CE fork) at commit `29e8b7f`.
+   branch `phase-8b-coverage` (CE fork) at commit `1e89e1b`.
    That commit already contains the exact generated
    `X10/X10ProductionRegistry.inc` used by the distributed DLL (2481
    entries / 2475 definitions; verify against the `registry_sha256` in
@@ -19,7 +19,7 @@ byte-verifiable engine binary.
    `msbuild CivilizationVI_CommunityExtension.sln /p:Configuration=Release
    /p:Platform=x64`
 3. Output DLL must SHA-256 to:
-   `e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c`
+   `ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744`
    (binary hash; MSVC builds are not claimed byte-reproducible across
    toolchains — this is a corresponding-source build, verified by hash).
 

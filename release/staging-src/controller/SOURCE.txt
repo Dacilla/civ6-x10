@@ -15,4 +15,4 @@ Controller / release source (planned):
 
 Engine dependency source (exact, available now):
   https://github.com/Dacilla/CivilizationVI_CommunityExtension-X10
-  branch x10-lifecycle-log, commit 29e8b7f
+  branch x10-lifecycle-log, commit 1e89e1b

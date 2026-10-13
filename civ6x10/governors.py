@@ -93,6 +93,20 @@ def secret_society_governor_types(universe: dict) -> set:
     return found
 
 
+def is_secret_society_manifest_row(r: dict) -> bool:
+    """True when a built governor-manifest row is Secret-Society content.
+
+    Phase 8B.1 product decision: Game Modes owns ALL Secret
+    Society-specific bonuses; the Governors module owns only the eight
+    base-game governors. A row is society content when its root governor
+    or its object is one of the four society governors (covers both the
+    4A.1-audit rows via root_governor and the 6B-backlog rows via
+    object_id).
+    """
+    return (r.get("root_governor") in SECRET_SOCIETY_GOVERNOR_TYPES
+            or r.get("object_id") in SECRET_SOCIETY_GOVERNOR_TYPES)
+
+
 # --------------------------------------------------------------------------
 # Generic XML row parsing (attribute form and nested-element form)
 # --------------------------------------------------------------------------
@@ -1165,8 +1179,39 @@ def build_governor_manifest(audit_path, module: str = GOVERNOR_MODULE,
     nothing hand-appended: exact-pair deduplication fails closed on any
     metadata disagreement, so the Sanguine vampire +1 build (two backlog
     provenances, one definition) yields exactly one row carrying both.
+
+    Phase 8B.1: Secret-Society rows are EXCLUDED here (see
+    is_secret_society_manifest_row + build_secret_society_mode_rows):
+    Game Modes owns all society-specific bonuses.
     """
     cands = audited_governor_candidates(audit_path)
+    rows = _audit_governor_rows(cands)
+    if backlog_path is not None:
+        rows.extend(_backlog_governor_rows(backlog_path))
+    # Phase 8B.1: society rows leave the governors manifest (they are
+    # emitted with module=modes by build_secret_society_mode_rows).
+    rows = [r for r in rows if not is_secret_society_manifest_row(r)]
+    seen: dict[tuple[str, str], dict] = {}
+    for r in rows:
+        key = (r["modifier_id"], r["argument_name"])
+        if key in seen:
+            prev = seen[key]
+            for field in ("modifier_type", "effect_type", "official_value",
+                          "semantic_family", "transformation"):
+                if prev[field] != r[field]:
+                    raise ValueError(
+                        f"governor manifest duplicate {key} disagrees on "
+                        f"{field}: {prev[field]!r} vs {r[field]!r} "
+                        "(fail closed)")
+            continue
+        seen[key] = r
+    merged = sorted(seen.values(),
+                    key=lambda r: (r["modifier_id"], r["argument_name"]))
+    return {module: merged}
+
+
+def _audit_governor_rows(cands: list[dict]) -> list[dict]:
+    """Manifest-shaped rows for audited 4A.1 candidates (shared helper)."""
     rows = []
     for r in cands:
         family = r["semantic_family"]
@@ -1190,25 +1235,31 @@ def build_governor_manifest(audit_path, module: str = GOVERNOR_MODULE,
             "root_governor": r["root_governor"],
             "multiplier": 10.0,
         })
+    return rows
+
+
+def build_secret_society_mode_rows(audit_path, backlog_path=None) -> list[dict]:
+    """Secret-Society rows re-homed to Game Modes (Phase 8B.1).
+
+    Same audited construction as build_governor_manifest, opposite
+    partition: only society rows, each tagged module=modes. Byte-identical
+    magnitudes, transforms, and certification sources; only ownership
+    moves (governors bit 32 -> modes bit 512). Consumed by
+    civ6x10.eight_b.build_all, which appends them to the modes manifest.
+    """
+    cands = audited_governor_candidates(audit_path)
+    rows = _audit_governor_rows(cands)
     if backlog_path is not None:
         rows.extend(_backlog_governor_rows(backlog_path))
-    seen: dict[tuple[str, str], dict] = {}
+    out = []
     for r in rows:
-        key = (r["modifier_id"], r["argument_name"])
-        if key in seen:
-            prev = seen[key]
-            for field in ("modifier_type", "effect_type", "official_value",
-                          "semantic_family", "transformation"):
-                if prev[field] != r[field]:
-                    raise ValueError(
-                        f"governor manifest duplicate {key} disagrees on "
-                        f"{field}: {prev[field]!r} vs {r[field]!r} "
-                        "(fail closed)")
+        if not is_secret_society_manifest_row(r):
             continue
-        seen[key] = r
-    merged = sorted(seen.values(),
-                    key=lambda r: (r["modifier_id"], r["argument_name"]))
-    return {module: merged}
+        r = dict(r)
+        r["module"] = "modes"
+        out.append(r)
+    out.sort(key=lambda r: (r["modifier_id"], r["argument_name"]))
+    return out
 
 
 def _backlog_governor_rows(backlog_path) -> list[dict]:

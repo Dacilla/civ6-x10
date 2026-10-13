@@ -70,23 +70,22 @@ class TestManifestCounts(unittest.TestCase):
             audit, backlog_path=ROOT / "civ6x10" / "rules" /
             "semantic_backlog.yml")
         rows = man["governors"]
-        self.assertEqual(len(rows), 70)
+        # Phase 8B.1: 48 (the 22 Secret Society rows are modes-owned;
+        # see tests/test_phase8b1_counts.py for the exact moved IDs).
+        self.assertEqual(len(rows), 48)
         self.assertEqual(len({(r["modifier_id"], r["argument_name"])
-                              for r in rows}), 70)
-        # vampire duplicate collapsed with both provenances
+                              for r in rows}), 48)
+        # vampire duplicate collapsed with both provenances (modes manifest)
         vamp = [r for r in rows if r["modifier_id"] ==
                 "SECRET_SOCIETY_GRANT_ONE_VAMPIRE_BUILD"]
-        self.assertEqual(len(vamp), 1)
-        srcs = " ".join(str(s) for s in vamp[0].get("backlog_sources", []))
-        self.assertIn("SANGUINE_PACT_3", srcs)
-        self.assertIn("SANGUINE_PACT_4", srcs)
+        self.assertEqual(vamp, [])
         # source labels: old rows keep Phase-4A.1, new rows carry Phase-6A
         old = [r for r in rows if r.get("certification_source") ==
                "phase4a.1-governor-audit"]
         new = [r for r in rows if r.get("certification_source") ==
                "phase6a-semantic-backlog"]
-        self.assertEqual(len(old), 54)
-        self.assertEqual(len(new), 16)
+        self.assertEqual(len(old), 39)
+        self.assertEqual(len(new), 9)
 
     def test_suzerain_manifest_is_68(self):
         from civ6x10.suzerain import build_suzerain_manifest
@@ -169,7 +168,7 @@ class TestRegistryTotals(unittest.TestCase):
                           "DISCOUNT": 78, "DELTA": 57, "PROBABILITY": 16,
                           "VECTOR": 4})
         self.assertEqual(self.report["ownership_counts"]["traits"], 668)
-        self.assertEqual(self.report["ownership_counts"]["governors"], 70)
+        self.assertEqual(self.report["ownership_counts"]["governors"], 48)
         self.assertEqual(self.report["ownership_counts"]["suzerain"], 123)
 
     def test_39_new_pair_equality(self):
@@ -183,7 +182,8 @@ class TestRegistryTotals(unittest.TestCase):
              backlog["probe_cleared_addendum"]["pairs"]}
         self.assertEqual(len(want), 39)
         # new pairs = current pairs minus the 971-baseline semantics: every
-        # want-pair is present with owners in {32, 64, 1}
+        # want-pair is present with owners in {32, 64, 1, 512} (512: the 7
+        # society backlog pairs, modes-owned since 8B.1).
         by_key = {(e["modifier_id"], e["argument"]): e for e in self.entries}
         owners = Counter()
         kinds = Counter()
@@ -197,7 +197,7 @@ class TestRegistryTotals(unittest.TestCase):
                 cl += 1
             else:
                 un += 1
-        self.assertEqual(owners, {32: 16, 64: 21, 1: 2})
+        self.assertEqual(owners, {32: 9, 64: 21, 1: 2, 512: 7})
         self.assertEqual(kinds, {"ADDITIVE": 35, "DISCOUNT": 3, "COMBAT": 1})
         self.assertEqual((un, cl), (18, 21))
 

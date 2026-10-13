@@ -211,3 +211,151 @@ Suzerain still works, Custom 7.3 refusals on building-yield leaves).
 5. Colosseum regional correctness + UI (C1).
 6. Monopolies/Heroes/Dramatic standard-game leakage re-proof (M1).
 7. Great-Person burst stacking edge cases (G1).
+
+## 6. Phase 8B.1 pre-Playtest-2 corrections (supersedes marked 8B claims)
+
+Re-inspected from source at controller `11f389d` / CE `29e8b7f`.
+No new gameplay families. Registry totals unchanged
+(2481 / 2475 / 26 / 1333 / 1148; kinds hold).
+
+### C1. F1 retracted: BRS/EPC previews do NOT see scaled values
+
+The §1-F1 "shared scaled store" claim was wrong, and so is §3(B).
+Exact barrier, verified in the installed mods (BRS 7.0,
+`6f2888d4-79dc-415f-a8ff-f9d81d7afb53`; EPC `382a187f-…`):
+
+- `RealModifierAnalysis.lua:1476` reads `GameInfo.Modifiers[id]`
+  (gameplay SQLite) and `:1513` reads ModifierArguments through
+  `DB.Query` (gameplay SQLite), memoized in `tModifiers`. CE
+  transforms native GameCore definitions during population and never
+  rewrites gameplay SQLite — so RMA computes from VANILLA values.
+  This matches Playtest-1 evidence (God King ×10 live, EPC +1/+1).
+- No post-population channel exists from GameCore memory back to UI
+  Lua or SQLite. SQL-side scaling is impossible: UpdateDatabase runs
+  unconditionally (k/modules unknown there) and scaled SQLite would
+  double-scale through native population.
+- Interception is sound but correction is not clean: every preview
+  caller indexes the shared table at call time
+  (`BRSPage_Policy.lua:82,102`, EPC `GovernmentScreen.lua:1028`;
+  published by RMA `Initialize()`, `:2868-2875`), so wrapping
+  `ExposedMembers.RMA.CalculateModifierEffect` would catch all
+  policy/belief paths — but the wrapper would have to re-implement
+  k + module mask + per-entry kind/count-like semantics in Lua
+  (a second native implementation, unverifiable without a game
+  runtime), coupled to cross-mod load order (BRS ImportFiles 1000,
+  EPC 12000, RMA via AddUserInterfaces InGame). EPC without BRS
+  shows static text and is unfixable additively anyway.
+- Decision: NO shim shipped. P1 is an explicit KNOWN
+  INCOMPATIBILITY (preview-only): BRS/EPC previews show vanilla
+  values while gameplay is scaled (proven separately by native
+  lifecycle logs + actual in-game yields). The old automated gate
+  proved only non-dependency + God King registry presence, never
+  preview compatibility; `test_brs_preview_divergence_is_documented`
+  now pins the retraction. Static Firaxis text stays vanilla by
+  design (unchanged).
+
+### C2. F6 corrected: typed fillers (wildcard design was invalid)
+
+- `GovernmentSlots` (official DB): only `SLOT_WILDCARD` has
+  `AllowsAnyPolicy=1`; MILITARY/DIPLOMATIC/ECONOMIC/GREAT_PERSON are
+  0. AllowsAnyPolicy is SLOT-side, so the 8B comment was backwards:
+  99 `SLOT_WILDCARD` fillers could never fill Potala/Diplomatic,
+  Alhambra/Military, or Big Ben/Economic bonus slots.
+- Original Wonder-x10 (workshop `1662972647`, 2017) avoided the
+  softlock with 30 TYPED manual blanks (10 MILITARY + 10 DIPLOMATIC
+  + 10 ECONOMIC, `CIVIC_CODE_OF_LAWS`, `empty_policy_cards.sql`),
+  zero Lua auto-slotting (`wonder_x_10.lua` has only
+  Stonehenge/GreatLibrary/Terracotta handlers), +9 real slots per
+  wonder. Author's admitted flaw, `wonder_modifer_x_10.sql:2-3`:
+  "the additional policy slot may cause you not able to adapt any
+  policies until you have enough policy cards".
+- Blocker mechanics (base `GovernmentScreen.lua`): `:1397` disables
+  Confirm while any slot is free (`bAnySlotsFree`); `:848`
+  (`GetNumPolicySlotsOpen() > 0`) keeps the free-change prompt. Empty
+  slots never crash end-turn — the softlock is an unconfirmable
+  policy screen until every bonus slot holds a card.
+- Investigation order result: (A) safe empty slots = vanilla
+  behavior, insufficient alone (screen unconfirmable with free
+  slots); (B) automatic fillers need game-runtime proof (no
+  auto-slot code ships — same as the proven original); (C) manual
+  typed fillers, the shipped fallback.
+- Shipped: `FILLER_COUNTS` MILITARY 200 / DIPLOMATIC 100 / ECONOMIC
+  200 / WILDCARD 200 (`civ6x10/eight_b.py`) — each type covers its
+  maximum simultaneous bonus slots at ×100 with zero real cards
+  assumed (MIL 2 sources, DIP 1, ECO 2, WILD 2; official per-type
+  pools are MIL 39 / DIP 17 / ECO 39 / WILD 33+12). `Code of Laws`
+  prereq (as the original). 700 identically-named Reserve cards in
+  the picker is the accepted cost. LOC fixed: SQL used
+  `LOC_POLICY_X10_FILLER_DESCRIPTION`, text defines
+  `LOC_POLICY_X10_FILLER_DESC` — SQL now uses DESC.
+- `SLOT_NONE` kept as the inert ModifierArguments value (rewritten
+  natively before engine use when armed). Tolerance is NOT
+  statically provable (no official `GovernmentSlots` row) → gated by
+  Playtest-2 step P0 boot smoke, then P2.
+
+### C3. Checklist counts corrected (mechanically derived)
+
+- Registry: 2481 total = 1788 non-REPEAT + 693 REPEAT
+  (7 bases × aux 2..100). Native leaves `e.aux > copies + 1` idle
+  (`X10Write.cpp:637-640`) without touching writes/post_add_match.
+- ×10: active 7×9=63, idle 630, writes 1851, transform_refused 0,
+  post_add_match 1851 (verified: every count-like official is
+  integral at integral k; max 2 args per definition so the
+  per-definition `touched[8]` witness never truncates).
+- Full preset matrix (writes/idle): ×2 1795/686, ×3 1802/679,
+  ×5 1816/665, ×10 1851/630, ×20 1921/560, ×50 2131/350,
+  ×100 2481/0. ×100 is the only preset where all rows write.
+- Custom 7.3, one EXIT value: writes 1353 (1333 unconditional +
+  20 exact: 19 ADDITIVE + Panama DELTA 63), refused 1128
+  (435 count-like fractions + all 693 REPEAT, non-integral k).
+- R2 Petra witness corrected: `2,2,1 × 7.3 = 14.6,14.6,7.3`
+  (vectors are not count-like), not `20,20,10`.
+- `tests/test_phase8b1_counts.py` derives all of the above from the
+  registry; stale decomposition comments in `test_production.py` /
+  `test_building_yield_integral.py` corrected to match.
+
+### C4. Secret Society ownership resolved: Game Modes owns all of it
+
+- 22 governors-manifest rows (Owls 7, Voidsingers 3, Hermetic 10,
+  Vampire builds 2) moved to modes ownership (bit 32 → 512).
+  Governors checkbox is now simply "Affects: Governors"; modes
+  description notes "Includes Secret Society bonuses."
+- Mechanism: `is_secret_society_manifest_row`
+  (`civ6x10/governors.py`, root_governor/object_id in the four
+  society governor types) partitions at build time; the checked-in
+  audits are untouched. `build_secret_society_mode_rows` feeds
+  `eight_b.build_all`, which drops the 21 colliding heuristic
+  overlay rows (governor-audit rows are the reviewed authority) —
+  `modes_overlay_superseded_by_society=21`. No key collides with any
+  other base manifest (verified). Registry totals unchanged; all 22
+  solely modes-owned (pinned by test with exact IDs).
+
+### C5. Colosseum DELTA kept provisional (scope evidence corrected)
+
+- Culture +2 is host-city direct (`Building_YieldChanges`;
+  per-city building yield, no regional scope in vanilla). Helper
+  `X10_COLOSSEUM_YIELD_CULTURE` (`MODIFIER_BUILDING_YIELD_CHANGE`,
+  `COLLECTION_OWNER`, own-building attach) is the exact official
+  Electronics Factory shape — scope-faithful, no redesign.
+- Loyalty +2 (`COLOSSEUM_IDENTITY`, `COLLECTION_PLAYER_CITIES` +
+  `COLOSSEUM_REQUIREMENTS` plot-within-6) is regional in vanilla
+  and stays regional: native rewrites only the Amount, never
+  collection/requirements. Base-manifest ADDITIVE row, unchanged.
+- Entertainment 2 / RegionalRange 6 aura was never bridged
+  (documented exclusion) and stays vanilla — NOT scaled.
+- C1 live proof required: build UI +2 (not +0); host culture ×10;
+  in-range loyalty ×10; out-of-range vanilla; entertainment aura
+  vanilla. There is no vanilla regional culture to scale; a live
+  result showing regional culture would refute this analysis.
+
+### C6. Release/documentation repair (§6 of the 8B.1 brief)
+
+- `release-manifest.yml` header `(Phase 7C.3)` → 8B pre-publication;
+  `source_release.build_assets` registry `entries: 1010` → 2481.
+- `PUBLISH_CHECKLIST.md`: pre-upload smoke expectation corrected to
+  the 8B EXIT values (1851/0/630/1851 at ×10); 1010/0 retained as
+  the RC2 (DLL `3b6dc3…`) historical record only.
+- `VALIDATION.md`: RC2/7C.2/1010 sections pinned to the staged RC2
+  DLL `3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14`;
+  `e0486aee…` is the Phase-8B tree build only (pre-publication,
+  gameplay validation pending). No historical evidence rewritten.

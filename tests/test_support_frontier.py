@@ -82,10 +82,10 @@ class TestFrontierArtifact(unittest.TestCase):
             (prod["entries"], prod["unique"], prod["shared"],
              prod["unconditional"], prod["count_like"]),
             (2481, 2475, 26, 1333, 1148))
-        self.assertEqual(prod["ce_commit"], "29e8b7f")
+        self.assertEqual(prod["ce_commit"], "1e89e1b")
         self.assertEqual(
             prod["dll_sha256"],
-            "e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c")
+            "ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744")
 
     def test_roots_accounted(self):
         doc = frontier()

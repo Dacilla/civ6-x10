@@ -164,8 +164,9 @@ class TestDeltaInvariants(unittest.TestCase):
 
 class TestBrsEpcNonDependency(unittest.TestCase):
     def test_no_brs_epc_references_in_tree(self):
-        # Compatibility is architectural (shared definition store), never a
-        # hard dependency: our tree must not name their modules.
+        # No hard dependency: our tree must not name their modules. This
+        # proves architectural independence ONLY, never preview
+        # compatibility (see test_brs_preview_divergence_is_documented).
         hits = []
         for rel in ("controller/X10/X10.modinfo",
                     "controller/X10/Config/X10Config.sql",
@@ -181,7 +182,10 @@ class TestBrsEpcNonDependency(unittest.TestCase):
         self.assertEqual(hits, [])
 
     def test_god_king_in_registry(self):
-        # The §3 repro pair scales through the shared store both layers read.
+        # God King scales through the native registry (gameplay). This does
+        # NOT imply BRS/EPC previews see it: they read ModifierArguments
+        # through DB.Query (gameplay SQLite), which CE never rewrites.
+        # Preview divergence is a documented known incompatibility.
         entries, _ = registry_or_skip()
         by_id = {e["modifier_id"]: e for e in entries}
         for mid in ("GOD_KING_FAITH", "GOD_KING_GOLD"):
@@ -189,6 +193,19 @@ class TestBrsEpcNonDependency(unittest.TestCase):
             self.assertEqual(by_id[mid]["kind"], "ADDITIVE", mid)
             self.assertEqual(by_id[mid]["owners"],
                              MODULE_BITS["policies"], mid)
+
+    def test_brs_preview_divergence_is_documented(self):
+        # Phase 8B.1 retraction: no automated gate may claim BRS/EPC
+        # previews work. P1 stays an explicit known incompatibility until
+        # a verified additive integration ships.
+        import re
+        phase = (ROOT / "docs" / "PHASE_8B.md").read_text(encoding="utf-8")
+        self.assertIn("known incompatib",
+                      re.sub(r"\s+", " ", phase.lower()))
+        checklist = (ROOT / "docs" / "PLAYTEST_2_CHECKLIST.md").read_text(
+            encoding="utf-8")
+        self.assertIn("known incompatib",
+                      re.sub(r"\s+", " ", checklist.lower()))
 
 
 if __name__ == "__main__":
