@@ -158,7 +158,7 @@
   {
    "path": "civ6x10/bridge.py",
    "tracked": true,
-   "bytes": 25255,
+   "bytes": 27882,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -424,7 +424,7 @@
   {
    "path": "civ6x10/rules/certified_overrides.yml",
    "tracked": true,
-   "bytes": 46040,
+   "bytes": 46684,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_curated_rules",
@@ -718,7 +718,7 @@
   {
    "path": "controller/X10/Config/X10WonderBridge.sql",
    "tracked": true,
-   "bytes": 411083,
+   "bytes": 410341,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "generated_guarded_bridge",
@@ -970,7 +970,7 @@
   {
    "path": "docs/PHASE_8B.md",
    "tracked": true,
-   "bytes": 20170,
+   "bytes": 23008,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -984,7 +984,7 @@
   {
    "path": "docs/PLAYTEST_2_CHECKLIST.md",
    "tracked": true,
-   "bytes": 5513,
+   "bytes": 6293,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1278,7 +1278,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 3740,
+   "bytes": 4377,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1418,7 +1418,7 @@
   {
    "path": "release/install-release-candidate.ps1",
    "tracked": true,
-   "bytes": 2364,
+   "bytes": 2660,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2902,7 +2902,7 @@
   {
    "path": "tests/test_bridge.py",
    "tracked": true,
-   "bytes": 28639,
+   "bytes": 33819,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2916,7 +2916,7 @@
   {
    "path": "tests/test_building_yield_integral.py",
    "tracked": true,
-   "bytes": 25047,
+   "bytes": 25657,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3295,7 +3295,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 117,
-   "bytes": 1424616
+   "bytes": 1438228
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -3307,7 +3307,7 @@
   },
   "workshop_runtime": {
    "files": 9,
-   "bytes": 1925790
+   "bytes": 1925048
   }
  },
  "firaxis_footprint": {
@@ -3375,10 +3375,10 @@
    "tracked": true
   },
   "controller/X10/Config/X10WonderBridge.sql": {
-   "bytes": 411083,
+   "bytes": 410341,
    "bytes_normalization": "LF",
-   "lines": 4613,
-   "uppercase_identifier_tokens": 10352,
+   "lines": 4605,
+   "uppercase_identifier_tokens": 10330,
    "tracked": true
   },
   "build/X10ProductionRegistry.inc": {

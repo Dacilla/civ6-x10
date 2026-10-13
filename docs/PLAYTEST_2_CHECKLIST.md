@@ -29,6 +29,19 @@ X10 arguments per definition).
   here, STOP: fall back to a tested static cap per docs/PHASE_8B.md
   §6-C2 instead of proceeding.)
 
+## P0B Reserve picker UX gate (run BEFORE the full campaign)
+
+- [ ] **P0B**: reach/start after Code of Laws with the normal intended
+  UI stack including Extended Policy Cards. Open the
+  Government/Policy screen and verify all four filler families
+  (Military/Diplomatic/Economic/Wildcard Reserve policies) are legal
+  in their slots. Measure whether opening, scrolling, selecting, and
+  confirming remains responsive and reasonably usable with 700
+  Reserve cards in the picker. Capture a screenshot + Lua log if
+  there are errors. If the 700-card picker is materially unusable,
+  STOP and reopen the policy-slot architecture — the filler count is
+  NOT an accepted cost until P0B passes.
+
 ## Matrix runs (native lifecycle)
 
 - [ ] **R1** preset ×10 Classic, ALL 13 modules ON (load + save/reload):
@@ -46,8 +59,9 @@ X10 arguments per definition).
   refused; Jebel iron refused (stays 6); Petra vector
   `14.6,14.6,7.3` MATCH (NOT `20,20,10` — that is the ×10 value).
 - [ ] **R3** new modules OFF one at a time (promotions, dedications,
-  modes, religion, city-state, wonders): each run must show exactly
-  that module's `owners=` skip lines and zero mutations of its rows.
+  modes, religion, greatpeople, projects, city-state, wonders): each
+  run must show exactly that module's `owners=` skip lines and zero
+  mutations of its rows.
   Modes OFF additionally skips all 22 Secret Society rows (they are
   modes-owned since 8B.1); Governors OFF skips only the 48 base
   governor rows.
@@ -66,12 +80,13 @@ X10 arguments per definition).
   GAMEPLAY: God King actually yields +10/+10 in-game. Record the
   preview values as the known-divergence evidence.
 - [ ] **C1 Colosseum**: build queue shows +2 Culture (not +0); host
-  city gets +20 Culture at ×10; in-range cities get +20 Loyalty at
-  ×10 (regional loyalty is vanilla behavior, preserved); cities
-  outside range get none; the +2 Entertainment aura within 6 tiles
-  stays VANILLA (never bridged, not scaled). There is no vanilla
-  regional culture to scale — a regional-culture result would refute
-  the analysis.
+  City Center gets +20 total Culture at ×10; every eligible City
+  Center within 6 tiles gets +20 total Culture; a city outside range
+  gets none. A nearby city receiving only +2 Culture is FAILURE, not
+  expected behavior (that was the 8B.1 host-only helper bug).
+  Loyalty stays ×10 via its existing regional modifier; the +2
+  Entertainment aura within 6 tiles stays VANILLA (never bridged,
+  not scaled).
 - [ ] **J1 Jebel Barkal**: +60 Iron/turn at ×10; stays +6 at 7.3.
 - [ ] **P3 Petra**: desert tiles +20 Food/+20 Gold/+10 Production
   at ×10 (at 7.3: +14.6/+14.6/+7.3).
@@ -87,7 +102,7 @@ X10 arguments per definition).
   are manual, as in the proven Wonder-x10 pattern.
 - [ ] **S1 Spawn stress**: Pyramids/Zeus/Kotoku at ×20/×50/×100 —
   record placement failures, stacking, hangs, dropped units.
-- [ ] **M1 Modes**: Monopolies industry/corporation bonuses scale
+- [ ] **MD1 Modes**: Monopolies industry/corporation bonuses scale
   with mode ON; a standard game with modes OFF shows zero mode
   mutations (no leakage). Secret Society bonuses scale with modes ON
   (Owls/Voidsingers/Hermetic/Vampire rows are modes-owned).

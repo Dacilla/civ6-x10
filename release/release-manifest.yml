@@ -124,7 +124,7 @@ workshop_items:
         sha256: cbcac764361b697113adfe420e0c490712cf49e0d299e1b0accdb75f422702c6
       - stage_path: Config/X10WonderBridge.sql
         source: controller/X10/Config/X10WonderBridge.sql
-        sha256: d5e9556dc63a05da086b7604851bfa468cec593aa8f1dcb336e63e7e16aaf34e
+        sha256: 113a8a056204a79ee90544cb9c9d11c35f909a44ba20a9cf74463661d75c4e72
     auxiliary_files:
       - stage_path: README.txt
         source: release/staging-src/controller/README.txt

@@ -1,5 +1,16 @@
 # Changelog
 
+## Phase 8B.2 final pre-Playtest-2 correction (under pre-publication gameplay validation, not published)
+
+- Colosseum culture helper re-homed to the official regional graph
+  (player-cities city-yield carrier + COLOSSEUM_REQUIREMENTS); host
+  +20 AND in-range cities +20 at x10, direct +2 preserved for UI.
+  Registry untouched (no CE rebuild). Maracana/Jebel helpers stay
+  host-only (no official gate; neighbors keep vanilla).
+- Reserve picker UX gated by new Playtest-2 step P0B (not an accepted
+  cost); installer defaults repaired (1.0.0-8b + ced8); Modes check
+  renamed MD1; R3 covers Great People + City Projects OFF isolation.
+
 ## Phase 8B.1 pre-Playtest-2 correction (under pre-publication gameplay validation, not published)
 
 - Policy-slot fillers re-typed per slot (MILITARY 200 / DIPLOMATIC 100

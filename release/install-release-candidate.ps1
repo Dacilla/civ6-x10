@@ -1,12 +1,18 @@
-# Local-only RC smoke installer (Phase 7B.1): installs exactly the
-# assembled two-item staging tree into the user's Civ VI Mods directory.
+# Local-only playtest installer: installs exactly the assembled
+# two-item staging tree into the user's Civ VI Mods directory.
 #
 # Refuses probe content, optionally backs up an existing install, reports
 # the installed DLL hash. Never touches stock files or the upstream
 # Workshop Community Extension directory. Human smoke test only.
+#
+# Phase 8B.2: defaults track the current playtest build (8B.1 staging +
+# DLL). The old defaults (1.0.0-rc2 dir + e048 hash) were internally
+# inconsistent — RC2 actually contains 3b6dc3 — and failed the script's
+# own hash check. Pass explicit -StageDir/-ExpectedDllHash to install
+# any other staging.
 param(
-    [string]$StageDir = (Join-Path $PSScriptRoot 'out' '1.0.0-rc2' 'workshop'),
-    [string]$ExpectedDllHash = 'e0486aee0844926c35c8770da937e5a9237db6778a13ea4fa4d1f8453cdea06c'
+    [string]$StageDir = (Join-Path $PSScriptRoot 'out' '1.0.0-8b' 'workshop'),
+    [string]$ExpectedDllHash = 'ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744'
 )
 $ErrorActionPreference = 'Stop'
 

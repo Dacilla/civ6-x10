@@ -660,6 +660,18 @@ delta_effects:
     count_like: true
     rationale: "direct-table Building_YieldChanges preserved; helper adds
       the multiplied delta (Colosseum 2 + 18 = 20 at x10); 8B audit"
+  - effect: EFFECT_ADJUST_CITY_YIELD_CHANGE
+    argument: Amount
+    kind: DELTA
+    count_like: true
+    rationale: "regional yield-delta carrier (Phase 8B.2 Colosseum fix):
+      MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE with Amount+YieldType
+      is the official all-cities shape (URBAN_PLANNING_ALLCITYPRODUCTION,
+      +1 production, no requirement); paired here with the official
+      COLOSSEUM_REQUIREMENTS subject set (plot within 6 of a Colosseum),
+      the same regional graph as COLOSSEUM_IDENTITY loyalty. The helper
+      contributes official*(k-1) to every eligible city; the direct +2
+      still propagates as vanilla"
   - effect: EFFECT_ADJUST_GREAT_PERSON_POINTS
     argument: Amount
     kind: DELTA

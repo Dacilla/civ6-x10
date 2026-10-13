@@ -304,7 +304,10 @@ class TestBridgeMechanics(unittest.TestCase):
         # category — MODIFIER_BUILDING_YIELD_CHANGE /
         # EFFECT_ADJUST_BUILDING_YIELD_CHANGE with all three arguments
         # (Amount + BuildingType naming the owning wonder + YieldType).
-        # The generic city-yield effect must never appear.
+        # Phase 8B.2 exception: the Colosseum culture helper rides the
+        # official regional graph (player-cities city-yield carrier +
+        # COLOSSEUM_REQUIREMENTS); it is the ONLY yield helper allowed
+        # to carry EFFECT_ADJUST_CITY_YIELD_CHANGE.
         try:
             rows = build_wonder_direct(local_db())
         except FileNotFoundError:
@@ -314,11 +317,20 @@ class TestBridgeMechanics(unittest.TestCase):
         by_id: dict = {}
         for h in helpers:
             by_id.setdefault(h["modifier_id"], {})[h["argument_name"]] = h
-        n_yield = 0
+        n_yield = n_regional = 0
         for hid, args in by_id.items():
             if "YieldType" not in args:
                 continue
             n_yield += 1
+            if hid == "X10_COLOSSEUM_YIELD_CULTURE":
+                n_regional += 1
+                self.assertEqual(args["Amount"]["modifier_type"],
+                                 "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
+                                 hid)
+                self.assertEqual(args["Amount"]["effect_type"],
+                                 "EFFECT_ADJUST_CITY_YIELD_CHANGE", hid)
+                self.assertNotIn("BuildingType", args, hid)
+                continue
             self.assertEqual(args["Amount"]["modifier_type"],
                              "MODIFIER_BUILDING_YIELD_CHANGE", hid)
             self.assertEqual(args["Amount"]["effect_type"],
@@ -328,9 +340,12 @@ class TestBridgeMechanics(unittest.TestCase):
             self.assertTrue(
                 args["BuildingType"]["official_value"].startswith("BUILDING_"),
                 hid)
-        self.assertEqual(n_yield, 31)
+        self.assertEqual((n_yield, n_regional), (31, 1))
         sql = emit_bridge_sql(rows)
-        self.assertNotIn("EFFECT_ADJUST_CITY_YIELD_CHANGE", sql)
+        # SQL carries modifier types (never effect names): the regional
+        # carrier appears exactly twice (immediate + trigger paths).
+        self.assertEqual(
+            sql.count("MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE"), 2)
         self.assertNotIn("MODIFIER_SINGLE_CITY_ADJUST_YIELD_CHANGE", sql)
 
     def test_drift_fails_closed_synthetic(self):
@@ -558,6 +573,99 @@ class TestBridgeTriggers(unittest.TestCase):
         db.executescript(sql1)  # reapply: no dupes, no errors
         self.assertEqual(db.execute("SELECT COUNT(*) FROM Modifiers").fetchone()[0], n0)
         db.close()
+
+
+def colosseum_culture_row():
+    """Synthetic direct row for the Colosseum +2 culture cell."""
+    return {"building_type": "BUILDING_COLOSSEUM",
+            "source_table": "Building_YieldChanges",
+            "source_family": "yield",
+            "key": "YieldType=YIELD_CULTURE",
+            "value_column": "YieldChange",
+            "value": "2"}
+
+
+class TestColosseumRegionalHelper(unittest.TestCase):
+    """Phase 8B.2: the Colosseum culture helper rides the official
+    regional graph (player-cities + COLOSSEUM_REQUIREMENTS), never the
+    host-only building-yield shape. Synthetic rows: runs in CI."""
+
+    def test_helper_id_stable(self):
+        self.assertEqual(helper_id(colosseum_culture_row()),
+                         "X10_COLOSSEUM_YIELD_CULTURE")
+
+    def test_helper_row_uses_regional_carrier(self):
+        rows = build_bridge_helpers([colosseum_culture_row()])
+        by_arg = {h["argument_name"]: h for h in rows}
+        amount = by_arg["Amount"]
+        self.assertEqual(
+            amount["modifier_type"],
+            "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE")
+        self.assertEqual(amount["effect_type"],
+                         "EFFECT_ADJUST_CITY_YIELD_CHANGE")
+        self.assertEqual(amount["official_value"], "2")
+        self.assertEqual(amount["transformation"], "bridge_delta")
+        # Exactly the official arg shape (Urban Planning precedent):
+        # Amount + YieldType, never a BuildingType arg.
+        self.assertEqual(set(by_arg), {"Amount", "YieldType"})
+        self.assertEqual(by_arg["YieldType"]["official_value"],
+                         "YIELD_CULTURE")
+
+    def test_sql_carries_subject_requirement(self):
+        sql = emit_bridge_sql([colosseum_culture_row()])
+        self.assertIn("MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
+                      sql)
+        self.assertIn("SubjectRequirementSetId", sql)
+        self.assertIn("'COLOSSEUM_REQUIREMENTS'", sql)
+        self.assertNotIn("MODIFIER_BUILDING_YIELD_CHANGE", sql)
+        self.assertNotIn("'BuildingType', 'ARGTYPE_IDENTITY', "
+                         "'BUILDING_COLOSSEUM'", sql)
+
+    def test_registry_delta_row_unchanged(self):
+        # Same modifier/argument/official/kind: the .inc is untouched,
+        # so no CE rebuild is required for this fix.
+        from civ6x10.bridge import collect_registry_rows
+        from civ6x10.production import build_production_registry
+        try:
+            entries, _ = build_production_registry(
+                collect_registry_rows(ROOT))
+        except FileNotFoundError:
+            raise unittest.SkipTest("local-only registry inputs unavailable")
+        got = [e for e in entries
+               if e["modifier_id"] == "X10_COLOSSEUM_YIELD_CULTURE"
+               and e["argument"] == "Amount"]
+        self.assertEqual(len(got), 1)
+        e = got[0]
+        self.assertEqual(
+            (e["official"], e["kind"], e["count_like"], e["owners"],
+             e.get("aux", 0), e.get("target", "")),
+            ("2", "DELTA", True, 16, 0, ""))
+
+    def test_other_regional_cells_stay_host_only(self):
+        # Maracana (+6 culture, range 100000) and Jebel (+4 faith,
+        # range 6) have NO official requirement set to gate on: their
+        # helpers deliberately stay host-only (neighbors keep vanilla)
+        # until a runtime-proven gate exists. Pinned so any change is
+        # deliberate, never a silent side effect of this fix.
+        rows = build_bridge_helpers([
+            {"building_type": "BUILDING_ESTADIO_DO_MARACANA",
+             "source_table": "Building_YieldChanges",
+             "source_family": "yield",
+             "key": "YieldType=YIELD_CULTURE",
+             "value_column": "YieldChange",
+             "value": "6"},
+            {"building_type": "BUILDING_JEBEL_BARKAL",
+             "source_table": "Building_YieldChanges",
+             "source_family": "yield",
+             "key": "YieldType=YIELD_FAITH",
+             "value_column": "YieldChange",
+             "value": "4"},
+        ])
+        for h in rows:
+            if h["argument_name"] == "Amount":
+                self.assertEqual(h["modifier_type"],
+                                 "MODIFIER_BUILDING_YIELD_CHANGE",
+                                 h["modifier_id"])
 
 
 if __name__ == "__main__":

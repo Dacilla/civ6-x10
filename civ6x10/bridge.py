@@ -85,6 +85,36 @@ BRIDGES = [
     },
 ]
 
+# Regional yield override (Phase 8B.2 Colosseum fix).
+#
+# Direct Building_YieldChanges on a building with RegionalRange propagate
+# to eligible cities in range (proven by Factory-line +3 production:
+# regional in every game, implemented ONLY by direct yields + range, no
+# modifier). A host-only MODIFIER_BUILDING_YIELD_CHANGE helper therefore
+# under-scales neighbors (host +20, neighbors +2). The override re-homes
+# the helper onto the official regional graph instead:
+#   MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE
+#   (official all-cities shape: URBAN_PLANNING_ALLCITYPRODUCTION,
+#   Amount + YieldType, no BuildingType arg)
+#   + SubjectRequirementSetId COLOSSEUM_REQUIREMENTS
+#   (plot within 0-6 of a Colosseum; the same set that gates the
+#   regional COLOSSEUM_IDENTITY loyalty modifier).
+# Keyed by (building, source_table, row key); helper IDs are unchanged
+# (X10_<BUILDING>_YIELD_<YIELD>), so the registry is untouched.
+# Maracana (+6 culture, range 100000) and Jebel Barkal (+4 faith,
+# range 6) are the same bug class but have NO official requirement set
+# to gate on — their helpers stay host-only (neighbors keep vanilla)
+# until a runtime-proven gate exists. See docs/PHASE_8B.md §7.
+REGIONAL_YIELD_OVERRIDES = {
+    ("BUILDING_COLOSSEUM", "Building_YieldChanges",
+     "YieldType=YIELD_CULTURE"): {
+        "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
+        "effect_type": "EFFECT_ADJUST_CITY_YIELD_CHANGE",
+        "extra_args": ["YieldType"],
+        "subject_requirement": "COLOSSEUM_REQUIREMENTS",
+    },
+}
+
 # Direct-table cells that are structural/selectors: inventoried but never
 # bridged or multiplied. (Rationale per row lives in wonder_audit.yml.)
 NON_BRIDGED_TABLES = {
@@ -234,6 +264,22 @@ def _extra_value(extra: str, keys: dict, row: dict) -> str:
     raise KeyError(extra)
 
 
+def _spec_for_row(row: dict) -> dict:
+    """Bridge spec for one direct row (regional override aware).
+
+    Override entries replace only the carrier fields (modifier type,
+    effect, extra args, subject requirement); family/tag stay on the
+    base spec so helper IDs are unchanged.
+    """
+    key = (row["building_type"], row["source_table"], row["key"])
+    base = next(s for s in BRIDGES if s["family"] == row["source_family"])
+    if key in REGIONAL_YIELD_OVERRIDES:
+        spec = dict(base)
+        spec.update(REGIONAL_YIELD_OVERRIDES[key])
+        return spec
+    return base
+
+
 def build_bridge_helpers(direct_rows: list[dict]) -> list[dict]:
     """Manifest-shaped helper rows (module=wonders) for bridged direct cells.
 
@@ -246,10 +292,9 @@ def build_bridge_helpers(direct_rows: list[dict]) -> list[dict]:
     from .modules import build_manifest
     from .transforms import bridge_delta
     from .modules import _fmt
-    spec_by_family = {s["family"]: s for s in BRIDGES}
     raws = []
     for r in direct_rows:
-        spec = spec_by_family[r["source_family"]]
+        spec = _spec_for_row(r)
         keys = dict(p.split("=", 1) for p in r["key"].split("|")) if r["key"] != "-" else {}
         raws.append({
             "building_type": r["building_type"],
@@ -335,13 +380,20 @@ def _helper_inserts(spec: dict, hid: str, row: dict, keys: dict, base: str) -> l
     # (inert until the native DELTA kind contributes official*(k-1)); the
     # direct cell is NEVER zeroed, so vanilla UI keeps reading the truthful
     # official value. Module-off / invalid-k sessions see direct V + 0.
+    # Phase 8B.2: regional helpers additionally carry the official subject
+    # requirement set (e.g. COLOSSEUM_REQUIREMENTS), so the delta reaches
+    # exactly the cities vanilla reaches.
+    req = spec.get("subject_requirement")
+    mod_cols = ("ModifierId, ModifierType, RunOnce, NewOnly, Permanent,"
+                " Repeatable" + (", SubjectRequirementSetId" if req else ""))
+    mod_vals = ("'%s', '%s', 0, 0, 0, 0" % (hid, spec["modifier_type"])
+                + (", '%s'" % req if req else ""))
     stmts = [(
-        "INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly,"
-        " Permanent, Repeatable)\n"
-        "SELECT '%s', '%s', 0, 0, 0, 0\n"
+        "INSERT INTO Modifiers (%s)\n"
+        "SELECT %s\n"
         "WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')\n"
         "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-            hid, spec["modifier_type"], hid, row["source_table"], base))]
+            mod_cols, mod_vals, hid, row["source_table"], base))]
     stmts.append(
         "INSERT INTO BuildingModifiers (BuildingType, ModifierId)\n"
         "SELECT '%s', '%s'\n"
@@ -374,12 +426,16 @@ def _helper_inserts_trigger(spec: dict, hid: str, row: dict, keys: dict) -> list
     # WHEN already satisfies the baseline; NOT EXISTS keeps idempotence.
     guard = "EXISTS (SELECT 1 FROM %s WHERE %s)" % (
         row["source_table"], _new_baseline_pred(row, keys))
+    req = spec.get("subject_requirement")
+    mod_cols = ("ModifierId, ModifierType, RunOnce, NewOnly, Permanent,"
+                " Repeatable" + (", SubjectRequirementSetId" if req else ""))
+    mod_vals = ("'%s', '%s', 0, 0, 0, 0" % (hid, spec["modifier_type"])
+                + (", '%s'" % req if req else ""))
     stmts = [(
-        "  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly,"
-        " Permanent, Repeatable)\n"
-        "  SELECT '%s', '%s', 0, 0, 0, 0\n"
+        "  INSERT INTO Modifiers (%s)\n"
+        "  SELECT %s\n"
         "  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')\n"
-        "    AND %s;" % (hid, spec["modifier_type"], hid, guard))]
+        "    AND %s;" % (mod_cols, mod_vals, hid, guard))]
     stmts.append(
         "  INSERT INTO BuildingModifiers (BuildingType, ModifierId)\n"
         "  SELECT '%s', '%s'\n"
@@ -515,7 +571,6 @@ def emit_bridge_sql(direct_rows: list[dict]) -> str:
       DELTA kind contributes official*(k-1). A diagnostics table records
       per-cell state for the local-only probe dump.
     """
-    spec_by_family = {s["family"]: s for s in BRIDGES}
     chunks = [
         "-- GENERATED by civ6x10.bridge from audited direct wonder values.",
         "-- Do not hand-edit. Regenerate: python -m civ6x10 generate-bridge-sql",
@@ -533,7 +588,7 @@ def emit_bridge_sql(direct_rows: list[dict]) -> str:
     ]
     trigs: list[str] = []
     for r in direct_rows:
-        spec = spec_by_family[r["source_family"]]
+        spec = _spec_for_row(r)
         hid = helper_id(r)
         base = _baseline_pred(r)
         keys = _row_keys(r)

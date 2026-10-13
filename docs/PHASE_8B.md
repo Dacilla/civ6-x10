@@ -209,7 +209,7 @@ Suzerain still works, Custom 7.3 refusals on building-yield leaves).
 3. ×20–×100 unit-spawn stress (S1).
 4. BRS/EPC computed-preview confirmation (P1).
 5. Colosseum regional correctness + UI (C1).
-6. Monopolies/Heroes/Dramatic standard-game leakage re-proof (M1).
+6. Monopolies/Heroes/Dramatic standard-game leakage re-proof (MD1).
 7. Great-Person burst stacking edge cases (G1).
 
 ## 6. Phase 8B.1 pre-Playtest-2 corrections (supersedes marked 8B claims)
@@ -285,7 +285,9 @@ Exact barrier, verified in the installed mods (BRS 7.0,
   assumed (MIL 2 sources, DIP 1, ECO 2, WILD 2; official per-type
   pools are MIL 39 / DIP 17 / ECO 39 / WILD 33+12). `Code of Laws`
   prereq (as the original). 700 identically-named Reserve cards in
-  the picker is the accepted cost. LOC fixed: SQL used
+  the picker is NOT an accepted cost until Playtest-2 step P0B passes
+  (see §7): if the 700-card picker is materially unusable, the policy-slot
+  architecture reopens. LOC fixed: SQL used
   `LOC_POLICY_X10_FILLER_DESCRIPTION`, text defines
   `LOC_POLICY_X10_FILLER_DESC` — SQL now uses DESC.
 - `SLOT_NONE` kept as the inert ModifierArguments value (rewritten
@@ -359,3 +361,59 @@ Exact barrier, verified in the installed mods (BRS 7.0,
   DLL `3b6dc3d26c3eab51fa5be4272252b926deaf10b6d4e7bedb094c2c6c8272ab14`;
   `e0486aee…` is the Phase-8B tree build only (pre-publication,
   gameplay validation pending). No historical evidence rewritten.
+
+## 7. Phase 8B.2 final pre-Playtest-2 correction
+
+### D1. Colosseum regional culture BLOCKER (8B.1-C5 was wrong)
+
+The 8B.1 claim -- direct Building_YieldChanges are host-only -- is refuted
+by official data: Factory-line +3 production is regional in every game yet
+implemented ONLY by direct yields + RegionalRange=6, with no modifier at
+all. Direct yields on ranged buildings propagate; Maracana (+6 culture,
+range 100000) and Jebel Barkal (+4 faith, range 6) confirm the pattern.
+The 8B.1 host-only helper therefore scaled only the host (host +20,
+neighbors +2).
+
+Fix (no destructive zeroing, registry untouched): the helper
+X10_COLOSSEUM_YIELD_CULTURE rides the official regional graph --
+MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE (official all-cities
+shape: URBAN_PLANNING_ALLCITYPRODUCTION, Amount + YieldType, no
+BuildingType arg) + SubjectRequirementSetId COLOSSEUM_REQUIREMENTS
+(plot within 0-6 of a Colosseum; the set already gating regional
+COLOSSEUM_IDENTITY loyalty). The direct +2 still propagates as vanilla
+(UI still shows +2); the helper (stored 0) contributes +18 per eligible
+city at x10. Out-of-range cities match neither path. Module-off /
+invalid-k sessions see direct + inert 0.
+
+Same-class limitation (deliberate, not overlooked): Maracana and Jebel
+helpers stay host-only -- no official requirement set exists to gate on,
+and inventing one needs runtime proof. Neighbors keep exact vanilla
+values (never corrupted, incompletely scaled). Pinned by test so any
+change is deliberate. Thermal Bath production was never bridged
+(not IsWonder).
+
+Static evidence: 8B.2 bridge validation on a scratch DB (57 helpers,
+Colosseum args exactly Amount=0 + YieldType, requirement set intact,
+direct +2 preserved). Live C1 proof still mandatory: a nearby city at
++2 is FAILURE.
+
+### D2. Reserve picker UX (P0B gate, not an accepted cost)
+
+The 6-C2 accepted-cost wording is retracted: 700 Code-of-Laws Reserve
+cards stay implemented, but Playtest-2 step P0B (EPC stack, legality of
+all four families, responsiveness, screenshot + Lua log on error) must
+pass before the campaign. Material unusability reopens the policy-slot
+architecture.
+
+### D3. Installer defaults repaired
+
+release/install-release-candidate.ps1 defaulted to a 1.0.0-rc2 dir with
+the e048 hash, while RC2 actually contains 3b6dc3 -- failing its own
+check. Defaults now track the current playtest build (1.0.0-8b staging +
+ced8 DLL); explicit args install anything else.
+
+### D4. Checklist IDs and R3
+
+Modes check M1 collided with Monument M1, now MD1. R3 now covers Great
+People and City Projects OFF isolation too, keeping the society-ownership
+checks (Modes OFF skips 22 society rows; Governors OFF only the 48 base).

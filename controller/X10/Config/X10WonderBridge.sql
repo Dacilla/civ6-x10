@@ -335,8 +335,8 @@ SELECT 'X10_CASA_DE_CONTRATACION_GPP_MERCHANT', 'Building_GreatPersonPoints', 'G
   'immediate';
 
 -- BUILDING_COLOSSEUM YieldChange=2 (bridged)
-INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
-SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable, SubjectRequirementSetId)
+SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE', 0, 0, 0, 0, 'COLOSSEUM_REQUIREMENTS'
 WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE')
   AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_COLOSSEUM' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 2);
 INSERT INTO BuildingModifiers (BuildingType, ModifierId)
@@ -346,10 +346,6 @@ WHERE NOT EXISTS (SELECT 1 FROM BuildingModifiers WHERE BuildingType = 'BUILDING
 INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
 SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '0'
 WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'Amount')
-  AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_COLOSSEUM' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 2);
-INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
-SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_COLOSSEUM'
-WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'BuildingType')
   AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE BuildingType = 'BUILDING_COLOSSEUM' AND YieldType = 'YIELD_CULTURE' AND YieldChange = 2);
 INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
 SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'
@@ -2268,8 +2264,8 @@ AFTER INSERT ON Building_YieldChanges
 FOR EACH ROW
 WHEN NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2
 BEGIN
-  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable)
-  SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'MODIFIER_BUILDING_YIELD_CHANGE', 0, 0, 0, 0
+  INSERT INTO Modifiers (ModifierId, ModifierType, RunOnce, NewOnly, Permanent, Repeatable, SubjectRequirementSetId)
+  SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE', 0, 0, 0, 0, 'COLOSSEUM_REQUIREMENTS'
   WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE')
     AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
   INSERT INTO BuildingModifiers (BuildingType, ModifierId)
@@ -2279,10 +2275,6 @@ BEGIN
   INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
   SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'Amount', 'ARGTYPE_IDENTITY', '0'
   WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'Amount')
-    AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
-  INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
-  SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_COLOSSEUM'
-  WHERE NOT EXISTS (SELECT 1 FROM ModifierArguments WHERE ModifierId = 'X10_COLOSSEUM_YIELD_CULTURE' AND Name = 'BuildingType')
     AND EXISTS (SELECT 1 FROM Building_YieldChanges WHERE NEW.BuildingType = 'BUILDING_COLOSSEUM' AND NEW.YieldType = 'YIELD_CULTURE' AND NEW.YieldChange = 2);
   INSERT INTO ModifierArguments (ModifierId, Name, Type, Value)
   SELECT 'X10_COLOSSEUM_YIELD_CULTURE', 'YieldType', 'ARGTYPE_IDENTITY', 'YIELD_CULTURE'

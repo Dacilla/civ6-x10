@@ -107,13 +107,14 @@ class TestBuildingYieldCertification(unittest.TestCase):
         helpers = build_bridge_helpers(rows)
         floor = load_sem_floor(ROOT / "data" / "local" / "effect_semantics.csv")
         rules = load_rules()
-        n_yield = 0
+        n_yield = n_regional = 0
         for h in helpers:
             if h["argument_name"] != "Amount":
                 continue
-            if h["modifier_type"] != "MODIFIER_BUILDING_YIELD_CHANGE":
+            if h["modifier_type"] not in (
+                    "MODIFIER_BUILDING_YIELD_CHANGE",
+                    "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE"):
                 continue
-            n_yield += 1
             # Phase 8B non-destructive delta: helpers are stored inert (0)
             # and contribute official*(k-1); the manifest still carries the
             # direct official V as the delta base.
@@ -125,11 +126,21 @@ class TestBuildingYieldCertification(unittest.TestCase):
             self.assertTrue(cert["certified"], h["modifier_id"])
             self.assertEqual(cert["kind"], "DELTA", h["modifier_id"])
             self.assertTrue(cert["count_like"], h["modifier_id"])
+            if h["modifier_id"] == "X10_COLOSSEUM_YIELD_CULTURE":
+                # Phase 8B.2: the single regional helper certifies
+                # through its own delta allowlist entry.
+                n_regional += 1
+                self.assertEqual(cert["source"],
+                                 "curated-effect:delta_effects:"
+                                 "EFFECT_ADJUST_CITY_YIELD_CHANGE",
+                                 h["modifier_id"])
+                continue
+            n_yield += 1
             self.assertEqual(cert["source"],
                              "curated-effect:delta_effects:"
                              "EFFECT_ADJUST_BUILDING_YIELD_CHANGE",
                              h["modifier_id"])
-        self.assertEqual(n_yield, 31)
+        self.assertEqual((n_yield, n_regional), (30, 1))
 
     def test_other_bridge_families_untouched(self):
         # GPP count-like and housing/local-entertainment additive rows keep
