@@ -3028,7 +3028,7 @@
   {
    "path": "tests/test_phase8b1_counts.py",
    "tracked": true,
-   "bytes": 11867,
+   "bytes": 12060,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3295,7 +3295,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 117,
-   "bytes": 1423349
+   "bytes": 1423542
   },
   "corresponding_build_artifact": {
    "files": 1,
