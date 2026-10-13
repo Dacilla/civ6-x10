@@ -222,9 +222,10 @@ class TestSecretSocietyOwnership(unittest.TestCase):
     def test_governors_manifest_has_no_society_rows(self):
         import yaml
         from civ6x10.governors import is_secret_society_manifest_row
-        doc = yaml.safe_load(
-            (ROOT / "manifests" / "governors.yml").read_text(
-                encoding="utf-8"))
+        p = ROOT / "manifests" / "governors.yml"
+        if not p.is_file():
+            raise unittest.SkipTest("local-only registry inputs unavailable")
+        doc = yaml.safe_load(p.read_text(encoding="utf-8"))
         rows = doc["governors"]
         self.assertEqual(len(rows), 48)
         self.assertEqual(
@@ -233,8 +234,10 @@ class TestSecretSocietyOwnership(unittest.TestCase):
 
     def test_modes_manifest_carries_all_22(self):
         import yaml
-        doc = yaml.safe_load(
-            (ROOT / "manifests" / "modes.yml").read_text(encoding="utf-8"))
+        p = ROOT / "manifests" / "modes.yml"
+        if not p.is_file():
+            raise unittest.SkipTest("local-only registry inputs unavailable")
+        doc = yaml.safe_load(p.read_text(encoding="utf-8"))
         ids = {r["modifier_id"] for r in doc["modes"]}
         self.assertTrue(self.SOCIETY_IDS <= ids)
         # vampire duplicate still collapsed with both provenances
