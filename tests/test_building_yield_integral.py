@@ -126,9 +126,12 @@ class TestBuildingYieldCertification(unittest.TestCase):
             self.assertTrue(cert["certified"], h["modifier_id"])
             self.assertEqual(cert["kind"], "DELTA", h["modifier_id"])
             self.assertTrue(cert["count_like"], h["modifier_id"])
-            if h["modifier_id"] == "X10_COLOSSEUM_YIELD_CULTURE":
-                # Phase 8B.2: the single regional helper certifies
-                # through its own delta allowlist entry.
+            if h["modifier_id"] in (
+                    "X10_COLOSSEUM_YIELD_CULTURE",
+                    "X10_JEBEL_BARKAL_YIELD_FAITH",
+                    "X10_ESTADIO_DO_MARACANA_YIELD_CULTURE"):
+                # Phase 8B.2/8B.3: regional helpers certify through the
+                # city-yield delta allowlist entry.
                 n_regional += 1
                 self.assertEqual(cert["source"],
                                  "curated-effect:delta_effects:"
@@ -140,7 +143,7 @@ class TestBuildingYieldCertification(unittest.TestCase):
                              "curated-effect:delta_effects:"
                              "EFFECT_ADJUST_BUILDING_YIELD_CHANGE",
                              h["modifier_id"])
-        self.assertEqual((n_yield, n_regional), (30, 1))
+        self.assertEqual((n_yield, n_regional), (28, 3))
 
     def test_other_bridge_families_untouched(self):
         # GPP count-like and housing/local-entertainment additive rows keep

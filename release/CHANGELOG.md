@@ -1,5 +1,18 @@
 # Changelog
 
+## Phase 8B.3 regional wonder semantics closure (under pre-publication gameplay validation, not published)
+
+- Jebel Faith (+4, range 6) and Maracana Culture (+6, civilization-wide)
+  helpers re-homed to the regional city-yield carrier (Jebel via a
+  generated X10 requirement set mirroring COLOSSEUM_REQUIREMENTS;
+  Maracana ungated). Registry byte-identical: no CE rebuild.
+- Closed-world guard: every regional direct Wonder yield must carry a
+  faithful regional helper or a documented exception (none).
+- Regional Entertainment investigated and deferred: no official
+  player-cities entertainment carrier exists; multi-city behavior
+  unprovable without a game boot. Aura stays vanilla.
+- Checklist: new J2 + MC1 regional checks; C1 retained.
+
 ## Phase 8B.2 final pre-Playtest-2 correction (under pre-publication gameplay validation, not published)
 
 - Colosseum culture helper re-homed to the official regional graph

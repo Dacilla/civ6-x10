@@ -88,6 +88,8 @@ X10 arguments per definition).
   Entertainment aura within 6 tiles stays VANILLA (never bridged,
   not scaled).
 - [ ] **J1 Jebel Barkal**: +60 Iron/turn at ×10; stays +6 at 7.3.
+- [ ] **J2 Jebel regional**: ×10 host/in-range city +40 Faith total; another eligible city within 6 tiles +40 Faith; outside 6 tiles no Jebel Faith.
+- [ ] **MC1 Maracana regional**: ×10 every city +60 Culture total.
 - [ ] **P3 Petra**: desert tiles +20 Food/+20 Gold/+10 Production
   at ×10 (at 7.3: +14.6/+14.6/+7.3).
 - [ ] **P4 Pyramids**: 10 Builders at ×10.

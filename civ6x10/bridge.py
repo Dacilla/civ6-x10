@@ -85,26 +85,30 @@ BRIDGES = [
     },
 ]
 
-# Regional yield override (Phase 8B.2 Colosseum fix).
+# Regional yield override (Phase 8B.2 Colosseum fix, 8B.3 Jebel/Maracana).
 #
 # Direct Building_YieldChanges on a building with RegionalRange propagate
 # to eligible cities in range (proven by Factory-line +3 production:
 # regional in every game, implemented ONLY by direct yields + range, no
 # modifier). A host-only MODIFIER_BUILDING_YIELD_CHANGE helper therefore
-# under-scales neighbors (host +20, neighbors +2). The override re-homes
-# the helper onto the official regional graph instead:
+# under-scales neighbors (host +20, neighbors +2). Overrides re-home
+# helpers onto official regional graphs instead:
 #   MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE
 #   (official all-cities shape: URBAN_PLANNING_ALLCITYPRODUCTION,
 #   Amount + YieldType, no BuildingType arg)
-#   + SubjectRequirementSetId COLOSSEUM_REQUIREMENTS
-#   (plot within 0-6 of a Colosseum; the same set that gates the
-#   regional COLOSSEUM_IDENTITY loyalty modifier).
+#   + a subject requirement set (official COLOSSEUM_REQUIREMENTS, or a
+#   generated X10 set mirroring it exactly when none exists officially).
 # Keyed by (building, source_table, row key); helper IDs are unchanged
-# (X10_<BUILDING>_YIELD_<YIELD>), so the registry is untouched.
-# Maracana (+6 culture, range 100000) and Jebel Barkal (+4 faith,
-# range 6) are the same bug class but have NO official requirement set
-# to gate on — their helpers stay host-only (neighbors keep vanilla)
-# until a runtime-proven gate exists. See docs/PHASE_8B.md §7.
+# (X10_<BUILDING>_YIELD_<YIELD>), so registry identities are untouched.
+#
+# Coverage after 8B.3: every bridged regional direct Wonder yield has a
+# faithful carrier (Colosseum culture, Jebel faith, Maracana culture).
+# Regional Entertainment (Colosseum/Maracana aura) is deliberately OUT:
+# no official player-cities entertainment carrier exists and the
+# multi-city behavior of EFFECT_ADJUST_CITY_YIELD...ENTERTAINMENT is
+# unproven without a game boot (see docs/PHASE_8B.md §8). The closed-world
+# guard test fails if a future regional direct Wonder yield lacks a
+# carrier without a documented exception.
 REGIONAL_YIELD_OVERRIDES = {
     ("BUILDING_COLOSSEUM", "Building_YieldChanges",
      "YieldType=YIELD_CULTURE"): {
@@ -112,6 +116,20 @@ REGIONAL_YIELD_OVERRIDES = {
         "effect_type": "EFFECT_ADJUST_CITY_YIELD_CHANGE",
         "extra_args": ["YieldType"],
         "subject_requirement": "COLOSSEUM_REQUIREMENTS",
+    },
+    ("BUILDING_JEBEL_BARKAL", "Building_YieldChanges",
+     "YieldType=YIELD_FAITH"): {
+        "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
+        "effect_type": "EFFECT_ADJUST_CITY_YIELD_CHANGE",
+        "extra_args": ["YieldType"],
+        "subject_requirement": "X10_JEBEL_BARKAL_REQUIREMENTS",
+        "requirement_graph": "JEBEL_BARKAL",
+    },
+    ("BUILDING_ESTADIO_DO_MARACANA", "Building_YieldChanges",
+     "YieldType=YIELD_CULTURE"): {
+        "modifier_type": "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
+        "effect_type": "EFFECT_ADJUST_CITY_YIELD_CHANGE",
+        "extra_args": ["YieldType"],
     },
 }
 
@@ -374,6 +392,83 @@ def _new_key_pred(row: dict, keys: dict) -> str:
     return " AND ".join(parts)
 
 
+def _jebel_requirement_inserts(guard: str, indent: str = "") -> list[str]:
+    """X10 Jebel regional requirement graph (mirrors COLOSSEUM_REQUIREMENTS).
+
+    REQUIREMENT_PLOT_ADJACENT_BUILDING_TYPE_MATCHES + MinRange 0 /
+    MaxRange 6 on BUILDING_JEBEL_BARKAL, wrapped in a TEST_ANY set
+    (X10_JEBEL_BARKAL_REQUIREMENTS). Values mirror the official
+    COLOSSEUM_REQUIREMENTS chain exactly (Likeliness/Impact/Inverse/
+    Reverse/Persistent 0, ProgressWeight 1, Triggered 0). Static rows;
+    `guard` gates execution; all statements idempotent (NOT EXISTS).
+    """
+    i = indent
+    g = guard
+    return [
+        f"{i}INSERT INTO Requirements (RequirementId, RequirementType,"
+        f" Likeliness, Impact, Inverse, Reverse, Persistent,"
+        f" ProgressWeight, Triggered)\n"
+        f"{i}SELECT 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6',"
+        f" 'REQUIREMENT_PLOT_ADJACENT_BUILDING_TYPE_MATCHES',"
+        f" 0, 0, 0, 0, 0, 1, 0\n"
+        f"{i}WHERE NOT EXISTS (SELECT 1 FROM Requirements"
+        f" WHERE RequirementId ="
+        f" 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6')\n"
+        f"{i}  AND {g};",
+        f"{i}INSERT INTO RequirementArguments (RequirementId, Name, Type,"
+        f" Value)\n"
+        f"{i}SELECT 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6',"
+        f" 'BuildingType', 'ARGTYPE_IDENTITY', 'BUILDING_JEBEL_BARKAL'\n"
+        f"{i}WHERE NOT EXISTS (SELECT 1 FROM RequirementArguments"
+        f" WHERE RequirementId ="
+        f" 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6'"
+        f" AND Name = 'BuildingType')\n"
+        f"{i}  AND {g};",
+        f"{i}INSERT INTO RequirementArguments (RequirementId, Name, Type,"
+        f" Value)\n"
+        f"{i}SELECT 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6',"
+        f" 'MinRange', 'ARGTYPE_IDENTITY', '0'\n"
+        f"{i}WHERE NOT EXISTS (SELECT 1 FROM RequirementArguments"
+        f" WHERE RequirementId ="
+        f" 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6'"
+        f" AND Name = 'MinRange')\n"
+        f"{i}  AND {g};",
+        f"{i}INSERT INTO RequirementArguments (RequirementId, Name, Type,"
+        f" Value)\n"
+        f"{i}SELECT 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6',"
+        f" 'MaxRange', 'ARGTYPE_IDENTITY', '6'\n"
+        f"{i}WHERE NOT EXISTS (SELECT 1 FROM RequirementArguments"
+        f" WHERE RequirementId ="
+        f" 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6'"
+        f" AND Name = 'MaxRange')\n"
+        f"{i}  AND {g};",
+        f"{i}INSERT INTO RequirementSets (RequirementSetId,"
+        f" RequirementSetType)\n"
+        f"{i}SELECT 'X10_JEBEL_BARKAL_REQUIREMENTS',"
+        f" 'REQUIREMENTSET_TEST_ANY'\n"
+        f"{i}WHERE NOT EXISTS (SELECT 1 FROM RequirementSets"
+        f" WHERE RequirementSetId = 'X10_JEBEL_BARKAL_REQUIREMENTS')\n"
+        f"{i}  AND {g};",
+        f"{i}INSERT INTO RequirementSetRequirements (RequirementSetId,"
+        f" RequirementId)\n"
+        f"{i}SELECT 'X10_JEBEL_BARKAL_REQUIREMENTS',"
+        f" 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6'\n"
+        f"{i}WHERE NOT EXISTS (SELECT 1 FROM RequirementSetRequirements"
+        f" WHERE RequirementSetId = 'X10_JEBEL_BARKAL_REQUIREMENTS'\n"
+        f"{i}  AND RequirementId ="
+        f" 'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6')\n"
+        f"{i}  AND {g};",
+    ]
+
+
+def _requirement_graph_inserts(spec: dict, row: dict, guard: str,
+                               indent: str = "") -> list[str]:
+    """Requirement-graph statements for specs that generate their own set."""
+    if spec.get("requirement_graph") == "JEBEL_BARKAL":
+        return _jebel_requirement_inserts(guard, indent)
+    return []
+
+
 def _helper_inserts(spec: dict, hid: str, row: dict, keys: dict, base: str) -> list[str]:
     # Immediate-path statements: created only under the baseline EXISTS guard.
     # Phase 8B (non-destructive delta): the helper Amount is stored as '0'
@@ -388,12 +483,15 @@ def _helper_inserts(spec: dict, hid: str, row: dict, keys: dict, base: str) -> l
                 " Repeatable" + (", SubjectRequirementSetId" if req else ""))
     mod_vals = ("'%s', '%s', 0, 0, 0, 0" % (hid, spec["modifier_type"])
                 + (", '%s'" % req if req else ""))
-    stmts = [(
+    base_guard = "EXISTS (SELECT 1 FROM %s WHERE %s)" % (
+        row["source_table"], base)
+    stmts = _requirement_graph_inserts(spec, row, base_guard)
+    stmts.append((
         "INSERT INTO Modifiers (%s)\n"
         "SELECT %s\n"
         "WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')\n"
         "  AND EXISTS (SELECT 1 FROM %s WHERE %s);" % (
-            mod_cols, mod_vals, hid, row["source_table"], base))]
+            mod_cols, mod_vals, hid, row["source_table"], base)))
     stmts.append(
         "INSERT INTO BuildingModifiers (BuildingType, ModifierId)\n"
         "SELECT '%s', '%s'\n"
@@ -431,11 +529,12 @@ def _helper_inserts_trigger(spec: dict, hid: str, row: dict, keys: dict) -> list
                 " Repeatable" + (", SubjectRequirementSetId" if req else ""))
     mod_vals = ("'%s', '%s', 0, 0, 0, 0" % (hid, spec["modifier_type"])
                 + (", '%s'" % req if req else ""))
-    stmts = [(
+    stmts = _requirement_graph_inserts(spec, row, guard, indent="  ")
+    stmts.append((
         "  INSERT INTO Modifiers (%s)\n"
         "  SELECT %s\n"
         "  WHERE NOT EXISTS (SELECT 1 FROM Modifiers WHERE ModifierId = '%s')\n"
-        "    AND %s;" % (mod_cols, mod_vals, hid, guard))]
+        "    AND %s;" % (mod_cols, mod_vals, hid, guard)))
     stmts.append(
         "  INSERT INTO BuildingModifiers (BuildingType, ModifierId)\n"
         "  SELECT '%s', '%s'\n"

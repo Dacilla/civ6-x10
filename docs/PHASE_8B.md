@@ -417,3 +417,73 @@ ced8 DLL); explicit args install anything else.
 Modes check M1 collided with Monument M1, now MD1. R3 now covers Great
 People and City Projects OFF isolation too, keeping the society-ownership
 checks (Modes OFF skips 22 society rows; Governors OFF only the 48 base).
+
+## 8. Phase 8B.3 regional wonder semantics closure
+
+### E1. Host-only assertion removed (Jebel + Maracana fixed)
+
+The 8B.2 test pinning Maracana/Jebel host-only helpers is rewritten:
+both are regional vanilla effects (Jebel +4 Faith range 6 to owned
+cities in range; Maracana +6 Culture range 100000 civilization-wide),
+and host-only helpers under-scaled every non-host recipient.
+
+- Jebel helper: MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE,
+  Amount=0, YieldType=YIELD_FAITH, SubjectRequirementSetId =
+  X10_JEBEL_BARKAL_REQUIREMENTS -- a generated set mirroring
+  COLOSSEUM_REQUIREMENTS exactly (REQUIREMENT_PLOT_ADJACENT_
+  BUILDING_TYPE_MATCHES + MinRange 0 + MaxRange 6 on
+  BUILDING_JEBEL_BARKAL, wrapped in REQUIREMENTSET_TEST_ANY).
+  Requirement DDL is baseline-guarded and idempotent on both the
+  immediate and trigger paths. At x10: regional +4 + helper +36 = +40.
+- Maracana helper: same carrier, Amount=0, YieldType=YIELD_CULTURE,
+  no requirement (COLLECTION_PLAYER_CITIES already targets every
+  owner city). At x10: +6 + +54 = +60 everywhere.
+- Direct rows preserved (UI truthful); module OFF / invalid k sees
+  direct + 0. Registry identities unchanged (same modifier IDs,
+  Amount, officials, DELTA kind) -- the production .inc is
+  byte-identical, so no CE rebuild.
+
+### E2. Closed-world regional-yield guard
+
+Mechanically derived universe (official DB): IsWonder=1 AND
+RegionalRange>0 JOIN Building_YieldChanges = exactly three rows
+(Colosseum culture, Jebel faith, Maracana culture), all bridged, all
+now regionally carried. Thermal Bath is not IsWonder (out of bridge
+scope, correctly untouched); Factory-line buildings are not wonders.
+The guard test fails if any future regional direct Wonder yield lacks
+a REGIONAL_YIELD_OVERRIDES carrier without a documented,
+technically-justified exception (currently none), and fails on stale
+override keys. No future MODIFIER_BUILDING_YIELD_CHANGE helper for a
+regional direct Wonder yield is permitted by default.
+
+### E3. Regional Entertainment feasibility: DEFERRED with blocker
+
+Investigated, NOT shipped. Proven statically: official DLC mode files
+add new DynamicModifiers rows (Ethiopia Secret Societies adds a new
+ModifierType onto a known collection/effect pair), so row-addition is
+an accepted pattern; EFFECT_ADJUST_CITY_ENTERTAINMENT exists with two
+official single-city carriers (OWNER, PLAYER_CAPITAL_CITY);
+subject-requirement gating on COLLECTION_PLAYER_CITIES is proven
+(COLOSSEUM_IDENTITY). Exact blocker: NO official
+(COLLECTION_PLAYER_CITIES x EFFECT_ADJUST_CITY_ENTERTAINMENT)
+combination exists, so multi-city iteration of the entertainment
+effect, stacking/bucket equivalence with the engine Entertainment/
+RegionalRange aura path (additive vs double-count vs unread), and
+load-time validation silence are all unprovable without booting the
+game. Candidate design (not shipped): new DynamicModifier
+MODIFIER_X10_PLAYER_CITIES_ADJUST_CITY_ENTERTAINMENT on
+(COLLECTION_PLAYER_CITIES, EFFECT_ADJUST_CITY_ENTERTAINMENT);
+Colosseum helper Amount=0 + COLOSSEUM_REQUIREMENTS (delta +18,
+total +20 in range); Maracana helper Amount=0, no requirement
+(total +20 everywhere); direct +2 rows preserved; module OFF gives
+direct + 0. Future pass must prove: clean boot, no DynamicModifier
+errors, amenity totals correct per city, no double application,
+OFF-exact vanilla. Until then Colosseum/Maracana entertainment stays
+vanilla (no regression, unchanged since 8B).
+
+### E4. Checklist deltas (8B.3)
+
+New J2 (Jebel +40 host/in-range, none outside; J1 iron unchanged),
+new MC1 (Maracana +60 every city), C1 retained (+20 host and
+in-range, none outside; nearby-at-+2 is FAILURE). R3 and MD1
+unchanged from 8B.2.

@@ -158,7 +158,7 @@
   {
    "path": "civ6x10/bridge.py",
    "tracked": true,
-   "bytes": 27882,
+   "bytes": 32666,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -718,7 +718,7 @@
   {
    "path": "controller/X10/Config/X10WonderBridge.sql",
    "tracked": true,
-   "bytes": 410341,
+   "bytes": 414345,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "generated_guarded_bridge",
@@ -970,7 +970,7 @@
   {
    "path": "docs/PHASE_8B.md",
    "tracked": true,
-   "bytes": 23008,
+   "bytes": 26697,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -984,7 +984,7 @@
   {
    "path": "docs/PLAYTEST_2_CHECKLIST.md",
    "tracked": true,
-   "bytes": 6293,
+   "bytes": 6511,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1278,7 +1278,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 4377,
+   "bytes": 5124,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2902,7 +2902,7 @@
   {
    "path": "tests/test_bridge.py",
    "tracked": true,
-   "bytes": 33819,
+   "bytes": 39159,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -2916,7 +2916,7 @@
   {
    "path": "tests/test_building_yield_integral.py",
    "tracked": true,
-   "bytes": 25657,
+   "bytes": 25793,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3295,7 +3295,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 117,
-   "bytes": 1438228
+   "bytes": 1453142
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -3307,7 +3307,7 @@
   },
   "workshop_runtime": {
    "files": 9,
-   "bytes": 1925048
+   "bytes": 1929052
   }
  },
  "firaxis_footprint": {
@@ -3375,10 +3375,10 @@
    "tracked": true
   },
   "controller/X10/Config/X10WonderBridge.sql": {
-   "bytes": 410341,
+   "bytes": 414345,
    "bytes_normalization": "LF",
-   "lines": 4605,
-   "uppercase_identifier_tokens": 10330,
+   "lines": 4639,
+   "uppercase_identifier_tokens": 10420,
    "tracked": true
   },
   "build/X10ProductionRegistry.inc": {

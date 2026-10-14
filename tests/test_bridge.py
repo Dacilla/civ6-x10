@@ -304,10 +304,11 @@ class TestBridgeMechanics(unittest.TestCase):
         # category — MODIFIER_BUILDING_YIELD_CHANGE /
         # EFFECT_ADJUST_BUILDING_YIELD_CHANGE with all three arguments
         # (Amount + BuildingType naming the owning wonder + YieldType).
-        # Phase 8B.2 exception: the Colosseum culture helper rides the
-        # official regional graph (player-cities city-yield carrier +
-        # COLOSSEUM_REQUIREMENTS); it is the ONLY yield helper allowed
-        # to carry EFFECT_ADJUST_CITY_YIELD_CHANGE.
+        # Phase 8B.2/8B.3 exceptions: the Colosseum culture, Jebel faith,
+        # and Maracana culture helpers ride the official regional graph
+        # (player-cities city-yield carrier + requirement where one
+        # exists); they are the ONLY yield helpers allowed to carry
+        # EFFECT_ADJUST_CITY_YIELD_CHANGE.
         try:
             rows = build_wonder_direct(local_db())
         except FileNotFoundError:
@@ -322,7 +323,9 @@ class TestBridgeMechanics(unittest.TestCase):
             if "YieldType" not in args:
                 continue
             n_yield += 1
-            if hid == "X10_COLOSSEUM_YIELD_CULTURE":
+            if hid in ("X10_COLOSSEUM_YIELD_CULTURE",
+                       "X10_JEBEL_BARKAL_YIELD_FAITH",
+                       "X10_ESTADIO_DO_MARACANA_YIELD_CULTURE"):
                 n_regional += 1
                 self.assertEqual(args["Amount"]["modifier_type"],
                                  "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
@@ -340,12 +343,12 @@ class TestBridgeMechanics(unittest.TestCase):
             self.assertTrue(
                 args["BuildingType"]["official_value"].startswith("BUILDING_"),
                 hid)
-        self.assertEqual((n_yield, n_regional), (31, 1))
+        self.assertEqual((n_yield, n_regional), (31, 3))
         sql = emit_bridge_sql(rows)
         # SQL carries modifier types (never effect names): the regional
-        # carrier appears exactly twice (immediate + trigger paths).
+        # carrier appears exactly 3x2 (immediate + trigger per helper).
         self.assertEqual(
-            sql.count("MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE"), 2)
+            sql.count("MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE"), 6)
         self.assertNotIn("MODIFIER_SINGLE_CITY_ADJUST_YIELD_CHANGE", sql)
 
     def test_drift_fails_closed_synthetic(self):
@@ -445,6 +448,10 @@ def synthetic_db():
     db.execute("CREATE TABLE Modifiers (ModifierId TEXT, ModifierType TEXT, RunOnce INTEGER, NewOnly INTEGER, Permanent INTEGER, Repeatable INTEGER, OwnerRequirementSetId TEXT, SubjectRequirementSetId TEXT, OwnerStackLimit INTEGER, SubjectStackLimit INTEGER)")
     db.execute("CREATE TABLE BuildingModifiers (BuildingType TEXT, ModifierId TEXT)")
     db.execute("CREATE TABLE ModifierArguments (ModifierId TEXT, Name TEXT, Type TEXT, Value TEXT, Extra TEXT, SecondExtra TEXT)")
+    db.execute("CREATE TABLE Requirements (RequirementId TEXT, RequirementType TEXT, Likeliness INTEGER, Impact INTEGER, Inverse INTEGER, Reverse INTEGER, Persistent INTEGER, ProgressWeight INTEGER, Triggered INTEGER)")
+    db.execute("CREATE TABLE RequirementArguments (RequirementId TEXT, Name TEXT, Type TEXT, Value TEXT, Extra TEXT, SecondExtra TEXT)")
+    db.execute("CREATE TABLE RequirementSets (RequirementSetId TEXT, RequirementSetType TEXT)")
+    db.execute("CREATE TABLE RequirementSetRequirements (RequirementSetId TEXT, RequirementId TEXT)")
     return db
 
 
@@ -641,19 +648,37 @@ class TestColosseumRegionalHelper(unittest.TestCase):
              e.get("aux", 0), e.get("target", "")),
             ("2", "DELTA", True, 16, 0, ""))
 
-    def test_other_regional_cells_stay_host_only(self):
-        # Maracana (+6 culture, range 100000) and Jebel (+4 faith,
-        # range 6) have NO official requirement set to gate on: their
-        # helpers deliberately stay host-only (neighbors keep vanilla)
-        # until a runtime-proven gate exists. Pinned so any change is
-        # deliberate, never a silent side effect of this fix.
+    def test_jebel_maracana_regional_carriers(self):
+        # Phase 8B.3: Jebel faith (+4, range 6) and Maracana culture (+6,
+        # range 100000) are regional vanilla effects. Their helpers ride
+        # the player-cities city-yield carrier: Jebel gated by the
+        # generated X10 requirement set (mirroring COLOSSEUM_REQUIREMENTS),
+        # Maracana civilization-wide with no requirement. Host-only here
+        # would be the 8B.1-class bug (neighbors stuck at vanilla).
         rows = build_bridge_helpers([
+            {"building_type": "BUILDING_JEBEL_BARKAL",
+             "source_table": "Building_YieldChanges",
+             "source_family": "yield",
+             "key": "YieldType=YIELD_FAITH",
+             "value_column": "YieldChange",
+             "value": "4"},
             {"building_type": "BUILDING_ESTADIO_DO_MARACANA",
              "source_table": "Building_YieldChanges",
              "source_family": "yield",
              "key": "YieldType=YIELD_CULTURE",
              "value_column": "YieldChange",
              "value": "6"},
+        ])
+        by_id: dict = {}
+        for h in rows:
+            by_id.setdefault(h["modifier_id"], {})[h["argument_name"]] = h
+        jebel = by_id["X10_JEBEL_BARKAL_YIELD_FAITH"]
+        self.assertEqual(jebel["Amount"]["modifier_type"],
+                         "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE")
+        self.assertEqual(jebel["Amount"]["effect_type"],
+                         "EFFECT_ADJUST_CITY_YIELD_CHANGE")
+        self.assertEqual(set(jebel), {"Amount", "YieldType"})
+        sql = emit_bridge_sql([
             {"building_type": "BUILDING_JEBEL_BARKAL",
              "source_table": "Building_YieldChanges",
              "source_family": "yield",
@@ -661,11 +686,88 @@ class TestColosseumRegionalHelper(unittest.TestCase):
              "value_column": "YieldChange",
              "value": "4"},
         ])
+        self.assertIn("'X10_JEBEL_BARKAL_REQUIREMENTS'", sql)
+        self.assertIn("'X10_REQUIRES_PLOT_HAS_JEBEL_BARKAL_WITHIN_6'",
+                      sql)
+        self.assertIn("'REQUIREMENT_PLOT_ADJACENT_BUILDING_TYPE_MATCHES'",
+                      sql)
+        self.assertIn("'REQUIREMENTSET_TEST_ANY'", sql)
+        self.assertIn("'BUILDING_JEBEL_BARKAL'", sql)
+        mara = by_id["X10_ESTADIO_DO_MARACANA_YIELD_CULTURE"]
+        self.assertEqual(mara["Amount"]["modifier_type"],
+                         "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE")
+        self.assertEqual(mara["Amount"]["effect_type"],
+                         "EFFECT_ADJUST_CITY_YIELD_CHANGE")
+        self.assertEqual(set(mara), {"Amount", "YieldType"})
+        msql = emit_bridge_sql([
+            {"building_type": "BUILDING_ESTADIO_DO_MARACANA",
+             "source_table": "Building_YieldChanges",
+             "source_family": "yield",
+             "key": "YieldType=YIELD_CULTURE",
+             "value_column": "YieldChange",
+             "value": "6"},
+        ])
+        self.assertIn("MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
+                      msql)
+        self.assertNotIn("SubjectRequirementSetId", msql)
+
+
+class TestRegionalYieldClosedWorld(unittest.TestCase):
+    """Phase 8B.3 closed-world guard: every Wonder direct yield on a
+    RegionalRange building must ride a faithful regional carrier.
+    Derived from official DB structure (not hardcoded names): a future
+    regional direct Wonder yield with a host-only helper fails here
+    unless a documented exception proves the direct yield is not
+    regional."""
+
+    # (building, row-key) pairs proven host-only despite RegionalRange,
+    # each with a technical justification. Empty: all three known rows
+    # (Colosseum/Jebel/Maracana) carry faithful regional helpers.
+    DOCUMENTED_HOST_ONLY_EXCEPTIONS = frozenset()
+
+    def test_regional_wonder_yields_covered(self):
+        import sqlite3
+        from civ6x10.bridge import REGIONAL_YIELD_OVERRIDES
+        try:
+            dbp = str(local_db())
+        except FileNotFoundError:
+            self.skipTest("official DB copy unavailable (local-only)")
+        db = sqlite3.connect(f"file:{dbp}?mode=ro", uri=True)
+        ranged = {r[0] for r in db.execute(
+            "SELECT BuildingType FROM Buildings WHERE IsWonder = 1"
+            " AND RegionalRange IS NOT NULL AND RegionalRange != 0")}
+        universe = set()
+        for (b,) in sorted((b,) for b in ranged):
+            for y in db.execute(
+                    "SELECT YieldType FROM Building_YieldChanges"
+                    " WHERE BuildingType = ?", (b,)):
+                universe.add(
+                    (b, "Building_YieldChanges",
+                     "YieldType=%s" % y[0]))
+        db.close()
+        # Every regional direct Wonder yield is covered or excepted.
+        for key in sorted(universe):
+            self.assertTrue(
+                key in REGIONAL_YIELD_OVERRIDES
+                or (key[0], key[2]) in self.DOCUMENTED_HOST_ONLY_EXCEPTIONS,
+                key)
+        # No stale overrides: every override key is still a live
+        # regional direct row.
+        for key in REGIONAL_YIELD_OVERRIDES:
+            self.assertIn(key, universe, key)
+        # Covered rows behave regionally (carrier check on the helper).
+        rows = build_bridge_helpers([
+            {"building_type": b, "source_table": t, "source_family": "yield",
+             "key": k, "value_column": "YieldChange", "value": "1"}
+            for (b, t, k) in sorted(universe)])
+        by_id = {}
         for h in rows:
-            if h["argument_name"] == "Amount":
-                self.assertEqual(h["modifier_type"],
-                                 "MODIFIER_BUILDING_YIELD_CHANGE",
-                                 h["modifier_id"])
+            by_id.setdefault(h["modifier_id"], {})[h["argument_name"]] = h
+        self.assertEqual(len(by_id), len(universe))
+        for hid, args in by_id.items():
+            self.assertEqual(args["Amount"]["modifier_type"],
+                             "MODIFIER_PLAYER_CITIES_ADJUST_CITY_YIELD_CHANGE",
+                             hid)
 
 
 if __name__ == "__main__":

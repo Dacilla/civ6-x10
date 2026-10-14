@@ -136,7 +136,7 @@ class TestProductionUntouched(unittest.TestCase):
         self.assertEqual(
             norm_hash(ROOT / "controller" / "X10" / "Config" /
                       "X10WonderBridge.sql"),
-            "113a8a056204a79ee90544cb9c9d11c35f909a44ba20a9cf74463661d75c4e72")
+            "07e02d4210980a520ef824af76961f8c1499fa5fd256c6d74ba19cb0e49d1ff9")
 
     def test_registry_and_dll_freeze(self):
         inc = ROOT / "build" / "X10ProductionRegistry.inc"
