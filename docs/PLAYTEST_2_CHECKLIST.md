@@ -63,14 +63,14 @@ architecture is rejected. The replacement gates:
 - [ ] No literal `LOC_POLICY_X10_FILLER_*` strings anywhere in the
   Government screen (filler text now loads InGame).
 
-## P0C (demand-driven unlock + save/load)
+## P0C (source-driven unlock + save/load) -- 8B.4.4
 
 - [ ] Force/build a multiplied bonus slot source (e.g. x10 Potala =
-  10 Diplomatic slots): only the deficit of Reserve cards for the
-  CURRENT slots unlocks (Diplomatic family for Potala; typed cards
-  also fit wildcard slots). Count visible Reserve cards: expect the
-  deficit only (single digits at x10 Potala with few real Diplomatic
-  cards), never hundreds.
+  10 Diplomatic slots): exactly (k-1) Reserve cards of the source's
+  slot type unlock (9 Diplomatic Reserves at x10 Potala, regardless
+  of real-card count -- bounded over-supply intentional). Count
+  visible Reserve cards: expect 9, never hundreds, never 0.
+  Next turn: no additional Reserves appear (9 stays 9).
 - [ ] Fill the slots with the unlocked Reserves, confirm policies,
   turn ends. Save/reload: slots, policies, and unlocks remain valid.
 - [ ] ExplicitUnlock experiment record: with ONE fresh filler,
@@ -134,10 +134,12 @@ architecture is rejected. The replacement gates:
 - [ ] **E1 Eiffel**: +20 Appeal at ×10; unchanged at 7.3.
 - [ ] **D1 Discipline**: ~+29 vs Barbarians (NOT +50).
 - [ ] **M1 Monument to the Gods**: +150% wonder production magnitude.
-- [ ] **P2 Potala**: ×10 → 10 Diplomatic slots; deficit-only
-  Diplomatic Reserves unlock on demand; turn ends; save/reload
-  valid. Then probe +20/+50/+100 and record the highest stable slot
-  count (set the TESTED cap if below 100).
+- [ ] **P2 Potala**: ×10 → 10 Diplomatic slots; 9 Diplomatic
+  Reserves unlock on completion (target 9, then 0 next turn); Reserves
+  legal in Diplomatic slots with localized name/description; policies
+  confirm; turn ends; save/reload valid. Then probe +20/+50/+100 and
+  record the highest stable slot count (set the TESTED cap if below
+  100).
 - [ ] **S1 Spawn stress**: Pyramids/Zeus/Kotoku at ×20/×50/×100 —
   record placement failures, stacking, hangs, dropped units.
 - [ ] **MD1 Modes**: Monopolies industry/corporation bonuses scale

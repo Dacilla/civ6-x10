@@ -133,7 +133,7 @@ workshop_items:
         sha256: 4a5df0d4e9565bda78e65a8771451b8ebc3e46a664f894682bdb14bcd7709497
       - stage_path: UI/X10SlotManager.lua
         source: controller/X10/UI/X10SlotManager.lua
-        sha256: 1778e762d8945e1cc7765f76a401939667aed76a15bb8867d751da858a550ca4
+        sha256: 0bd5999844323793cbf504e53f46d7b7516c4cb278a438ef2aa100762ea6c7c1
       - stage_path: Config/X10WonderBridge.sql
         source: controller/X10/Config/X10WonderBridge.sql
         sha256: 07e02d4210980a520ef824af76961f8c1499fa5fd256c6d74ba19cb0e49d1ff9

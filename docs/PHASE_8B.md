@@ -693,3 +693,82 @@ safely returned false (pcall yields execution_ok, not the return
 value). Now `local ok, installed = pcall(Install)` with logging only
 on (true, true); absent-RMA stays silent. P1's log gate is
 trustworthy again. Twin + pattern regression pinned.
+
+## 13. Phase 8B.4.4 source-driven Reserve policies
+
+No new gameplay families. No CE/native changes (registry byte-identical).
+No REPEAT-semantics change.
+
+### J1. Confirmed failure: gameplay-side legality matching cannot work
+
+Human Lua.log proved the 8B.4-8B.4.3 manager architecture dead:
+
+  [X10SlotManager] policy-access probe failed
+  (CanSlotPolicy unavailable); unlocking nothing [init]
+
+  [X10SlotManager] policy-access probe failed
+  (CanSlotPolicy unavailable); unlocking nothing [WonderCompleted]
+
+immediately followed by `WonderBuiltPopup: _POTALA_PALACE`, while the
+Government screen showed 10 Diplomatic slots. Therefore native REPEAT
+multiplication WORKS, SLOT_NONE activation WORKS, and the filler
+manager failed only because CanSlotPolicy is unavailable in the
+gameplay-script execution context: zero fillers unlocked, Potala x10
+softlocked. The matcher is removed, not repaired.
+
+### J2. BRS/EPC calculated-preview PASS (witnesses, no regress)
+
+Lua.log proved the compat layer executes and wraps:
+
+  [X10BRSCompat] context loaded
+  [X10BRSCompat] generated data loaded: 1788 entries
+  [X10BRSCompat] installed ...
+  [X10BRSCompat] RMA found; wrapper active
+
+Human screenshots showed God King calculated footer +10 Faith/+10 Gold
+and Urban Planning calculated footer +10 Production. Recorded as PASS
+for those witnesses. Static Firaxis prose staying vanilla is separate
+(by design). Compat code untouched by this pass.
+
+### J3. Source-driven targets replace exact matching
+
+For each active audited +1 slot source, extra X10 slots = k-1 at
+integral armed k (x2->1, x3->2, x5->4, x10->9, x20->19, x50->49,
+x100->99; integer Custom 7->6; fractional Custom 7.3->0 because native
+REPEAT refuses; Off / Custom 0 / invalid -> disarmed, 0). The Lua
+SOURCES table mirrors civ6x10.eight_b.SLOT_BASES exactly (seven
+entries; parity test pins it -- never a second guessed list).
+
+Per human player: targetReserveCount[slotType] = SUM(k-1 over every
+active source of that slot type); toUnlock = target - alreadyUnlocked;
+unlock only if positive. Real policies are NOT subtracted (bounded
+over-supply intentional: 4 real Diplomatics + 9 Reserves visible is
+acceptable). Second same-type sources accumulate (9 + 9 = 18).
+Deterministic and trivially idempotent (9, then 0, 0).
+
+### J4. Active-source detection + permanence
+
+Wonders: actual owned completed building via player GetCities /
+Members / GetBuildings HasBuilding (pcall-guarded; unknown fails
+closed + loud). WonderCompleted triggers immediate reconcile; init /
+LoadScreenClose reconcile covers saves. Civ/leader/trait sources:
+PlayerConfigurations leader/civ names resolved against
+GameInfo.LeaderTraits / CivilizationTraits (authoritative; unknown
+fails closed). All sources permanent once active (wonder built,
+leader/civ fixed at setup), which is the only reason one-way
+UnlockPolicy is acceptable. Exception documented in-code: a lost wonder
+city leaves its fillers unlocked (bounded over-supply, still slottable
+nowhere harmful).
+
+### J5. Deleted matcher + pruned events
+
+Removed all gameplay-context legality machinery: CanSlotPolicy,
+GetSlotType, IsPolicyObsolete matching, CurrentSlots, Kuhn maximum
+matching, unmatched-slot deficit logic. Kept only human-player
+discovery, active-source detection, IsPolicyUnlocked, UnlockPolicy,
+configuration/module resolution. No remaining CanSlotPolicy call.
+Event set is init + LoadScreenClose + WonderCompleted + TurnBegin;
+PlayerTurnStarted / PlayerDoTurn (the >1000-line spam source) removed,
+as are GovernmentPolicyChanged / GovernmentChanged / CivicCompleted.
+Logging reports source activation (once), per-player targets, actual
+unlocks, warnings/errors only -- silent when targets satisfied.

@@ -28,36 +28,53 @@ X10ROOT = ROOT / "controller" / "X10"
 
 
 # --------------------------------------------------------------------------
-# Python twin of X10SlotManager.lua maximum matching (port target).
-# Eligibility is an explicit matrix (the engine's CanSlotPolicy in Lua).
+# Python twins of X10SlotManager.lua source-driven targets (port target).
 # --------------------------------------------------------------------------
 
-def twin_maximum_match(n_slots: int, edges: dict) -> dict:
-    """Kuhn augmenting-path match. edges: {policyPos: [slotPos...]}.
-    Returns {slotPos: policyPos}."""
-    match_slot: dict = {}
+def twin_copies(k) -> int | None:
+    """Python twin of ResolveCopiesAndMask k-branch (mask omitted).
 
-    def dfs(pi, seen):
-        for si in edges.get(pi, []):
-            if si in seen:
-                continue
-            seen.add(si)
-            if si not in match_slot or dfs(match_slot[si], seen):
-                match_slot[si] = pi
-                return True
-        return False
-
-    for pi in sorted(edges):
-        dfs(pi, set())
-    return match_slot
+    None = disarmed/unresolvable (fail closed). Integral armed k gives
+    k-1 extra slots per active source; fractional k gives 0 (native
+    REPEAT refuses, vanilla single slot).
+    """
+    if k is None or not isinstance(k, (int, float)):
+        return None
+    if isinstance(k, bool) or not 0 < k <= 100:
+        return None
+    if k != math.floor(k):
+        return 0
+    return int(k) - 1
 
 
-def twin_deficit_from_unmatched(slot_types: list, match_slot: dict) -> dict:
-    need: dict = {}
-    for si, t in enumerate(slot_types):
-        if si not in match_slot:
-            need[t] = need.get(t, 0) + 1
-    return need
+def twin_targets(sources: list, active: set, copies: int,
+                 enabled: set) -> dict:
+    """sources: [(base, slot, module)]. active/enabled: base/module sets."""
+    targets: dict = {}
+    for base, slot, module in sources:
+        if base in active and module in enabled:
+            targets[slot] = targets.get(slot, 0) + copies
+    return targets
+
+
+def twin_reconcile(targets: dict, have: dict, pool: dict) -> tuple:
+    """One reconcile: unlock min(deficit, remaining pool) per type.
+    Returns (unlocked_this_round, new_have)."""
+    have = dict(have)
+    unlocked = 0
+    for slot, want in targets.items():
+        deficit = max(0, want - have.get(slot, 0))
+        take = min(deficit, pool.get(slot, 0) - have.get(slot, 0))
+        take = max(0, take)
+        have[slot] = have.get(slot, 0) + take
+        unlocked += take
+    return unlocked, have
+
+
+class TestDeficitTwin(unittest.TestCase):
+    # (source-driven targets; the matching-based cases were removed
+    # with the CanSlotPolicy matcher in 8B.4.4.)
+    pass
 
 
 # --------------------------------------------------------------------------
@@ -162,67 +179,153 @@ class TestBrsDataGenerated(unittest.TestCase):
         self.assertNotIn("_X10R", text)
 
 
-class TestDeficitTwin(unittest.TestCase):
-    def _match(self, slot_types, eligible):
-        """eligible: ordered iterable of (policyPos, slotPos) pairs."""
-        edges: dict = {}
-        for pi, si in eligible:
-            edges.setdefault(pi, []).append(si)
-        match = twin_maximum_match(len(slot_types), edges)
-        return twin_deficit_from_unmatched(slot_types, match)
+class TestSourceTargets(unittest.TestCase):
+    """Phase 8B.4.4 source-driven targets (replaces matching tests)."""
 
-    def test_chiefdom_sufficient_is_zero(self):
-        # Ordinary Code of Laws: real cards legally cover base slots.
-        got = self._match(["SLOT_MILITARY", "SLOT_ECONOMIC"],
-                          [(0, 0), (1, 1)])
-        self.assertEqual(got, {})
+    SOURCES = [
+        ("POTALA_PALACE_DIPLOMATIC_GOVERNMENT_SLOT", "SLOT_DIPLOMATIC",
+         "wonders"),
+        ("FORBIDDEN_CITY_WILDCARD_GOVERNMENT_SLOT", "SLOT_WILDCARD",
+         "wonders"),
+        ("ALHAMBRA_MILITARY_GOVERNMENT_SLOT", "SLOT_MILITARY", "wonders"),
+        ("BIG_BEN_ECONOMIC_GOVERNMENT_SLOT", "SLOT_ECONOMIC", "wonders"),
+        ("TRAIT_ECONOMIC_GOVERNMENT_SLOT", "SLOT_ECONOMIC", "traits"),
+        ("TRAIT_MILITARY_GOVERNMENT_SLOT", "SLOT_MILITARY", "traits"),
+        ("TRAIT_WILDCARD_GOVERNMENT_SLOT", "SLOT_WILDCARD", "traits"),
+    ]
+    POOL = {"SLOT_MILITARY": 200, "SLOT_DIPLOMATIC": 100,
+            "SLOT_ECONOMIC": 200, "SLOT_WILDCARD": 200}
 
-    def test_potala_x10_deficit(self):
-        # 10 Diplomatic slots, 2 legally slottable real cards.
-        slots = ["SLOT_DIPLOMATIC"] * 10
-        got = self._match(slots, [(0, 0), (1, 1)])
-        self.assertEqual(got, {"SLOT_DIPLOMATIC": 8})
+    def test_all_seven_sources_mapped(self):
+        from civ6x10.eight_b import SLOT_BASES
+        want = {(base, slot, module) for base, slot, _, _, module
+                in SLOT_BASES}
+        got = {(b, s, m) for b, s, m in self.SOURCES}
+        self.assertEqual(got, want)
 
-    def test_wildcard_absorbs_typed_surplus(self):
-        # Engine (not type inference) decides: surplus military cards
-        # legally fill wildcard slots here. Ordered edges pin the
-        # matching; the total is order-independent (see below).
-        slots = ["SLOT_MILITARY"] * 2 + ["SLOT_WILDCARD"] * 5
-        eligible = [(0, 0), (0, 2), (0, 3), (0, 4),
-                    (1, 1), (1, 2), (2, 5), (2, 6)]
-        got = self._match(slots, eligible)
-        self.assertEqual(got.get("SLOT_MILITARY", 0), 0)
-        self.assertEqual(sum(got.values()), 4)
-        self.assertEqual(set(got), {"SLOT_WILDCARD"})
+    def test_lua_sources_match_manifest(self):
+        import re
+        text = (ROOT / "controller" / "X10" / "UI"
+                / "X10SlotManager.lua").read_text(encoding="utf-8")
+        for base, slot, module in self.SOURCES:
+            self.assertIn(f'base = "{base}"', text)
+        # Seven base entries, no more.
+        self.assertEqual(len(re.findall(r"base = ", text)), 7)
 
-    def test_deficit_total_order_independent(self):
-        # Any maximum matching leaves the same COUNT unmatched; only
-        # the type split may vary with edge order.
-        slots = ["SLOT_MILITARY"] * 2 + ["SLOT_WILDCARD"] * 5
-        base = [(0, 0), (0, 2), (0, 3), (0, 4),
-                (1, 1), (1, 2), (2, 5), (2, 6)]
-        totals = set()
-        import itertools
-        for perm in itertools.islice(
-                itertools.permutations(base), 0, 40):
-            totals.add(sum(self._match(slots, perm).values()))
-        self.assertEqual(totals, {4})
+    def test_preset_target_counts(self):
+        for k, want in ((2, 1), (3, 2), (5, 4), (10, 9), (20, 19),
+                        (50, 49), (100, 99)):
+            self.assertEqual(twin_copies(k), want, k)
+            got = twin_targets(self.SOURCES,
+                               {b for b, _, _ in self.SOURCES},
+                               want, {"wonders", "traits"})
+            # All seven active: per-type sums of k-1.
+            self.assertEqual(
+                got, {"SLOT_DIPLOMATIC": want, "SLOT_WILDCARD": 2 * want,
+                      "SLOT_MILITARY": 2 * want, "SLOT_ECONOMIC": 2 * want})
 
-    def test_engine_legality_beats_type_inference(self):
-        # Same-type card the engine rejects still needs a filler.
-        slots = ["SLOT_MILITARY"] * 3
-        got = self._match(slots, [])
-        self.assertEqual(got, {"SLOT_MILITARY": 3})
+    def test_integer_custom(self):
+        self.assertEqual(twin_copies(7), 6)
 
-    def test_obsolete_excluded_by_caller(self):
-        # Obsolete policies never enter the eligibility matrix (the Lua
-        # filters them before matching); the twin takes eligibility as
-        # given and matches the remainder exactly.
-        got = self._match(["SLOT_MILITARY"], [(0, 0)])
-        self.assertEqual(got, {})
+    def test_fractional_custom_zero(self):
+        from civ6x10 import transforms as T
+        self.assertEqual(twin_copies(T.stored_float32(7.3)), 0)
+        self.assertEqual(twin_copies(7.5), 0)
 
-    def test_empty_slots_zero_deficit(self):
-        self.assertEqual(self._match([], []), {})
+    def test_off_invalid_zero_or_none(self):
+        self.assertIsNone(twin_copies(0))
+        self.assertIsNone(twin_copies(-1))
+        self.assertIsNone(twin_copies(101))
+        self.assertIsNone(twin_copies(None))
+
+    def test_module_off_zero(self):
+        got = twin_targets(self.SOURCES,
+                           {b for b, _, _ in self.SOURCES},
+                           9, {"traits"})
+        self.assertNotIn("SLOT_DIPLOMATIC", got)
+        self.assertEqual(got.get("SLOT_MILITARY"), 9)
+        self.assertEqual(
+            twin_targets(self.SOURCES, set(), 9, {"wonders", "traits"}),
+            {})
+
+    def test_same_type_accumulates(self):
+        got = twin_targets(
+            self.SOURCES,
+            {"POTALA_PALACE_DIPLOMATIC_GOVERNMENT_SLOT",
+             "FORBIDDEN_CITY_WILDCARD_GOVERNMENT_SLOT"}, 9,
+            {"wonders", "traits"})
+        self.assertEqual(got, {"SLOT_DIPLOMATIC": 9, "SLOT_WILDCARD": 9})
+
+    def test_reconcile_constant_and_pool_bounded(self):
+        # Potala x10 across three reconciles: 9 then 0, 0.
+        have = {}
+        seen = []
+        for _ in range(3):
+            unlocked, have = twin_reconcile({"SLOT_DIPLOMATIC": 9},
+                                            have, self.POOL)
+            seen.append(unlocked)
+        self.assertEqual(seen, [9, 0, 0])
+        self.assertEqual(have, {"SLOT_DIPLOMATIC": 9})
+        # Existing unlocked fillers respected (no over-unlock).
+        unlocked, have = twin_reconcile(
+            {"SLOT_DIPLOMATIC": 9}, {"SLOT_DIPLOMATIC": 9}, self.POOL)
+        self.assertEqual((unlocked, have["SLOT_DIPLOMATIC"]), (0, 9))
+
+    def test_no_civic_mass_unlock(self):
+        import re
+        text = (ROOT / "civ6x10" / "eight_b.py").read_text(encoding="utf-8")
+        self.assertNotIn("CIVIC_CODE_OF_LAWS', 'LOC_POLICY_X10_FILLER_NAME",
+                         text.replace(' NULL, ', ''))
+        # Source-driven Lua: no active sources => empty targets => no
+        # unlocks (ordinary Code of Laws stays clean).
+        self.assertEqual(
+            twin_targets(self.SOURCES, set(), 9, {"wonders", "traits"}), {})
+        unlocked, have = twin_reconcile({}, {}, self.POOL)
+        self.assertEqual((unlocked, have), (0, {}))
+
+    def test_potala_x10_target_nine(self):
+        # THE P0C case: Potala x10 => 9 Diplomatic Reserves, then 0, 0.
+        copies = twin_copies(10)
+        self.assertEqual(copies, 9)
+        got = twin_targets(
+            self.SOURCES, {"POTALA_PALACE_DIPLOMATIC_GOVERNMENT_SLOT"},
+            copies, {"wonders", "traits"})
+        self.assertEqual(got, {"SLOT_DIPLOMATIC": 9})
+        have = {}
+        seen = []
+        for _ in range(3):
+            unlocked, have = twin_reconcile(got, have, self.POOL)
+            seen.append(unlocked)
+        self.assertEqual(seen, [9, 0, 0])
+        # Second x10 Diplomatic source would accumulate (9 + 9 = 18);
+        # with only Potala active the target stays 9 (bounded supply).
+
+    def test_no_matcher_remains_in_lua(self):
+        text = (ROOT / "controller" / "X10" / "UI"
+                / "X10SlotManager.lua").read_text(encoding="utf-8")
+        # No functional gameplay-side legality matcher may remain.
+        # (History comments may name the removed APIs; calls must not.)
+        for needle in ("CanSlotPolicy(", ":CanSlotPolicy(",
+                       "GetSlotType(", "MaximumMatching(",
+                       "DeficitFromUnmatched(", "CurrentSlots(",
+                       "Kuhn(", "IsPolicyObsolete("):
+            self.assertNotIn(needle, text, needle)
+        # Unlock path is target-count only.
+        self.assertIn("UnlockToTarget", text)
+        self.assertIn("PlayerTargets", text)
+
+    def test_hooks_pruned_in_lua(self):
+        text = (ROOT / "controller" / "X10" / "UI"
+                / "X10SlotManager.lua").read_text(encoding="utf-8")
+        for banned in ("PlayerTurnStarted", "PlayerDoTurn",
+                       "GovernmentPolicyChanged", "GovernmentChanged",
+                       "CivicCompleted"):
+            self.assertNotIn(banned, text, banned)
+        for required in ('name = "WonderCompleted"',
+                         'name = "TurnBegin"',
+                         'name = "LoadScreenClose"',
+                         'ReconcileAll("init")'):
+            self.assertIn(required, text, required)
 
 
 def twin_resolve(preset, custom):
@@ -316,11 +419,11 @@ class TestEnumerationTwin(unittest.TestCase):
 
 
 class TestReconcileIdempotenceTwin(unittest.TestCase):
-    """Phase 8B.4.3 P0C blocker: unlocked fillers must join the matching
-    universe, or every reconcile re-unlocks the deficit (8, 16, 24...).
+    """Phase 8B.4.3 matching-universe idempotence (HISTORICAL).
 
-    Simulates reconcile rounds over an all-legal dip pool: eligibility =
-    real cards + unlocked fillers; deficit unlocks from the locked pool.
+    Characterizes the REMOVED 8B.4 matcher for review; 8B.4.4 replaces
+    matching with source-driven targets (see TestSourceTargets).
+    Kept so the 8/16/24 flood shape cannot be reintroduced unnoticed.
     """
 
     def _rounds(self, n_slots, n_real, pool, rounds=3):
@@ -568,12 +671,14 @@ class TestBrsContextWiring(unittest.TestCase):
     def test_slot_manager_content_markers(self):
         text = (ROOT / "controller" / "X10" / "UI"
                 / "X10SlotManager.lua").read_text(encoding="utf-8")
-        # Legality-matched matching, hardened probe, safe enumeration:
-        # IDs API preferred, Player objects via GetID, bounded scan last.
-        for needle in ("CanSlotPolicy", "IsPolicyObsolete",
-                       "PlayerManager.GetAliveMajorIDs",
+        # Source-driven targets (8B.4.4): safe enumeration survives
+        # (IDs API preferred, Player objects via GetID, bounded scan
+        # last), target machinery present, failed matcher gone.
+        for needle in ("PlayerManager.GetAliveMajorIDs",
                        "PlayerManager.GetAliveMajors",
-                       "GetID", "MaximumMatching", "DeficitFromUnmatched"):
+                       "GetID", "PlayerTargets", "UnlockToTarget",
+                       "AlreadyUnlockedByType", "WonderOwned",
+                       "PlayerHasTrait", "ResolveCopiesAndMask"):
             self.assertIn(needle, text, needle)
         self.assertNotIn("#Players", text)
 

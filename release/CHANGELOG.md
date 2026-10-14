@@ -1,5 +1,19 @@
 # Changelog
 
+## Phase 8B.4.4 source-driven Reserve policies (campaign STOPPED, not published)
+
+- Gameplay-side legality matching REMOVED (Lua.log proved CanSlotPolicy
+  unavailable in that context; Potala x10 softlocked with 10 slots and
+  0 fillers). Targets are now source-driven: per active audited source
+  (k-1) Reserves of its slot type (x10 Potala => 9 Diplomatic).
+- Idempotent by construction (target minus already-unlocked); bounded
+  over-supply only; second sources accumulate.
+- Events pruned to init + LoadScreenClose + WonderCompleted + TurnBegin
+  (PlayerTurnStarted/PlayerDoTurn spam removed).
+- BRS/EPC calculated-preview recorded PASS (God King +10/+10, Urban
+  Planning +10 witnesses); compat code untouched.
+- No CE rebuild (registry byte-identical).
+
 ## Phase 8B.4.3 filler idempotence + trustworthy BRS logging (campaign STOPPED, not published)
 
 - Slot-manager matching universe is now all unlocked non-obsolete
