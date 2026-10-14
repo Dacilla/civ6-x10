@@ -487,3 +487,106 @@ New J2 (Jebel +40 host/in-range, none outside; J1 iron unchanged),
 new MC1 (Maracana +60 every city), C1 retained (+20 host and
 in-range, none outside; nearby-at-+2 is FAILURE). R3 and MD1
 unchanged from 8B.2.
+
+## 9. Phase 8B.4 policy UX + display compatibility (campaign STOPPED)
+
+Playtest-2 is stopped after real runtime evidence. No publication,
+no new gameplay families, no native-semantics change.
+
+### F1. P0 / P0B live results
+
+- P0 PROVISIONALLY PASS (x10 Classic, 13 modules, Secret Societies):
+  game boots, Government screen opens, SLOT_NONE/REPEAT activation
+  does not crash. Native EXIT exactly:
+  writes=1682 transform_refused=0 official_mismatch=0
+  post_add_match=1682 (mismatch/unreadable/skipped 0) repeat_idle=630.
+- P0B HARD FAIL: 700 Code-of-Laws Reserve cards flood the picker
+  (borderline unusable, real cards buried) and filler LOC keys render
+  literally. The mass-unlock architecture is rejected; localization
+  alone cannot save it.
+
+### F2. Mode-aware runtime expectations (R1 was wrong)
+
+1851 assumes every definition present. In Secret-Societies-only games
+169 mode definitions never load (Dramatic 58, Heroes 52, Monopolies 51,
+Apocalypse 8; Zombie/Barbarians/Shuffle contribute zero entries):
+1851 - 169 = 1682, exactly the observed EXIT. Absent definitions are
+not skips/refusals/errors -- they never iterate (native counters
+confirm: skipped_other=0). Standard R1/R2 pin 1682/1204; R1-ALL/R2-ALL
+pin 1851/1353 for the all-relevant-modes configuration.
+tests/test_mode_aware_runtime.py derives all of it from the registry +
+manifest bundle attribution. PUBLISH_CHECKLIST smoke follows the
+standard config (1682).
+
+### F3/F4. Dormant fillers + on-demand manager (replaces mass unlock)
+
+- Filler SQL now emits ExplicitUnlock=1, PrereqCivic NULL (22 official
+  NULL-prereq precedents: government/special policies; ExplicitUnlock
+  itself is officially unused -- the P0C experiment gates it).
+  Scratch-DB validated: 700 dormant rows, unlock flag 1, no civic.
+- X10SlotManager.lua (AddGameplayScripts, sim context -- the Wonder-x10
+  precedent): reconciles human majors on WonderCompleted /
+  GovernmentPolicyChanged / GovernmentChanged / CivicCompleted /
+  TurnBegin / LoadScreenClose + PlayerTurnStarted/PlayerDoTurn (all
+  hook attempts guarded). Deficit math is satisfiability-exact (typed
+  slots same-type only, wildcards absorb surplus, great-person cards
+  conservatively ignored); probe-gated (missing enumeration/unlock
+  APIs abort loudly, unlocking nothing); idempotent via
+  IsPolicyUnlocked; disarmed sessions no-op (manages + loud log only
+  when config is unreadable). Ordinary Code of Laws: ZERO visible.
+- No auto-slotting ships: slotting stays manual until a runtime pass
+  proves RequestEnactPolicy/RequestPolicyChanges across wonder
+  completion, government change, policy change, and save/reload.
+
+### F5. Filler localization context
+
+X10.modinfo loaded X10Text.sql FrontEnd-only, so gameplay screens
+showed literal LOC keys. X10Text.sql now also loads via an InGame
+UpdateText action (setup keys are harmless in-game). Test pins: every
+LOC_ tag in the slot SQL exists in X10Text.sql, and X10Text.sql is
+wired in both contexts.
+
+### F6/F7. BRS/EPC is a blocker; cache-mutation prototype
+
+Human screenshot: Discipline +5, God King +1/+1, Urban Planning +1
+previews vs correctly scaled gameplay (native log proves
+GOD_KING_GOLD 1 -> 10 MATCH). Known-limitation status revoked.
+Constraints honored: no static-text rewrite, no blind aggregate
+scaling -- BRS/EPC must compute from the same effective arguments.
+
+Prototype design (built, runtime-gated in P1): FetchAndCacheData
+returns the memoized table BY REFERENCE
+(RealModifierAnalysis.lua:1471/1531; tModifiers never cleared by
+RefreshBaseData), and every preview caller (BRSPage_Policy:82,102;
+EPC GovernmentScreen:1028) indexes ExposedMembers.RMA at call time.
+The compat layer therefore PATCHES THE CACHE instead of wrapping
+math: per Calculate call (Policy/Belief only), for each registered
+modifier of the object, recompute the argument from generated
+registry data (same officials/kinds/count-like gates/owner bits/k as
+native; values derived from OUR officials so re-patching is
+idempotent and can never double-scale) and overwrite
+Arguments[arg] in place, then delegate to the ORIGINAL function.
+Thin wrapper, pcall-isolated, re-wrap-safe, silent no-op when BRS is
+absent or X10 disarmed; count-like inexact stays vanilla (native
+refuses too); REPEAT excluded (not numerical). Lua mirrors native
+formatting (%.6g, %.2f combat) and float32-aware exactness
+(frexp half-ULP; power-of-two kErr may differ 2x from nextafterf --
+harmless: exact results match, near-misses don't occur in practice).
+
+### F8. Static text separation
+
+Firaxis prose keeps vanilla numbers by design (no mass regex). After
+P1 proves calculated displays truthful, assess whether vanilla prose
++ correct EPC result reads clearly.
+
+### Validation deltas (8B.4)
+
+- New UI files (controller/X10/UI/): X10BRSData.lua (generated, 1788
+  entries, committed, regen-checked by test), X10BRSCompat.lua,
+  X10SlotManager.lua -- all staged via manifest pins; X10.modinfo
+  hash re-pinned.
+- No CE rebuild (registry byte-identical; compat is Lua-side).
+- Human gates before any campaign resume: P0, P0B-replacement,
+  P0C (incl. the ONE-filler ExplicitUnlock experiment), P1
+  (God King +10/+10, Discipline ~+29, Urban Planning +10, 7.3
+  agreement), R1/R1-ALL, R2/R2-ALL.

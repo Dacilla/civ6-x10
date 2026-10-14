@@ -195,17 +195,20 @@ class TestBrsEpcNonDependency(unittest.TestCase):
                              MODULE_BITS["policies"], mid)
 
     def test_brs_preview_divergence_is_documented(self):
-        # Phase 8B.1 retraction: no automated gate may claim BRS/EPC
-        # previews work. P1 stays an explicit known incompatibility until
-        # a verified additive integration ships.
+        # Phase 8B.4: P1 is a BLOCKER, not a limitation. The compat
+        # prototype (cache-patch wrapper over generated registry data)
+        # is documented and its live witnesses are pinned in P1.
         import re
-        phase = (ROOT / "docs" / "PHASE_8B.md").read_text(encoding="utf-8")
-        self.assertIn("known incompatib",
-                      re.sub(r"\s+", " ", phase.lower()))
-        checklist = (ROOT / "docs" / "PLAYTEST_2_CHECKLIST.md").read_text(
-            encoding="utf-8")
-        self.assertIn("known incompatib",
-                      re.sub(r"\s+", " ", checklist.lower()))
+        norm = lambda p: re.sub(
+            r"\s+", " ",
+            (ROOT / p).read_text(encoding="utf-8").lower())
+        phase = norm("docs/PHASE_8B.md")
+        self.assertIn("patches the cache", phase)
+        self.assertIn("fetchandcachedata", phase)
+        checklist = norm("docs/PLAYTEST_2_CHECKLIST.md")
+        self.assertIn("p1 brs/epc calculated display (blocker until green)",
+                      checklist)
+        self.assertIn("+10 faith/+10 gold", checklist)
 
 
 if __name__ == "__main__":

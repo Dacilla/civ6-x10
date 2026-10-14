@@ -34,7 +34,7 @@ FROZEN_BRIDGE_SHA256 = (
 FROZEN_CONFIG_SHA256 = (
     "f08ffe9e1255035cc111ec14210b5fb9ea5b936a484d3fede6157b50803db860")
 FROZEN_X10_MODINFO_SHA256 = (
-    "42e9fade427519d47371430dc5c37421d5e480ecc895a9bd009aebcc6e18d824")
+    "b3532b03f3652af7d2445f66fbd9c79febb1c0cf69ad4592a100f1a540ba4cde")
 FROZEN_ENGINE_MODINFO_SHA256 = (
     "d6fab98698576f28b27ba31df811a7ef60a502672c32812ed186a8ce7833b2d7")
 FROZEN_REDIRECT_SHA256 = (
@@ -207,7 +207,7 @@ class TestReleaseFreeze(unittest.TestCase):
         self.assertEqual(len(man["workshop_items"]["controller"]
                              ["runtime_files"]
                              + man["workshop_items"]["controller"]
-                             ["auxiliary_files"]), 10)
+                             ["auxiliary_files"]), 13)
 
 
 class TestReleaseSurfaceInventory(unittest.TestCase):

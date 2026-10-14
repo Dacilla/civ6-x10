@@ -470,7 +470,10 @@ class TestProductionModinfo7C2(unittest.TestCase):
             [(a.tag, a.get("id")) for a in m.find("InGameActions")],
             [("UpdateDatabase", "X10Dummy"),
              ("UpdateDatabase", "X10WonderBridge"),
-             ("UpdateDatabase", "X10SlotCopies")])
+             ("UpdateDatabase", "X10SlotCopies"),
+             ("UpdateText", "X10TextGame"),
+             ("ImportFiles", "X10BRSCompat"),
+             ("AddGameplayScripts", "X10SlotManager")])
 
 
 # --- Resolution mirror (spec-derived from X10Write.cpp) --------------------

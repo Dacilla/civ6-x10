@@ -1,5 +1,21 @@
 # Changelog
 
+## Phase 8B.4 policy UX + display compatibility (campaign STOPPED, not published)
+
+- P0 boot provisionally PASS (1682/0/1682/630 SS-only); P0B HARD FAIL
+  (700-picker flood + literal LOC keys) -- mass unlock rejected.
+- Mode-aware expectations: standard R1/R2 pin 1682/1204 (169 disabled-
+  mode definitions absent, never iterated); R1-ALL/R2-ALL pin
+  1851/1353.
+- Fillers ship dormant (ExplicitUnlock, no civic); X10SlotManager.lua
+  unlocks only the deficit for current slots (sim context, human
+  majors, idempotent). No auto-slotting ships.
+- X10Text.sql loads InGame too (literal LOC keys fixed).
+- BRS/EPC blocker: X10BRSCompat.lua patches RMA's memoized cache with
+  registry-identical effective arguments (generated X10BRSData.lua,
+  1788 entries); no BRS/EPC files touched. P1-gated live.
+- No CE rebuild (registry byte-identical).
+
 ## Phase 8B.3 regional wonder semantics closure (under pre-publication gameplay validation, not published)
 
 - Jebel Faith (+4, range 6) and Maracana Culture (+6, civilization-wide)

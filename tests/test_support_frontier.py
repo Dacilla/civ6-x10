@@ -168,11 +168,19 @@ class TestFrontierArtifact(unittest.TestCase):
         self.assertNotIn("support_frontier", export_src)
 
     def test_no_lua_in_production_tree(self):
-        # any custom-validation prototype must stay disposable under
-        # spike/8a-frontier/; production ships zero Lua
-        lua = [str(p) for d in ("controller", "dependencies")
-               for p in (ROOT / d).rglob("*.lua")]
-        self.assertEqual(lua, [])
+        # Phase 8B.4 ships exactly three UI Lua files (on-demand filler
+        # unlock + BRS preview compat, both runtime-gated in P0C/P1).
+        # Any other Lua under controller/ or dependencies/ fails here:
+        # custom-validation prototypes stay disposable under
+        # spike/8a-frontier/.
+        lua = sorted(p.relative_to(ROOT).as_posix()
+                     for d in ("controller", "dependencies")
+                     for p in (ROOT / d).rglob("*.lua"))
+        self.assertEqual(
+            lua,
+            ["controller/X10/UI/X10BRSCompat.lua",
+             "controller/X10/UI/X10BRSData.lua",
+             "controller/X10/UI/X10SlotManager.lua"])
 
     def test_frontier_files_classified_private(self):
         from civ6x10.release_surface import classify

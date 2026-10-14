@@ -167,7 +167,11 @@ class TestTypedFillers(unittest.TestCase):
         self.assertIn("LOC_POLICY_X10_FILLER_NAME", text)
         for slot in ("SLOT_MILITARY", "SLOT_DIPLOMATIC",
                      "SLOT_ECONOMIC", "SLOT_WILDCARD"):
-            self.assertIn(f"'{slot}', 0", sql)
+            self.assertIn(f"'{slot}', 1", sql)
+        # Phase 8B.4: dormant fillers (ExplicitUnlock, no civic) --
+        # never Code of Laws.
+        self.assertNotIn("CIVIC_CODE_OF_LAWS", sql)
+        self.assertIn("NULL, 'LOC_POLICY_X10_FILLER_NAME'", sql)
         from civ6x10.eight_b import FILLER_COUNTS
         ids = re.findall(r"POLICY_X10_FILLER_[A-Z]+_\d{3}", sql)
         self.assertEqual(len(set(ids)), sum(FILLER_COUNTS.values()))

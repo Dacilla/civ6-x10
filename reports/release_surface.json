@@ -186,7 +186,7 @@
   {
    "path": "civ6x10/cli.py",
    "tracked": true,
-   "bytes": 17450,
+   "bytes": 17829,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -228,7 +228,7 @@
   {
    "path": "civ6x10/eight_b.py",
    "tracked": true,
-   "bytes": 55153,
+   "bytes": 55335,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_source",
@@ -690,7 +690,7 @@
   {
    "path": "controller/X10/Config/X10SlotCopies.sql",
    "tracked": true,
-   "bytes": 1500421,
+   "bytes": 1489229,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -732,7 +732,7 @@
   {
    "path": "controller/X10/X10.modinfo",
    "tracked": true,
-   "bytes": 1993,
+   "bytes": 2546,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -970,7 +970,7 @@
   {
    "path": "docs/PHASE_8B.md",
    "tracked": true,
-   "bytes": 26697,
+   "bytes": 31927,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -984,7 +984,7 @@
   {
    "path": "docs/PLAYTEST_2_CHECKLIST.md",
    "tracked": true,
-   "bytes": 6511,
+   "bytes": 8092,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1278,7 +1278,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 5124,
+   "bytes": 5967,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1334,7 +1334,7 @@
   {
    "path": "release/PUBLISH_CHECKLIST.md",
    "tracked": true,
-   "bytes": 2168,
+   "bytes": 2248,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -1446,7 +1446,7 @@
   {
    "path": "release/release-manifest.yml",
    "tracked": true,
-   "bytes": 7369,
+   "bytes": 7885,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -3028,7 +3028,7 @@
   {
    "path": "tests/test_phase8b1_counts.py",
    "tracked": true,
-   "bytes": 12060,
+   "bytes": 12275,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3042,7 +3042,7 @@
   {
    "path": "tests/test_phase8b_gates.py",
    "tracked": true,
-   "bytes": 9339,
+   "bytes": 9447,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3098,7 +3098,7 @@
   {
    "path": "tests/test_production_config.py",
    "tracked": true,
-   "bytes": 27585,
+   "bytes": 27730,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3112,7 +3112,7 @@
   {
    "path": "tests/test_release_candidate.py",
    "tracked": true,
-   "bytes": 32838,
+   "bytes": 33461,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3196,7 +3196,7 @@
   {
    "path": "tests/test_support_frontier.py",
    "tracked": true,
-   "bytes": 16406,
+   "bytes": 16805,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3252,7 +3252,7 @@
   {
    "path": "tests/test_ux_prototype.py",
    "tracked": true,
-   "bytes": 7713,
+   "bytes": 7858,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3295,7 +3295,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 117,
-   "bytes": 1453142
+   "bytes": 1463588
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -3307,7 +3307,7 @@
   },
   "workshop_runtime": {
    "files": 9,
-   "bytes": 1929052
+   "bytes": 1918413
   }
  },
  "firaxis_footprint": {

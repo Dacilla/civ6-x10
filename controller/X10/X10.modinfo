@@ -31,6 +31,21 @@
     <UpdateDatabase id="X10SlotCopies">
       <File>Config/X10SlotCopies.sql</File>
     </UpdateDatabase>
+    <UpdateText id="X10TextGame">
+      <File>Config/X10Text.sql</File>
+    </UpdateText>
+    <ImportFiles id="X10BRSCompat">
+      <Properties>
+        <LoadOrder>20000</LoadOrder>
+      </Properties>
+      <Items>
+        <File>UI/X10BRSData.lua</File>
+        <File>UI/X10BRSCompat.lua</File>
+      </Items>
+    </ImportFiles>
+    <AddGameplayScripts id="X10SlotManager">
+      <File>UI/X10SlotManager.lua</File>
+    </AddGameplayScripts>
   </InGameActions>
   <Files>
     <File>Config/X10Config.sql</File>
@@ -38,6 +53,9 @@
     <File>Config/Dummy.sql</File>
     <File>Config/X10WonderBridge.sql</File>
     <File>Config/X10SlotCopies.sql</File>
+    <File>UI/X10BRSData.lua</File>
+    <File>UI/X10BRSCompat.lua</File>
+    <File>UI/X10SlotManager.lua</File>
     <File>README.txt</File>
     <File>LICENSE.txt</File>
     <File>THIRD_PARTY_NOTICES.txt</File>

@@ -169,7 +169,10 @@ class TestProductionUntouched(unittest.TestCase):
             [(a.tag, a.get("id")) for a in m.find("InGameActions")],
             [("UpdateDatabase", "X10Dummy"),
              ("UpdateDatabase", "X10WonderBridge"),
-             ("UpdateDatabase", "X10SlotCopies")])
+             ("UpdateDatabase", "X10SlotCopies"),
+             ("UpdateText", "X10TextGame"),
+             ("ImportFiles", "X10BRSCompat"),
+             ("AddGameplayScripts", "X10SlotManager")])
         deps = [d.get("id") for d in m.find("Dependencies")]
         self.assertEqual(deps, ["4873eb62-8ccc-4574-b784-dda455e74e68",
                                 PROD_ENGINE_ID])

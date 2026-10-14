@@ -117,6 +117,13 @@ def cmd_build_8b_manifests(args) -> int:
     return 0
 
 
+def cmd_generate_brs_data(args) -> int:
+    from .brsdata import write_brs_data
+    out = write_brs_data()
+    print(f"wrote {out}")
+    return 0
+
+
 def cmd_verify(args) -> int:
     import yaml
     from .validation import validate
@@ -323,6 +330,10 @@ def main(argv=None) -> int:
                                     "(vectors patch, slots, envoys, "
                                     "promotions, dedications, modes, sweep)")
     p.set_defaults(fn=cmd_build_8b_manifests)
+    p = sub.add_parser("generate-brs-data",
+                               help="Phase 8B.4 BRS/EPC compat Lua data "
+                                    "from the production registry")
+    p.set_defaults(fn=cmd_generate_brs_data)
     p = sub.add_parser("generate-registry")
     p.add_argument("--out", default=str(ROOT / "build" / "X10ProductionRegistry.inc"))
     p.set_defaults(fn=cmd_generate_registry)
