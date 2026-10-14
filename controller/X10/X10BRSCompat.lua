@@ -302,8 +302,12 @@ if Install() then
 else
   -- RMA not present yet (absent, or loads later): retry on late UI
   -- events. Silent no-op forever when BRS is absent.
+  -- pcall returns (execution_ok, Install_return_value): log success
+  -- ONLY when Install actually wrapped (a safe false return means RMA
+  -- is still absent and must stay silent).
   local function Retry()
-    if pcall(Install) then
+    local ok, installed = pcall(Install);
+    if ok and installed then
       x10log("RMA found late; wrapper active");
     end
   end

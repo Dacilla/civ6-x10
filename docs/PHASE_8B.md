@@ -665,3 +665,31 @@ execution coming from same-basename XML/Lua pairing. Changed to
 Context=InGame, keeping File X10BRSCompat.xml + X10BRSCompat.lua +
 explicit bare-name data include. (DevCE Playground was not found
 locally; BRS + CheatMenuPanel patterns used instead.)
+
+## 12. Phase 8B.4.3 filler idempotence + trustworthy BRS logging
+
+No new features. No CE/native changes (registry byte-identical).
+
+### I1. Repeated Reserve unlock fixed (P0C blocker)
+
+EligibleRealPolicies excluded every X10 filler, so each reconcile
+matched only real cards, recomputed the full deficit, skipped the
+already-unlocked fillers in UnlockDeficit, and unlocked the NEXT 8 --
+flooding the picker 8/16/24 across TurnBegin/PolicyChanged runs.
+Fixed as EligibleUnlockedPolicies: the matching universe is every
+currently unlocked, non-obsolete policy (real AND unlocked X10
+fillers); only LOCKED fillers are absent from it. Maximum matching
+over that complete set makes satisfied slots stay matched (deficit 0
+on re-run); only genuinely unmatched slots expose new locked
+fillers. Twin cases pinned: A (10/2/0 -> 8), B (+8 unlocked -> 0),
+C (20 slots -> 10), D (three rounds total 8, never 24). Type
+legality stays engine-authoritative (CanSlotPolicy edges), never a
+subtraction by type.
+
+### I2. RMA Retry no longer logs false success
+
+`if pcall(Install) then log` reported wrapper-active when Install
+safely returned false (pcall yields execution_ok, not the return
+value). Now `local ok, installed = pcall(Install)` with logging only
+on (true, true); absent-RMA stays silent. P1's log gate is
+trustworthy again. Twin + pattern regression pinned.

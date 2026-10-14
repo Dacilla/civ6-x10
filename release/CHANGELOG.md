@@ -1,5 +1,13 @@
 # Changelog
 
+## Phase 8B.4.3 filler idempotence + trustworthy BRS logging (campaign STOPPED, not published)
+
+- Slot-manager matching universe is now all unlocked non-obsolete
+  policies (real + unlocked fillers); repeat reconciles no longer
+  re-unlock the deficit (8 stays 8). Twin cases A-D pinned.
+- RMA Retry logs wrapper-active only on a true install return.
+- No CE rebuild (registry byte-identical).
+
 ## Phase 8B.4.2 player enumeration + UI context fix (campaign STOPPED, not published)
 
 - Slot manager player discovery fixed in three stages (GetAliveMajorIDs

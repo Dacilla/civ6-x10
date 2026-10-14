@@ -127,13 +127,13 @@ workshop_items:
         sha256: 8629feb5d5115e5852f1d79a33954ce96ec3dd0df07b8fae4981cd000199227a
       - stage_path: X10BRSCompat.lua
         source: controller/X10/X10BRSCompat.lua
-        sha256: 2acdc4af594bbd0f5cf96bbd575d2e6f830cd14a43aa2032fb39efcb751b21a9
+        sha256: 07c5f17a1c4689f59570635256865e330725d991bd3edcd191dcf95e297eae3b
       - stage_path: X10BRSCompat.xml
         source: controller/X10/X10BRSCompat.xml
         sha256: 4a5df0d4e9565bda78e65a8771451b8ebc3e46a664f894682bdb14bcd7709497
       - stage_path: UI/X10SlotManager.lua
         source: controller/X10/UI/X10SlotManager.lua
-        sha256: 2719d58e045b2fb8f2f138a621451d4f035aaabbcfd56d9c8c522f6ad9ed93e3
+        sha256: 1778e762d8945e1cc7765f76a401939667aed76a15bb8867d751da858a550ca4
       - stage_path: Config/X10WonderBridge.sql
         source: controller/X10/Config/X10WonderBridge.sql
         sha256: 07e02d4210980a520ef824af76961f8c1499fa5fd256c6d74ba19cb0e49d1ff9

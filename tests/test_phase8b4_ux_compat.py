@@ -315,6 +315,98 @@ class TestEnumerationTwin(unittest.TestCase):
         self.assertEqual(sorted(got), [0, 2])
 
 
+class TestReconcileIdempotenceTwin(unittest.TestCase):
+    """Phase 8B.4.3 P0C blocker: unlocked fillers must join the matching
+    universe, or every reconcile re-unlocks the deficit (8, 16, 24...).
+
+    Simulates reconcile rounds over an all-legal dip pool: eligibility =
+    real cards + unlocked fillers; deficit unlocks from the locked pool.
+    """
+
+    def _rounds(self, n_slots, n_real, pool, rounds=3):
+        unlocked = 0
+        deficits = []
+        for _ in range(rounds):
+            # Maximum match size = min(slots, real + unlocked).
+            matched = min(n_slots, n_real + unlocked)
+            deficit = n_slots - matched
+            deficits.append(deficit)
+            take = min(deficit, pool - unlocked)
+            unlocked += take
+        return deficits, unlocked
+
+    def test_case_a_fresh_deficit_8(self):
+        deficits, unlocked = self._rounds(10, 2, 100, rounds=1)
+        self.assertEqual(deficits, [8])
+        self.assertEqual(unlocked, 8)
+
+    def test_case_b_satisfied_stays_zero(self):
+        # 2 real + 8 unlocked fillers already cover 10 slots.
+        deficits, unlocked = self._rounds(10, 2, 100, rounds=1)
+        self.assertEqual(deficits, [8])
+        # Second round starts from 8 unlocked (Case B input state).
+        deficits2, unlocked2 = self._rounds(10, 2 + 8, 100 - 8, rounds=1)
+        self.assertEqual(deficits2, [0])
+        self.assertEqual(unlocked2, 0)
+
+    def test_case_c_larger_demand(self):
+        deficits, unlocked = self._rounds(20, 2 + 8, 100 - 8, rounds=1)
+        self.assertEqual(deficits, [10])
+        self.assertEqual(unlocked, 10)
+
+    def test_case_d_no_repeated_unlock(self):
+        # Three reconciliations after Case A: total stays 8, deficits
+        # after the first round are 0 (the old code produced 8,8,8 and
+        # unlocked 24).
+        deficits, unlocked = self._rounds(10, 2, 100, rounds=3)
+        self.assertEqual(deficits, [8, 0, 0])
+        self.assertEqual(unlocked, 8)
+
+    def test_old_exclusion_shape_would_flood(self):
+        # Documents the bug: excluding unlocked fillers from matching
+        # re-computes the full deficit every round.
+        deficits = []
+        unlocked = 0
+        for _ in range(3):
+            matched = min(10, 2)  # BUG: unlocked fillers invisible
+            deficits.append(10 - matched)
+            unlocked += min(10 - matched, 100 - unlocked)
+        self.assertEqual(deficits, [8, 8, 8])
+        self.assertEqual(unlocked, 24)
+
+
+class TestRetryLogTwin(unittest.TestCase):
+    """pcall returns (execution_ok, return_value): only (True, True)
+    may log wrapper-active."""
+
+    @staticmethod
+    def twin_should_log(outcome):
+        # outcome: ("return", value) | ("throw", None)
+        if outcome[0] == "throw":
+            ok, installed = False, None
+        else:
+            ok, installed = True, outcome[1]
+        return bool(ok and installed)
+
+    def test_true_logs(self):
+        self.assertTrue(self.twin_should_log(("return", True)))
+
+    def test_false_stays_silent(self):
+        # THE BUG: old code logged on bare pcall truthiness here.
+        self.assertFalse(self.twin_should_log(("return", False)))
+        self.assertFalse(self.twin_should_log(("return", None)))
+
+    def test_throw_stays_silent(self):
+        self.assertFalse(self.twin_should_log(("throw", None)))
+
+    def test_lua_pattern_corrected(self):
+        text = (ROOT / "controller" / "X10" / "X10BRSCompat.lua").read_text(
+            encoding="utf-8")
+        self.assertIn("local ok, installed = pcall(Install);", text)
+        self.assertIn("if ok and installed then", text)
+        self.assertNotIn("if pcall(Install) then", text)
+
+
 class TestKResolutionTwin(unittest.TestCase):
     def test_standard_presets(self):
         for k in (2, 3, 5, 10, 20, 50, 100):

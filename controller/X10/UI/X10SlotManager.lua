@@ -19,8 +19,11 @@
 --     (enumeration, IsPolicyUnlocked/Obsolete, CanSlotPolicy,
 --     UnlockPolicy) aborts that run loudly and unlocks nothing new
 --     (fail closed, never a claimed-exact deficit);
---   * idempotent: already-unlocked fillers are skipped via
---     IsPolicyUnlocked; re-running changes nothing;
+--   * idempotent across reconciliations: unlocked fillers join the
+--     matching universe, so a satisfied slot stays matched and the
+--     deficit stays 0 (no repeated re-unlock); already-unlocked
+--     fillers are additionally skipped inside UnlockDeficit via
+--     IsPolicyUnlocked;
 --   * human majors only (AI never needs confirm-gate help), discovered
 --     via PlayerManager.GetAliveMajors with a bounded index-scan
 --     fallback (never Lua length over Players);
@@ -224,14 +227,19 @@ local function CurrentSlots(culture)
   return out;
 end
 
--- Unlocked, non-obsolete, non-X10 policies: array of { index, slotType }.
--- Great-person cards are kept (CanSlotPolicy decides legality, not us).
-local function EligibleRealPolicies(culture)
+-- Unlocked, non-obsolete policies available RIGHT NOW: every real
+-- card plus every ALREADY-UNLOCKED X10 filler that CanSlotPolicy deems
+-- legal. Locked fillers are absent from this universe -- they are the
+-- supply UnlockDeficit draws on, never demand already satisfied.
+-- Including unlocked fillers is what makes repeated reconciliations
+-- idempotent: a slot filled by an unlocked Reserve stays matched, so
+-- the deficit stays 0 instead of re-unlocking the next 8 every run.
+local function EligibleUnlockedPolicies(culture)
   local out = {};
   local seen = 0;
   for row in GameInfo.Policies() do
     seen = seen + 1;
-    if not IsOurs(row.PolicyType) and row.Index ~= nil then
+    if row.Index ~= nil then
       local okU, unlocked = Try(function()
         return culture:IsPolicyUnlocked(row.Index);
       end);
@@ -372,7 +380,7 @@ local function ReconcilePlayer(entry, reason)
       .. tostring(reason) .. "]");
     return;
   end
-  local policies = EligibleRealPolicies(culture);
+  local policies = EligibleUnlockedPolicies(culture);
   if policies == nil then
     x10log("policy census failed; unlocking nothing ["
       .. tostring(reason) .. "]");

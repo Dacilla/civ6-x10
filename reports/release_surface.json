@@ -746,7 +746,7 @@
   {
    "path": "controller/X10/UI/X10SlotManager.lua",
    "tracked": true,
-   "bytes": 14763,
+   "bytes": 15254,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -774,7 +774,7 @@
   {
    "path": "controller/X10/X10BRSCompat.lua",
    "tracked": true,
-   "bytes": 11643,
+   "bytes": 11871,
    "size_normalization": "LF",
    "surface": "workshop_runtime",
    "kind": "authored_source",
@@ -1040,7 +1040,7 @@
   {
    "path": "docs/PHASE_8B.md",
    "tracked": true,
-   "bytes": 35456,
+   "bytes": 36812,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1348,7 +1348,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 7146,
+   "bytes": 7541,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -3126,7 +3126,7 @@
   {
    "path": "tests/test_phase8b4_ux_compat.py",
    "tracked": true,
-   "bytes": 21977,
+   "bytes": 25640,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "test_fixture",
@@ -3393,7 +3393,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 120,
-   "bytes": 1500236
+   "bytes": 1505650
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -3405,7 +3405,7 @@
   },
   "workshop_runtime": {
    "files": 13,
-   "bytes": 2164758
+   "bytes": 2165477
   }
  },
  "firaxis_footprint": {
