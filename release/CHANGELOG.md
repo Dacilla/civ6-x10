@@ -1,5 +1,18 @@
 # Changelog
 
+## Phase 8B.4.1 runtime-wiring + slot-safety correction (campaign STOPPED, not published)
+
+- BRS compat now executes in its own minimal AddUserInterfaces context
+  (same-basename auto-execution, explicit bare-name data include);
+  ImportFiles alone never ran it. P1 log-line proof required.
+  Compat trio moved to mod root (BRS layout); Trait coverage added
+  (audited call sites: Policy/Belief/Trait only).
+- Custom 0 disarms both Lua gates (native k==0 parity).
+- Slot deficit is engine-legality matching (CanSlotPolicy + obsolete
+  filter + Kuhn maximum match), probe checks all three methods
+  correctly, players via GetAliveMajors (bounded-scan fallback).
+- No CE rebuild (registry byte-identical).
+
 ## Phase 8B.4 policy UX + display compatibility (campaign STOPPED, not published)
 
 - P0 boot provisionally PASS (1682/0/1682/630 SS-only); P0B HARD FAIL

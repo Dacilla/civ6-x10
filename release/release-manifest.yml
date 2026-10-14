@@ -109,7 +109,7 @@ workshop_items:
     runtime_files:
       - stage_path: X10.modinfo
         source: controller/X10/X10.modinfo
-        sha256: b3532b03f3652af7d2445f66fbd9c79febb1c0cf69ad4592a100f1a540ba4cde
+        sha256: aff3b50eb85a2c29a957aabfe6fe6f2ef163c96e1d461e3416a2230d6cccf8fd
       - stage_path: Config/X10Config.sql
         source: controller/X10/Config/X10Config.sql
         sha256: f08ffe9e1255035cc111ec14210b5fb9ea5b936a484d3fede6157b50803db860
@@ -122,15 +122,18 @@ workshop_items:
       - stage_path: Config/X10SlotCopies.sql
         source: controller/X10/Config/X10SlotCopies.sql
         sha256: 2837bc136cf0219d2545519b27d6e01ff20e5961a045a84cd5f76c8c51ca03c7
-      - stage_path: UI/X10BRSData.lua
-        source: controller/X10/UI/X10BRSData.lua
+      - stage_path: X10BRSData.lua
+        source: controller/X10/X10BRSData.lua
         sha256: 8629feb5d5115e5852f1d79a33954ce96ec3dd0df07b8fae4981cd000199227a
-      - stage_path: UI/X10BRSCompat.lua
-        source: controller/X10/UI/X10BRSCompat.lua
-        sha256: 1f4a93da29649ccc584b365f199ab728cee310c56e781301ca69cf1b959e3331
+      - stage_path: X10BRSCompat.lua
+        source: controller/X10/X10BRSCompat.lua
+        sha256: be4c17e3053c8072a50a9dbc7f27dd2090e9fb2520f1046241d3acd5672b6d8a
+      - stage_path: X10BRSCompat.xml
+        source: controller/X10/X10BRSCompat.xml
+        sha256: 4a5df0d4e9565bda78e65a8771451b8ebc3e46a664f894682bdb14bcd7709497
       - stage_path: UI/X10SlotManager.lua
         source: controller/X10/UI/X10SlotManager.lua
-        sha256: 40baa078a2172d39aceec627a0b2e81caffd80dab628dae3fedb2765910c60f2
+        sha256: 7841dd1ae6174cb1fb9cd790ae269c30bb5f7e6addffb880059778d2864cc9d8
       - stage_path: Config/X10WonderBridge.sql
         source: controller/X10/Config/X10WonderBridge.sql
         sha256: 07e02d4210980a520ef824af76961f8c1499fa5fd256c6d74ba19cb0e49d1ff9

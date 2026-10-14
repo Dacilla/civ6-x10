@@ -1,28 +1,36 @@
 -- X10SlotManager.lua
--- On-demand Reserve Policy unlocker (Phase 8B.4).
+-- On-demand Reserve Policy unlocker (Phase 8B.4, hardened 8B.4.1).
 --
--- Runs as a gameplay script (AddGameplayScripts, simulation context).
--- The 700 Reserve policies ship DORMANT (ExplicitUnlock, no civic), so
--- nothing is visible until this manager unlocks the deficit for the
--- player's CURRENT policy slots. At ordinary Code of Laws the deficit
--- is zero and the picker stays clean.
+-- Runs as a gameplay script (AddGameplayScripts, simulation context --
+-- the Wonder-x10 precedent). The 700 Reserve policies ship DORMANT
+-- (ExplicitUnlock, no civic), so nothing is visible until this manager
+-- unlocks the deficit for the players' CURRENT policy slots. At
+-- ordinary Code of Laws the deficit is zero and the picker stays clean.
+--
+-- Deficit algorithm (satisfiability over ACTUAL engine legality, not
+-- type counting): enumerate current slot indices, enumerate unlocked
+-- non-X10 policies minus obsolete ones, build policy->slot eligibility
+-- with CanSlotPolicy(index, slotIndex), maximum bipartite match
+-- (augmenting path), and unlock one Reserve filler of the
+-- corresponding slot type per unmatched slot.
 --
 -- Safety properties (all load-bearing, all human-gated in P0C):
---   * every engine call is pcall-guarded; any failure aborts that run
---     loudly (log line) and unlocks nothing new;
---   * deficit math is satisfiability-exact: typed slots take same-type
---     cards only, wildcard slots absorb any remainder, great-person
---     cards are conservatively ignored (extra fillers, never too few);
+--   * every engine call is pcall-guarded; a missing/unusable API
+--     (enumeration, IsPolicyUnlocked/Obsolete, CanSlotPolicy,
+--     UnlockPolicy) aborts that run loudly and unlocks nothing new
+--     (fail closed, never a claimed-exact deficit);
 --   * idempotent: already-unlocked fillers are skipped via
 --     IsPolicyUnlocked; re-running changes nothing;
---   * human majors only (AI never needs confirm-gate help);
---   * no-ops when X10 resolves disarmed; manages (with a loud log line)
+--   * human majors only (AI never needs confirm-gate help), discovered
+--     via PlayerManager.GetAliveMajors with a bounded index-scan
+--     fallback (never Lua length over Players);
+--   * no-ops when X10 resolves disarmed (Custom 0 included, mirroring
+--     native k==0 normalization); manages (with a loud log line) only
 --     when configuration is unreadable rather than stranding slots.
 -- No auto-slotting ships here: slotting stays manual until a runtime-
 -- proven pass enables it (see docs/PHASE_8B.md section 9).
 
 local FILLER_MATCH = "POLICY_X10_FILLER_";
-local SLOT_TYPES = { "SLOT_MILITARY", "SLOT_DIPLOMATIC", "SLOT_ECONOMIC", "SLOT_WILDCARD" };
 
 local function x10log(msg)
   print("[X10SlotManager] " .. tostring(msg));
@@ -40,21 +48,43 @@ local function IsOurs(policyType)
     and string.find(policyType, FILLER_MATCH, 1, true) ~= nil;
 end
 
+-- Human major candidates. Primary: PlayerManager.GetAliveMajors;
+-- fallback: bounded index scan (never Lua length over a sparse table).
+-- SP-only behavior preserved (normally exactly one entry).
 local function HumanMajors()
   local out = {};
-  if Players == nil then return out; end
-  local ok, count = Try(function() return #Players; end);
-  if not ok or type(count) ~= "number" then return out; end
-  for i = 0, count - 1 do
-    local okP, p = Try(function() return Players[i]; end);
-    if okP and p ~= nil then
-      local okH, human = Try(function() return p:IsHuman(); end);
-      local okM, major = Try(function() return p:IsMajor(); end);
-      if okH and human and okM and major then
-        table.insert(out, { id = i, player = p });
-      end
+  local function consider(id)
+    if type(id) ~= "number" then return; end
+    if Players == nil then return; end
+    local okP, p = Try(function() return Players[id]; end);
+    if not okP or p == nil then return; end
+    local okH, human = Try(function() return p:IsHuman(); end);
+    if not okH or not human then return; end
+    local okM, major = Try(function() return p:IsMajor(); end);
+    if okM and major then
+      table.insert(out, { id = id, player = p });
     end
   end
+  if PlayerManager ~= nil then
+    local okM, majors = Try(function()
+      return PlayerManager.GetAliveMajors();
+    end);
+    if okM and majors ~= nil then
+      local usedFallback = false;
+      local okI, _ = Try(function()
+        for _, id in ipairs(majors) do consider(id); end
+        return true;
+      end);
+      if okI then return out; end
+      usedFallback = true;
+      if usedFallback then
+        x10log("GetAliveMajors unusable; bounded index-scan fallback");
+      end
+    else
+      x10log("PlayerManager.GetAliveMajors unavailable; index fallback");
+    end
+  end
+  for id = 0, 63 do consider(id); end
   return out;
 end
 
@@ -65,9 +95,10 @@ local function PlayerCulture(entry)
   return culture;
 end
 
--- Configuration gate. Returns true (manage), false (X10 disarmed:
--- no-op), or nil plus a loud log when unreadable (manage anyway so
--- slots are never stranded by an API-shape mismatch).
+-- Configuration gate. Returns true (manage) or false (X10 disarmed:
+-- no-op). Native parity: Custom 0 (and blank-as-0) normalizes to
+-- DISARMED like preset Off. Unreadable config manages with a loud log
+-- rather than stranding slots.
 local function ConfigNumber(candidates)
   if GameConfiguration == nil then return nil; end
   for _, key in ipairs(candidates) do
@@ -83,7 +114,7 @@ local function ShouldManage()
     if preset == 0 then return false; end
     if preset == 101 then
       local custom = ConfigNumber({ "X10_MULTIPLIER", "X10Custom" });
-      if type(custom) ~= "number" or custom < 0 or custom > 100 then
+      if type(custom) ~= "number" or custom <= 0 or custom > 100 then
         return false;
       end
       return true;
@@ -94,10 +125,9 @@ local function ShouldManage()
     end
     return false;
   end
-  -- No preset key: legacy custom path (or unreadable config).
   local custom = ConfigNumber({ "X10_MULTIPLIER", "X10Custom" });
   if custom ~= nil then
-    if type(custom) ~= "number" or custom < 0 or custom > 100 then
+    if type(custom) ~= "number" or custom <= 0 or custom > 100 then
       return false;
     end
     return true;
@@ -106,38 +136,9 @@ local function ShouldManage()
   return true;
 end
 
-local function NormalizeSlotType(st)
-  if type(st) == "string" then return st; end
-  if type(st) == "number" and GameInfo ~= nil then
-    local ok, iter = Try(function() return GameInfo.GovernmentSlots(); end);
-    if ok and iter ~= nil then
-      for row in iter do
-        if row.Index == st then return row.GovernmentSlotType; end
-      end
-    end
-  end
-  return nil;
-end
-
-local function CurrentSlots(culture)
-  local ok, n = Try(function() return culture:GetNumPolicySlots(); end);
-  if not ok or type(n) ~= "number" or n <= 0 then return nil; end
-  local out = {};
-  for i = 0, n - 1 do
-    local okS, st = Try(function() return culture:GetSlotType(i); end);
-    if okS and st ~= nil then
-      local t = NormalizeSlotType(st);
-      if t ~= nil then table.insert(out, t); end
-    end
-  end
-  if #out == 0 then return nil; end
-  return out;
-end
-
--- Probe that policy enumeration + unlock queries work. Returns
--- (true, firstRow) or (false, reason). A failed probe aborts the run:
--- under-counting real cards would over-unlock (flood), and missing
--- unlock APIs would strand slots silently.
+-- Probe that policy enumeration + all three legality/unlock queries
+-- work. Returns (true, nil) or (false, reason). A failed probe aborts
+-- the run: an exact deficit cannot be claimed without these.
 local function ProbePolicyAccess(culture)
   if GameInfo == nil then return false, "no GameInfo"; end
   local ok, iter = Try(function() return GameInfo.Policies(); end);
@@ -147,68 +148,145 @@ local function ProbePolicyAccess(culture)
   if first == nil or first.Index == nil then
     return false, "policy rows lack Index";
   end
-  local okU, res = Try(function()
+  local okU, resU = Try(function()
     return culture:IsPolicyUnlocked(first.Index);
   end);
-  if not okU or type(res) ~= "boolean" then
+  if not okU or type(resU) ~= "boolean" then
     return false, "IsPolicyUnlocked unavailable";
   end
-  local okL = Try(function()
+  local okO, resO = Try(function()
+    return culture:IsPolicyObsolete(first.Index);
+  end);
+  if not okO or type(resO) ~= "boolean" then
+    return false, "IsPolicyObsolete unavailable";
+  end
+  local okC, hasCan = Try(function()
+    return culture.CanSlotPolicy ~= nil;
+  end);
+  if not okC or not hasCan then
+    return false, "CanSlotPolicy unavailable";
+  end
+  local okL, hasUnlock = Try(function()
     return culture.UnlockPolicy ~= nil;
   end);
-  if not okL then return false, "UnlockPolicy unavailable"; end
+  if not okL or not hasUnlock then
+    return false, "UnlockPolicy unavailable";
+  end
   return true, nil;
 end
 
-local function RealUnlockedByType(culture)
-  local counts = { SLOT_MILITARY = 0, SLOT_DIPLOMATIC = 0,
-                   SLOT_ECONOMIC = 0, SLOT_WILDCARD = 0 };
+local function CurrentSlots(culture)
+  local ok, n = Try(function() return culture:GetNumPolicySlots(); end);
+  if not ok or type(n) ~= "number" or n <= 0 then return nil; end
+  local out = {};
+  for i = 0, n - 1 do
+    local okS, st = Try(function() return culture:GetSlotType(i); end);
+    if okS and st ~= nil then
+      local t = st;
+      if type(st) == "number" and GameInfo ~= nil then
+        t = nil;
+        local okG, giter = Try(function()
+          return GameInfo.GovernmentSlots();
+        end);
+        if okG and giter ~= nil then
+          for row in giter do
+            if row.Index == st then
+              t = row.GovernmentSlotType;
+              break;
+            end
+          end
+        end
+      end
+      if type(t) == "string" then
+        table.insert(out, { slot = i, slotType = t });
+      end
+    end
+  end
+  if #out == 0 then return nil; end
+  return out;
+end
+
+-- Unlocked, non-obsolete, non-X10 policies: array of { index, slotType }.
+-- Great-person cards are kept (CanSlotPolicy decides legality, not us).
+local function EligibleRealPolicies(culture)
+  local out = {};
   local seen = 0;
   for row in GameInfo.Policies() do
     seen = seen + 1;
-    if not IsOurs(row.PolicyType) and row.Index ~= nil
-        and counts[row.GovernmentSlotType] ~= nil then
+    if not IsOurs(row.PolicyType) and row.Index ~= nil then
       local okU, unlocked = Try(function()
         return culture:IsPolicyUnlocked(row.Index);
       end);
       if okU and unlocked then
-        counts[row.GovernmentSlotType] = counts[row.GovernmentSlotType] + 1;
+        local okO, obsolete = Try(function()
+          return culture:IsPolicyObsolete(row.Index);
+        end);
+        if okO and not obsolete then
+          table.insert(out, { index = row.Index,
+                              slotType = row.GovernmentSlotType });
+        end
       end
     end
   end
   if seen == 0 then return nil; end
-  return counts;
+  return out;
 end
 
--- Exact satisfiability deficit. Typed slots consume same-type real
--- cards first; wildcard slots absorb any remainder; great-person cards
--- are ignored (conservative: extra fillers, never too few).
-local function Deficit(slots, real)
-  local need = { SLOT_MILITARY = 0, SLOT_DIPLOMATIC = 0,
-                 SLOT_ECONOMIC = 0, SLOT_WILDCARD = 0 };
-  local have = { SLOT_MILITARY = real.SLOT_MILITARY or 0,
-                 SLOT_DIPLOMATIC = real.SLOT_DIPLOMATIC or 0,
-                 SLOT_ECONOMIC = real.SLOT_ECONOMIC or 0,
-                 SLOT_WILDCARD = real.SLOT_WILDCARD or 0 };
-  local wild = 0;
-  for _, t in ipairs(slots) do
-    if t == "SLOT_WILDCARD" then
-      wild = wild + 1;
-    elseif have[t] ~= nil and have[t] > 0 then
-      have[t] = have[t] - 1;
-    elseif need[t] ~= nil then
-      need[t] = need[t] + 1;
+-- Edge test through the engine: can this policy fill this slot?
+local function EngineCanSlot(culture, policyIndex, slotIndex)
+  local ok, res = Try(function()
+    return culture:CanSlotPolicy(policyIndex, slotIndex);
+  end);
+  return ok and res == true;
+end
+
+-- Maximum bipartite matching (policies -> slots) by augmenting path
+-- (Kuhn). Returns matchSlot[slotPos] = policyPos or nil.
+local function MaximumMatching(culture, policies, slots)
+  local adj = {};
+  for pi, pol in ipairs(policies) do
+    adj[pi] = {};
+    for si, slot in ipairs(slots) do
+      if EngineCanSlot(culture, pol.index, slot.slot) then
+        table.insert(adj[pi], si);
+      end
     end
   end
-  local surplus = (have.SLOT_MILITARY or 0) + (have.SLOT_DIPLOMATIC or 0)
-    + (have.SLOT_ECONOMIC or 0) + (have.SLOT_WILDCARD or 0);
-  if wild > surplus then need.SLOT_WILDCARD = wild - surplus; end
+  local matchSlot = {};
+  local function Dfs(pi, seen)
+    for _, si in ipairs(adj[pi]) do
+      if not seen[si] then
+        seen[si] = true;
+        if matchSlot[si] == nil or Dfs(matchSlot[si], seen) then
+          matchSlot[si] = pi;
+          return true;
+        end
+      end
+    end
+    return false;
+  end
+  for pi = 1, #policies do
+    Dfs(pi, {});
+  end
+  return matchSlot;
+end
+
+-- One Reserve filler of the corresponding slot type per unmatched slot.
+local function DeficitFromUnmatched(slots, matchSlot)
+  local need = {};
+  for si, slot in ipairs(slots) do
+    if matchSlot[si] == nil then
+      need[slot.slotType] = (need[slot.slotType] or 0) + 1;
+    end
+  end
   return need;
 end
 
 local function UnlockDeficit(culture, need)
   local total = 0;
-  for _, slotType in ipairs(SLOT_TYPES) do
+  local order = { "SLOT_MILITARY", "SLOT_DIPLOMATIC", "SLOT_ECONOMIC",
+                  "SLOT_WILDCARD", "SLOT_GREAT_PERSON" };
+  for _, slotType in ipairs(order) do
     local n = need[slotType] or 0;
     if n > 0 then
       for row in GameInfo.Policies() do
@@ -220,7 +298,7 @@ local function UnlockDeficit(culture, need)
             return culture:IsPolicyUnlocked(row.Index);
           end);
           if okU and not unlocked then
-            local okL, err = Try(function()
+            local okL = Try(function()
               culture:UnlockPolicy(row.Index);
             end);
             if okL then
@@ -234,10 +312,24 @@ local function UnlockDeficit(culture, need)
           end
         end
       end
+      -- Wildcard slots accept any card: typed surplus could cover them,
+      -- but per-slot-type fillers are always legal there, so any
+      -- remainder is still satisfiable by construction.
       if n > 0 then
         x10log("WARNING: unfilled deficit of " .. tostring(n)
           .. " for " .. slotType .. " (ran out of locked fillers)");
       end
+    end
+  end
+  -- Any other slot type (future): loudly report, unlock nothing blind.
+  for slotType, n in pairs(need) do
+    local known = false;
+    for _, k in ipairs(order) do
+      if k == slotType then known = true; break; end
+    end
+    if not known and n > 0 then
+      x10log("WARNING: unmatched unknown slot type " .. tostring(slotType)
+        .. " x" .. tostring(n) .. " (no filler family; manual fill needed)");
     end
   end
   return total;
@@ -262,15 +354,16 @@ local function ReconcilePlayer(entry, reason)
       .. tostring(reason) .. "]");
     return;
   end
-  local real = RealUnlockedByType(culture);
-  if real == nil then
-    x10log("real-card census failed; unlocking nothing ["
+  local policies = EligibleRealPolicies(culture);
+  if policies == nil then
+    x10log("policy census failed; unlocking nothing ["
       .. tostring(reason) .. "]");
     return;
   end
-  local need = Deficit(slots, real);
-  local n = (need.SLOT_MILITARY or 0) + (need.SLOT_DIPLOMATIC or 0)
-    + (need.SLOT_ECONOMIC or 0) + (need.SLOT_WILDCARD or 0);
+  local matchSlot = MaximumMatching(culture, policies, slots);
+  local need = DeficitFromUnmatched(slots, matchSlot);
+  local n = 0;
+  for _, c in pairs(need) do n = n + c; end
   if n <= 0 then return; end
   local unlocked = UnlockDeficit(culture, need);
   x10log("player " .. tostring(entry.id) .. " deficit unlocked="
@@ -312,6 +405,6 @@ local function HookEvents()
   end
 end
 
-x10log("loaded (dormant fillers; on-demand unlock only)");
+x10log("loaded (dormant fillers; legality-matched on-demand unlock only)");
 HookEvents();
 ReconcileAll("init");

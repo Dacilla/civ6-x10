@@ -178,9 +178,9 @@ class TestFrontierArtifact(unittest.TestCase):
                      for p in (ROOT / d).rglob("*.lua"))
         self.assertEqual(
             lua,
-            ["controller/X10/UI/X10BRSCompat.lua",
-             "controller/X10/UI/X10BRSData.lua",
-             "controller/X10/UI/X10SlotManager.lua"])
+            ["controller/X10/UI/X10SlotManager.lua",
+             "controller/X10/X10BRSCompat.lua",
+             "controller/X10/X10BRSData.lua"])
 
     def test_frontier_files_classified_private(self):
         from civ6x10.release_surface import classify

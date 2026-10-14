@@ -39,10 +39,17 @@
         <LoadOrder>20000</LoadOrder>
       </Properties>
       <Items>
-        <File>UI/X10BRSData.lua</File>
-        <File>UI/X10BRSCompat.lua</File>
+        <File>X10BRSData.lua</File>
+        <File>X10BRSCompat.lua</File>
       </Items>
     </ImportFiles>
+    <AddUserInterfaces id="X10BRSCompatUI">
+      <Properties>
+        <Context>X10BRSCompat</Context>
+        <LoadOrder>20000</LoadOrder>
+      </Properties>
+      <File>X10BRSCompat.xml</File>
+    </AddUserInterfaces>
     <AddGameplayScripts id="X10SlotManager">
       <File>UI/X10SlotManager.lua</File>
     </AddGameplayScripts>
@@ -53,8 +60,9 @@
     <File>Config/Dummy.sql</File>
     <File>Config/X10WonderBridge.sql</File>
     <File>Config/X10SlotCopies.sql</File>
-    <File>UI/X10BRSData.lua</File>
-    <File>UI/X10BRSCompat.lua</File>
+    <File>X10BRSData.lua</File>
+    <File>X10BRSCompat.lua</File>
+    <File>X10BRSCompat.xml</File>
     <File>UI/X10SlotManager.lua</File>
     <File>README.txt</File>
     <File>LICENSE.txt</File>

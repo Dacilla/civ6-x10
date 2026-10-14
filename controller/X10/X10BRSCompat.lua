@@ -1,6 +1,9 @@
 -- X10BRSCompat.lua
 -- BRS / Extended Policy Cards calculated-preview compatibility
--- (Phase 8B.4). Loaded in InGame UI contexts AFTER X10BRSData.lua.
+-- (Phase 8B.4, wired 8B.4.1). Executes in its own minimal UI context
+-- (X10BRSCompat, via AddUserInterfaces + same-basename auto-execution --
+-- the Better Report Screen RealModifierAnalysis pattern) AFTER
+-- explicitly including X10BRSData.lua.
 --
 -- Problem: RMA (Better Report Screen's RealModifierAnalysis) memoizes
 -- ModifierArguments read from gameplay SQLite (DB.Query), which CE never
@@ -15,9 +18,12 @@
 -- CalculateModifierEffect, this layer recomputes X10-effective arguments
 -- from the generated registry (same officials, kinds, count-like gates,
 -- owner bits, and k as the native engine) and overwrites the cached
--- Arguments IN PLACE. Callers (BRSPage_Policy, EPC GovernmentScreen)
--- index ExposedMembers.RMA at call time, so every policy/belief preview
--- path flows through the patched cache with zero file replacement.
+-- Arguments IN PLACE. Audited callers (BRSPage_Policy Policy/Belief,
+-- BRSPage_Minor Trait, EPC GovernmentScreen Policy) index
+-- ExposedMembers.RMA at call time, so every covered preview path flows
+-- through the patched cache with zero file replacement. Generated data
+-- covers the full non-REPEAT registry, but only Policy/Belief/Trait
+-- objects have a wrapper path that consumes them (see LINK).
 --
 -- Safety properties (all load-bearing, all human-gated in P1):
 --   * no-ops when BRS is absent (ExposedMembers.RMA nil) or when X10
@@ -31,10 +37,27 @@
 --     in the shared table).
 -- REPEAT slot rows are excluded from the data (not numerical effects).
 -- Requires live P1 witnesses; see docs/PHASE_8B.md section 9.
+--
+-- Runtime proof (P1 is invalid without these Lua.log lines):
+--   [X10BRSCompat] context loaded
+--   [X10BRSCompat] generated data loaded: 1788 entries
+--   [X10BRSCompat] RMA found|deferred ...
+--   [X10BRSCompat] installed ...
+
+print("[X10BRSCompat] context loaded");
+
+local okInc, errInc = pcall(include, "X10BRSData");
+if not okInc or X10BRSData == nil or X10BRSData.entries == nil then
+  print("[X10BRSCompat] generated data missing; idle");
+  return;
+end
+print("[X10BRSCompat] generated data loaded: "
+  .. tostring(#X10BRSData.entries) .. " entries");
 
 local LINK = {
   Policy = { table = "PolicyModifiers", field = "PolicyType" },
   Belief = { table = "BeliefModifiers", field = "BeliefType" },
+  Trait = { table = "TraitModifiers", field = "TraitType" },
 };
 
 local KIND_ADDITIVE = 0;
@@ -82,6 +105,8 @@ local function ConfigNumber(candidates)
 end
 
 -- Returns k, enabledMask, or nil when disarmed/unresolvable (identity).
+-- Native parity: k == 0 normalizes to DISARMED (like preset Off);
+-- blank custom reaches this state as INT32 0.
 local function ResolveArmed()
   local k = nil;
   local preset = ConfigNumber({ "X10_MULTIPLIER_PRESET", "X10Preset" });
@@ -89,7 +114,7 @@ local function ResolveArmed()
     if preset == 0 then return nil; end
     if preset == 101 then
       local c = ConfigNumber({ "X10_MULTIPLIER", "X10Custom" });
-      if type(c) ~= "number" or c < 0 or c > 100 then return nil; end
+      if type(c) ~= "number" or c <= 0 or c > 100 then return nil; end
       k = c;
     elseif PRESET_VALUES[preset] then
       k = preset;
@@ -98,7 +123,7 @@ local function ResolveArmed()
     end
   else
     local c = ConfigNumber({ "X10_MULTIPLIER", "X10Custom" });
-    if type(c) ~= "number" or c < 0 or c > 100 then return nil; end
+    if type(c) ~= "number" or c <= 0 or c > 100 then return nil; end
     k = c;
   end
   -- Module mask: absent key defaults ON (native declared defaults);
@@ -270,13 +295,15 @@ local function Install()
   return true;
 end
 
-if X10BRSData == nil then
-  x10log("no generated data; idle");
-elseif not Install() then
+if Install() then
+  x10log("RMA found; wrapper active");
+else
   -- RMA not present yet (absent, or loads later): retry on late UI
   -- events. Silent no-op forever when BRS is absent.
   local function Retry()
-    pcall(Install);
+    if pcall(Install) then
+      x10log("RMA found late; wrapper active");
+    end
   end
   if Events ~= nil then
     if Events.LoadScreenClose ~= nil then
@@ -290,5 +317,5 @@ elseif not Install() then
       end);
     end
   end
-  x10log("RMA not present; deferred (idle when BRS absent)");
+  x10log("RMA deferred (idle when BRS absent)");
 end

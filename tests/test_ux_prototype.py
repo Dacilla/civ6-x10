@@ -172,6 +172,7 @@ class TestProductionUntouched(unittest.TestCase):
              ("UpdateDatabase", "X10SlotCopies"),
              ("UpdateText", "X10TextGame"),
              ("ImportFiles", "X10BRSCompat"),
+             ("AddUserInterfaces", "X10BRSCompatUI"),
              ("AddGameplayScripts", "X10SlotManager")])
         deps = [d.get("id") for d in m.find("Dependencies")]
         self.assertEqual(deps, ["4873eb62-8ccc-4574-b784-dda455e74e68",

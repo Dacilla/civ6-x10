@@ -79,7 +79,7 @@ def emit_lua(entries: list[dict]) -> str:
 def write_brs_data() -> Path:
     from .production import MODULE_BITS
     assert [MODULE_BITS[m] for m in MODULE_ORDER] == [1 << i for i in range(13)]
-    path = ROOT / "controller" / "X10" / "UI" / "X10BRSData.lua"
+    path = ROOT / "controller" / "X10" / "X10BRSData.lua"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(emit_lua(build_brs_entries()), encoding="utf-8",
                     newline="\n")

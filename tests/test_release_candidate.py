@@ -69,6 +69,7 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
                              ("UpdateDatabase", "X10SlotCopies"),
                              ("UpdateText", "X10TextGame"),
                              ("ImportFiles", "X10BRSCompat"),
+                             ("AddUserInterfaces", "X10BRSCompatUI"),
                              ("AddGameplayScripts", "X10SlotManager")])
         ig_files = [[f.text for f in a.iter("File")]
                     for a in m.find("InGameActions")]
@@ -76,8 +77,9 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
                                     ["Config/X10WonderBridge.sql"],
                                     ["Config/X10SlotCopies.sql"],
                                     ["Config/X10Text.sql"],
-                                    ["UI/X10BRSData.lua",
-                                     "UI/X10BRSCompat.lua"],
+                                    ["X10BRSData.lua",
+                                     "X10BRSCompat.lua"],
+                                    ["X10BRSCompat.xml"],
                                     ["UI/X10SlotManager.lua"]])
         fe_files = [[f.text for f in a.iter("File")]
                     for a in m.find("FrontEndActions")]
@@ -89,8 +91,8 @@ class TestModinfoGameplayFrozen(unittest.TestCase):
             "Config/X10SlotCopies.sql", "Config/X10Text.sql",
             "Config/X10WonderBridge.sql", "LICENSE.txt", "README.txt",
             "SOURCE.txt", "THIRD_PARTY_NOTICES.txt",
-            "UI/X10BRSCompat.lua", "UI/X10BRSData.lua",
-            "UI/X10SlotManager.lua",
+            "UI/X10SlotManager.lua", "X10BRSCompat.lua",
+            "X10BRSCompat.xml", "X10BRSData.lua",
         ])
 
     def test_engine_gameplay_structure(self):
@@ -151,9 +153,9 @@ class TestManifestSurfaces(unittest.TestCase):
                    for e in items["controller"]["runtime_files"]),
             ["Config/Dummy.sql", "Config/X10Config.sql",
              "Config/X10SlotCopies.sql", "Config/X10Text.sql",
-             "Config/X10WonderBridge.sql", "UI/X10BRSCompat.lua",
-             "UI/X10BRSData.lua", "UI/X10SlotManager.lua",
-             "X10.modinfo"])
+             "Config/X10WonderBridge.sql", "UI/X10SlotManager.lua",
+             "X10.modinfo", "X10BRSCompat.lua", "X10BRSCompat.xml",
+             "X10BRSData.lua"])
         self.assertTrue(man["source_release"]["build_assets"])
 
     def test_no_absolute_paths(self):

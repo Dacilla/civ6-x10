@@ -590,3 +590,51 @@ P1 proves calculated displays truthful, assess whether vanilla prose
   P0C (incl. the ONE-filler ExplicitUnlock experiment), P1
   (God King +10/+10, Discipline ~+29, Urban Planning +10, 7.3
   agreement), R1/R1-ALL, R2/R2-ALL.
+
+## 10. Phase 8B.4.1 runtime-wiring + slot-safety correction
+
+No new gameplay families. No CE/native changes (registry byte-identical).
+
+### G1. Compat script actually executes (ImportFiles did not run it)
+
+ImportFiles only exposes files to the VFS; nothing executed the
+compat layer, so P1 was testing an uninstalled wrapper. Fixed with
+the BRS RealModifierAnalysis pattern: AddUserInterfaces creates a
+minimal hidden X10BRSCompat UI context (X10BRSCompat.xml, same empty
+shape as RealModifierAnalysis.xml), whose same-basename
+X10BRSCompat.lua auto-executes and explicitly includes X10BRSData.lua
+(bare-name include, the BRSPage_Policy-proven form -- which is why the
+compat trio moved from UI/ to the mod root). P1 is invalid without
+the Lua.log lines the file now emits first: context loaded /
+generated data loaded: N entries / RMA found|deferred / installed.
+(DevCE Playground was not found locally; BRS + CheatMenuPanel
+modinfo patterns were used instead.)
+
+### G2. Custom-0 disarms (native k==0 parity)
+
+Both Lua gates accepted Custom 0 as armed. Fixed in ResolveArmed and
+ShouldManage (custom <= 0 disarms, like preset Off; blank-as-0
+covered); twin-tested.
+
+### G3. Legality-matched deficit (type counting was insufficient)
+
+Unlocked-but-obsolete/illegal cards could fake coverage. The manager
+now filters IsPolicyObsolete and builds policy->slot eligibility with
+CanSlotPolicy(index, slotIndex), maximum bipartite match (Kuhn
+augmenting path), one Reserve filler per unmatched slot by slot type.
+ProbePolicyAccess now checks all three methods with correct
+(ok, value) handling and aborts loudly without them; unknown future
+slot types report loudly instead of unlocking blindly.
+
+### G4. Player enumeration (no #Players)
+
+HumanMajors prefers PlayerManager.GetAliveMajors with a bounded
+0..63 index-scan fallback; SP-only behavior preserved.
+
+### G5. Trait coverage (audited call sites only)
+
+LINK is exactly Policy/Belief/Trait: BRSPage_Policy:82/:102,
+BRSPage_Minor:106/:166, EPC GovernmentScreen:1028 -- the complete
+audited set. Generated data still covers the full non-REPEAT
+registry, but only these three families have a consuming wrapper
+path (stated in-code, not pretended otherwise).

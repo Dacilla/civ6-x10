@@ -473,6 +473,7 @@ class TestProductionModinfo7C2(unittest.TestCase):
              ("UpdateDatabase", "X10SlotCopies"),
              ("UpdateText", "X10TextGame"),
              ("ImportFiles", "X10BRSCompat"),
+             ("AddUserInterfaces", "X10BRSCompatUI"),
              ("AddGameplayScripts", "X10SlotManager")])
 
 
