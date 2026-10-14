@@ -248,6 +248,73 @@ def twin_resolve(preset, custom):
     return custom
 
 
+def twin_human_majors(ids_api, objs_api, scan_ids, humans):
+    """Python twin of X10SlotManager HumanMajors stage logic.
+
+    ids_api: 'missing' | 'throw' | list (numbers AND/OR opaque objects,
+        modeling GetAliveMajorIDs returning Player objects by mistake).
+    objs_api: 'missing' | 'throw' | list of fake players {id, human}.
+    scan_ids: ids visible to the bounded scan. humans: human-major ids.
+    Returns (resolved_ids, stage_used).
+    """
+    out, seen = [], set()
+
+    def consider(i):
+        if isinstance(i, bool) or not isinstance(i, int):
+            return
+        if i in seen or i not in humans:
+            return
+        seen.add(i)
+        out.append(i)
+
+    n0 = len(out)
+    if ids_api != "missing":
+        if ids_api != "throw":
+            for i in ids_api:
+                consider(i)
+        if len(out) > n0:
+            return out, "ids"
+    if objs_api != "missing":
+        if objs_api != "throw":
+            for p in objs_api:
+                consider(p.get("id"))
+        if len(out) > n0:
+            return out, "objects"
+    for i in scan_ids:
+        consider(i)
+    return out, "scan"
+
+
+class TestEnumerationTwin(unittest.TestCase):
+    def test_ids_api_preferred(self):
+        got, stage = twin_human_majors([0, 2], "missing", [], {0, 2})
+        self.assertEqual((got, stage), ([0, 2], "ids"))
+
+    def test_object_shape_falls_through(self):
+        # THE 8B.4 BUG: GetAliveMajors-style Player objects are not
+        # numbers, so the IDs stage must yield ZERO (not stop), and
+        # the object stage must resolve via GetID.
+        objs = [{"id": 0, "human": True}, {"id": 1, "human": False}]
+        got, stage = twin_human_majors(
+            [{"opaque": "player"}, {"opaque": "player2"}],
+            objs, [], {0})
+        self.assertEqual((got, stage), ([0], "objects"))
+
+    def test_empty_ids_falls_through(self):
+        got, stage = twin_human_majors(
+            [], [{"id": 3, "human": True}], [], {3})
+        self.assertEqual((got, stage), ([3], "objects"))
+
+    def test_both_missing_uses_scan(self):
+        got, stage = twin_human_majors(
+            "missing", "missing", [0, 1, 2], {1})
+        self.assertEqual((got, stage), ([1], "scan"))
+
+    def test_no_duplicate_ids(self):
+        got, _ = twin_human_majors([0, 0, 2], "missing", [0, 2], {0, 2})
+        self.assertEqual(sorted(got), [0, 2])
+
+
 class TestKResolutionTwin(unittest.TestCase):
     def test_standard_presets(self):
         for k in (2, 3, 5, 10, 20, 50, 100):
@@ -367,8 +434,9 @@ class TestBrsContextWiring(unittest.TestCase):
                if a.tag == "AddUserInterfaces"]
         self.assertEqual(len(uis), 1, uis)
         aid, context, files = uis[0]
-        # A dedicated minimal context (never a replaced screen).
-        self.assertEqual(context, "X10BRSCompat")
+        # Shared InGame host context (the BRS RealModifierAnalysis
+        # pattern); the Lua-basename unit, not the Context, is ours.
+        self.assertEqual(context, "InGame")
         self.assertEqual(files, ["X10BRSCompat.xml"])
         for needle in ("GovernmentScreen", "reportscreen", "BRSPage"):
             self.assertNotIn(needle, aid + context + "".join(files))
@@ -408,10 +476,12 @@ class TestBrsContextWiring(unittest.TestCase):
     def test_slot_manager_content_markers(self):
         text = (ROOT / "controller" / "X10" / "UI"
                 / "X10SlotManager.lua").read_text(encoding="utf-8")
-        # Legality-matched matching, hardened probe, safe enumeration.
+        # Legality-matched matching, hardened probe, safe enumeration:
+        # IDs API preferred, Player objects via GetID, bounded scan last.
         for needle in ("CanSlotPolicy", "IsPolicyObsolete",
+                       "PlayerManager.GetAliveMajorIDs",
                        "PlayerManager.GetAliveMajors",
-                       "MaximumMatching", "DeficitFromUnmatched"):
+                       "GetID", "MaximumMatching", "DeficitFromUnmatched"):
             self.assertIn(needle, text, needle)
         self.assertNotIn("#Players", text)
 

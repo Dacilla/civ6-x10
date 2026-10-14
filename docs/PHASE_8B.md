@@ -638,3 +638,30 @@ BRSPage_Minor:106/:166, EPC GovernmentScreen:1028 -- the complete
 audited set. Generated data still covers the full non-REPEAT
 registry, but only these three families have a consuming wrapper
 path (stated in-code, not pretended otherwise).
+
+## 11. Phase 8B.4.2 player enumeration + UI context fix
+
+No gameplay-family expansion. No CE/native changes (registry
+byte-identical).
+
+### H1. HumanMajors consumed Player objects as IDs (manager did nothing)
+
+GetAliveMajors() returns Player[], but the loop fed elements to an
+ID-only consider() that rejects non-numbers -- while ipairs itself
+succeeded, so the fallback never fired and zero players reconciled.
+Fixed with three ordered stages, each running only if the previous
+yielded zero usable candidates: GetAliveMajorIDs() numbers, then
+GetAliveMajors() objects via GetID, then a bounded 0..63 index scan
+(never #Players). A twin models the object shape so this exact bug
+cannot recur. Kept: dormant fillers, Kuhn/CanSlotPolicy matching,
+obsolete filtering, Custom-0 parity, no auto-slotting.
+
+### H2. Compat context is the shared InGame host (not a custom name)
+
+The custom Context=X10BRSCompat confused the host Context property
+with the Lua-basename unit. BRS itself registers RealModifierAnalysis
+under Context=InGame (as does the DevCE_Playground example), with
+execution coming from same-basename XML/Lua pairing. Changed to
+Context=InGame, keeping File X10BRSCompat.xml + X10BRSCompat.lua +
+explicit bare-name data include. (DevCE Playground was not found
+locally; BRS + CheatMenuPanel patterns used instead.)

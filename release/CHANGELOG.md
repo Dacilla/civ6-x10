@@ -1,5 +1,14 @@
 # Changelog
 
+## Phase 8B.4.2 player enumeration + UI context fix (campaign STOPPED, not published)
+
+- Slot manager player discovery fixed in three stages (GetAliveMajorIDs
+  numbers, GetAliveMajors objects via GetID, bounded index scan); the
+  old code discarded Player objects and reconciled zero players.
+- BRS compat context corrected to the shared InGame host (BRS pattern);
+  Lua-basename unit unchanged, explicit data include unchanged.
+- No CE rebuild (registry byte-identical).
+
 ## Phase 8B.4.1 runtime-wiring + slot-safety correction (campaign STOPPED, not published)
 
 - BRS compat now executes in its own minimal AddUserInterfaces context

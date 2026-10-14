@@ -1,9 +1,11 @@
 -- X10BRSCompat.lua
 -- BRS / Extended Policy Cards calculated-preview compatibility
--- (Phase 8B.4, wired 8B.4.1). Executes in its own minimal UI context
--- (X10BRSCompat, via AddUserInterfaces + same-basename auto-execution --
--- the Better Report Screen RealModifierAnalysis pattern) AFTER
--- explicitly including X10BRSData.lua.
+-- (Phase 8B.4, wired 8B.4.1). Executes in the shared InGame host UI
+-- context via AddUserInterfaces (Context=InGame, File X10BRSCompat.xml
+-- + same-basename X10BRSCompat.lua auto-execution -- the Better Report
+-- Screen RealModifierAnalysis pattern: host Context property and
+-- Lua-basename unit are distinct things) AFTER explicitly including
+-- X10BRSData.lua.
 --
 -- Problem: RMA (Better Report Screen's RealModifierAnalysis) memoizes
 -- ModifierArguments read from gameplay SQLite (DB.Query), which CE never

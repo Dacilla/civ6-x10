@@ -48,13 +48,19 @@ local function IsOurs(policyType)
     and string.find(policyType, FILLER_MATCH, 1, true) ~= nil;
 end
 
--- Human major candidates. Primary: PlayerManager.GetAliveMajors;
--- fallback: bounded index scan (never Lua length over a sparse table).
--- SP-only behavior preserved (normally exactly one entry).
+-- Human major candidates. Primary: PlayerManager.GetAliveMajorIDs
+-- (documented number[] API); second: GetAliveMajors Player objects via
+-- GetID (the bundled reference types it as Player[]); last: bounded
+-- 0..63 index scan. Each stage runs only if the previous yielded zero
+-- usable candidates (not merely on throw): GetAliveMajors-style calls
+-- succeed while returning unusable shapes, which must NOT read as
+-- "no humans". SP-only behavior preserved (normally one entry).
 local function HumanMajors()
   local out = {};
+  local seen = {};
   local function consider(id)
     if type(id) ~= "number" then return; end
+    if seen[id] then return; end
     if Players == nil then return; end
     local okP, p = Try(function() return Players[id]; end);
     if not okP or p == nil then return; end
@@ -62,27 +68,39 @@ local function HumanMajors()
     if not okH or not human then return; end
     local okM, major = Try(function() return p:IsMajor(); end);
     if okM and major then
+      seen[id] = true;
       table.insert(out, { id = id, player = p });
     end
   end
+  local function considerPlayer(pobj)
+    if pobj == nil then return; end
+    local okI, id = Try(function() return pobj:GetID(); end);
+    if okI then consider(id); end
+  end
   if PlayerManager ~= nil then
-    local okM, majors = Try(function()
+    local n0 = #out;
+    local okIds, ids = Try(function()
+      return PlayerManager.GetAliveMajorIDs();
+    end);
+    if okIds and ids ~= nil then
+      Try(function()
+        for _, id in ipairs(ids) do consider(id); end
+      end);
+    end
+    if #out > n0 then return out; end
+    x10log("GetAliveMajorIDs yielded nothing; trying Player objects");
+    local okObjs, objs = Try(function()
       return PlayerManager.GetAliveMajors();
     end);
-    if okM and majors ~= nil then
-      local usedFallback = false;
-      local okI, _ = Try(function()
-        for _, id in ipairs(majors) do consider(id); end
-        return true;
+    if okObjs and objs ~= nil then
+      Try(function()
+        for _, pobj in ipairs(objs) do considerPlayer(pobj); end
       end);
-      if okI then return out; end
-      usedFallback = true;
-      if usedFallback then
-        x10log("GetAliveMajors unusable; bounded index-scan fallback");
-      end
-    else
-      x10log("PlayerManager.GetAliveMajors unavailable; index fallback");
     end
+    if #out > n0 then return out; end
+    x10log("no usable PlayerManager candidates; bounded index scan");
+  else
+    x10log("PlayerManager unavailable; bounded index scan");
   end
   for id = 0, 63 do consider(id); end
   return out;
