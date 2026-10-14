@@ -786,6 +786,20 @@
    "disposition": "ship (modinfo/config sources are the controller)"
   },
   {
+   "path": "controller/X10/X10BRSCompat.xml",
+   "tracked": true,
+   "bytes": 22,
+   "size_normalization": "LF",
+   "surface": "workshop_runtime",
+   "kind": "authored_source",
+   "generated": false,
+   "runtime_required": true,
+   "rebuild_required": false,
+   "audit_only": false,
+   "provenance": "authored",
+   "disposition": "ship (modinfo/config sources are the controller)"
+  },
+  {
    "path": "controller/X10/X10BRSData.lua",
    "tracked": true,
    "bytes": 219680,
@@ -3390,8 +3404,8 @@
    "bytes": 14810407
   },
   "workshop_runtime": {
-   "files": 12,
-   "bytes": 2163872
+   "files": 13,
+   "bytes": 2163894
   }
  },
  "firaxis_footprint": {
