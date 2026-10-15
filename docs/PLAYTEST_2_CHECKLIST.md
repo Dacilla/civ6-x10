@@ -126,17 +126,21 @@ architecture is rejected. The replacement gates:
 ## Focused gameplay checks
 
 - [x] **P1 BRS/EPC calculated display (BLOCKER until green)** — PASS
-  for tested calculated witnesses (8B.5). Compat context loads, loads
-  the generated 1788-entry data, wraps RMA.CalculateModifierEffect,
-  and reports wrapper active. With Better Report Screen + Extended
-  Policy Cards enabled, God King card tooltip/BRS Policy page reads
-  +10 Faith/+10 Gold at x10 (gameplay already does: native log proves
-  `GOD_KING_GOLD 1 -> 10 MATCH`). Discipline must reflect ~+29 (NOT
-  +50, NOT +5). Urban Planning must read +10 Production. KNOWN
-  DISPLAY LIMITATION (not a gameplay/native failure, not a compat
-  failure): static Firaxis prose may still show vanilla numbers
-  (e.g. God King body +1/+1) while only the CALCULATED result must
-  be truthful. No localization-number rewriting in this pass.
+  for ACTUALLY TESTED calculated witnesses only (8B.5). Compat
+  context loads, loads the generated 1788-entry data, wraps
+  RMA.CalculateModifierEffect, and reports wrapper active. With
+  Better Report Screen + Extended Policy Cards enabled, God King
+  card tooltip/BRS Policy page reads +10 Faith/+10 Gold at x10
+  (gameplay already does: native log proves `GOD_KING_GOLD 1 -> 10
+  MATCH`) — INSPECTED. Urban Planning reads +10 Production —
+  INSPECTED. Discipline ~+29 (NOT +50, NOT +5) remains an EXPECTED
+  COMBAT witness, NOT individually validated: no archived human
+  evidence proves it was inspected — do not cite it as validated
+  on native transform math alone. KNOWN DISPLAY LIMITATION (not a
+  gameplay/native failure, not a compat failure): static Firaxis
+  prose may still show vanilla numbers (e.g. God King body +1/+1)
+  while only the CALCULATED result must be truthful. No
+  localization-number rewriting in this pass.
 - [ ] **C1 Colosseum**: build queue shows +2 Culture (not +0); host
   City Center gets +20 total Culture at ×10; every eligible City
   Center within 6 tiles gets +20 total Culture; a city outside range
@@ -155,12 +159,16 @@ architecture is rejected. The replacement gates:
 - [ ] **E1 Eiffel**: +20 Appeal at ×10; unchanged at 7.3.
 - [ ] **D1 Discipline**: ~+29 vs Barbarians (NOT +50).
 - [ ] **M1 Monument to the Gods**: +150% wonder production magnitude.
-- [x] **P2 Potala**: PASS — ×10 → 10 Diplomatic slots; 9 Diplomatic
-  Reserves unlocked on completion (target 9, then 0 next turn);
-  Reserves legal in Diplomatic slots with localized
-  name/description; policies confirmed; turn ended; save/reload
-  valid. Then probe +20/+50/+100 and record the highest stable slot
-  count (set the TESTED cap if below 100).
+- [x] **P2a Potala ×10 functional policy-slot test**: PASS — ×10 →
+  10 Diplomatic slots; 9 Diplomatic Reserves unlocked on completion
+  (target 9, then 0 next turn); usable picker; Reserves legal in
+  Diplomatic slots with localized name/description; policies
+  confirmed; End Turn works; save/reload valid; idempotent
+  reconciliation (no further unlocks).
+- [ ] **P2b multiplied policy-slot stress — NOT RUN**: ×20 / ×50 /
+  ×100 slot sources; record the highest stable slot count and set a
+  practical TESTED cap if below 100. Grouped with the later
+  ×20/×50/×100 stress phase (see S1). Do not imply this passed.
 - [ ] **S1 Spawn stress**: Pyramids/Zeus/Kotoku at ×20/×50/×100 —
   record placement failures, stacking, hangs, dropped units.
 - [ ] **MD1 Modes**: Monopolies industry/corporation bonuses scale
