@@ -2802,6 +2802,20 @@
    "disposition": "keep private; publish hashes + compact summary only"
   },
   {
+   "path": "spike/validation-evidence/X10Lifecycle.playtest2-x10-campaign.log",
+   "tracked": true,
+   "bytes": 7291769,
+   "size_normalization": "LF",
+   "surface": "private",
+   "kind": "validation_evidence_log",
+   "generated": false,
+   "runtime_required": false,
+   "rebuild_required": false,
+   "audit_only": true,
+   "provenance": "live-game output dumps",
+   "disposition": "keep private; publish hashes + compact summary only"
+  },
+  {
    "path": "spike/validation-evidence/X10Lifecycle.toqui-probe.log",
    "tracked": true,
    "bytes": 9978,
@@ -3400,8 +3414,8 @@
    "bytes": 221236
   },
   "private": {
-   "files": 107,
-   "bytes": 14812088
+   "files": 108,
+   "bytes": 22103857
   },
   "workshop_runtime": {
    "files": 13,
