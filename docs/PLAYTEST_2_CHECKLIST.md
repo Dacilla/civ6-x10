@@ -1,9 +1,15 @@
 # Playtest-2 checklist (human — game runs + log capture)
 
-STATUS 8B.4: the Playtest-2 campaign is STOPPED. P0B hard-failed in
-real gameplay (700 Code-of-Laws Reserve cards flood the picker; filler
-LOC keys render literally). Do not run the campaign matrix until the
-8B.4 corrected build passes P0, P0B-replacement, P0C, and P1 below.
+STATUS 8B.5: full ×10 Playtest-2 campaign — PASS (PROVISIONAL
+RELEASE-QUALITY GAMEPLAY PASS, 2026-10-15). A complete real campaign
+with all 13 categories enabled + Secret Societies exercised the
+expanded build without an obvious critical failure: no OB-caused
+crash, no persistent softlock, no obvious catastrophic double-scaling,
+no category leakage severe enough to block play; save/reload worked
+across multiple sessions. This is strong integration evidence, NOT
+exhaustive proof of every one of the 2481 registry entries. P0, P0B,
+P0C, P1 below are PASS for ×10; Custom 7.3 runtime is NOT yet
+validated (next gate); no ×50/×100 stress until 7.3 closes.
 
 Build installed: `X10` + `CE-X10` in Civ VI Mods (8B.4 tree), DLL
 recorded in `spike/EXPECTED_DLL_SHA256.txt`. Disable upstream Community
@@ -33,18 +39,25 @@ integral k): neither writes nor failures. `post_add_match` always
 equals `writes` (per-definition witness buffer never truncates: max 2
 X10 arguments per definition).
 
-## P0 boot smoke — PROVISIONALLY PASS (8B.3 evidence, re-confirm)
+## P0 boot smoke — PASS (8B.5: six campaign sessions)
 
-Prior live result (x10 Classic, all 13 modules ON, Secret Societies):
+Live result, six recent ×10 native sessions (all 13 modules ON,
+Secret Societies), every one a clean EXIT (`spike/
+validation-evidence/X10Lifecycle.playtest2-x10-campaign.log`):
 
+  definitions_added=4029
   writes=1682 transform_refused=0 official_mismatch=0
   post_add_match=1682 post_add_mismatch=0 post_add_unreadable=0
   skipped_other=0 repeat_idle=630
 
-- [ ] **P0** re-confirm on the 8B.4 build: game boots, Government
-  screen opens, no SLOT_NONE errors, EXIT line exactly as above.
+- [x] **P0** confirmed on the 8B.4.4 build across multiple campaign
+  sessions (load + save/reload): game boots, Government screen opens,
+  no SLOT_NONE errors, EXIT line exactly as above every session.
   (The 693 inert slot copies carry `GovernmentSlotType=SLOT_NONE`,
   which has no official `GovernmentSlots` row.)
+  Do NOT use the obsolete 1851 SS-only expectation: 1851 is now only
+  the theoretical all-relevant-optional-modes-loaded count
+  (`tests/test_mode_aware_runtime.py::TestAllModesValidation`).
 
 ## P0B Reserve picker — HARD FAIL (replaced below, do not re-run as-is)
 
@@ -53,38 +66,39 @@ Recorded failure: at Code of Laws the Government screen flooded with
 buried) and filler LOC keys rendered literally. The 700-visible-cards
 architecture is rejected. The replacement gates:
 
-## P0B-replacement (on-demand fillers + localization)
+## P0B-replacement (on-demand fillers + localization) — PASS (8B.5)
 
-- [ ] Reach Code of Laws with the normal intended UI stack including
-  Extended Policy Cards. Open the Government/Policy screen: expect
-  ZERO X10 Reserve cards visible at ordinary Chiefdom/Code-of-Laws
-  (fillers ship dormant: ExplicitUnlock, no civic). Picker remains
-  normally usable.
-- [ ] No literal `LOC_POLICY_X10_FILLER_*` strings anywhere in the
+- [x] Reached Code of Laws with the normal intended UI stack including
+  Extended Policy Cards through a full campaign. Government/Policy
+  screen: ZERO X10 Reserve cards visible at ordinary
+  Chiefdom/Code-of-Laws (fillers ship dormant: ExplicitUnlock, no
+  civic). Picker remained normally usable — no mass Reserve flood.
+- [x] No literal `LOC_POLICY_X10_FILLER_*` strings anywhere in the
   Government screen (filler text now loads InGame).
 
-## P0C (source-driven unlock + save/load) -- 8B.4.4
+## P0C (source-driven unlock + save/load) -- 8B.4.4 — PASS (8B.5)
 
-- [ ] Force/build a multiplied bonus slot source (e.g. x10 Potala =
-  10 Diplomatic slots): exactly (k-1) Reserve cards of the source's
-  slot type unlock (9 Diplomatic Reserves at x10 Potala, regardless
-  of real-card count -- bounded over-supply intentional). Count
-  visible Reserve cards: expect 9, never hundreds, never 0.
-  Next turn: no additional Reserves appear (9 stays 9).
-- [ ] Fill the slots with the unlocked Reserves, confirm policies,
-  turn ends. Save/reload: slots, policies, and unlocks remain valid.
-- [ ] ExplicitUnlock experiment record: with ONE fresh filler,
+- [x] Potala ×10: Government displayed 10 Diplomatic slots;
+  source-driven manager unlocked 9 Diplomatic Reserve policies —
+  sufficient to fill the multiplied slots; menu stayed usable;
+  policies confirmed; turn ended/continued; next-turn
+  reconciliation unlocked nothing further; save/reload unlocked
+  nothing further. Later campaign save: `BUILDING_POTALA_PALACE`
+  target Diplomatic = 9, have Diplomatic = 9.
+- [x] Second source survived save/reload without multiplication:
+  `BUILDING_FORBIDDEN_CITY` target Wildcard = 9, have Wildcard = 9.
+- [x] ExplicitUnlock experiment record: with ONE fresh filler,
   verify IsPolicyUnlocked flips true after UnlockPolicy, the card is
   slottable normally, and save/reload retains valid state. Report
   any deviation before wider use.
 
 ## Matrix runs (native lifecycle)
 
-- [ ] **R1** preset ×10 Classic, ALL 13 modules ON, Secret
-  Societies only (load + save/reload): expect `writes=1682
-  transform_refused=0 official_mismatch=0 post_add_match=1682
-  post_add_mismatch=0 post_add_unreadable=0 skipped_other=0
-  repeat_idle=630`, sessions identical.
+- [x] **R1** preset ×10 Classic, ALL 13 modules ON, Secret
+  Societies only (load + save/reload): PASS — six campaign sessions
+  all show `writes=1682 transform_refused=0 official_mismatch=0
+  post_add_match=1682 post_add_mismatch=0 post_add_unreadable=0
+  skipped_other=0 repeat_idle=630`, sessions identical.
   (1682 = 1619 present non-REPEAT + 63 active REPEAT; 169
   disabled-mode definitions absent, 630 idle by design.)
 - [ ] **R1-ALL** same but ALL-RELEVANT-MODES-ENABLED: expect
@@ -105,17 +119,24 @@ architecture is rejected. The replacement gates:
   zero Reserve cards (manager must not unlock when disarmed).
 - [ ] **R5** invalid Custom (`abc`, `-1`, `101`, blank): disarmed with
   explicit reasons, zero transforms.
-- [ ] **R6** save/reload on R1 config: sessions identical.
+- [x] **R6** save/reload on R1 config: PASS — sessions identical
+  across the multi-session campaign (save/reload used successfully
+  across multiple sessions).
 
 ## Focused gameplay checks
 
-- [ ] **P1 BRS/EPC calculated display (BLOCKER until green)** with
-  Better Report Screen + Extended Policy Cards enabled, God King
-  card tooltip/BRS Policy page must read +10 Faith/+10 Gold at x10
-  (gameplay already does: native log proves `GOD_KING_GOLD 1 -> 10
-  MATCH`). Discipline must reflect ~+29 (NOT +50, NOT +5). Urban
-  Planning must read +10 Production. Static Firaxis prose may still
-  show vanilla numbers; only the CALCULATED result must be truthful.
+- [x] **P1 BRS/EPC calculated display (BLOCKER until green)** — PASS
+  for tested calculated witnesses (8B.5). Compat context loads, loads
+  the generated 1788-entry data, wraps RMA.CalculateModifierEffect,
+  and reports wrapper active. With Better Report Screen + Extended
+  Policy Cards enabled, God King card tooltip/BRS Policy page reads
+  +10 Faith/+10 Gold at x10 (gameplay already does: native log proves
+  `GOD_KING_GOLD 1 -> 10 MATCH`). Discipline must reflect ~+29 (NOT
+  +50, NOT +5). Urban Planning must read +10 Production. KNOWN
+  DISPLAY LIMITATION (not a gameplay/native failure, not a compat
+  failure): static Firaxis prose may still show vanilla numbers
+  (e.g. God King body +1/+1) while only the CALCULATED result must
+  be truthful. No localization-number rewriting in this pass.
 - [ ] **C1 Colosseum**: build queue shows +2 Culture (not +0); host
   City Center gets +20 total Culture at ×10; every eligible City
   Center within 6 tiles gets +20 total Culture; a city outside range
@@ -134,12 +155,12 @@ architecture is rejected. The replacement gates:
 - [ ] **E1 Eiffel**: +20 Appeal at ×10; unchanged at 7.3.
 - [ ] **D1 Discipline**: ~+29 vs Barbarians (NOT +50).
 - [ ] **M1 Monument to the Gods**: +150% wonder production magnitude.
-- [ ] **P2 Potala**: ×10 → 10 Diplomatic slots; 9 Diplomatic
-  Reserves unlock on completion (target 9, then 0 next turn); Reserves
-  legal in Diplomatic slots with localized name/description; policies
-  confirm; turn ends; save/reload valid. Then probe +20/+50/+100 and
-  record the highest stable slot count (set the TESTED cap if below
-  100).
+- [x] **P2 Potala**: PASS — ×10 → 10 Diplomatic slots; 9 Diplomatic
+  Reserves unlocked on completion (target 9, then 0 next turn);
+  Reserves legal in Diplomatic slots with localized
+  name/description; policies confirmed; turn ended; save/reload
+  valid. Then probe +20/+50/+100 and record the highest stable slot
+  count (set the TESTED cap if below 100).
 - [ ] **S1 Spawn stress**: Pyramids/Zeus/Kotoku at ×20/×50/×100 —
   record placement failures, stacking, hangs, dropped units.
 - [ ] **MD1 Modes**: Monopolies industry/corporation bonuses scale
@@ -151,6 +172,38 @@ architecture is rejected. The replacement gates:
 - [ ] **A1 Appeal spot**: Golden Gate city Appeal scales at ×10.
 - [ ] **C7 Custom 7.3 count proof**: one new count-like family shows
   exact-integral apply (Panama 63) AND inexact refusal (Jebel 43.8).
+
+## Next gate: Custom 7.3 (NOT yet run — do not start ×50/×100 first)
+
+Mechanically-derived SS-only expectation (source of truth:
+`tests/test_mode_aware_runtime.py::test_r2_ss_only_1204`, derived
+from the registry + manifest bundle attribution, never hand-entered):
+
+  writes=1204 transform_refused=1108
+  (1204 = 1187 unconditional + 17 exact count-like; all 693 REPEAT
+  refuse; 169 disabled-mode definitions absent, not refused.)
+
+- [ ] **R2** Custom 7.3, all ON, Secret Societies only: EXIT line
+  exactly `writes=1204 transform_refused=1108 ...` with zero
+  mismatches/unreadables. Save/reload identical.
+- [ ] Exact whole/count-like refusal: Eiffel +2 Appeal stays vanilla
+  +2; Jebel +6 Iron/turn stays +6 (never 43.8); one-time integer
+  grants (e.g. Pyramids Builder count) refuse fractional scaling.
+- [ ] REPEAT refusal: all 693 REPEAT copies refuse; NO Reserve filler
+  unlocks from refused fractional slot sources — Potala/Forbidden
+  City/etc remain vanilla +1 slots at 7.3.
+- [ ] Additive fractional multiplication: ordinary yields use exact
+  fractional values where the game supports them.
+- [ ] VECTOR element-wise: Petra desert tiles +14.6 Food / +14.6 Gold
+  / +7.3 Production.
+- [ ] COMBAT transform: Discipline calculated value matches the native
+  7.3 transform (neither simple 5×7.3 nor vanilla +5).
+- [ ] DISCOUNT + DELTA behavior: spot-check one of each against the
+  twin math (`tests/test_phase8b4_ux_compat.py::TestApplyTwin`).
+- [ ] Owner/module gating unchanged at 7.3 (R3 spot-check one module).
+- [ ] BRS/EPC compatibility under fractional Custom: God King + Urban
+  Planning calculated footers match native 7.3 values; static prose
+  limitation still applies.
 
 ## Artwork (separate human task, still the only content blocker)
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## Phase 8B.5 Playtest-2 x10 closure (documentation only, not published)
+
+- Full x10 campaign PASS (provisional release-quality): all 13
+  categories + Secret Societies, six clean native sessions at
+  1682/0/1682/630, no OB-caused crash/softlock/double-scaling.
+- P0/P0B/P0C/P1 PASS (Potala 9/9, Forbidden City 9/9, God King
+  +10/+10, Urban Planning +10; static-prose limitation kept).
+- No production-code, registry, or CE changes; DLL unchanged.
+- Next gate: Custom 7.3 (writes=1204, refused=1108).
+
 ## Phase 8B.4.4 source-driven Reserve policies (campaign STOPPED, not published)
 
 - Gameplay-side legality matching REMOVED (Lua.log proved CanSlotPolicy

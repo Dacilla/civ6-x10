@@ -223,3 +223,43 @@ Files:
 
 Validation tag: `phase6b-1010-live-validated` (X10 @ 2cf953e / CE-X10 @
 1ce3188, probe witnesses added in 94f95fe).
+
+---
+
+# Phase 8B.5 Playtest-2 x10 campaign closure (2026-10-15)
+
+Source: `%TEMP%\X10Lifecycle.log` from the completed x10 campaign,
+archived unmodified as `X10Lifecycle.playtest2-x10-campaign.log`
+(7,341,902 bytes; the live file appends, so this snapshot freezes the
+campaign sessions).
+
+Controller `67d8bde`, CE `1e89e1b`, DLL
+`ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744`.
+Setup: all 13 Overpowered Bonuses categories enabled, Secret
+Societies enabled.
+
+Six recent native sessions, every one the same clean EXIT:
+
+`definitions_added=4029 writes=1682 transform_refused=0
+official_mismatch=0 post_add_match=1682 post_add_mismatch=0
+post_add_unreadable=0 skipped_other=0 repeat_idle=630`
+
+Final-session CONFIG confirms all 13 module switches ON (traits,
+policies, governments, pantheons, wonders, governors, suzerain,
+promotions, dedications, modes, religion, greatpeople, projects).
+
+Human runtime record (same build): full campaign completed with no
+obvious critical errors, no OB-caused crash, no persistent softlock,
+no obvious catastrophic double-scaling, no blocking category
+leakage; save/reload across multiple sessions. Potala x10: 10
+Diplomatic slots, 9 Diplomatic Reserves (target 9 / have 9),
+confirm/end-turn/save-reload clean. Forbidden City second source:
+target Wildcard 9 / have 9, no flooding. BRS/EPC wrapper active;
+God King +10/+10 and Urban Planning +10 calculated witnesses.
+
+Result: PLAYTEST 2 x10 -- PASS (PROVISIONAL RELEASE-QUALITY GAMEPLAY
+PASS). Not exhaustive per-entry proof. Next gate: Custom 7.3
+(expected SS-only `writes=1204 transform_refused=1108`).
+
+File:
+- `X10Lifecycle.playtest2-x10-campaign.log` -- campaign native log.

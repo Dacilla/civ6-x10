@@ -772,3 +772,91 @@ PlayerTurnStarted / PlayerDoTurn (the >1000-line spam source) removed,
 as are GovernmentPolicyChanged / GovernmentChanged / CivicCompleted.
 Logging reports source activation (once), per-player targets, actual
 unlocks, warnings/errors only -- silent when targets satisfied.
+
+## 14. Phase 8B.5 Playtest-2 x10 closure (documentation only)
+
+No production-code changes. No registry changes. No CE rebuild. No
+gameplay-family expansion. No publication. Controller 67d8bde, CE
+1e89e1b, DLL ced8f01750d22f44725ed61de7c0926c58e423388b3ee7fce0fd18522081b744
+(verified unchanged).
+
+### K1. Full x10 campaign result: PASS (provisional release-quality)
+
+Human Playtest 2 completed a full x10 campaign: all 13 Overpowered
+Bonuses categories enabled, Secret Societies enabled, no obvious
+critical gameplay errors, no OB-caused crash, no persistent softlock,
+no obvious catastrophic double-scaling, no category leakage severe
+enough to block play, save/reload successful across multiple
+sessions. Recorded as PLAYTEST 2 x10 -- PASS (PROVISIONAL
+RELEASE-QUALITY GAMEPLAY PASS): a complete real campaign exercised
+the expanded build without an obvious critical failure. NOT
+exhaustive proof of every one of the 2481 registry entries.
+
+### K2. Native multi-session evidence: P0 PASS
+
+The archived log (`spike/validation-evidence/
+X10Lifecycle.playtest2-x10-campaign.log`, copied from %TEMP%) holds
+six recent x10 native sessions, every one the same clean EXIT:
+definitions_added=4029, writes=1682, transform_refused=0,
+official_mismatch=0, post_add_match=1682, post_add_mismatch=0,
+post_add_unreadable=0, skipped_other=0, repeat_idle=630 (the expected
+Secret-Societies-only population: 1619 present non-REPEAT + 63 active
+REPEAT, 169 disabled-mode definitions absent, 630 idle by design).
+The final session's CONFIG confirms all 13 module switches ON
+(traits, policies, governments, pantheons, wonders, governors,
+suzerain, promotions, dedications, modes, religion, greatpeople,
+projects). The obsolete 1851 SS-only expectation is retired: 1851
+remains only the theoretical all-relevant-optional-modes-loaded count
+(TestAllModesValidation).
+
+### K3. Policy-slot validation: P0B / P0C PASS
+
+Potala Palace x10: Government displayed 10 Diplomatic slots, the
+source-driven manager unlocked 9 Diplomatic Reserves (sufficient to
+fill the multiplied slots), the menu stayed usable, policies were
+confirmed, the turn continued/ended, next-turn reconciliation added
+nothing, save/reload added nothing. Campaign save state:
+BUILDING_POTALA_PALACE target Diplomatic = 9, have Diplomatic = 9.
+A second simultaneous source survived save/reload without flooding:
+BUILDING_FORBIDDEN_CITY target Wildcard = 9, have Wildcard = 9.
+Picker usability (P0B) and the 8B.4.4 source-driven architecture
+(P0C) are PASS; Potala and Forbidden City multi-source/save-load
+witnesses are PASS.
+
+### K4. BRS/EPC: P1 PASS for tested witnesses (limitation kept)
+
+Compat context loads, loads the generated 1788-entry data, wraps
+RMA.CalculateModifierEffect, and reports wrapper active. Calculated
+witnesses: God King +10 Faith / +10 Gold, Urban Planning +10
+Production. Static Firaxis prose may still state vanilla values
+(e.g. God King body +1/+1 beside a +10/+10 calculated footer) --
+documented as a known display limitation, NOT a gameplay/native
+failure and NOT a compat-layer failure. No localization-number
+rewriting in this pass.
+
+### K5. Known intentional / unresolved items (status preserved)
+
+A. Regional Wonder Entertainment/Amenities: Colosseum/Maracana
+regional Entertainment remains vanilla; no safe proven
+player-cities entertainment carrier shipped; NOT marked fixed.
+B. Static descriptions: vanilla numbers may remain; calculated
+BRS/EPC results are the compatibility target.
+C. Optional modes: this campaign is not exhaustive runtime coverage
+of Heroes, Monopolies, Dramatic Ages, Apocalypse when disabled;
+their definitions' absence from SS-only sessions is expected, not
+skip/error behavior.
+D. Individual entries: campaign PASS does not human-validate each
+of the 2481 entries.
+
+### K6. Next test: Custom 7.3 (gate open, not run)
+
+Expected SS-only native accounting, mechanically derived
+(test_mode_aware_runtime.py::test_r2_ss_only_1204): writes=1204
+(1187 unconditional + 17 exact count-like), transform_refused=1108,
+all 693 REPEAT refuse. Purpose: exact whole/count-like refusal
+(Eiffel +2, Jebel +6, Pyramids Builder), REPEAT refusal with zero
+Reserve unlocks (slots stay vanilla +1), additive fractional values,
+VECTOR element-wise (Petra 14.6/14.6/7.3), COMBAT (Discipline native
+7.3 transform), DISCOUNT/DELTA spot checks, owner/module gating,
+fractional BRS/EPC compatibility. No x50/x100 stress until 7.3
+closes.

@@ -1040,7 +1040,7 @@
   {
    "path": "docs/PHASE_8B.md",
    "tracked": true,
-   "bytes": 40519,
+   "bytes": 44937,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1054,7 +1054,7 @@
   {
    "path": "docs/PLAYTEST_2_CHECKLIST.md",
    "tracked": true,
-   "bytes": 8234,
+   "bytes": 11297,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "authored_docs",
@@ -1348,7 +1348,7 @@
   {
    "path": "release/CHANGELOG.md",
    "tracked": true,
-   "bytes": 8301,
+   "bytes": 8804,
    "size_normalization": "LF",
    "surface": "corresponding_source",
    "kind": "release_metadata",
@@ -2538,7 +2538,7 @@
   {
    "path": "spike/validation-evidence/README.md",
    "tracked": true,
-   "bytes": 10935,
+   "bytes": 12616,
    "size_normalization": "LF",
    "surface": "private",
    "kind": "validation_evidence_log",
@@ -3393,7 +3393,7 @@
  "surface_summary": {
   "corresponding_source": {
    "files": 120,
-   "bytes": 1514967
+   "bytes": 1522951
   },
   "corresponding_build_artifact": {
    "files": 1,
@@ -3401,7 +3401,7 @@
   },
   "private": {
    "files": 107,
-   "bytes": 14810407
+   "bytes": 14812088
   },
   "workshop_runtime": {
    "files": 13,
